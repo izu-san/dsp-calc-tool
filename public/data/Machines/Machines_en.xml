@@ -1,0 +1,603 @@
+<?xml version="1.0"?>
+<ArrayOfMachine xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Machine>
+    <id>2011</id>
+    <name>Sorter Mk.I</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>300</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2012</id>
+    <name>Sorter Mk.II</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>600</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2013</id>
+    <name>Sorter Mk.III</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>1200</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2014</id>
+    <name>Pile Sorter</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2400</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2040</id>
+    <name>Automatic Piler</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2400</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2030</id>
+    <name>Traffic Monitor</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>600</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2313</id>
+    <name>Spray Coater</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>1500</workEnergyPerTick>
+    <idleEnergyPerTick>75</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2107</id>
+    <name>Logistics Distributor</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>30000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2303</id>
+    <name>Assembling Machine Mk.I</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>7500</assemblerSpeed>
+    <workEnergyPerTick>4500</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2304</id>
+    <name>Assembling Machine Mk.II</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>9000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2305</id>
+    <name>Assembling Machine Mk.III</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>15000</assemblerSpeed>
+    <workEnergyPerTick>18000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2318</id>
+    <name>Re-composing Assembler</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>30000</assemblerSpeed>
+    <workEnergyPerTick>45000</workEnergyPerTick>
+    <idleEnergyPerTick>900</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2301</id>
+    <name>Mining Machine</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>7000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2316</id>
+    <name>Advanced Mining Machine</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>49000</workEnergyPerTick>
+    <idleEnergyPerTick>2800</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2306</id>
+    <name>Water Pump</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>5000</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2302</id>
+    <name>Arc Smelter</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>6000</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2315</id>
+    <name>Plane Smelter</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>20000</assemblerSpeed>
+    <workEnergyPerTick>24000</workEnergyPerTick>
+    <idleEnergyPerTick>800</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2319</id>
+    <name>Negentropy Smelter</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>30000</assemblerSpeed>
+    <workEnergyPerTick>48000</workEnergyPerTick>
+    <idleEnergyPerTick>1600</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2307</id>
+    <name>Oil Extractor</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>14000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2308</id>
+    <name>Oil Refinery</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>16000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2309</id>
+    <name>Chemical Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>12000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2317</id>
+    <name>Quantum Chemical Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>20000</assemblerSpeed>
+    <workEnergyPerTick>36000</workEnergyPerTick>
+    <idleEnergyPerTick>600</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2314</id>
+    <name>Fractionator</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>12000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2311</id>
+    <name>EM-Rail Ejector</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>30000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2312</id>
+    <name>Vertical Launching Silo</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>300000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2209</id>
+    <name>Energy Exchanger</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>900000</exchangeEnergyPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>true</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2310</id>
+    <name>Miniature Particle Collider</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>200000</workEnergyPerTick>
+    <idleEnergyPerTick>2000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2103</id>
+    <name>Planetary Logistics Station</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>200000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2104</id>
+    <name>Interstellar Logistics Station</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>1000000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2901</id>
+    <name>Matrix Lab</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>8000</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2902</id>
+    <name>Self-evolution Lab</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>30000</assemblerSpeed>
+    <workEnergyPerTick>32000</workEnergyPerTick>
+    <idleEnergyPerTick>800</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3001</id>
+    <name>Gauss Turret</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>3500</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3002</id>
+    <name>Laser Turret</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>50000</workEnergyPerTick>
+    <idleEnergyPerTick>2000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3003</id>
+    <name>Implosion Cannon</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>12500</workEnergyPerTick>
+    <idleEnergyPerTick>500</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3004</id>
+    <name>Plasma Turret</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>28000</workEnergyPerTick>
+    <idleEnergyPerTick>1400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3005</id>
+    <name>Missile Turret</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>10000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3006</id>
+    <name>Jammer Tower</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>20000</workEnergyPerTick>
+    <idleEnergyPerTick>1500</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3008</id>
+    <name>Planetary Shield Generator</name>
+    <count>0</count>
+    <Type>Defense</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>400000</workEnergyPerTick>
+    <idleEnergyPerTick>200000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3009</id>
+    <name>Battlefield Analysis Base</name>
+    <count>0</count>
+    <Type>Defense</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>40000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3010</id>
+    <name>SR Plasma Turret</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>70000</workEnergyPerTick>
+    <idleEnergyPerTick>35000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+</ArrayOfMachine>

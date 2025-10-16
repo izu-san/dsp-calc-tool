@@ -1,0 +1,1200 @@
+<?xml version="1.0"?>
+<ArrayOfItem xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Item>
+    <id>1001</id>
+    <name>Iron Ore</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Iron Veins</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1002</id>
+    <name>Copper Ore</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Copper Veins</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1003</id>
+    <name>Silicon Ore</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Silicon Veins</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1004</id>
+    <name>Titanium Ore</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Titanium Veins</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1005</id>
+    <name>Stone</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Stone Veins</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1006</id>
+    <name>Coal</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Coal Veins</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1030</id>
+    <name>Log</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Tree</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1031</id>
+    <name>Plant Fuel</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Plant</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1011</id>
+    <name>Fire Ice</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Fire ice vein &lt;color="#FFFFFFC1"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1012</id>
+    <name>Kimberlite Ore</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Kimberlite vein &lt;color="#B9DFFFC4"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1013</id>
+    <name>Fractal Silicon</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Fractal silicium vein &lt;color="#43FF89D4"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1014</id>
+    <name>Grating Crystal</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Grating Crystal vein &lt;color="#E37AFFDA"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1015</id>
+    <name>Stalagmite Crystal</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Stalagmite Crystal Vein &lt;color="#7AF0FFC8"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1016</id>
+    <name>Unipolar Magnet</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Unipolar magnet vein &lt;color="#FFA086C8"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1101</id>
+    <name>Iron Ingot</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1104</id>
+    <name>Copper Ingot</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1105</id>
+    <name>High-purity Silicon</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1106</id>
+    <name>Titanium Ingot</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1108</id>
+    <name>Stone Brick</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1109</id>
+    <name>Energetic Graphite</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1103</id>
+    <name>Steel</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1107</id>
+    <name>Titanium Alloy</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1110</id>
+    <name>Glass</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1119</id>
+    <name>Titanium Glass</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1111</id>
+    <name>Prism</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1112</id>
+    <name>Diamond</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1113</id>
+    <name>Crystal Silicon</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1201</id>
+    <name>Gear</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1102</id>
+    <name>Magnet</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1202</id>
+    <name>Magnetic Coil</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1203</id>
+    <name>Electric Motor</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1204</id>
+    <name>Electromagnetic Turbine</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1205</id>
+    <name>Super-magnetic Ring</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1206</id>
+    <name>Particle Container</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1127</id>
+    <name>Strange Matter</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1301</id>
+    <name>Circuit Board</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1303</id>
+    <name>Processor</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1305</id>
+    <name>Quantum Chip</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1302</id>
+    <name>Microcrystalline Component</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1304</id>
+    <name>Plane Filter</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1402</id>
+    <name>Particle Broadband</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1401</id>
+    <name>Plasma Exciter</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1404</id>
+    <name>Photon Combiner</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1501</id>
+    <name>Solar Sail</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1000</id>
+    <name>Water</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Ocean</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1007</id>
+    <name>Crude Oil</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom>Crude Oil Seep</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1114</id>
+    <name>Refined Oil</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1116</id>
+    <name>Sulfuric Acid</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom>Sulfuric acid ocean</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1120</id>
+    <name>Hydrogen</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom>Gas Giant Orbit</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1121</id>
+    <name>Deuterium</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom>Gas Giant Orbit</miningFrom>
+    <produceFrom>Fractionator</produceFrom>
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1122</id>
+    <name>Antimatter</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1208</id>
+    <name>Critical Photon</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom>Ray Receiver</produceFrom>
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1801</id>
+    <name>Hydrogen Fuel Rod</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1802</id>
+    <name>Deuteron Fuel Rod</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1803</id>
+    <name>Antimatter Fuel Rod</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1804</id>
+    <name>Strange Annihilation Fuel Rod</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1115</id>
+    <name>Plastic</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1123</id>
+    <name>Graphene</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1124</id>
+    <name>Carbon Nanotube</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1117</id>
+    <name>Organic Crystal</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom>Organic crystal vein &lt;color="#F5FF4FC1"&gt;(rare)&lt;/color&gt;</miningFrom>
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1118</id>
+    <name>Titanium Crystal</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1126</id>
+    <name>Casimir Crystal</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1128</id>
+    <name>Combustible Unit</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1129</id>
+    <name>Explosive Unit</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1130</id>
+    <name>Crystal Explosive Unit</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1209</id>
+    <name>Graviton Lens</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1210</id>
+    <name>Space Warper</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1403</id>
+    <name>Annihilation Constraint Sphere</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1407</id>
+    <name>Engine</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1405</id>
+    <name>Thruster</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1406</id>
+    <name>Reinforced Thruster</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5003</id>
+    <name>Logistics Bot</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5001</id>
+    <name>Logistics Drone</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5002</id>
+    <name>Interstellar Logistics Vessel</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1125</id>
+    <name>Frame Material</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1502</id>
+    <name>Dyson Sphere Component</name>
+    <count>0</count>
+    <Type>Component</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1503</id>
+    <name>Small Carrier Rocket</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1131</id>
+    <name>Foundation</name>
+    <count>0</count>
+    <Type>Decoration</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1141</id>
+    <name>Proliferator Mk.I</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1142</id>
+    <name>Proliferator Mk.II</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1143</id>
+    <name>Proliferator Mk.III</name>
+    <count>0</count>
+    <Type>Material</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1601</id>
+    <name>Magnum Ammo Box</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1602</id>
+    <name>Titanium Ammo Box</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1603</id>
+    <name>Superalloy Ammo Box</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1604</id>
+    <name>Shell Set</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1605</id>
+    <name>High-Explosive Shell Set</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1606</id>
+    <name>Crystal Shell Set</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1607</id>
+    <name>Plasma Capsule</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1608</id>
+    <name>Antimatter Capsule</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1609</id>
+    <name>Missile Set</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1610</id>
+    <name>Supersonic Missile Set</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1611</id>
+    <name>Gravity Missile Set</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1612</id>
+    <name>Jamming Capsule</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>1613</id>
+    <name>Suppressing Capsule</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5101</id>
+    <name>Prototype</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5102</id>
+    <name>Precision Drone</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5103</id>
+    <name>Attack Drone</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5111</id>
+    <name>Corvette</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5112</id>
+    <name>Destroyer</name>
+    <count>0</count>
+    <Type>Product</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>5201</id>
+    <name>Dark Fog Matrix</name>
+    <count>0</count>
+    <Type>DarkFog</Type>
+    <miningFrom>Dark Fog Debris</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>5202</id>
+    <name>Silicon-based Neuron</name>
+    <count>0</count>
+    <Type>DarkFog</Type>
+    <miningFrom>Dark Fog Debris</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>5203</id>
+    <name>Matter Recombinator</name>
+    <count>0</count>
+    <Type>DarkFog</Type>
+    <miningFrom>Dark Fog Debris</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>5204</id>
+    <name>Negentropy Singularity</name>
+    <count>0</count>
+    <Type>DarkFog</Type>
+    <miningFrom>Dark Fog Debris</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>5205</id>
+    <name>Core Element</name>
+    <count>0</count>
+    <Type>DarkFog</Type>
+    <miningFrom>Dark Fog Debris</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>5206</id>
+    <name>Energy Shard</name>
+    <count>0</count>
+    <Type>DarkFog</Type>
+    <miningFrom>Dark Fog Debris</miningFrom>
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>2001</id>
+    <name>Conveyor Belt Mk.I</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2002</id>
+    <name>Conveyor Belt Mk.II</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2003</id>
+    <name>Conveyor Belt Mk.III</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2020</id>
+    <name>Splitter</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2101</id>
+    <name>Depot Mk.I</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2102</id>
+    <name>Depot Mk.II</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2106</id>
+    <name>Storage Tank</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2201</id>
+    <name>Tesla Tower</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2202</id>
+    <name>Wireless Power Tower</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2212</id>
+    <name>Satellite Substation</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2203</id>
+    <name>Wind Turbine</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2204</id>
+    <name>Thermal Power Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2211</id>
+    <name>Mini Fusion Power Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2213</id>
+    <name>Geothermal Power Station</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2205</id>
+    <name>Solar Panel</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2206</id>
+    <name>Accumulator</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2207</id>
+    <name>Accumulator (full)</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom>Energy Exchanger</produceFrom>
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>2208</id>
+    <name>Ray Receiver</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2210</id>
+    <name>Artificial Star</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>2105</id>
+    <name>Orbital Collector</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>3007</id>
+    <name>Signal Tower</name>
+    <count>0</count>
+    <Type>Defense</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>6001</id>
+    <name>Electromagnetic Matrix</name>
+    <count>0</count>
+    <Type>Matrix</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>6002</id>
+    <name>Energy Matrix</name>
+    <count>0</count>
+    <Type>Matrix</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>6003</id>
+    <name>Structure Matrix</name>
+    <count>0</count>
+    <Type>Matrix</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>6004</id>
+    <name>Information Matrix</name>
+    <count>0</count>
+    <Type>Matrix</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>6005</id>
+    <name>Gravity Matrix</name>
+    <count>0</count>
+    <Type>Matrix</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+  </Item>
+  <Item>
+    <id>6006</id>
+    <name>Universe Matrix</name>
+    <count>0</count>
+    <Type>Matrix</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+  <Item>
+    <id>1099</id>
+    <name>Soil Pile</name>
+    <count>0</count>
+    <Type>Resource</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>true</isRaw>
+  </Item>
+</ArrayOfItem>

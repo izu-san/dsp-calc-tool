@@ -1,0 +1,603 @@
+<?xml version="1.0"?>
+<ArrayOfMachine xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Machine>
+    <id>2011</id>
+    <name>ソーターMK.I</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>300</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2012</id>
+    <name>ソーターMK.II</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>600</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2013</id>
+    <name>ソーターMK.III</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>1200</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2014</id>
+    <name>集積ソーター</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2400</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2040</id>
+    <name>自動集積機</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2400</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2030</id>
+    <name>トラフィックモニター</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>600</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2313</id>
+    <name>塗布機</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>1500</workEnergyPerTick>
+    <idleEnergyPerTick>75</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2107</id>
+    <name>物流配送器</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>30000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2303</id>
+    <name>組立機 Mk.I</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>7500</assemblerSpeed>
+    <workEnergyPerTick>4500</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2304</id>
+    <name>組立機 Mk.II</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>9000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2305</id>
+    <name>組立機 Mk.III</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>15000</assemblerSpeed>
+    <workEnergyPerTick>18000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2318</id>
+    <name>再構成式組立機</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>30000</assemblerSpeed>
+    <workEnergyPerTick>45000</workEnergyPerTick>
+    <idleEnergyPerTick>900</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2301</id>
+    <name>採掘機</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>7000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2316</id>
+    <name>高度採掘機</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>49000</workEnergyPerTick>
+    <idleEnergyPerTick>2800</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2306</id>
+    <name>ウォーターポンプ</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>5000</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2302</id>
+    <name>アーク製錬所</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>6000</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2315</id>
+    <name>プレーン製錬所</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>20000</assemblerSpeed>
+    <workEnergyPerTick>24000</workEnergyPerTick>
+    <idleEnergyPerTick>800</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2319</id>
+    <name>負エントロピー製錬所</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>30000</assemblerSpeed>
+    <workEnergyPerTick>48000</workEnergyPerTick>
+    <idleEnergyPerTick>1600</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2307</id>
+    <name>オイル抽出器</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>14000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2308</id>
+    <name>製油所</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>16000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2309</id>
+    <name>化学プラント</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>12000</workEnergyPerTick>
+    <idleEnergyPerTick>400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2317</id>
+    <name>量子化学プラント</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>20000</assemblerSpeed>
+    <workEnergyPerTick>36000</workEnergyPerTick>
+    <idleEnergyPerTick>600</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2314</id>
+    <name>分留器</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>12000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2311</id>
+    <name>EMレールイジェクタ</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>30000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2312</id>
+    <name>垂直発射サイロ</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>300000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2209</id>
+    <name>エネルギー交換器</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>900000</exchangeEnergyPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>true</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2310</id>
+    <name>小型粒子衝突型加速器</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>10000</assemblerSpeed>
+    <workEnergyPerTick>200000</workEnergyPerTick>
+    <idleEnergyPerTick>2000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2103</id>
+    <name>惑星内物流ステーション</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>200000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2104</id>
+    <name>星間物流ステーション</name>
+    <count>0</count>
+    <Type>Logistics</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>1000000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2901</id>
+    <name>マトリックスラボ</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>8000</workEnergyPerTick>
+    <idleEnergyPerTick>200</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>2902</id>
+    <name>自己進化ラボ</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>32000</workEnergyPerTick>
+    <idleEnergyPerTick>800</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3001</id>
+    <name>ガウスタレット</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>3500</workEnergyPerTick>
+    <idleEnergyPerTick>150</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3002</id>
+    <name>レーザータレット</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>50000</workEnergyPerTick>
+    <idleEnergyPerTick>2000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3003</id>
+    <name>炸裂砲</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>12500</workEnergyPerTick>
+    <idleEnergyPerTick>500</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3004</id>
+    <name>プラズマタレット</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>28000</workEnergyPerTick>
+    <idleEnergyPerTick>1400</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3005</id>
+    <name>ミサイルタレット</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>10000</workEnergyPerTick>
+    <idleEnergyPerTick>300</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3006</id>
+    <name>ジャミングタワー</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>20000</workEnergyPerTick>
+    <idleEnergyPerTick>1500</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3008</id>
+    <name>惑星シールドジェネレーター</name>
+    <count>0</count>
+    <Type>Defense</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>400000</workEnergyPerTick>
+    <idleEnergyPerTick>200000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3009</id>
+    <name>戦場分析基地</name>
+    <count>0</count>
+    <Type>Defense</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>40000</workEnergyPerTick>
+    <idleEnergyPerTick>1000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+  <Machine>
+    <id>3010</id>
+    <name>近距離プラズマタレット</name>
+    <count>0</count>
+    <Type>Turret</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>70000</workEnergyPerTick>
+    <idleEnergyPerTick>35000</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+  </Machine>
+</ArrayOfMachine>
