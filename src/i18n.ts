@@ -590,7 +590,7 @@ const resources = {
       applyQuestion: 'を適用しますか？',
       miningResearch: '採掘速度研究',
       stacks: '段',
-      pilingSorter: '集配物流ステーション',
+      pilingSorter: '集積ソーター',
       
       // Conveyor Belt Settings
       beltTier: 'ベルトランク',
