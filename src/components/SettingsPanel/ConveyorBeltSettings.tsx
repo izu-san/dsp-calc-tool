@@ -70,7 +70,7 @@ export function ConveyorBeltSettings() {
               <div className="flex flex-col items-center gap-1">
                 <ItemIcon itemId={option.iconId} size={28} />
                 <span className="font-semibold text-[10px]">{option.label}</span>
-                <span className="text-[9px] opacity-70">{option.speed}/s</span>
+                <span className="text-[10px] font-medium opacity-80">{option.speed}</span>
               </div>
             </button>
           ))}

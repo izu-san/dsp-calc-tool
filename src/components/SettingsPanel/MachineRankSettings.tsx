@@ -114,7 +114,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[9px] opacity-70">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
                   )}
                 </div>
               </button>
@@ -144,7 +144,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[9px] opacity-70">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
                   )}
                 </div>
               </button>
@@ -174,7 +174,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[9px] opacity-70">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
                   )}
                 </div>
               </button>
@@ -204,7 +204,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[9px] opacity-70">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
                   )}
                 </div>
               </button>
