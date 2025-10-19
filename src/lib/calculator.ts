@@ -15,6 +15,8 @@ import { isRawMaterial } from '../constants/rawMaterials';
 import { MACHINE_IDS_BY_RECIPE_TYPE, getMachineForRecipe as getMachineForRecipeFromConstants } from '../constants/machines';
 import { getEffectiveBonuses } from './proliferator';
 
+
+
 /**
  * Calculate production rate for a recipe with given settings
  * 
@@ -160,8 +162,27 @@ function buildRecipeTree(
   // Check for node-specific overrides
   const override = nodeOverrides.get(nodeId);
   
-  // Apply proliferator override or use global settings
-  const proliferator = override?.proliferator || settings.proliferator;
+  // Determine optimal proliferator mode for this specific recipe
+  const supportsProduction = recipe.productive === true;
+  let proliferator = override?.proliferator || settings.proliferator;
+  
+  // Apply smart mode selection based on recipe capabilities
+  if (settings.proliferator.type !== 'none') {
+    // If global setting is production mode but this recipe doesn't support it, use speed mode
+    if (settings.proliferator.mode === 'production' && !supportsProduction) {
+      proliferator = {
+        ...proliferator,
+        mode: 'speed'
+      };
+    }
+    // If global setting is speed mode but this recipe supports production, use production mode
+    else if (settings.proliferator.mode === 'speed' && supportsProduction) {
+      proliferator = {
+        ...proliferator,
+        mode: 'production'
+      };
+    }
+  }
   
   // Apply machine rank override or use global settings
   let machine: Machine;
