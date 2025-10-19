@@ -39,8 +39,9 @@ export function TemplateSelector() {
 
   return (
     <div className="mb-6">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-        🎮 {t('template')}
+      <label className="block text-sm font-medium text-neon-cyan mb-3 flex items-center gap-2">
+        <span className="text-lg">🎮</span>
+        {t('template')}
       </label>
       
       {/* Main 4 Templates */}
@@ -51,7 +52,7 @@ export function TemplateSelector() {
             <button
               key={templateId}
               onClick={() => handleTemplateClick(templateId)}
-              className="px-3 py-2 text-sm font-medium rounded-lg border transition-all hover:scale-105 active:scale-95 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30"
+              className="px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-neon-blue/20 backdrop-blur-sm text-white hover:border-neon-blue hover:bg-neon-blue/30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect"
               title={t(`${templateId}Desc`)}
             >
               <span className="mr-1">{template.icon}</span>
@@ -64,7 +65,7 @@ export function TemplateSelector() {
       {/* Power Saver Template */}
       <button
         onClick={() => handleTemplateClick('powerSaver')}
-        className="w-full px-3 py-2 text-sm font-medium rounded-lg border transition-all hover:scale-105 active:scale-95 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-300 dark:border-green-700 text-green-700 dark:text-green-300 hover:from-green-100 hover:to-emerald-100 dark:hover:from-green-900/30 dark:hover:to-emerald-900/30"
+        className="w-full px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-green/40 bg-neon-green/20 backdrop-blur-sm text-white hover:border-neon-green hover:bg-neon-green/30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect"
         title={t('powerSaverDesc')}
       >
         <span className="mr-1">{SETTINGS_TEMPLATES.powerSaver.icon}</span>
@@ -73,37 +74,39 @@ export function TemplateSelector() {
 
       {/* Confirmation Modal */}
       {showConfirm && currentTemplate && createPortal(
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6 border border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">{currentTemplate.icon}</span>
+              <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                {currentTemplate.icon}
+              </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
                   {t(selectedTemplate!)} {t('applyQuestion')}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-space-200">
                   {t(`${selectedTemplate!}Desc`)}
                 </p>
               </div>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 mb-4 space-y-2 text-sm">
+            <div className="bg-dark-800/50 border border-neon-blue/30 backdrop-blur-sm rounded-lg p-4 mb-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('conveyorBelt')}:</span>
-                <span className="font-medium dark:text-white">
+                <span className="text-space-300">{t('conveyorBelt')}:</span>
+                <span className="font-medium text-neon-cyan">
                   Mk.{currentTemplate.settings.conveyorBelt.tier.toUpperCase().replace('MK', '')}
                   {currentTemplate.settings.conveyorBelt.stackCount > 1 && ` (${currentTemplate.settings.conveyorBelt.stackCount} ${t('stacks')})`}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('sorter')}:</span>
-                <span className="font-medium dark:text-white">
+                <span className="text-space-300">{t('sorter')}:</span>
+                <span className="font-medium text-neon-cyan">
                   {currentTemplate.settings.sorter.tier === 'pile' ? t('pilingSorter') : `Mk.${currentTemplate.settings.sorter.tier.toUpperCase().replace('MK', '')}`}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('proliferator')}:</span>
-                <span className="font-medium dark:text-white">
+                <span className="text-space-300">{t('proliferator')}:</span>
+                <span className="font-medium text-neon-cyan">
                   {currentTemplate.settings.proliferator.type === 'none' 
                     ? t('none')
                     : `${currentTemplate.settings.proliferator.type.toUpperCase()} (${currentTemplate.settings.proliferator.mode === 'production' ? t('productionMode') : t('speedMode')})`
@@ -111,8 +114,8 @@ export function TemplateSelector() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{t('miningResearch')}:</span>
-                <span className="font-medium dark:text-white">
+                <span className="text-space-300">{t('miningResearch')}:</span>
+                <span className="font-medium text-neon-cyan">
                   {currentTemplate.settings.miningSpeedResearch}% (+{currentTemplate.settings.miningSpeedResearch - 100}%)
                 </span>
               </div>
@@ -121,13 +124,13 @@ export function TemplateSelector() {
             <div className="flex gap-3">
               <button
                 onClick={handleCancel}
-                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-dark-700/50 text-space-200 hover:border-neon-blue hover:bg-neon-blue/20 hover:text-neon-cyan transition-all ripple-effect"
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={handleConfirm}
-                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white hover:bg-neon-green/40 transition-all shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
               >
                 {t('apply')}
               </button>

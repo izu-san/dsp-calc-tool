@@ -52,27 +52,30 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">🏗️ {t('buildingCost')}</h2>
+    <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-orange/30 rounded-lg shadow-panel p-6">
+      <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <span>🏗️</span>
+        {t('buildingCost')}
+      </h2>
       
       <div className="space-y-6">
         {/* Machines */}
         {enhancedBuildingCost.machines.length > 0 && (
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('productionMachines')}</h3>
+            <h3 className="text-sm font-semibold text-neon-cyan mb-3">{t('productionMachines')}</h3>
             <div className="space-y-2">
               {enhancedBuildingCost.machines.map((machine, index) => (
                 <div
                   key={`${machine.machineId}-${index}`}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex items-center justify-between p-3 bg-dark-800/50 border border-neon-blue/20 rounded-lg hover:bg-neon-blue/10 hover:border-neon-blue/40 transition-all"
                 >
                   <div className="flex items-center gap-3">
                     <ItemIcon itemId={machine.machineId} size={32} />
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <span className="text-sm font-medium text-white">
                       {machine.machineName}
                     </span>
                   </div>
-                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                  <span className="text-lg font-bold text-neon-cyan">
                     ×{formatNumber(machine.count)}
                   </span>
                 </div>
@@ -83,30 +86,30 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
 
         {/* Logistics */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">{t('logistics')}</h3>
+          <h3 className="text-sm font-semibold text-neon-cyan mb-3">{t('logistics')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+            <div className="p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40 shadow-[0_0_15px_rgba(233,53,255,0.2)]">
               <div className="flex items-center gap-2 mb-2">
                 <ItemIcon itemId={2011} size={24} />
-                <span className="text-xs font-medium text-purple-700 dark:text-purple-300">{t('sorters')}</span>
+                <span className="text-xs font-medium text-neon-magenta">{t('sorters')}</span>
               </div>
-              <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+              <div className="text-2xl font-bold text-white">
                 ×{formatNumber(enhancedBuildingCost.sorters)}
               </div>
-              <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+              <div className="text-xs text-space-200 mt-1">
                 ({t('mkIOrHigher')})
               </div>
             </div>
 
-            <div className="p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="p-4 bg-neon-cyan/20 backdrop-blur-sm rounded-lg border border-neon-cyan/40 shadow-[0_0_15px_rgba(0,217,255,0.2)]">
               <div className="flex items-center gap-2 mb-2">
                 <ItemIcon itemId={2001} size={24} />
-                <span className="text-xs font-medium text-blue-700 dark:text-blue-300">{t('conveyorBelts')}</span>
+                <span className="text-xs font-medium text-neon-cyan">{t('conveyorBelts')}</span>
               </div>
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <div className="text-2xl font-bold text-white">
                 ×{formatNumber(enhancedBuildingCost.belts)}
               </div>
-              <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+              <div className="text-xs text-space-200 mt-1">
                 ({t('currentTierSetting')})
               </div>
             </div>
@@ -114,28 +117,28 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
         </div>
 
         {/* Summary */}
-        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+        <div className="pt-4 border-t border-neon-green/30">
+          <div className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-green-600 dark:text-green-400 text-lg">✓</span>
-              <span className="text-sm font-semibold text-green-900 dark:text-green-300">
+              <span className="text-neon-green text-lg">✓</span>
+              <span className="text-sm font-semibold text-white">
                 {t('totalBuildingRequirements')}
               </span>
             </div>
-            <div className="text-xs text-green-700 dark:text-green-400 space-y-1">
+            <div className="text-xs text-space-200 space-y-1">
               <div className="flex justify-between">
                 <span>{t('productionMachines')}:</span>
-                <span className="font-semibold">
+                <span className="font-semibold text-neon-green">
                   {enhancedBuildingCost.machines.reduce((sum, m) => sum + m.count, 0)} {t('units')}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span>{t('sorters')}:</span>
-                <span className="font-semibold">{formatNumber(enhancedBuildingCost.sorters)} {t('units')}</span>
+                <span className="font-semibold text-neon-green">{formatNumber(enhancedBuildingCost.sorters)} {t('units')}</span>
               </div>
               <div className="flex justify-between">
                 <span>{t('conveyorBelts')}:</span>
-                <span className="font-semibold">{formatNumber(enhancedBuildingCost.belts)} {t('units')}</span>
+                <span className="font-semibold text-neon-green">{formatNumber(enhancedBuildingCost.belts)} {t('units')}</span>
               </div>
             </div>
           </div>

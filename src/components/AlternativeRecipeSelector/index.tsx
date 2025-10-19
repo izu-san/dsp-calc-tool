@@ -98,7 +98,7 @@ export function AlternativeRecipeSelector() {
 
   if (itemsWithAlternatives.length === 0) {
     return (
-      <div className="text-sm text-gray-500 dark:text-gray-400 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="text-sm text-space-300 p-4 bg-dark-700/30 backdrop-blur-sm rounded-lg border border-neon-green/20">
         {t('noAlternativeRecipesFound')}
       </div>
     );
@@ -118,17 +118,17 @@ export function AlternativeRecipeSelector() {
           const selectedRecipeId = settings.alternativeRecipes.get(itemId) ?? defaultOption;
 
           return (
-            <div key={itemId} className="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800">
+            <div key={itemId} className="border border-neon-green/30 rounded-lg bg-dark-700/30 backdrop-blur-sm hover:border-neon-green/50 transition-all">
               {/* Item Header */}
               <div
                 onClick={() => toggleExpand(itemId)}
-                className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                className="w-full px-4 py-3 flex items-center justify-between hover:bg-neon-green/10 transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <ItemIcon itemId={itemId} size={32} />
                   <div className="text-left">
-                    <div className="font-medium text-gray-900 dark:text-white">{itemName}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                    <div className="font-medium text-white">{itemName}</div>
+                    <div className="text-xs text-space-300">
                       {canBeMined && recipes.length > 0
                         ? `${recipes.length} ${t('recipes')} + ${t('mining')}`
                         : canBeMined
@@ -146,7 +146,7 @@ export function AlternativeRecipeSelector() {
                         e.stopPropagation();
                         setComparisonModal({ itemId, itemName, recipes, canBeMined, miningFrom });
                       }}
-                      className="px-2 py-1 text-xs bg-purple-600 dark:bg-purple-700 text-white rounded hover:bg-purple-700 dark:hover:bg-purple-600 transition-colors flex items-center gap-1 whitespace-nowrap"
+                      className="px-2 py-1 text-xs bg-neon-purple/30 border border-neon-purple text-white rounded hover:bg-neon-purple/40 transition-all flex items-center gap-1 whitespace-nowrap shadow-[0_0_10px_rgba(168,85,247,0.3)] ripple-effect"
                       title={t('compareRecipes')}
                     >
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,23 +169,23 @@ export function AlternativeRecipeSelector() {
 
               {/* Recipe Options */}
               {isExpanded && (
-                <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50 p-3 space-y-2">
+                <div className="border-t border-neon-green/20 bg-dark-800/50 backdrop-blur-sm p-3 space-y-2">
                   {/* Mining option */}
                   {canBeMined && (
                     <button
                       onClick={() => handleRecipeSelect(itemId, -1)}
                       className={`
-                        w-full p-3 rounded-lg border-2 transition-all text-left
+                        w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
                         ${selectedRecipeId === -1
-                          ? 'bg-amber-50 dark:bg-amber-900/30 border-amber-400 dark:border-amber-600 ring-2 ring-amber-300 dark:ring-amber-700'
-                          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-amber-300 dark:hover:border-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                          ? 'bg-neon-yellow/20 border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.4)] backdrop-blur-sm font-bold scale-105'
+                          : 'bg-dark-700/50 border-neon-yellow/20 hover:border-neon-yellow/50 hover:bg-neon-yellow/10'
                         }
                       `}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="text-xl">⛏️</span>
-                          <div className="font-medium text-gray-900 dark:text-white">
+                          <div className="font-medium text-white">
                             {t('mining')}
                           </div>
                           {!settings.alternativeRecipes.has(itemId) && (
@@ -219,10 +219,10 @@ export function AlternativeRecipeSelector() {
                         key={recipe.SID}
                         onClick={() => handleRecipeSelect(itemId, recipe.SID)}
                         className={`
-                          w-full p-3 rounded-lg border-2 transition-all text-left
+                          w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
                           ${isSelected
-                            ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-400 dark:border-blue-600 ring-2 ring-blue-300 dark:ring-blue-700'
-                            : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                            ? 'bg-neon-green/20 border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.4)] backdrop-blur-sm font-bold scale-105'
+                            : 'bg-dark-700/50 border-neon-green/20 hover:border-neon-green/50 hover:bg-neon-green/10'
                           }
                         `}
                       >

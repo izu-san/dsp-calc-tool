@@ -167,10 +167,10 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-dark-500">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">{t('loadingGameData')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neon-blue shadow-neon-blue mx-auto"></div>
+          <p className="mt-4 text-space-200">{t('loadingGameData')}</p>
         </div>
       </div>
     );
@@ -178,10 +178,10 @@ function App() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-dark-500">
         <div className="text-center">
-          <div className="text-red-600 dark:text-red-400 text-xl mb-4">⚠ {t('error')}</div>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
+          <div className="text-neon-orange text-xl mb-4">⚠ {t('error')}</div>
+          <p className="text-space-200">{error}</p>
         </div>
       </div>
     );
@@ -192,17 +192,28 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-dark-500 relative overflow-hidden">
+      {/* Animated background effects */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-nebula-gradient opacity-40"></div>
+        <div className="absolute top-0 left-0 w-full h-full grid-bg opacity-30"></div>
+      </div>
+
       {/* Hidden Mod Settings (Ctrl+Shift+M) */}
       <Suspense fallback={null}>
         <ModSettings />
       </Suspense>
       
-      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-dark-600/80 shadow-panel border-b border-neon-blue/30 relative overflow-hidden">
+        {/* Animated background line */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neon-cyan to-transparent opacity-50 animate-pulse-slow"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)] animate-fadeIn">
                 {t('title')}
               </h1>
             </div>
@@ -216,22 +227,22 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-[1920px] mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <main className="max-w-[1920px] mx-auto px-4 py-6 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           {/* Settings Panel - Wider on large screens */}
-          <div className="xl:col-span-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sticky top-6 max-h-[calc(100vh-8rem)] overflow-y-auto">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('settings')}</h2>
+          <div className="xl:col-span-1 animate-slideInLeft">
+            <div className="hologram-panel rounded-lg shadow-panel p-4 sticky top-6 max-h-[calc(100vh-8rem)] overflow-y-auto border border-neon-blue/20 hover-lift">
+              <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t('settings')}</h2>
               
               {/* Target Quantity Input */}
               {selectedRecipe && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-space-100 mb-2">
                     {t('target')}
                   </label>
                   <div className="flex items-center gap-3 mb-2">
                     <ItemIcon itemId={selectedRecipe.Results[0]?.id || 0} size={32} />
-                    <span className="font-medium text-gray-900 dark:text-white">
+                    <span className="font-medium text-white">
                       {selectedRecipe.name}
                     </span>
                   </div>
@@ -241,9 +252,9 @@ function App() {
                     step="0.1"
                     value={targetQuantity}
                     onChange={(e) => setTargetQuantity(parseFloat(e.target.value) || 0.1)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-neon-blue/30 bg-dark-700/50 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-neon-blue focus:border-neon-blue transition-all"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('itemsPerSecond')}</p>
+                  <p className="text-xs text-space-200 mt-1">{t('itemsPerSecond')}</p>
                 </div>
               )}
               
@@ -255,9 +266,9 @@ function App() {
           </div>
 
           {/* Recipe Selector & Results - Takes more space */}
-          <div className="xl:col-span-3 space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('selectRecipe')}</h2>
+          <div className="xl:col-span-3 space-y-6 animate-slideInRight">
+            <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
+              <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t('selectRecipe')}</h2>
               <Suspense fallback={<div className="text-center py-4">{t('loading')}</div>}>
                 <RecipeSelector
                   recipes={Array.from(data.recipes.values())}
@@ -267,21 +278,21 @@ function App() {
               </Suspense>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('productionTree')}</h2>
+            <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
+              <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t('productionTree')}</h2>
               {calculationResult ? (
                 <div className="space-y-4">
                   {/* View Toggle Tabs */}
                   <div>
                     {/* Tab Buttons */}
-                    <div className="flex items-center gap-2 mb-4 border-b dark:border-gray-700">
+                    <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">
                       <button
                         onClick={() => { setShowStatistics(false); setShowBuildingCost(false); }}
                         className={`
-                          px-4 py-2 text-sm font-medium border-b-2 transition-colors
+                          px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect
                           ${!showStatistics && !showBuildingCost
-                            ? 'border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400' 
-                            : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                            ? 'border-neon-blue text-neon-cyan shadow-neon-blue' 
+                            : 'border-transparent text-space-300 hover:text-neon-cyan'
                           }
                         `}
                       >
@@ -290,10 +301,10 @@ function App() {
                       <button
                         onClick={() => { setShowStatistics(true); setShowBuildingCost(false); }}
                         className={`
-                          px-4 py-2 text-sm font-medium border-b-2 transition-colors
+                          px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect
                           ${showStatistics 
-                            ? 'border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400' 
-                            : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                            ? 'border-neon-blue text-neon-cyan shadow-neon-blue' 
+                            : 'border-transparent text-space-300 hover:text-neon-cyan'
                           }
                         `}
                       >
@@ -302,10 +313,10 @@ function App() {
                       <button
                         onClick={() => { setShowStatistics(false); setShowBuildingCost(true); }}
                         className={`
-                          px-4 py-2 text-sm font-medium border-b-2 transition-colors
+                          px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect
                           ${showBuildingCost
-                            ? 'border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400' 
-                            : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                            ? 'border-neon-blue text-neon-cyan shadow-neon-blue' 
+                            : 'border-transparent text-space-300 hover:text-neon-cyan'
                           }
                         `}
                       >
@@ -317,10 +328,10 @@ function App() {
                         <button
                           onClick={handleToggleAll}
                           className={`
-                            ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out
+                            ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect
                             ${isTreeExpanded 
-                              ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/30' 
-                              : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                              ? 'bg-neon-blue/20 text-neon-cyan border-neon-blue shadow-neon-blue hover:bg-neon-blue/30' 
+                              : 'bg-dark-700/50 text-space-200 border-neon-blue/30 hover:bg-dark-600 hover:border-neon-blue/50 hover:text-neon-cyan'
                             }
                           `}
                         >
@@ -352,11 +363,11 @@ function App() {
                   </div>
                 </div>
               ) : selectedRecipe ? (
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-space-300">
                   <p>{t('calculating')}</p>
                 </div>
               ) : (
-                <p className="text-sm text-gray-600 dark:text-gray-400">{t('noRecipeSelected')}</p>
+                <p className="text-sm text-space-300">{t('noRecipeSelected')}</p>
               )}
             </div>
           </div>

@@ -50,34 +50,34 @@ export function SettingsPanel() {
         <TemplateSelector />
         
         {/* Proliferator Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 mb-3">
-          <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-2">💊 {t('proliferator')}</h4>
+        <div className="bg-dark-700/30 rounded-lg border border-neon-magenta/30 p-3 mb-3 backdrop-blur-sm hover:border-neon-magenta/50 transition-all stagger-item hover-lift">
+          <h4 className="text-md font-semibold text-neon-magenta mb-2">💊 {t('proliferator')}</h4>
           <ProliferatorSettings />
         </div>
 
         {/* Machine Rank Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 mb-3">
-          <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-2">🏭 {t('machineRank')}</h4>
+        <div className="bg-dark-700/30 rounded-lg border border-neon-blue/30 p-3 mb-3 backdrop-blur-sm hover:border-neon-blue/50 transition-all stagger-item hover-lift">
+          <h4 className="text-md font-semibold text-neon-blue mb-2">🏭 {t('machineRank')}</h4>
           <MachineRankSettings />
         </div>
 
         {/* Conveyor Belt Settings */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 mb-3">
-          <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-2">🛤️ {t('conveyorBelt')}</h4>
+        <div className="bg-dark-700/30 rounded-lg border border-neon-cyan/30 p-3 mb-3 backdrop-blur-sm hover:border-neon-cyan/50 transition-all stagger-item hover-lift">
+          <h4 className="text-md font-semibold text-neon-cyan mb-2">🛤️ {t('conveyorBelt')}</h4>
           <ConveyorBeltSettings />
         </div>
 
         {/* Alternative Recipe Settings - Only show when selected recipe has alternatives */}
         {hasAlternatives && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 mb-3">
-            <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-2">🔀 {t('alternativeRecipes')}</h4>
+          <div className="bg-dark-700/30 rounded-lg border border-neon-green/30 p-3 mb-3 backdrop-blur-sm hover:border-neon-green/50 transition-all animate-fadeInScale hover-lift">
+            <h4 className="text-md font-semibold text-neon-green mb-2">🔀 {t('alternativeRecipes')}</h4>
             <AlternativeRecipeSelector />
           </div>
         )}
 
         {/* What-If Simulator - Only show when recipe is selected */}
         {selectedRecipe && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+          <div className="bg-dark-700/30 rounded-lg border border-neon-purple/30 p-3 backdrop-blur-sm hover:border-neon-purple/50 transition-all animate-fadeInScale hover-lift">
             <WhatIfSimulator />
           </div>
         )}

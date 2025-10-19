@@ -418,10 +418,10 @@ export function WhatIfSimulator() {
 
       {/* Applied Scenario Notification */}
       {appliedScenario && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg p-3 flex items-center gap-2">
+        <div className="bg-neon-green/10 backdrop-blur-sm border border-neon-green/40 rounded-lg p-3 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.2)] animate-fadeInScale">
           <span className="text-green-600 dark:text-green-400 text-xl">✓</span>
           <div className="flex-1">
-            <div className="text-sm font-semibold text-green-900 dark:text-green-300">
+            <div className="text-sm font-semibold text-neon-green">
               {t('scenarioApplied')}
             </div>
             <div className="text-xs text-green-700 dark:text-green-400">
@@ -433,12 +433,12 @@ export function WhatIfSimulator() {
 
       {/* Bottleneck Warnings */}
       {bottleneckSuggestions.length > 0 ? (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3">
+        <div className="bg-neon-orange/10 backdrop-blur-sm border border-neon-orange/40 rounded-lg p-3 shadow-[0_0_15px_rgba(255,107,53,0.2)] animate-fadeInScale">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-start gap-2 flex-1">
               <span className="text-yellow-600 dark:text-yellow-400 text-xl">⚠️</span>
               <div className="flex-1">
-                <div className="text-sm font-semibold text-yellow-900 dark:text-yellow-300 mb-1">
+                <div className="text-sm font-semibold text-neon-orange mb-1">
                   {t('bottlenecksDetected')} ({bottleneckSuggestions.length})
                 </div>
                 <div className="text-xs text-yellow-700 dark:text-yellow-400 mb-2">
@@ -460,7 +460,7 @@ export function WhatIfSimulator() {
                   }
                 });
               }}
-              className="px-3 py-1.5 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 dark:from-orange-700 dark:to-red-700 dark:hover:from-orange-600 dark:hover:to-red-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all whitespace-nowrap flex-shrink-0"
+              className="px-3 py-1.5 bg-neon-orange/30 border-2 border-neon-orange hover:bg-neon-orange/40 text-white text-xs font-bold rounded-lg shadow-[0_0_15px_rgba(255,107,53,0.4)] hover:shadow-[0_0_20px_rgba(255,107,53,0.6)] transition-all whitespace-nowrap flex-shrink-0 ripple-effect"
               title={t('fixAllBottlenecks')}
             >
               🔧 {t('fixAll')}
@@ -471,7 +471,7 @@ export function WhatIfSimulator() {
             {bottleneckSuggestions.slice(0, 3).map((suggestion, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-gray-800 rounded-lg p-2 border border-yellow-200 dark:border-yellow-800"
+                className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-2 border border-neon-orange/30 hover:border-neon-orange/50 transition-all"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -498,7 +498,7 @@ export function WhatIfSimulator() {
                       const scenario = scenarios.find(s => s.id === suggestion.scenarioId);
                       if (scenario) applyScenario(scenario);
                     }}
-                    className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded transition-colors whitespace-nowrap flex-shrink-0"
+                    className="px-2 py-1 text-xs bg-neon-blue/30 border border-neon-blue hover:bg-neon-blue/40 text-white rounded transition-all whitespace-nowrap flex-shrink-0 shadow-[0_0_10px_rgba(0,136,255,0.3)] ripple-effect"
                   >
                     {t('fixNow')}
                   </button>
@@ -548,8 +548,8 @@ export function WhatIfSimulator() {
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
               ${optimizationGoal === 'power'
-                ? 'bg-blue-600 dark:bg-blue-700 text-white border-blue-600 dark:border-blue-700 shadow-md'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-600'
+                ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_15px_rgba(0,136,255,0.5)] backdrop-blur-sm font-bold scale-105'
+                : 'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:border-neon-blue/50 hover:bg-neon-blue/10 hover:text-neon-blue'
               }
             `}
           >
@@ -564,8 +564,8 @@ export function WhatIfSimulator() {
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
               ${optimizationGoal === 'machines'
-                ? 'bg-blue-600 dark:bg-blue-700 text-white border-blue-600 dark:border-blue-700 shadow-md'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-600'
+                ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_15px_rgba(0,136,255,0.5)] backdrop-blur-sm font-bold scale-105'
+                : 'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:border-neon-blue/50 hover:bg-neon-blue/10 hover:text-neon-blue'
               }
             `}
           >
@@ -580,8 +580,8 @@ export function WhatIfSimulator() {
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
               ${optimizationGoal === 'efficiency'
-                ? 'bg-blue-600 dark:bg-blue-700 text-white border-blue-600 dark:border-blue-700 shadow-md'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-600'
+                ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_15px_rgba(0,136,255,0.5)] backdrop-blur-sm font-bold scale-105'
+                : 'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:border-neon-blue/50 hover:bg-neon-blue/10 hover:text-neon-blue'
               }
             `}
           >
@@ -596,8 +596,8 @@ export function WhatIfSimulator() {
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
               ${optimizationGoal === 'balanced'
-                ? 'bg-blue-600 dark:bg-blue-700 text-white border-blue-600 dark:border-blue-700 shadow-md'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-600'
+                ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_15px_rgba(0,136,255,0.5)] backdrop-blur-sm font-bold scale-105'
+                : 'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:border-neon-blue/50 hover:bg-neon-blue/10 hover:text-neon-blue'
               }
             `}
           >
@@ -630,7 +630,7 @@ export function WhatIfSimulator() {
                     const topScenario = rankedScenarios[0];
                     if (topScenario) applyScenario(topScenario.scenario);
                   }}
-                  className="px-3 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-700 dark:to-emerald-700 dark:hover:from-green-600 dark:hover:to-emerald-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 whitespace-nowrap"
+                  className="px-3 py-1.5 bg-neon-green/30 border-2 border-neon-green hover:bg-neon-green/40 text-white text-xs font-bold rounded-lg shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] transition-all flex items-center gap-1.5 whitespace-nowrap ripple-effect"
                   title={t('applyBestScenarioTitle')}
                 >
                   <span className="text-sm">⚡</span>
@@ -644,15 +644,15 @@ export function WhatIfSimulator() {
 
       {/* Quick Actions Bar */}
       {rankedScenarios.length > 0 && !optimizationGoal && (
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-300 dark:border-indigo-700 rounded-lg p-3">
+        <div className="bg-neon-purple/10 backdrop-blur-sm border border-neon-purple/40 rounded-lg p-3 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="text-indigo-600 dark:text-indigo-400 text-lg">⚡</span>
               <div>
-                <div className="text-sm font-semibold text-indigo-900 dark:text-indigo-300">
+                <div className="text-sm font-semibold text-neon-purple">
                   {t('quickActions')}
                 </div>
-                <div className="text-xs text-indigo-700 dark:text-indigo-400">
+                <div className="text-xs text-space-200">
                   {t('applyCommonOptimizations')}
                 </div>
               </div>
@@ -664,7 +664,7 @@ export function WhatIfSimulator() {
                   if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
                 }}
                 disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === 'proliferator_mk3')!)}
-                className="px-3 py-2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs font-medium rounded transition-colors flex flex-col items-center justify-center gap-1 min-h-[60px]"
+                className="px-3 py-2 bg-neon-magenta/30 border-2 border-neon-magenta hover:bg-neon-magenta/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] shadow-[0_0_10px_rgba(233,53,255,0.3)] ripple-effect"
               >
                 <span className="text-lg">🧪</span>
                 <span className="text-xs leading-tight text-center">{t('maxProliferator')}</span>
@@ -675,7 +675,7 @@ export function WhatIfSimulator() {
                   if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
                 }}
                 disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === 'belt_mk3')!)}
-                className="px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs font-medium rounded transition-colors flex flex-col items-center justify-center gap-1 min-h-[60px]"
+                className="px-3 py-2 bg-neon-cyan/30 border-2 border-neon-cyan hover:bg-neon-cyan/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] shadow-[0_0_10px_rgba(0,217,255,0.3)] ripple-effect"
               >
                 <span className="text-lg">🛤️</span>
                 <span className="text-xs leading-tight text-center">{t('maxBelts')}</span>
@@ -686,7 +686,7 @@ export function WhatIfSimulator() {
                   if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
                 }}
                 disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === 'stack_4')!)}
-                className="px-3 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs font-medium rounded transition-colors flex flex-col items-center justify-center gap-1 min-h-[60px]"
+                className="px-3 py-2 bg-neon-green/30 border-2 border-neon-green hover:bg-neon-green/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] shadow-[0_0_10px_rgba(0,255,136,0.3)] ripple-effect"
               >
                 <span className="text-lg">📦</span>
                 <span className="text-xs leading-tight text-center">{t('maxStack')}</span>
@@ -745,18 +745,18 @@ export function WhatIfSimulator() {
             <div
               key={scenario.id}
               className={`
-                p-3 rounded-lg border-2 transition-all
+                p-3 rounded-lg border-2 transition-all backdrop-blur-sm
                 ${isApplied
-                  ? 'bg-green-50 dark:bg-green-900/20 border-green-400 dark:border-green-600 shadow-md'
+                  ? 'bg-neon-green/20 border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.4)]'
                   : isAlreadyApplied
-                  ? 'bg-gray-50 dark:bg-gray-900/20 border-gray-400 dark:border-gray-600 opacity-60'
+                  ? 'bg-dark-700/30 border-dark-600 opacity-60'
                   : isRecommended
-                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 dark:border-blue-600 shadow-lg'
+                  ? 'bg-neon-blue/20 border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.5)]'
                   : bottlenecksFixes > 0
-                  ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 dark:border-yellow-600 shadow-md'
+                  ? 'bg-neon-orange/20 border-neon-orange shadow-[0_0_20px_rgba(255,107,53,0.4)]'
                   : isActive
-                  ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-400 dark:border-blue-600 shadow-md'
-                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                  ? 'bg-neon-cyan/20 border-neon-cyan shadow-[0_0_15px_rgba(0,217,255,0.4)]'
+                  : 'bg-dark-700/50 border-neon-blue/30 hover:border-neon-blue/50'
                 }
               `}
             >
@@ -765,38 +765,38 @@ export function WhatIfSimulator() {
                   onClick={() => toggleScenario(scenario.id)}
                   className="flex-1 text-left min-w-0"
                 >
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-1 flex flex-wrap items-center gap-2">
+                  <h4 className="font-semibold text-white mb-1 flex flex-wrap items-center gap-2">
                     {isRecommended && !isAlreadyApplied && (
-                      <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                      <span className="text-neon-blue font-bold text-sm">
                         #{index + 1}
                       </span>
                     )}
                     <span className="truncate">{scenario.name}</span>
                     {isAlreadyApplied && (
-                      <span className="text-gray-500 dark:text-gray-400 text-xs font-bold whitespace-nowrap">✓ {t('current')}</span>
+                      <span className="text-space-300 text-xs font-bold whitespace-nowrap">✓ {t('current')}</span>
                     )}
                     {!isAlreadyApplied && isImprovement && (
-                      <span className="text-green-500 dark:text-green-400 text-xs whitespace-nowrap">✓ {t('improvement')}</span>
+                      <span className="text-neon-green text-xs whitespace-nowrap">✓ {t('improvement')}</span>
                     )}
                     {isApplied && (
-                      <span className="text-green-600 dark:text-green-400 text-xs font-bold whitespace-nowrap">✓ {t('applied')}!</span>
+                      <span className="text-neon-green text-xs font-bold whitespace-nowrap">✓ {t('applied')}!</span>
                     )}
                     {isRecommended && !isApplied && !isAlreadyApplied && (
-                      <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap">
+                      <span className="bg-neon-blue/30 border border-neon-blue text-white text-xs font-bold px-2 py-0.5 rounded whitespace-nowrap shadow-[0_0_10px_rgba(0,136,255,0.4)]">
                         ⭐ {t('topN')} {index + 1}
                       </span>
                     )}
                     {bottlenecksFixes > 0 && !isApplied && !isRecommended && !isAlreadyApplied && (
-                      <span className="text-yellow-600 dark:text-yellow-400 text-xs font-bold whitespace-nowrap">🔧 {t('fixes')} {bottlenecksFixes}</span>
+                      <span className="text-neon-orange text-xs font-bold whitespace-nowrap">🔧 {t('fixes')} {bottlenecksFixes}</span>
                     )}
                   </h4>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs text-space-200">
                     {scenario.description}
                   </p>
                 </button>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   {isActive && !isApplied && !isAlreadyApplied && (
-                    <span className="text-blue-600 dark:text-blue-400">📊</span>
+                    <span className="text-neon-cyan">📊</span>
                   )}
                   <button
                     onClick={(e) => {
@@ -805,10 +805,10 @@ export function WhatIfSimulator() {
                     }}
                     disabled={isApplied || isAlreadyApplied}
                     className={`
-                      px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap
+                      px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap border-2 ripple-effect
                       ${isApplied || isAlreadyApplied
-                        ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed'
-                        : 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white'
+                        ? 'bg-dark-800/50 border-dark-600 text-space-400 cursor-not-allowed opacity-50'
+                        : 'bg-neon-green/30 border-neon-green hover:bg-neon-green/40 text-white shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)]'
                       }
                     `}
                     title={isApplied ? t('applied') : isAlreadyApplied ? t('current') : t('applyScenarioToSettings')}
@@ -819,39 +819,42 @@ export function WhatIfSimulator() {
               </div>
 
               {/* Impact Summary */}
-              <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-neon-blue/30">
                 {/* Power Change */}
                 <div className="text-center">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('power')}</div>
-                  <div className={`text-sm font-bold ${
-                    diff.power < 0 ? 'text-green-600 dark:text-green-400' :
-                    diff.power > 0 ? 'text-red-600 dark:text-red-400' :
-                    'text-gray-600 dark:text-gray-400'
-                  }`}>
+                  <div className="text-xs text-space-300 mb-1">{t('power')}</div>
+                  <div 
+                    className="text-sm font-bold"
+                    style={{
+                      color: Math.abs(diff.powerPercent) < 0.1 ? '#ffffff' : (diff.power < 0 ? '#00FF88' : '#FF6B35')
+                    }}
+                  >
                     {diff.power > 0 ? '+' : ''}{diff.powerPercent.toFixed(1)}%
                   </div>
                 </div>
 
                 {/* Machines Change */}
                 <div className="text-center">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('machines')}</div>
-                  <div className={`text-sm font-bold ${
-                    diff.machines < 0 ? 'text-green-600 dark:text-green-400' :
-                    diff.machines > 0 ? 'text-red-600 dark:text-red-400' :
-                    'text-gray-600 dark:text-gray-400'
-                  }`}>
+                  <div className="text-xs text-space-300 mb-1">{t('machines')}</div>
+                  <div 
+                    className="text-sm font-bold"
+                    style={{
+                      color: Math.abs(diff.machinePercent) < 0.1 ? '#ffffff' : (diff.machines < 0 ? '#00FF88' : '#FF6B35')
+                    }}
+                  >
                     {diff.machines > 0 ? '+' : ''}{diff.machinePercent.toFixed(1)}%
                   </div>
                 </div>
 
                 {/* Belts Change */}
                 <div className="text-center">
-                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('belts')}</div>
-                  <div className={`text-sm font-bold ${
-                    diff.belts < 0 ? 'text-green-600 dark:text-green-400' :
-                    diff.belts > 0 ? 'text-red-600 dark:text-red-400' :
-                    'text-gray-600 dark:text-gray-400'
-                  }`}>
+                  <div className="text-xs text-space-300 mb-1">{t('belts')}</div>
+                  <div 
+                    className="text-sm font-bold"
+                    style={{
+                      color: Math.abs(diff.beltPercent) < 0.1 ? '#ffffff' : (diff.belts < 0 ? '#00FF88' : '#FF6B35')
+                    }}
+                  >
                     {diff.belts > 0 ? '+' : ''}{diff.beltPercent.toFixed(1)}%
                   </div>
                 </div>
@@ -863,21 +866,21 @@ export function WhatIfSimulator() {
 
       {/* Active Scenarios Comparison */}
       {activeScenarios.length > 0 && (
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
-          <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+        <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30 shadow-[0_0_15px_rgba(0,136,255,0.2)]">
+          <h4 className="font-semibold text-white mb-3">
             {t('detailedComparison')}
           </h4>
           
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-300 dark:border-gray-600">
-                  <th className="text-left py-2 px-3 text-gray-700 dark:text-gray-300">{t('metric')}</th>
-                  <th className="text-right py-2 px-3 text-gray-700 dark:text-gray-300">{t('current')}</th>
+                <tr className="border-b border-neon-blue/40">
+                  <th className="text-left py-2 px-3 text-space-200">{t('metric')}</th>
+                  <th className="text-right py-2 px-3 text-space-200">{t('current')}</th>
                   {activeScenarios.map(scenarioId => {
                     const scenario = scenarios.find(s => s.id === scenarioId);
                     return (
-                      <th key={scenarioId} className="text-right py-2 px-3 text-blue-600 dark:text-blue-400">
+                      <th key={scenarioId} className="text-right py-2 px-3 text-neon-cyan">
                         {scenario?.name.split(' ').slice(0, 2).join(' ')}
                       </th>
                     );
@@ -885,67 +888,100 @@ export function WhatIfSimulator() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="py-2 px-3 text-gray-900 dark:text-white">{t('totalPower')}</td>
-                  <td className="text-right py-2 px-3 text-gray-900 dark:text-white">
+                <tr className="border-b border-neon-blue/20">
+                  <td className="py-2 px-3 text-white">{t('totalPower')}</td>
+                  <td className="text-right py-2 px-3 text-white">
                     {formatPower(results.baseResult?.totalPower.total || 0)}
                   </td>
                   {activeScenarios.map(scenarioId => {
                     const result = results.scenarioResults.find(r => r.scenario.id === scenarioId);
+                    const powerDiff = result?.diff.power || 0;
+                    const hasChange = Math.abs(powerDiff) > 0.01;
                     return (
                       <td key={scenarioId} className="text-right py-2 px-3">
-                        <span className="text-gray-900 dark:text-white">
+                        <span 
+                          style={{
+                            color: hasChange ? (powerDiff < 0 ? '#00FF88' : '#FF6B35') : '#ffffff'
+                          }}
+                        >
                           {formatPower(result?.result.totalPower.total || 0)}
                         </span>
-                        <span className={`ml-2 text-xs ${
-                          (result?.diff.power || 0) < 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                        }`}>
-                          ({result?.diff.power && result.diff.power > 0 ? '+' : ''}{result?.diff.power.toFixed(1)} kW)
-                        </span>
+                        {hasChange && (
+                          <span 
+                            className="ml-2 text-xs"
+                            style={{
+                              color: powerDiff < 0 ? '#00FF88' : '#FF6B35'
+                            }}
+                          >
+                            ({powerDiff > 0 ? '+' : ''}{powerDiff.toFixed(1)} kW)
+                          </span>
+                        )}
                       </td>
                     );
                   })}
                 </tr>
 
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="py-2 px-3 text-gray-900 dark:text-white">{t('totalMachines')}</td>
-                  <td className="text-right py-2 px-3 text-gray-900 dark:text-white">
+                <tr className="border-b border-neon-blue/20">
+                  <td className="py-2 px-3 text-white">{t('totalMachines')}</td>
+                  <td className="text-right py-2 px-3 text-white">
                     {formatNumber(results.baseResult?.totalMachines || 0)}
                   </td>
                   {activeScenarios.map(scenarioId => {
                     const result = results.scenarioResults.find(r => r.scenario.id === scenarioId);
+                    const machinesDiff = result?.diff.machines || 0;
+                    const hasChange = Math.abs(machinesDiff) > 0.01;
                     return (
                       <td key={scenarioId} className="text-right py-2 px-3">
-                        <span className="text-gray-900 dark:text-white">
+                        <span 
+                          style={{
+                            color: hasChange ? (machinesDiff < 0 ? '#00FF88' : '#FF6B35') : '#ffffff'
+                          }}
+                        >
                           {formatNumber(result?.result.totalMachines || 0)}
                         </span>
-                        <span className={`ml-2 text-xs ${
-                          (result?.diff.machines || 0) < 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                        }`}>
-                          ({result?.diff.machines && result.diff.machines > 0 ? '+' : ''}{formatNumber(result?.diff.machines || 0)})
-                        </span>
+                        {hasChange && (
+                          <span 
+                            className="ml-2 text-xs"
+                            style={{
+                              color: machinesDiff < 0 ? '#00FF88' : '#FF6B35'
+                            }}
+                          >
+                            ({machinesDiff > 0 ? '+' : ''}{formatNumber(machinesDiff)})
+                          </span>
+                        )}
                       </td>
                     );
                   })}
                 </tr>
 
                 <tr>
-                  <td className="py-2 px-3 text-gray-900 dark:text-white">{t('totalBelts')}</td>
-                  <td className="text-right py-2 px-3 text-gray-900 dark:text-white">
+                  <td className="py-2 px-3 text-white">{t('totalBelts')}</td>
+                  <td className="text-right py-2 px-3 text-white">
                     {formatNumber(results.baseResult?.rootNode ? countTotalBelts(results.baseResult.rootNode) : 0)}
                   </td>
                   {activeScenarios.map(scenarioId => {
                     const result = results.scenarioResults.find(r => r.scenario.id === scenarioId);
+                    const beltsDiff = result?.diff.belts || 0;
+                    const hasChange = Math.abs(beltsDiff) > 0.01;
                     return (
                       <td key={scenarioId} className="text-right py-2 px-3">
-                        <span className="text-gray-900 dark:text-white">
+                        <span 
+                          style={{
+                            color: hasChange ? (beltsDiff < 0 ? '#00FF88' : '#FF6B35') : '#ffffff'
+                          }}
+                        >
                           {formatNumber(result?.result.rootNode ? countTotalBelts(result.result.rootNode) : 0)}
                         </span>
-                        <span className={`ml-2 text-xs ${
-                          (result?.diff.belts || 0) < 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                        }`}>
-                          ({result?.diff.belts && result.diff.belts > 0 ? '+' : ''}{formatNumber(result?.diff.belts || 0)})
-                        </span>
+                        {hasChange && (
+                          <span 
+                            className="ml-2 text-xs"
+                            style={{
+                              color: beltsDiff < 0 ? '#00FF88' : '#FF6B35'
+                            }}
+                          >
+                            ({beltsDiff > 0 ? '+' : ''}{formatNumber(beltsDiff)})
+                          </span>
+                        )}
                       </td>
                     );
                   })}
@@ -964,7 +1000,7 @@ export function WhatIfSimulator() {
                 <button
                   key={scenarioId}
                   onClick={() => applyScenario(scenario)}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-neon-green/30 border-2 border-neon-green hover:bg-neon-green/40 text-white text-sm font-medium rounded-lg transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
                 >
                   <span>✓</span>
                   {t('apply')} "{scenario.name}"
@@ -973,9 +1009,9 @@ export function WhatIfSimulator() {
             })}
           </div>
 
-          <div className="mt-3 text-xs text-gray-600 dark:text-gray-400">
-            💡 <span className="text-green-600 dark:text-green-400">{t('green')}</span> {t('greenIndicatesImprovement')}, 
-            <span className="text-red-600 dark:text-red-400 ml-1">{t('red')}</span> {t('redIndicatesIncrease')}
+          <div className="mt-3 text-xs text-space-200">
+            💡 <span className="text-neon-green">{t('green')}</span> {t('greenIndicatesImprovement')}, 
+            <span className="text-neon-orange ml-1">{t('red')}</span> {t('redIndicatesIncrease')}
           </div>
         </div>
       )}

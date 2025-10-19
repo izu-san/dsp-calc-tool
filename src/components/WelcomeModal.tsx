@@ -34,8 +34,8 @@ export function WelcomeModal() {
           <p className="text-gray-300">
             {t('calculatorDescription')}
           </p>
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('mainFeatures')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('mainFeatures')}</h3>
             <ul className="list-disc list-inside space-y-1 text-gray-300">
               <li>{t('automaticProductionTree')}</li>
               <li>{t('alternativeRecipeSelection')}</li>
@@ -51,29 +51,29 @@ export function WelcomeModal() {
       title: t('basicUsage'),
       content: (
         <div className="space-y-4">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('step1SelectRecipe')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('step1SelectRecipe')}</h3>
             <p className="text-gray-300 text-sm">
               {t('step1Description')}
             </p>
           </div>
           
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('step2SetTarget')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('step2SetTarget')}</h3>
             <p className="text-gray-300 text-sm">
               {t('step2Description')}
             </p>
           </div>
           
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('step3AdjustSettings')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('step3AdjustSettings')}</h3>
             <p className="text-gray-300 text-sm">
               {t('step3Description')}
             </p>
           </div>
           
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('step4CheckResults')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('step4CheckResults')}</h3>
             <p className="text-gray-300 text-sm">
               {t('step4Description')}
             </p>
@@ -85,29 +85,29 @@ export function WelcomeModal() {
       title: t('convenientFeatures'),
       content: (
         <div className="space-y-4">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('urlSharing')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('urlSharing')}</h3>
             <p className="text-gray-300 text-sm">
               {t('urlSharingDescription')}
             </p>
           </div>
           
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('planSaving')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('planSaving')}</h3>
             <p className="text-gray-300 text-sm">
               {t('planSavingDescription')}
             </p>
           </div>
           
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('whatIfSimulatorFeature')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('whatIfSimulatorFeature')}</h3>
             <p className="text-gray-300 text-sm">
               {t('whatIfSimulatorDescription')}
             </p>
           </div>
           
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h3 className="font-semibold text-white mb-2">{t('templateFeature')}</h3>
+          <div className="bg-dark-700/50 backdrop-blur-sm rounded-lg p-4 border border-neon-blue/30">
+            <h3 className="font-semibold text-neon-cyan mb-2">{t('templateFeature')}</h3>
             <p className="text-gray-300 text-sm">
               {t('templateFeatureDescription')}
             </p>

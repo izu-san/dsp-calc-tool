@@ -87,14 +87,14 @@ export function MachineRankSettings() {
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+      <div className="text-sm text-space-200 mb-3">
         {t('selectMachineRankDesc')}
       </div>
 
       <div className="space-y-4">
         {/* Smelter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-neon-orange mb-2">
             {MACHINE_ICONS.Smelt} {MACHINE_LABELS_I18N.Smelt}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -103,10 +103,10 @@ export function MachineRankSettings() {
                 key={option.value}
                 onClick={() => handleRankChange('Smelt', option.value as SmelterRank)}
                 className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border transition-all duration-200
+                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                   ${machineRank.Smelt === option.value
-                    ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border-orange-400 dark:border-orange-600 ring-2 ring-orange-300 dark:ring-orange-700'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    ? 'bg-neon-orange/30 text-white border-neon-orange shadow-[0_0_20px_rgba(255,107,53,0.6),inset_0_0_20px_rgba(255,107,53,0.2)] backdrop-blur-sm font-bold scale-105'
+                    : 'bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange'
                   }
                 `}
               >
@@ -114,7 +114,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
                 </div>
               </button>
@@ -124,7 +124,7 @@ export function MachineRankSettings() {
 
         {/* Assembler */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-neon-blue mb-2">
             {MACHINE_ICONS.Assemble} {MACHINE_LABELS_I18N.Assemble}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -133,10 +133,10 @@ export function MachineRankSettings() {
                 key={option.value}
                 onClick={() => handleRankChange('Assemble', option.value as AssemblerRank)}
                 className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border transition-all duration-200
+                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                   ${machineRank.Assemble === option.value
-                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-400 dark:border-blue-600 ring-2 ring-blue-300 dark:ring-blue-700'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105'
+                    : 'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:bg-neon-blue/10 hover:border-neon-blue/50 hover:text-neon-blue'
                   }
                 `}
               >
@@ -144,7 +144,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
                 </div>
               </button>
@@ -154,7 +154,7 @@ export function MachineRankSettings() {
 
         {/* Chemical Plant */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-neon-green mb-2">
             {MACHINE_ICONS.Chemical} {MACHINE_LABELS_I18N.Chemical}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -163,10 +163,10 @@ export function MachineRankSettings() {
                 key={option.value}
                 onClick={() => handleRankChange('Chemical', option.value as ChemicalPlantRank)}
                 className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border transition-all duration-200
+                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                   ${machineRank.Chemical === option.value
-                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-400 dark:border-green-600 ring-2 ring-green-300 dark:ring-green-700'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    ? 'bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-105'
+                    : 'bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green'
                   }
                 `}
               >
@@ -174,7 +174,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
                 </div>
               </button>
@@ -184,7 +184,7 @@ export function MachineRankSettings() {
 
         {/* Matrix Lab */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-neon-purple mb-2">
             {MACHINE_ICONS.Research} {MACHINE_LABELS_I18N.Research}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -193,10 +193,10 @@ export function MachineRankSettings() {
                 key={option.value}
                 onClick={() => handleRankChange('Research', option.value as MatrixLabRank)}
                 className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border transition-all duration-200
+                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                   ${machineRank.Research === option.value
-                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-400 dark:border-purple-600 ring-2 ring-purple-300 dark:ring-purple-700'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    ? 'bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105'
+                    : 'bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple'
                   }
                 `}
               >
@@ -204,7 +204,7 @@ export function MachineRankSettings() {
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
                   {option.description && (
-                    <span className="text-[10px] font-medium opacity-85 text-gray-600 dark:text-gray-400">{option.description}</span>
+                    <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
                 </div>
               </button>
