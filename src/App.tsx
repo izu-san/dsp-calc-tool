@@ -74,21 +74,31 @@ function App() {
   const [showStatistics, setShowStatistics] = useState(false);
   const [showBuildingCost, setShowBuildingCost] = useState(false);
 
+  // Generate a unique ID for each node based on its position in the tree
+  // Must match the ID generation in ResultTree component
+  const generateNodeId = (node: RecipeTreeNode, parentNodeId: string, depth: number): string => {
+    if (node.isRawMaterial) {
+      return `${parentNodeId}-raw-${node.itemId}-${depth}`;
+    }
+    return `${parentNodeId}-${node.recipe?.SID}-${depth}`;
+  };
+
   // Helper function to collect all node IDs at depth >= targetDepth
-  const collectNodeIdsFromDepth = (node: RecipeTreeNode, currentDepth: number, targetDepth: number): Set<string> => {
+  const collectNodeIdsFromDepth = (node: RecipeTreeNode, currentDepth: number, targetDepth: number, parentNodeId: string = 'root'): Set<string> => {
     const nodeIds = new Set<string>();
     
-    const traverse = (n: RecipeTreeNode, depth: number) => {
+    const traverse = (n: RecipeTreeNode, depth: number, parentId: string) => {
       if (depth >= targetDepth) {
-        const nodeId = n.nodeId;
+        const nodeId = depth === 0 ? 'root' : generateNodeId(n, parentId, depth);
         nodeIds.add(nodeId);
       }
       n.children?.forEach((child: RecipeTreeNode) => {
-        traverse(child, depth + 1);
+        const currentNodeId = depth === 0 ? 'root' : generateNodeId(n, parentId, depth);
+        traverse(child, depth + 1, currentNodeId);
       });
     };
     
-    traverse(node, currentDepth);
+    traverse(node, currentDepth, parentNodeId);
     return nodeIds;
   };
 
@@ -108,15 +118,15 @@ function App() {
     if (isTreeExpanded) {
       // Collapse all
       const allNodeIds = new Set<string>();
-      const collectAllNodeIds = (node: RecipeTreeNode, depth: number) => {
-        const nodeId = node.nodeId;
+      const collectAllNodeIds = (node: RecipeTreeNode, depth: number, parentId: string) => {
+        const nodeId = depth === 0 ? 'root' : generateNodeId(node, parentId, depth);
         allNodeIds.add(nodeId);
         node.children?.forEach((child: RecipeTreeNode) => {
-          collectAllNodeIds(child, depth + 1);
+          collectAllNodeIds(child, depth + 1, nodeId);
         });
       };
       if (calculationResult?.rootNode) {
-        collectAllNodeIds(calculationResult.rootNode, 0);
+        collectAllNodeIds(calculationResult.rootNode, 0, 'root');
       }
       setCollapsedNodes(allNodeIds);
       setIsTreeExpanded(false);

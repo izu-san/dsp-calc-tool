@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGameDataStore } from '../../stores/gameDataStore';
 import { useRecipeSelectionStore } from '../../stores/recipeSelectionStore';
@@ -6,7 +6,7 @@ import { useSettingsStore } from '../../stores/settingsStore';
 import { useNodeOverrideStore } from '../../stores/nodeOverrideStore';
 import { calculateProductionChain } from '../../lib/calculator';
 import { formatNumber, formatPower } from '../../utils/format';
-import type { GlobalSettings, ConveyorBeltTier } from '../../types';
+import type { GlobalSettings, ConveyorBeltTier, RecipeTreeNode } from '../../types';
 
 interface Scenario {
   id: string;
@@ -36,7 +36,50 @@ export function WhatIfSimulator() {
   const [appliedScenario, setAppliedScenario] = useState<string | null>(null);
   const [optimizationGoal, setOptimizationGoal] = useState<OptimizationGoal>(null);
 
-  if (!data || !selectedRecipe) return null;
+  const countTotalBelts = useCallback((node: RecipeTreeNode): number => {
+    let total = node.conveyorBelts?.total || 0;
+    if (node.children) {
+      for (const child of node.children) {
+        total += countTotalBelts(child);
+      }
+    }
+    return total;
+  }, []);
+
+  // Check if a scenario is already applied (current settings match scenario)
+  const isScenarioAlreadyApplied = useCallback((scenario: Scenario): boolean => {
+    const scenarioSettings = scenario.settings;
+    
+    // Check proliferator
+    if (scenarioSettings.proliferator) {
+      if (settings.proliferator.type !== scenarioSettings.proliferator.type) {
+        return false;
+      }
+    }
+    
+    // Check conveyor belt
+    if (scenarioSettings.conveyorBelt) {
+      if (scenarioSettings.conveyorBelt.tier && 
+          settings.conveyorBelt.tier !== scenarioSettings.conveyorBelt.tier) {
+        return false;
+      }
+      if (scenarioSettings.conveyorBelt.stackCount !== undefined && 
+          settings.conveyorBelt.stackCount !== scenarioSettings.conveyorBelt.stackCount) {
+        return false;
+      }
+    }
+    
+    // Check machine ranks
+    if (scenarioSettings.machineRank) {
+      for (const [type, rank] of Object.entries(scenarioSettings.machineRank)) {
+        if (settings.machineRank[type as keyof typeof settings.machineRank] !== rank) {
+          return false;
+        }
+      }
+    }
+    
+    return true;
+  }, [settings]);
 
   // Define scenarios
   const scenarios: Scenario[] = [
@@ -186,7 +229,7 @@ export function WhatIfSimulator() {
     });
 
     return { baseResult, scenarioResults };
-  }, [data, selectedRecipe, targetQuantity, settings, nodeOverrides]);
+  }, [data, selectedRecipe, targetQuantity, settings, nodeOverrides, scenarios, countTotalBelts]);
 
   // Optimization ranking based on selected goal
   const rankedScenarios = useMemo(() => {
@@ -209,7 +252,7 @@ export function WhatIfSimulator() {
           // Fewer machines is better
           return a.diff.machines - b.diff.machines;
         
-        case 'efficiency':
+        case 'efficiency': {
           // Combined efficiency score (lower is better)
           const scoreA = (
             Math.abs(a.diff.powerPercent) * 0.4 +
@@ -222,8 +265,9 @@ export function WhatIfSimulator() {
             Math.abs(b.diff.beltPercent) * 0.3
           );
           return scoreA - scoreB;
+        }
         
-        case 'balanced':
+        case 'balanced': {
           // Balanced improvement (minimize worst metric)
           const maxA = Math.max(
             Math.abs(a.diff.powerPercent),
@@ -236,6 +280,7 @@ export function WhatIfSimulator() {
             Math.abs(b.diff.beltPercent)
           );
           return maxA - maxB;
+        }
         
         default:
           return 0;
@@ -243,52 +288,8 @@ export function WhatIfSimulator() {
     });
 
     return ranked;
-  }, [results.scenarioResults, optimizationGoal]);
+  }, [results.scenarioResults, optimizationGoal, isScenarioAlreadyApplied]);
 
-  function countTotalBelts(node: any): number {
-    let total = node.conveyorBelts?.total || 0;
-    if (node.children) {
-      for (const child of node.children) {
-        total += countTotalBelts(child);
-      }
-    }
-    return total;
-  }
-
-  // Check if a scenario is already applied (current settings match scenario)
-  function isScenarioAlreadyApplied(scenario: Scenario): boolean {
-    const scenarioSettings = scenario.settings;
-    
-    // Check proliferator
-    if (scenarioSettings.proliferator) {
-      if (settings.proliferator.type !== scenarioSettings.proliferator.type) {
-        return false;
-      }
-    }
-    
-    // Check conveyor belt
-    if (scenarioSettings.conveyorBelt) {
-      if (scenarioSettings.conveyorBelt.tier && 
-          settings.conveyorBelt.tier !== scenarioSettings.conveyorBelt.tier) {
-        return false;
-      }
-      if (scenarioSettings.conveyorBelt.stackCount !== undefined && 
-          settings.conveyorBelt.stackCount !== scenarioSettings.conveyorBelt.stackCount) {
-        return false;
-      }
-    }
-    
-    // Check machine ranks
-    if (scenarioSettings.machineRank) {
-      for (const [type, rank] of Object.entries(scenarioSettings.machineRank)) {
-        if (settings.machineRank[type as keyof typeof settings.machineRank] !== rank) {
-          return false;
-        }
-      }
-    }
-    
-    return true;
-  }
 
   // Detect bottlenecks in the production tree
   const bottleneckSuggestions = useMemo((): BottleneckSuggestion[] => {
@@ -297,7 +298,7 @@ export function WhatIfSimulator() {
     const suggestions: BottleneckSuggestion[] = [];
     
     // Check for conveyor belt bottlenecks
-    const checkNodeForBottlenecks = (node: any) => {
+    const checkNodeForBottlenecks = (node: RecipeTreeNode) => {
       if (node.conveyorBelts?.saturation && node.conveyorBelts.saturation > 80) {
         const severity = node.conveyorBelts.saturation > 95 ? 'high' : 
                         node.conveyorBelts.saturation > 85 ? 'medium' : 'low';
@@ -329,7 +330,7 @@ export function WhatIfSimulator() {
       
       // Recursively check children
       if (node.children) {
-        node.children.forEach((child: any) => checkNodeForBottlenecks(child));
+        node.children.forEach((child) => checkNodeForBottlenecks(child));
       }
     };
     
@@ -352,7 +353,7 @@ export function WhatIfSimulator() {
     );
     
     return uniqueSuggestions;
-  }, [results.baseResult, settings]);
+  }, [results.baseResult, settings, t]);
 
   const toggleScenario = (scenarioId: string) => {
     setActiveScenarios(prev => 
@@ -382,7 +383,7 @@ export function WhatIfSimulator() {
 
     if (scenarioSettings.machineRank) {
       Object.entries(scenarioSettings.machineRank).forEach(([type, rank]) => {
-        setMachineRank(type as any, rank as any);
+        setMachineRank(type as keyof GlobalSettings['machineRank'], rank as string);
       });
     }
 
@@ -394,6 +395,8 @@ export function WhatIfSimulator() {
       setAppliedScenario(null);
     }, 3000);
   };
+
+  if (!data || !selectedRecipe) return null;
 
   return (
     <div className="space-y-4">
@@ -936,7 +939,7 @@ export function WhatIfSimulator() {
                     return (
                       <td key={scenarioId} className="text-right py-2 px-3">
                         <span className="text-gray-900 dark:text-white">
-                          {formatNumber(countTotalBelts(result?.result.rootNode || {}))}
+                          {formatNumber(result?.result.rootNode ? countTotalBelts(result.result.rootNode) : 0)}
                         </span>
                         <span className={`ml-2 text-xs ${
                           (result?.diff.belts || 0) < 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
