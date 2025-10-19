@@ -107,7 +107,7 @@ export async function importPlan(file: File): Promise<SavedPlan> {
  */
 export function restorePlan(
   plan: SavedPlan,
-  setRecipe: (recipe: any) => void,
+  setRecipe: (recipe: number) => void,
   setTargetQuantity: (quantity: number) => void,
   updateSettings: (settings: Partial<GlobalSettings>) => void,
   setNodeOverrides: (overrides: Map<string, NodeOverrideSettings>) => void

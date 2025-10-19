@@ -74,7 +74,7 @@ export function PowerGraphView({ calculationResult }: PowerGraphViewProps) {
         borderWidth: 1,
         padding: 12,
         callbacks: {
-          label: function(context: any) {
+          label: function(context: { parsed: number; dataIndex: number }) {
             const value = context.parsed;
             const percentage = powerBreakdown.byMachine[context.dataIndex].percentage;
             return `${formatPower(value)} (${percentage.toFixed(1)}%)`;

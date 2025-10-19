@@ -8,7 +8,7 @@ import { formatNumber } from '../../utils/format';
 import { parseColorTags } from '../../utils/html';
 import { isRawMaterial } from '../../constants/rawMaterials';
 import { RecipeComparisonModal } from '../RecipeComparisonModal';
-import type { Recipe } from '../../types';
+import type { Recipe, RecipeTreeNode } from '../../types';
 
 export function AlternativeRecipeSelector() {
   const { t } = useTranslation();
@@ -18,23 +18,21 @@ export function AlternativeRecipeSelector() {
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
   const [comparisonModal, setComparisonModal] = useState<{ itemId: number; itemName: string; recipes: Recipe[]; canBeMined: boolean; miningFrom?: string } | null>(null);
 
-  if (!data || !currentRecipe) return null;
-
   // Get all items used in the calculation result that have alternatives
   const itemsWithAlternatives = useMemo(() => {
-    if (!currentRecipe || !calculationResult) return [];
+    if (!data || !currentRecipe || !calculationResult) return [];
     
     // Collect all item IDs from current recipe tree (inputs recursively)
     const relevantItemIds = new Set<number>();
     
-    const collectItemIds = (node: any) => {
+    const collectItemIds = (node: RecipeTreeNode) => {
       if (node.recipe) {
-        node.recipe.Items.forEach((item: any) => {
+        node.recipe.Items.forEach((item) => {
           relevantItemIds.add(item.id);
         });
       }
       if (node.children) {
-        node.children.forEach((child: any) => collectItemIds(child));
+        node.children.forEach((child) => collectItemIds(child));
       }
     };
     
@@ -63,6 +61,8 @@ export function AlternativeRecipeSelector() {
       })
       .sort((a, b) => a.itemName.localeCompare(b.itemName));
   }, [data, currentRecipe, calculationResult]);
+
+  if (!data || !currentRecipe) return null;
 
   const toggleExpand = (itemId: number) => {
     setExpandedItems(prev => {

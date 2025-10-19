@@ -7,6 +7,7 @@ import { AlternativeRecipeSelector } from '../AlternativeRecipeSelector';
 import { WhatIfSimulator } from '../WhatIfSimulator';
 import { useRecipeSelectionStore } from '../../stores/recipeSelectionStore';
 import { useGameDataStore } from '../../stores/gameDataStore';
+import type { RecipeTreeNode } from '../../types';
 
 export function SettingsPanel() {
   const { t } = useTranslation();
@@ -18,14 +19,14 @@ export function SettingsPanel() {
     const itemsInChain = new Set<number>();
     
     // Collect all items from the calculation result tree
-    const collectItems = (node: any) => {
+    const collectItems = (node: RecipeTreeNode) => {
       if (node.recipe) {
-        node.recipe.Items.forEach((item: any) => {
+        node.recipe.Items.forEach((item) => {
           itemsInChain.add(item.id);
         });
       }
       if (node.children) {
-        node.children.forEach((child: any) => collectItems(child));
+        node.children.forEach((child) => collectItems(child));
       }
     };
     
