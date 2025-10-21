@@ -41,13 +41,14 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
       setUseOverride(hasOverride);
     }
     
-    // Only update values if we don't have an override or if we're not actively editing
-    if (!useOverride && !hasOverride) {
+    // Only update values if we don't have an override
+    if (!hasOverride) {
       setProliferatorType(settings.proliferator.type);
       setProliferatorMode(settings.proliferator.mode);
       setMachineRank('');
     }
-  }, [node.nodeId, settings.proliferator.type, settings.proliferator.mode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [node.nodeId, settings.proliferator.type, settings.proliferator.mode, nodeOverrides]);
 
   // Auto-save when settings change
   useEffect(() => {
