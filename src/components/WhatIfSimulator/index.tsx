@@ -116,8 +116,8 @@ export function WhatIfSimulator() {
     return true;
   }, [settings]);
 
-  // Define scenarios
-  const scenarios: Scenario[] = [
+  // Define scenarios - memoized to prevent infinite re-renders
+  const scenarios: Scenario[] = useMemo(() => [
     {
       id: 'proliferator_mk3',
       name: t('upgradeToMk3Proliferator'),
@@ -213,7 +213,18 @@ export function WhatIfSimulator() {
         },
       },
     },
-  ];
+  ], [
+    t,
+    settings.proliferator.mode,
+    settings.conveyorBelt.stackCount,
+    settings.conveyorBelt.tier,
+    settings.machineRank.Smelt,
+    settings.machineRank.Assemble,
+    settings.machineRank.Chemical,
+    settings.machineRank.Research,
+    settings.machineRank.Refine,
+    settings.machineRank.Particle,
+  ]);
 
   // Calculate results for each scenario with memoization
   const results = useMemo(() => {

@@ -1372,5 +1372,74 @@ describe('calculateProductionChain', () => {
     expect(result.rootNode.children[0].children[0].isRawMaterial).toBe(true);
     expect(result.rootNode.children[0].children[0].itemId).toBe(1001);
   });
+
+  it('should handle circular dependencies (recipe with same item as input and output)', () => {
+    const machines = new Map<number, Machine>();
+    machines.set(2309, {
+      id: 2309,
+      name: 'Chemical Plant',
+      Type: 'Chemical',
+      assemblerSpeed: 10000,
+      workEnergyPerTick: 720000,
+      idleEnergyPerTick: 36000,
+      exchangeEnergyPerTick: 0,
+      isPowerConsumer: true,
+      isPowerExchanger: false,
+      isRaw: false,
+    });
+
+    const items = new Map();
+    items.set(1114, { id: 1114, name: 'Refined Oil', Type: '0', isRaw: false });
+    items.set(1121, { id: 1121, name: 'Hydrogen', Type: '0', isRaw: false });
+
+    const recipes = new Map<number, Recipe>();
+    
+    // Reforming Refine recipe: Refined Oil + Hydrogen -> Refined Oil (circular)
+    recipes.set(120, {
+      SID: 120,
+      name: 'X-ray Cracking',
+      TimeSpend: 240, // 4 seconds
+      Results: [{ id: 1114, name: 'Refined Oil', count: 3, Type: '0', isRaw: false }],
+      Items: [
+        { id: 1114, name: 'Refined Oil', count: 2, Type: '0', isRaw: false },
+        { id: 1121, name: 'Hydrogen', count: 1, Type: '0', isRaw: false }
+      ],
+      Type: 'Chemical',
+      Explicit: false,
+      GridIndex: '1114',
+      productive: false,
+    });
+
+    const recipesByItemId = new Map<number, Recipe[]>();
+    recipesByItemId.set(1114, [recipes.get(120)!]);
+
+    const gameData: GameData = {
+      machines,
+      items,
+      allItems: items,
+      recipes,
+      recipesByItemId,
+    };
+
+    const settings = createDefaultSettings();
+
+    // Should not throw "Maximum recursion depth reached"
+    const result = calculateProductionChain(recipes.get(120)!, 1, gameData, settings);
+
+    expect(result.rootNode.recipe).toBeDefined();
+    expect(result.rootNode.recipe!.SID).toBe(120);
+    
+    // Should have 2 children (Refined Oil and Hydrogen)
+    expect(result.rootNode.children).toHaveLength(2);
+    
+    // The Refined Oil input should be treated as raw material (circular dependency)
+    const refinedOilChild = result.rootNode.children.find(c => c.itemId === 1114);
+    expect(refinedOilChild).toBeDefined();
+    expect(refinedOilChild!.isRawMaterial).toBe(true);
+    expect(refinedOilChild!.isCircularDependency).toBe(true);
+    expect(refinedOilChild!.miningFrom).toBe('externalSupplyCircular');
+    expect(refinedOilChild!.sourceRecipe).toBeDefined();
+    expect(refinedOilChild!.sourceRecipe!.SID).toBe(120);
+  });
 });
 

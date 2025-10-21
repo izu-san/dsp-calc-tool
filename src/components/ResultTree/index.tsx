@@ -48,18 +48,35 @@ export const ProductionTree = memo(function ProductionTree({
 
   // Handle raw material leaf nodes
   if (node.isRawMaterial) {
+    // Determine if this is a circular dependency
+    const isCircular = node.isCircularDependency;
+    const iconId = isCircular && node.sourceRecipe 
+      ? node.sourceRecipe.Results[0]?.id 
+      : node.itemId!;
+    const displayName = isCircular && node.sourceRecipe
+      ? node.sourceRecipe.name
+      : node.itemName;
+    
     return (
       <div className={`${depth > 0 ? 'ml-6 mt-2' : ''}`}>
-        <div className="border rounded-lg p-3 bg-neon-green/20 backdrop-blur-sm border-neon-green/50 shadow-[0_0_20px_rgba(0,255,136,0.3)] relative overflow-hidden animate-fadeIn">
+        <div className={`border rounded-lg p-3 backdrop-blur-sm relative overflow-hidden animate-fadeIn ${
+          isCircular 
+            ? 'bg-neon-purple/20 border-neon-purple/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+            : 'bg-neon-green/20 border-neon-green/50 shadow-[0_0_20px_rgba(0,255,136,0.3)]'
+        }`}>
           {/* Data stream effect */}
           <div className="absolute inset-0 data-stream opacity-20 pointer-events-none"></div>
           <div className="relative z-10">
           <div className="flex items-center gap-3">
-            {/* Item Icon */}
-            <div className="w-10 h-10 flex-shrink-0 border border-neon-green/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,255,136,0.3)]">
+            {/* Icon (Recipe or Item) */}
+            <div className={`w-10 h-10 flex-shrink-0 border rounded bg-dark-800/50 backdrop-blur-sm p-1 ${
+              isCircular
+                ? 'border-neon-purple/50 shadow-[0_0_10px_rgba(168,85,247,0.3)]'
+                : 'border-neon-green/50 shadow-[0_0_10px_rgba(0,255,136,0.3)]'
+            }`}>
               <img
-                src={getItemIconPath(node.itemId!)}
-                alt={node.itemName}
+                src={getItemIconPath(iconId)}
+                alt={displayName}
                 className="w-full h-full object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
@@ -67,17 +84,31 @@ export const ProductionTree = memo(function ProductionTree({
               />
             </div>
 
-            {/* Raw Material Info */}
+            {/* Raw Material / Circular Dependency Info */}
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-white truncate drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]">{node.itemName}</h4>
+              <h4 className={`font-semibold text-white truncate ${
+                isCircular
+                  ? 'drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]'
+                  : 'drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]'
+              }`}>
+                {displayName}
+              </h4>
               <p className="text-xs text-space-200">
-                ⛏️ {parseColorTags(node.miningFrom || '')}
+                {isCircular ? '🔄 ' : '⛏️ '}
+                {node.miningFrom === 'externalSupplyCircular' 
+                  ? t('externalSupplyCircular')
+                  : parseColorTags(node.miningFrom || '')
+                }
               </p>
             </div>
 
             {/* Required Rate */}
             <div className="text-right">
-              <div className="text-sm font-bold text-neon-green drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]">
+              <div className={`text-sm font-bold ${
+                isCircular 
+                  ? 'text-neon-purple drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]'
+                  : 'text-neon-green drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]'
+              }`}>
                 {formatRate(node.targetOutputRate)}
               </div>
               <div className="text-xs text-space-200">

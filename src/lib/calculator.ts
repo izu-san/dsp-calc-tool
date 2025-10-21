@@ -155,10 +155,20 @@ export function buildRecipeTree(
   nodeOverrides: Map<string, NodeOverrideSettings>,
   depth: number = 0,
   maxDepth: number = 20,
-  nodePath: string = `r-${recipe.SID}`
+  nodePath: string = `r-${recipe.SID}`,
+  visitingItems: Set<number> = new Set()
 ): RecipeTreeNode {
   if (depth > maxDepth) {
     throw new Error('Maximum recursion depth reached');
+  }
+  
+  // Track the output item to detect circular dependencies
+  const outputItemId = recipe.Results[0]?.id;
+  if (outputItemId && visitingItems.has(outputItemId)) {
+    // Circular dependency detected - treat as raw material
+    // This prevents infinite recursion for recipes like "Reforming Refine"
+    // where refined oil is both input and output
+    console.warn(`Circular dependency detected for item ${outputItemId}, treating required input as external supply`);
   }
 
   // Stable path-based node ID
@@ -272,6 +282,12 @@ export function buildRecipeTree(
     totalBeltSpeed
   );
 
+  // Add current output item to visiting set to detect circular dependencies
+  const newVisitingItems = new Set(visitingItems);
+  if (outputItemId) {
+    newVisitingItems.add(outputItemId);
+  }
+  
   // Recursively build child nodes for all inputs
   const children: RecipeTreeNode[] = [];
   for (const input of inputs) {
@@ -283,15 +299,30 @@ export function buildRecipeTree(
     const forceMining = preferredRecipeId === -1;
     const forceRecipe = preferredRecipeId && preferredRecipeId > 0;
     
-    if ((isRawMaterial(input.itemId) && !forceRecipe) || forceMining) {
-      // Create a leaf node for raw material
+    // Check for circular dependency: if input item is currently being visited, treat as raw material
+    const isCircular = newVisitingItems.has(input.itemId);
+    
+    if ((isRawMaterial(input.itemId) && !forceRecipe) || forceMining || isCircular) {
+      // Create a leaf node for raw material or circular dependency
       const rawNodeId = `${nodeId}/raw-${input.itemId}`;
       const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
+      
+      // For circular dependency, find the recipe that produces this item
+      let circularRecipe: Recipe | undefined;
+      if (isCircular) {
+        const producerRecipes = gameData.recipesByItemId.get(input.itemId);
+        if (producerRecipes && producerRecipes.length > 0) {
+          circularRecipe = forceRecipe
+            ? producerRecipes.find(r => r.SID === preferredRecipeId) || producerRecipes[0]
+            : producerRecipes[0];
+        }
+      }
+      
       const rawNode: RecipeTreeNode = {
         isRawMaterial: true,
         itemId: input.itemId,
         itemName: input.itemName,
-        miningFrom: inputItem.miningFrom || 'Unknown Source',
+        miningFrom: isCircular ? 'externalSupplyCircular' : (inputItem.miningFrom || 'Unknown Source'),
         targetOutputRate: input.requiredRate,
         machineCount: 0, // No machines for raw materials
         proliferator: settings.proliferator,
@@ -304,6 +335,8 @@ export function buildRecipeTree(
         inputs: [],
         children: [],
         nodeId: rawNodeId,
+        isCircularDependency: isCircular,
+        sourceRecipe: circularRecipe,
       };
       children.push(rawNode);
     } else {
@@ -323,7 +356,8 @@ export function buildRecipeTree(
           nodeOverrides,
           depth + 1,
           maxDepth,
-          `${nodeId}/r-${selectedRecipe.SID}`
+          `${nodeId}/r-${selectedRecipe.SID}`,
+          newVisitingItems
         );
         children.push(childNode);
       }
