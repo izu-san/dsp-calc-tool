@@ -213,6 +213,7 @@ const resources = {
       // Mining Calculator
       miningCalculator: 'Mining Calculator',
       noRawMaterialsRequired: 'No raw materials required for this production chain.',
+      externalSupplyCircular: 'External Supply (Circular Dependency)',
       calculateMiningMachinesNeeded: 'Calculate mining machines needed for raw material extraction',
       miningSpeedResearch: 'Mining Speed Research',
       miningResearchHint: '100% = no research, 200% = Lv10',
@@ -590,7 +591,7 @@ const resources = {
       applyQuestion: 'を適用しますか？',
       miningResearch: '採掘速度研究',
       stacks: '段',
-      pilingSorter: '集配物流ステーション',
+      pilingSorter: '集積ソーター',
       
       // Conveyor Belt Settings
       beltTier: 'ベルトランク',
@@ -677,6 +678,7 @@ const resources = {
       // Mining Calculator
       miningCalculator: '採掘計算機',
       noRawMaterialsRequired: 'この生産チェーンには原材料は必要ありません。',
+      externalSupplyCircular: '外部供給（循環依存）',
       calculateMiningMachinesNeeded: '原材料採掘に必要な採掘機の数を計算',
       miningSpeedResearch: '採掘速度研究',
       miningResearchHint: '100% = 研究なし、200% = Lv10',

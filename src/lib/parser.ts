@@ -39,12 +39,12 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     ? itemsData.ArrayOfItem.Item
     : [itemsData.ArrayOfItem.Item];
   
-  itemArray.forEach((item: any) => {
+  itemArray.forEach((item: { id: number; name: string; count?: number; Type: string; miningFrom?: string; produceFrom?: string; isRaw?: boolean | string }) => {
     items.set(Number(item.id), {
       id: Number(item.id),
       name: item.name,
       count: item.count ? Number(item.count) : 0,
-      Type: item.Type,
+      Type: item.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
       miningFrom: item.miningFrom,
       produceFrom: item.produceFrom,
       isRaw: item.isRaw === 'true' || item.isRaw === true,
@@ -58,11 +58,11 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     ? recipesData.ArrayOfRecipe.Recipe
     : [recipesData.ArrayOfRecipe.Recipe];
 
-  recipeArray.forEach((recipe: any) => {
+  recipeArray.forEach((recipe: { SID: number; name: string; Type: string; Explicit?: boolean | string; TimeSpend: number; Items?: { Item: unknown }; Results?: { Item: unknown }; GridIndex: string; productive?: boolean | string }) => {
     const recipeObj: Recipe = {
       SID: Number(recipe.SID),
       name: recipe.name,
-      Type: recipe.Type,
+      Type: recipe.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
       Explicit: recipe.Explicit === 'true' || recipe.Explicit === true,
       TimeSpend: Number(recipe.TimeSpend),
       Items: parseRecipeItems(recipe.Items?.Item),
@@ -87,12 +87,12 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     ? machinesData.ArrayOfMachine.Machine
     : [machinesData.ArrayOfMachine.Machine];
 
-  machineArray.forEach((machine: any) => {
+  machineArray.forEach((machine: { id: number; name: string; count?: number; Type: string; miningFrom?: string; produceFrom?: string; isRaw?: boolean | string; assemblerSpeed: number; workEnergyPerTick: number; idleEnergyPerTick: number; exchangeEnergyPerTick: number; isPowerConsumer?: boolean | string; isPowerExchanger?: boolean | string }) => {
     machines.set(Number(machine.id), {
       id: Number(machine.id),
       name: machine.name,
       count: machine.count ? Number(machine.count) : 0,
-      Type: machine.Type,
+      Type: machine.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
       miningFrom: machine.miningFrom,
       produceFrom: machine.produceFrom,
       isRaw: machine.isRaw === 'true' || machine.isRaw === true,
@@ -119,12 +119,12 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
   };
 }
 
-function parseRecipeItems(itemData: any): any[] {
+function parseRecipeItems(itemData: unknown): Array<{ id: number; name: string; count: number; Type: string; isRaw: boolean }> {
   if (!itemData) return [];
-  return Array.isArray(itemData) ? itemData.map(parseItem) : [parseItem(itemData)];
+  return Array.isArray(itemData) ? itemData.map(parseItem) : [parseItem(itemData as { id: number; name: string; count: number; Type: string; isRaw?: boolean | string })];
 }
 
-function parseItem(item: any) {
+function parseItem(item: { id: number; name: string; count: number; Type: string; isRaw?: boolean | string }) {
   return {
     id: Number(item.id),
     name: item.name,

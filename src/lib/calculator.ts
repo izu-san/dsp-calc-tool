@@ -15,13 +15,16 @@ import { isRawMaterial } from '../constants/rawMaterials';
 import { MACHINE_IDS_BY_RECIPE_TYPE, getMachineForRecipe as getMachineForRecipeFromConstants } from '../constants/machines';
 import { getEffectiveBonuses } from './proliferator';
 
+
+
 /**
  * Calculate production rate for a recipe with given settings
  * 
  * Production mode: Increases output per craft (more items per recipe execution)
  * Speed mode: Reduces time per craft (faster recipe execution)
+ * @internal - Exported for testing
  */
-function calculateProductionRate(
+export function calculateProductionRate(
   recipe: Recipe,
   machine: Machine,
   proliferator: ProliferatorConfig,
@@ -52,8 +55,9 @@ function calculateProductionRate(
 
 /**
  * Calculate power consumption for machines
+ * @internal - Exported for testing
  */
-function calculateMachinePower(
+export function calculateMachinePower(
   machine: Machine,
   machineCount: number,
   proliferator: ProliferatorConfig,
@@ -69,8 +73,9 @@ function calculateMachinePower(
 /**
  * Calculate sorter power consumption
  * Formula: ソーター1台あたりの消費電力 * (Inputsアイテム種別数 + Outputsアイテム種別数) * マシン台数
+ * @internal - Exported for testing
  */
-function calculateSorterPower(
+export function calculateSorterPower(
   recipe: Recipe,
   machineCount: number,
   sorterPowerPerUnit: number
@@ -87,8 +92,9 @@ function calculateSorterPower(
 /**
  * Calculate required conveyor belts
  * Formula: Number of belts = ceil(items per second / belt speed)
+ * @internal - Exported for testing
  */
-function calculateConveyorBelts(
+export function calculateConveyorBelts(
   targetOutputRate: number,
   inputs: { itemId: number; itemName: string; requiredRate: number }[],
   beltSpeed: number
@@ -139,8 +145,9 @@ const getMachineForRecipe = getMachineForRecipeFromConstants;
 
 /**
  * Build recipe tree recursively
+ * @internal - Exported for testing purposes only
  */
-function buildRecipeTree(
+export function buildRecipeTree(
   recipe: Recipe,
   targetRate: number,
   gameData: GameData,
@@ -148,10 +155,19 @@ function buildRecipeTree(
   nodeOverrides: Map<string, NodeOverrideSettings>,
   depth: number = 0,
   maxDepth: number = 20,
-  nodePath: string = `r-${recipe.SID}`
+  nodePath: string = `r-${recipe.SID}`,
+  visitingItems: Set<number> = new Set()
 ): RecipeTreeNode {
   if (depth > maxDepth) {
     throw new Error('Maximum recursion depth reached');
+  }
+  
+  // Track the output item to detect circular dependencies
+  const outputItemId = recipe.Results[0]?.id;
+  if (outputItemId && visitingItems.has(outputItemId)) {
+    // Circular dependency detected - treat as raw material
+    // This prevents infinite recursion for recipes like "Reforming Refine"
+    // where refined oil is both input and output
   }
 
   // Stable path-based node ID
@@ -160,8 +176,27 @@ function buildRecipeTree(
   // Check for node-specific overrides
   const override = nodeOverrides.get(nodeId);
   
-  // Apply proliferator override or use global settings
-  const proliferator = override?.proliferator || settings.proliferator;
+  // Determine optimal proliferator mode for this specific recipe
+  const supportsProduction = recipe.productive === true;
+  let proliferator = override?.proliferator || settings.proliferator;
+  
+  // Apply smart mode selection based on recipe capabilities
+  if (settings.proliferator && settings.proliferator.type !== 'none') {
+    // If global setting is production mode but this recipe doesn't support it, use speed mode
+    if (settings.proliferator && settings.proliferator.mode === 'production' && !supportsProduction) {
+      proliferator = {
+        ...proliferator,
+        mode: 'speed'
+      };
+    }
+    // If global setting is speed mode but this recipe supports production, use production mode
+    else if (settings.proliferator && settings.proliferator.mode === 'speed' && supportsProduction) {
+      proliferator = {
+        ...proliferator,
+        mode: 'production'
+      };
+    }
+  }
   
   // Apply machine rank override or use global settings
   let machine: Machine;
@@ -246,6 +281,12 @@ function buildRecipeTree(
     totalBeltSpeed
   );
 
+  // Add current output item to visiting set to detect circular dependencies
+  const newVisitingItems = new Set(visitingItems);
+  if (outputItemId) {
+    newVisitingItems.add(outputItemId);
+  }
+  
   // Recursively build child nodes for all inputs
   const children: RecipeTreeNode[] = [];
   for (const input of inputs) {
@@ -257,15 +298,26 @@ function buildRecipeTree(
     const forceMining = preferredRecipeId === -1;
     const forceRecipe = preferredRecipeId && preferredRecipeId > 0;
     
-    if ((isRawMaterial(input.itemId) && !forceRecipe) || forceMining) {
-      // Create a leaf node for raw material
+    // Check for circular dependency: if input item is currently being visited, treat as raw material
+    const isCircular = newVisitingItems.has(input.itemId);
+    
+    if ((isRawMaterial(input.itemId) && !forceRecipe) || forceMining || isCircular) {
+      // Create a leaf node for raw material or circular dependency
       const rawNodeId = `${nodeId}/raw-${input.itemId}`;
       const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
+      
+      // For circular dependency, use the current recipe itself
+      // (the recipe that requires its own output as input)
+      let circularRecipe: Recipe | undefined;
+      if (isCircular) {
+        circularRecipe = recipe;
+      }
+      
       const rawNode: RecipeTreeNode = {
         isRawMaterial: true,
         itemId: input.itemId,
         itemName: input.itemName,
-        miningFrom: inputItem.miningFrom || 'Unknown Source',
+        miningFrom: isCircular ? 'externalSupplyCircular' : (inputItem.miningFrom || 'Unknown Source'),
         targetOutputRate: input.requiredRate,
         machineCount: 0, // No machines for raw materials
         proliferator: settings.proliferator,
@@ -278,6 +330,8 @@ function buildRecipeTree(
         inputs: [],
         children: [],
         nodeId: rawNodeId,
+        isCircularDependency: isCircular,
+        sourceRecipe: circularRecipe,
       };
       children.push(rawNode);
     } else {
@@ -297,7 +351,8 @@ function buildRecipeTree(
           nodeOverrides,
           depth + 1,
           maxDepth,
-          `${nodeId}/r-${selectedRecipe.SID}`
+          `${nodeId}/r-${selectedRecipe.SID}`,
+          newVisitingItems
         );
         children.push(childNode);
       }

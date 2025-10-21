@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # npm依存関係の自動アップデート
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "npm"
+    # バージョンアップデート戦略
+    versioning-strategy: increase
+    # グループ化設定（関連する依存関係をまとめる）
+    groups:
+      # 開発依存関係
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "@testing-library/*"
+          - "@vitest/*"
+          - "eslint*"
+          - "typescript*"
+          - "vite*"
+        update-types:
+          - "minor"
+          - "patch"
+      # React関連
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@vitejs/plugin-react"
+        update-types:
+          - "minor"
+          - "patch"
+      # Radix UI関連
+      radix-ui:
+        patterns:
+          - "@radix-ui/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions ワークフローの自動アップデート
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    labels:
+      - "dependencies"
+      - "github-actions"

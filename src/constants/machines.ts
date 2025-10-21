@@ -48,6 +48,10 @@ export function getMachineForRecipe(
       break;
   }
 
+  if (!machines) {
+    throw new Error('Machines map is undefined');
+  }
+
   const machine = machines.get(targetId);
   if (machine) return machine;
 

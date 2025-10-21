@@ -41,13 +41,14 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
       setUseOverride(hasOverride);
     }
     
-    // Only update values if we don't have an override or if we're not actively editing
-    if (!useOverride && !hasOverride) {
+    // Only update values if we don't have an override
+    if (!hasOverride) {
       setProliferatorType(settings.proliferator.type);
       setProliferatorMode(settings.proliferator.mode);
       setMachineRank('');
     }
-  }, [node.nodeId, settings.proliferator.type, settings.proliferator.mode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [node.nodeId, settings.proliferator.type, settings.proliferator.mode, nodeOverrides]);
 
   // Auto-save when settings change
   useEffect(() => {
@@ -114,11 +115,14 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
   const machineOptions = getMachineRankOptions();
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600">
+    <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
       <div className="space-y-3">
         {/* Override Toggle */}
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{t('useCustomSettings')}</span>
+          <span className="text-xs font-medium text-neon-purple flex items-center gap-2">
+            <span>⚙️</span>
+            {t('useCustomSettings')}
+          </span>
           <button
             onClick={() => {
               const newUseOverride = !useOverride;
@@ -133,13 +137,16 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
             aria-checked={useOverride}
             aria-label={t('useCustomSettings')}
             className={`
-              relative inline-flex h-4 w-7 items-center rounded-full transition-colors
-              ${useOverride ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'}
+              relative inline-flex h-4 w-7 items-center rounded-full transition-all ripple-effect
+              ${useOverride 
+                ? 'bg-neon-purple shadow-[0_0_10px_rgba(168,85,247,0.5)]' 
+                : 'bg-dark-600 border border-neon-purple/30'
+              }
             `}
           >
             <span
               className={`
-                inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform
+                inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform shadow-[0_0_5px_rgba(255,255,255,0.3)]
                 ${useOverride ? 'translate-x-3.5' : 'translate-x-1'}
               `}
             />
@@ -147,10 +154,13 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
         </div>
 
         {useOverride && (
-          <div className="space-y-3 pt-2 border-t border-gray-200 dark:border-gray-600">
+          <div className="space-y-3 pt-2 border-t border-neon-purple/20">
             {/* Proliferator */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">💊 {t('proliferator')}</label>
+              <label className="block text-xs font-medium text-neon-magenta mb-1 flex items-center gap-2">
+                <span>💊</span>
+                {t('proliferator')}
+              </label>
               <div className="space-y-2">
                 {/* Type */}
                 <select
@@ -159,12 +169,16 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                     setProliferatorType(e.target.value as ProliferatorType);
                   }}
                   aria-label={t('proliferator')}
-                  className="w-full text-xs border border-gray-300 dark:border-gray-600 rounded px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta focus:shadow-[0_0_10px_rgba(233,53,255,0.3)] transition-all"
+                  style={{
+                    backgroundColor: '#1E293B',
+                    color: '#FFFFFF'
+                  }}
                 >
-                  <option value="none">{t('none')}</option>
-                  <option value="mk1">Mk.I</option>
-                  <option value="mk2">Mk.II</option>
-                  <option value="mk3">Mk.III</option>
+                  <option value="none" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>{t('none')}</option>
+                  <option value="mk1" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>Mk.I</option>
+                  <option value="mk2" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>Mk.II</option>
+                  <option value="mk3" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>Mk.III</option>
                 </select>
                 
                 {/* Mode */}
@@ -184,12 +198,12 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                           aria-pressed={proliferatorMode === mode}
                           aria-label={`${t('mode')}: ${mode}`}
                           className={`
-                            px-2 py-2 text-xs rounded transition-all min-h-[2rem] flex items-center justify-center
+                            px-2 py-2 text-xs rounded transition-all min-h-[2rem] flex items-center justify-center ripple-effect
                             ${isDisabled
-                              ? 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'
+                              ? 'bg-dark-600 border border-neon-magenta/20 text-space-400 cursor-not-allowed'
                               : proliferatorMode === mode
-                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300'
-                                : 'bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-500'
+                                ? 'bg-neon-magenta/30 border border-neon-magenta text-white shadow-[0_0_10px_rgba(233,53,255,0.4)]'
+                                : 'bg-dark-700/50 border border-neon-magenta/30 text-space-200 hover:border-neon-magenta/60 hover:bg-neon-magenta/10 hover:text-neon-magenta'
                             }
                           `}
                         >
@@ -208,17 +222,24 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
             {/* Machine Rank */}
             {machineOptions.length > 0 && (
               <div>
-                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">🏭 {t('machineRank')}</label>
+                <label className="block text-xs font-medium text-neon-blue mb-1 flex items-center gap-2">
+                  <span>🏭</span>
+                  {t('machineRank')}
+                </label>
                 <select
                   value={machineRank}
                   onChange={(e) => {
                     setMachineRank(e.target.value);
                   }}
-                  className="w-full text-xs border border-gray-300 dark:border-gray-600 rounded px-2 py-1 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full text-xs border border-neon-blue/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-blue focus:shadow-[0_0_10px_rgba(0,136,255,0.3)] transition-all"
+                  style={{
+                    backgroundColor: '#1E293B',
+                    color: '#FFFFFF'
+                  }}
                 >
-                  <option value="">{t('none')}</option>
+                  <option value="" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>{t('none')}</option>
                   {machineOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option key={option.value} value={option.value} style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>
                       {option.label}
                     </option>
                   ))}
@@ -229,8 +250,11 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
         )}
 
         {!useOverride && (
-          <div className="text-center py-2 text-gray-500 dark:text-gray-400">
-            <p className="text-xs">{t('usingGlobalSettings')}</p>
+          <div className="text-center py-2 text-space-300">
+            <p className="text-xs flex items-center justify-center gap-2">
+              <span>🌐</span>
+              {t('usingGlobalSettings')}
+            </p>
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useGameDataStore } from '../../stores/gameDataStore';
 import { useRecipeSelectionStore } from '../../stores/recipeSelectionStore';
@@ -235,35 +236,37 @@ export function PlanManager() {
   };
 
   return (
-    <div className="flex gap-2">
-      {/* Save Button */}
-      <button
-        onClick={() => setShowSaveDialog(true)}
-        disabled={!selectedRecipe}
-        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed dark:bg-green-700 dark:hover:bg-green-600 dark:disabled:bg-gray-600"
-      >
-        💾 {t('save')}
-      </button>
+    <>
+      <div className="flex gap-2">
+        {/* Save Button */}
+        <button
+          onClick={() => setShowSaveDialog(true)}
+          disabled={!selectedRecipe}
+          className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+        >
+          💾 {t('save')}
+        </button>
 
-      {/* Load Button */}
-      <button
-        onClick={() => setShowLoadDialog(true)}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
-      >
-        📂 {t('load')}
-      </button>
+        {/* Load Button */}
+        <button
+          onClick={() => setShowLoadDialog(true)}
+          className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)] transition-all ripple-effect"
+        >
+          📂 {t('load')}
+        </button>
 
-      {/* Share URL Button */}
-      <button
-        onClick={handleShareURL}
-        disabled={!selectedRecipe}
-        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed dark:bg-purple-700 dark:hover:bg-purple-600 dark:disabled:bg-gray-600"
-      >
-        🔗 {t('shareURL')}
-      </button>
+        {/* Share URL Button */}
+        <button
+          onClick={handleShareURL}
+          disabled={!selectedRecipe}
+          className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+        >
+          🔗 {t('shareURL')}
+        </button>
+      </div>
 
       {/* Save Dialog */}
-      {showSaveDialog && (
+      {showSaveDialog && createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
             <h2 className="text-xl font-bold mb-4 dark:text-white">{t('save')}</h2>
@@ -320,11 +323,12 @@ export function PlanManager() {
               {t('cancel')}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Load Dialog */}
-      {showLoadDialog && (
+      {showLoadDialog && createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 dark:text-white">{t('load')}</h2>
@@ -401,11 +405,12 @@ export function PlanManager() {
               {t('close')}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Share URL Dialog */}
-      {showShareDialog && (
+      {showShareDialog && createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full">
             <h2 className="text-xl font-bold mb-4 dark:text-white">🔗 {t('shareURL')}</h2>
@@ -466,8 +471,9 @@ export function PlanManager() {
               {t('close')}
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </div>
+    </>
   );
 }

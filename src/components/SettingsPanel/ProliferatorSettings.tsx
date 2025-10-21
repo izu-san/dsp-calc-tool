@@ -47,7 +47,7 @@ export function ProliferatorSettings() {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-neon-magenta mb-2">
           {t('proliferatorType')}
         </label>
         <div className="grid grid-cols-4 gap-2">
@@ -62,10 +62,10 @@ export function ProliferatorSettings() {
                 key={type}
                 onClick={() => handleTypeChange(type)}
                 className={`
-                  px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-200
+                  px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                   ${proliferator.type === type
-                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 border-purple-400 dark:border-purple-600 ring-2 ring-purple-300 dark:ring-purple-700'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                    ? 'bg-neon-magenta/30 text-white border-neon-magenta shadow-[0_0_20px_rgba(233,53,255,0.6),inset_0_0_20px_rgba(233,53,255,0.2)] backdrop-blur-sm font-bold scale-105'
+                    : 'bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta'
                   }
                 `}
               >
@@ -82,10 +82,10 @@ export function ProliferatorSettings() {
       {proliferator.type !== 'none' && (
         <>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('proliferatorMode')} <span className="text-xs text-gray-500 dark:text-gray-400">({t('exclusive')})</span>
+            <label className="block text-sm font-medium text-neon-cyan mb-2">
+              {t('proliferatorMode')} <span className="text-xs text-space-300">({t('exclusive')})</span>
               {!isProductionAllowed && (
-                <span className="ml-2 text-xs text-orange-600 dark:text-orange-400 font-medium">
+                <span className="ml-2 text-xs text-neon-orange font-medium">
                   ⚠️ {t('productionModeDisabled')}
                 </span>
               )}
@@ -99,12 +99,12 @@ export function ProliferatorSettings() {
                     onClick={() => !isDisabled && handleModeChange(mode)}
                     disabled={isDisabled}
                     className={`
-                      px-4 py-3 text-sm font-medium rounded-lg border transition-all duration-200
+                      px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                       ${isDisabled
-                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-700 cursor-not-allowed opacity-60'
+                        ? 'bg-dark-800/50 text-space-400 border-dark-600 cursor-not-allowed opacity-40'
                         : proliferator.mode === mode
-                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-400 dark:border-blue-600 ring-2 ring-blue-300 dark:ring-blue-700'
-                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                          ? 'bg-neon-cyan/30 text-white border-neon-cyan shadow-[0_0_20px_rgba(0,217,255,0.6),inset_0_0_20px_rgba(0,217,255,0.2)] backdrop-blur-sm font-bold scale-105'
+                          : 'bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan'
                       }
                     `}
                   >
@@ -119,7 +119,7 @@ export function ProliferatorSettings() {
                         }
                       </span>
                       {isDisabled && (
-                        <span className="text-xs text-red-500 dark:text-red-400 mt-1">{t('notAllowed')}</span>
+                        <span className="text-xs text-neon-orange mt-1">{t('notAllowed')}</span>
                       )}
                     </div>
                   </button>

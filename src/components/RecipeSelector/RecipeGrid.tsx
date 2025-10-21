@@ -61,7 +61,7 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
   const { isFavorite, toggleFavorite } = useFavoritesStore();
 
   if (!recipe) {
-    return <div className="aspect-square bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700" />;
+    return <div className="aspect-square bg-dark-800/30 rounded border border-dark-600/50" />;
   }
 
   const iconPath = getRecipeIconPath(
@@ -85,10 +85,10 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
           absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10
           rounded-bl text-xs transition-all cursor-pointer
           ${isFavorite(recipe.SID)
-            ? 'bg-yellow-500 dark:bg-yellow-600 text-white opacity-100'
-            : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100'
+            ? 'bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100 shadow-[0_0_10px_rgba(255,215,0,0.5)]'
+            : 'bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100'
           }
-          hover:scale-110
+          hover:scale-110 hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]
         `}
         title={isFavorite(recipe.SID) ? t('removeFromFavorites') : t('addToFavorites')}
       >
@@ -99,12 +99,12 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
       <button
         onClick={onClick}
         className={`
-          w-full h-full rounded border-2 transition-all
-          hover:border-blue-400 dark:hover:border-blue-500 hover:scale-105
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+          w-full h-full rounded border-2 transition-all ripple-effect
+          hover:border-neon-cyan hover:scale-105 hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]
+          focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-1
           ${isSelected 
-            ? 'border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-lg' 
-            : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+            ? 'border-neon-cyan bg-neon-cyan/20 backdrop-blur-sm shadow-[0_0_15px_rgba(0,217,255,0.5)] scale-105' 
+            : 'border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm'
           }
         `}
         title={recipe.name}

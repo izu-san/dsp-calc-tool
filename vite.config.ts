@@ -1,9 +1,38 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub Pagesでリポジトリ名をベースパスとして使用
+  // カスタムドメインを使用する場合は '/' に設定
+  base: process.env.NODE_ENV === 'production' ? '/dsp-calc-tool/' : '/',
   plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+    setupFiles: './src/test/setup.ts',
+    exclude: [
+      'node_modules/**',
+      'dist/**',
+      'tests/e2e/**',
+      'tests/fixtures/**',
+      '**/*.e2e.spec.ts'
+    ],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/test/',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/mockData',
+        'dist/',
+        'tests/e2e/',
+        'tests/fixtures/'
+      ]
+    }
+  },
   build: {
     rollupOptions: {
       output: {

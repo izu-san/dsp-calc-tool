@@ -145,7 +145,7 @@ export function RecipeComparisonModal({
 
     // Sort by efficiency (higher is better)
     return results.sort((a, b) => b.efficiency - a.efficiency);
-  }, [data, recipes, settings, itemId, itemName, canBeMined]);
+  }, [data, recipes, settings, itemId, itemName, canBeMined, t]);
 
   // Local helper removed; using centralized getMachineForRecipe
 
@@ -155,7 +155,7 @@ export function RecipeComparisonModal({
 
   const modalContent = (
     <div 
-      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn"
       style={{ zIndex: 99999 }}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
@@ -164,26 +164,28 @@ export function RecipeComparisonModal({
       }}
     >
       <div 
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative"
+        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
         style={{ zIndex: 100000 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="p-6 border-b border-neon-blue/30 flex items-center justify-between bg-dark-800/50">
           <div className="flex items-center gap-3">
-            <ItemIcon itemId={itemId} size={48} />
+            <div className="p-2 bg-neon-blue/20 border border-neon-blue/50 rounded-lg shadow-[0_0_15px_rgba(0,136,255,0.3)]">
+              <ItemIcon itemId={itemId} size={48} />
+            </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]">
                 {t('recipeComparison')}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('comparingProductionMethods')}: <span className="font-semibold">{itemName}</span>
+              <p className="text-sm text-space-200">
+                {t('comparingProductionMethods')}: <span className="font-semibold text-neon-cyan">{itemName}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+            className="text-space-300 hover:text-neon-cyan transition-all hover:scale-110 ripple-effect p-2 rounded-lg hover:bg-neon-cyan/10"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -192,34 +194,34 @@ export function RecipeComparisonModal({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            📊 {t('comparisonBasedOnProducing')}: <span className="font-semibold">{BASELINE_PRODUCTION_RATE} {t('itemPerSecond')}</span>
+        <div className="flex-1 overflow-y-auto p-6 bg-dark-800/30">
+          <div className="mb-4 text-sm text-space-200 bg-neon-blue/10 border border-neon-blue/40 rounded-lg p-3 backdrop-blur-sm">
+            📊 {t('comparisonBasedOnProducing')}: <span className="font-semibold text-neon-cyan">{BASELINE_PRODUCTION_RATE} {t('itemPerSecond')}</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-gray-100 dark:bg-gray-700">
-                  <th className="p-3 text-left font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                <tr className="bg-neon-blue/20 border-b-2 border-neon-blue/50">
+                  <th className="p-3 text-left font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('method')}
                   </th>
-                  <th className="p-3 text-left font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                  <th className="p-3 text-left font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('machine')}
                   </th>
-                  <th className="p-3 text-center font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                  <th className="p-3 text-center font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('machines')}
                   </th>
-                  <th className="p-3 text-center font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                  <th className="p-3 text-center font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('power')}
                   </th>
-                  <th className="p-3 text-left font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                  <th className="p-3 text-left font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('inputs')}
                   </th>
-                  <th className="p-3 text-center font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                  <th className="p-3 text-center font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('efficiency')}
                   </th>
-                  <th className="p-3 text-center font-semibold text-gray-700 dark:text-gray-300 border dark:border-gray-600">
+                  <th className="p-3 text-center font-semibold text-neon-cyan border border-neon-blue/30">
                     {t('action')}
                   </th>
                 </tr>
@@ -234,62 +236,62 @@ export function RecipeComparisonModal({
                     <tr
                       key={recipeId}
                       className={`
-                        ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'}
-                        transition-colors
+                        ${isSelected ? 'bg-neon-cyan/20 border-neon-cyan shadow-[0_0_15px_rgba(0,217,255,0.2)]' : 'bg-dark-700/30 hover:bg-neon-blue/10'}
+                        transition-all
                       `}
                     >
                       {/* Method */}
-                      <td className="p-3 border dark:border-gray-600">
+                      <td className="p-3 border border-neon-blue/20">
                         <div className="flex items-center gap-2">
                           {analysis.isMining ? (
                             <>
                               <span className="text-2xl">⛏️</span>
-                              <span className="font-medium text-gray-900 dark:text-white">{t('mining')}</span>
+                              <span className="font-medium text-white">{t('mining')}</span>
                             </>
                           ) : (
                             <>
                               <ItemIcon itemId={analysis.recipe!.Results[0]?.id} size={24} />
-                              <span className="font-medium text-gray-900 dark:text-white">{analysis.recipe!.name}</span>
+                              <span className="font-medium text-white">{analysis.recipe!.name}</span>
                             </>
                           )}
                           {isBest && (
-                            <span className="text-yellow-500 dark:text-yellow-400 text-sm" title={t('mostEfficient')}>⭐</span>
+                            <span className="text-neon-yellow text-sm" title={t('mostEfficient')}>⭐</span>
                           )}
                           {isSelected && (
-                            <span className="text-blue-600 dark:text-blue-400 text-sm">✓</span>
+                            <span className="text-neon-cyan text-sm font-bold">✓</span>
                           )}
                         </div>
                       </td>
 
                       {/* Machine */}
-                      <td className="p-3 border dark:border-gray-600">
-                        <span className="text-gray-700 dark:text-gray-300">{analysis.machineType}</span>
+                      <td className="p-3 border border-neon-blue/20">
+                        <span className="text-space-200">{analysis.machineType}</span>
                       </td>
 
                       {/* Machine Count */}
-                      <td className="p-3 text-center border dark:border-gray-600">
-                        <span className="font-medium text-gray-900 dark:text-white">
+                      <td className="p-3 text-center border border-neon-blue/20">
+                        <span className="font-medium text-white">
                           {analysis.isMining ? '-' : formatNumber(analysis.machineCount)}
                         </span>
                       </td>
 
                       {/* Power */}
-                      <td className="p-3 text-center border dark:border-gray-600">
-                        <span className="font-medium text-gray-900 dark:text-white">
+                      <td className="p-3 text-center border border-neon-blue/20">
+                        <span className="font-medium text-white">
                           {analysis.isMining ? '-' : formatPower(analysis.powerConsumption)}
                         </span>
                       </td>
 
                       {/* Inputs */}
-                      <td className="p-3 border dark:border-gray-600">
+                      <td className="p-3 border border-neon-blue/20">
                         {analysis.inputsPerSecond.length === 0 ? (
-                          <span className="text-gray-500 dark:text-gray-400 text-sm italic">{t('none')}</span>
+                          <span className="text-space-300 text-sm italic">{t('none')}</span>
                         ) : (
                           <div className="space-y-1">
                             {analysis.inputsPerSecond.map(input => (
                               <div key={input.itemId} className="flex items-center gap-1 text-xs">
                                 <ItemIcon itemId={input.itemId} size={16} />
-                                <span className="text-gray-700 dark:text-gray-300 truncate">
+                                <span className="text-space-200 truncate">
                                   {input.itemName}: {input.rate.toFixed(2)}/s
                                 </span>
                               </div>
@@ -299,40 +301,47 @@ export function RecipeComparisonModal({
                       </td>
 
                       {/* Efficiency */}
-                      <td className="p-3 text-center border dark:border-gray-600">
+                      <td className="p-3 text-center border border-neon-blue/20">
                         <div className="flex flex-col items-center">
-                          <span className={`font-bold ${
-                            analysis.efficiency > 80 ? 'text-green-600 dark:text-green-400' :
-                            analysis.efficiency > 60 ? 'text-yellow-600 dark:text-yellow-400' :
-                            'text-red-600 dark:text-red-400'
-                          }`}>
+                          <span 
+                            className="font-bold text-lg"
+                            style={{
+                              color: analysis.efficiency > 80 ? '#00FF88' :
+                                     analysis.efficiency > 60 ? '#FFD700' :
+                                     '#FF6B35'
+                            }}
+                          >
                             {analysis.efficiency.toFixed(0)}
                           </span>
-                          <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full mt-1">
+                          <div className="w-20 h-3 bg-space-800 border-2 border-neon-blue/50 rounded-full mt-1 relative overflow-hidden">
                             <div
-                              className={`h-full rounded-full ${
-                                analysis.efficiency > 80 ? 'bg-green-500' :
-                                analysis.efficiency > 60 ? 'bg-yellow-500' :
-                                'bg-red-500'
-                              }`}
-                              style={{ width: `${analysis.efficiency}%` }}
+                              className="h-full rounded-full transition-all absolute top-0 left-0"
+                              style={{
+                                width: `${analysis.efficiency}%`,
+                                backgroundColor: analysis.efficiency > 80 ? '#00FF88' :
+                                                analysis.efficiency > 60 ? '#FFD700' :
+                                                '#FF6B35',
+                                boxShadow: analysis.efficiency > 80 ? '0 0 10px rgba(0,255,136,0.8), inset 0 0 5px rgba(255,255,255,0.3)' :
+                                          analysis.efficiency > 60 ? '0 0 10px rgba(255,215,0,0.8), inset 0 0 5px rgba(255,255,255,0.3)' :
+                                          '0 0 10px rgba(255,107,53,0.8), inset 0 0 5px rgba(255,255,255,0.3)'
+                              }}
                             />
                           </div>
                         </div>
                       </td>
 
                       {/* Action */}
-                      <td className="p-3 text-center border dark:border-gray-600">
+                      <td className="p-3 text-center border border-neon-blue/20">
                         <button
                           onClick={() => {
                             onSelectRecipe(recipeId);
                             onClose();
                           }}
                           className={`
-                            px-4 py-2 rounded-lg font-medium transition-colors
+                            px-4 py-2 rounded-lg font-medium transition-all border-2 ripple-effect
                             ${isSelected
-                              ? 'bg-blue-600 text-white hover:bg-blue-700'
-                              : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+                              ? 'bg-neon-cyan/30 border-neon-cyan text-white shadow-[0_0_15px_rgba(0,217,255,0.5)] scale-105'
+                              : 'bg-dark-700/50 border-neon-blue/30 text-space-200 hover:border-neon-blue hover:bg-neon-blue/20 hover:text-neon-cyan'
                             }
                           `}
                         >
@@ -347,13 +356,16 @@ export function RecipeComparisonModal({
           </div>
 
           {/* Legend */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{t('efficiencyScoreCalculation')}</h3>
-            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-              <li>• <span className="font-medium">40%</span> {t('powerConsumptionLowerIsBetter')}</li>
-              <li>• <span className="font-medium">30%</span> {t('machineCountFewerIsBetter')}</li>
-              <li>• <span className="font-medium">30%</span> {t('inputComplexityFewerIsBetter')}</li>
-              <li className="mt-2 text-xs italic">⭐ {t('starIndicatesMostEfficient')}</li>
+          <div className="mt-6 p-4 bg-neon-purple/10 border border-neon-purple/40 rounded-lg backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+            <h3 className="font-semibold text-neon-purple mb-2 flex items-center gap-2">
+              <span>📊</span>
+              {t('efficiencyScoreCalculation')}
+            </h3>
+            <ul className="text-sm text-space-200 space-y-1">
+              <li>• <span className="font-medium text-neon-cyan">40%</span> {t('powerConsumptionLowerIsBetter')}</li>
+              <li>• <span className="font-medium text-neon-cyan">30%</span> {t('machineCountFewerIsBetter')}</li>
+              <li>• <span className="font-medium text-neon-cyan">30%</span> {t('inputComplexityFewerIsBetter')}</li>
+              <li className="mt-2 text-xs italic text-neon-yellow">⭐ {t('starIndicatesMostEfficient')}</li>
             </ul>
           </div>
         </div>

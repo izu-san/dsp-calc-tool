@@ -26,6 +26,10 @@ export interface RecipeTreeNode {
   itemId?: number;
   itemName?: string;
   miningFrom?: string; // Source of the raw material (e.g., "Iron Veins")
+  
+  // For circular dependency nodes
+  isCircularDependency?: boolean; // True if this node represents a circular dependency
+  sourceRecipe?: Recipe; // The recipe that requires this circular input
 }
 
 export interface RecipeInput {
