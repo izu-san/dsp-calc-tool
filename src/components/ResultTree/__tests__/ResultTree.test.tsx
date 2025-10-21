@@ -1,4 +1,5 @@
 import React from 'react';
+import { getDataPath } from '../../../utils/paths';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { ProductionTree } from '../index';
@@ -93,14 +94,22 @@ describe('ProductionTree', () => {
             productive: true,
         },
         machine: {
+            id: 2301,
             name: 'Arc Smelter',
+            count: 1,
+            Type: 'Smelt',
+            isRaw: false,
             assemblerSpeed: 10000,
             workEnergyPerTick: 120,
+            idleEnergyPerTick: 0,
+            exchangeEnergyPerTick: 0,
+            isPowerConsumer: true,
+            isPowerExchanger: false,
         },
         machineCount: 1,
         targetOutputRate: 60,
         power: { total: 120, machines: 120, sorters: 0 },
-        conveyorBelts: { inputs: 1, outputs: 1, total: 2, saturation: 85, bottleneckType: 'input' },
+    conveyorBelts: { inputs: 1, outputs: 1, total: 2, saturation: 85, bottleneckType: 'input' as const },
         proliferator: { type: 'none' as const, mode: 'speed' as const, productionBonus: 0, speedBonus: 0, powerIncrease: 0 },
         inputs: [
             { itemId: 1001, itemName: 'Iron Ore', requiredRate: 60 },
@@ -168,7 +177,7 @@ describe('ProductionTree', () => {
             conveyorBelts: { 
                 ...mockRecipeNode.conveyorBelts, 
                 saturation: 85, 
-                bottleneckType: 'input' 
+                bottleneckType: 'input' as const 
             },
         };
         
@@ -283,17 +292,17 @@ describe('ProductionTree', () => {
         
         render(<ProductionTree node={explicitRecipeNode} />);
         
-        // Explicit=trueの場合、/data/Recipes/Icons/120.png が使用される
-        const img = screen.getByAltText('Plasma Refining') as HTMLImageElement;
-        expect(img.src).toContain('/data/Recipes/Icons/120.png');
+    // Explicit=trueの場合、recipes固有のアイコンが使用される
+    const img = screen.getByAltText('Plasma Refining') as HTMLImageElement;
+    expect(img.src).toContain(getDataPath('data/Recipes/Icons/120.png'));
     });
 
     it('非Explicitレシピの場合、結果アイテムのアイコンが表示される', () => {
         render(<ProductionTree node={mockRecipeNode} />);
         
-        // Explicit=falseの場合、/data/Items/Icons/1002.png が使用される
-        const img = screen.getByAltText('Iron Ingot') as HTMLImageElement;
-        expect(img.src).toContain('/data/Items/Icons/1002.png');
+    // Explicit=falseの場合、結果アイテムのアイコンが使用される
+    const img = screen.getByAltText('Iron Ingot') as HTMLImageElement;
+    expect(img.src).toContain(getDataPath('data/Items/Icons/1002.png'));
     });
 
     it('循環依存ノードの場合、特別なスタイルとアイコンが表示される', () => {
