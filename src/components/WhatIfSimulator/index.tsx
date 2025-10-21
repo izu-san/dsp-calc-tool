@@ -36,14 +36,18 @@ export function WhatIfSimulator() {
   const [appliedScenario, setAppliedScenario] = useState<string | null>(null);
   const [optimizationGoal, setOptimizationGoal] = useState<OptimizationGoal>(null);
 
+  // Recursive function to count total belts (memoized)
   const countTotalBelts = useCallback((node: RecipeTreeNode): number => {
-    let total = node.conveyorBelts?.total || 0;
-    if (node.children) {
-      for (const child of node.children) {
-        total += countTotalBelts(child);
+    const count = (n: RecipeTreeNode): number => {
+      let total = n.conveyorBelts?.total || 0;
+      if (n.children) {
+        for (const child of n.children) {
+          total += count(child);
+        }
       }
-    }
-    return total;
+      return total;
+    };
+    return count(node);
   }, []);
 
   // Check if a scenario is already applied (current settings match scenario)
