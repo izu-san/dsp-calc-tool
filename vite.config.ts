@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // GitHub Pagesでリポジトリ名をベースパスとして使用
+  // カスタムドメインを使用する場合は '/' に設定
+  base: process.env.NODE_ENV === 'production' ? '/dsp-calc-tool/' : '/',
   plugins: [react()],
   test: {
     globals: true,
