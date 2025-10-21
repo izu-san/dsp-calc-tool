@@ -1,3 +1,5 @@
+import { getDataPath } from '../utils/paths';
+
 interface ItemIconProps {
   itemId: number;
   size?: number;
@@ -6,9 +8,9 @@ interface ItemIconProps {
 }
 
 export function ItemIcon({ itemId, size = 32, className = '', alt = '' }: ItemIconProps) {
-  // Try Items folder first, then Machines folder
-  const itemIconPath = `/data/Items/Icons/${itemId}.png`;
-  const machineIconPath = `/data/Machines/Icons/${itemId}.png`;
+  // Try Items folder first, then Machines folder (use getDataPath to handle base path)
+  const itemIconPath = getDataPath(`data/Items/Icons/${itemId}.png`);
+  const machineIconPath = getDataPath(`data/Machines/Icons/${itemId}.png`);
   
   return (
     <picture>

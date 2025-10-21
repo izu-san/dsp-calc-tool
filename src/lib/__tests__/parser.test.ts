@@ -190,9 +190,9 @@ describe('parser', () => {
 
       await loadGameData(undefined, 'en');
 
-      expect(global.fetch).toHaveBeenCalledWith('/data/Items/Items_en.xml');
-      expect(global.fetch).toHaveBeenCalledWith('/data/Recipes/Recipes_en.xml');
-      expect(global.fetch).toHaveBeenCalledWith('/data/Machines/Machines_en.xml');
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Items/Items_en.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes_en.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines_en.xml'));
     });
 
     it('ロケールファイルがない場合デフォルトにフォールバック', async () => {
@@ -204,26 +204,26 @@ describe('parser', () => {
         callCount++;
         
         // Items_fr.xml → reject → Items.xml → resolve
-        if (url === '/data/Items/Items_fr.xml') {
+        if (url.includes('Items_fr.xml')) {
           return Promise.reject(new Error('Not found'));
         }
-        if (url === '/data/Items/Items.xml') {
+        if (url.includes('Items.xml') && !url.includes('Items_')) {
           return Promise.resolve({ text: () => Promise.resolve(mockItemsXml) } as Response);
         }
         
         // Recipes_fr.xml → reject → Recipes.xml → resolve
-        if (url === '/data/Recipes/Recipes_fr.xml') {
+        if (url.includes('Recipes_fr.xml')) {
           return Promise.reject(new Error('Not found'));
         }
-        if (url === '/data/Recipes/Recipes.xml') {
+        if (url.includes('Recipes.xml') && !url.includes('Recipes_')) {
           return Promise.resolve({ text: () => Promise.resolve(mockRecipesXml) } as Response);
         }
         
         // Machines_fr.xml → reject → Machines.xml → resolve
-        if (url === '/data/Machines/Machines_fr.xml') {
+        if (url.includes('Machines_fr.xml')) {
           return Promise.reject(new Error('Not found'));
         }
-        if (url === '/data/Machines/Machines.xml') {
+        if (url.includes('Machines.xml') && !url.includes('Machines_')) {
           return Promise.resolve({ text: () => Promise.resolve(mockMachinesXml) } as Response);
         }
         
@@ -233,18 +233,18 @@ describe('parser', () => {
       const gameData = await loadGameData(undefined, 'fr');
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('/data/Items/Items_fr.xml not found')
+        expect.stringContaining('Items_fr.xml not found')
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('/data/Recipes/Recipes_fr.xml not found')
+        expect.stringContaining('Recipes_fr.xml not found')
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('/data/Machines/Machines_fr.xml not found')
+        expect.stringContaining('Machines_fr.xml not found')
       );
 
-      expect(global.fetch).toHaveBeenCalledWith('/data/Items/Items.xml');
-      expect(global.fetch).toHaveBeenCalledWith('/data/Recipes/Recipes.xml');
-      expect(global.fetch).toHaveBeenCalledWith('/data/Machines/Machines.xml');
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Items/Items.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines.xml'));
 
       expect(gameData.items.size).toBe(3);
       expect(gameData.recipes.size).toBe(2);
@@ -565,9 +565,9 @@ describe('parser', () => {
 
       await loadGameData();
 
-      expect(global.fetch).toHaveBeenCalledWith('/data/Items/Items_ja.xml');
-      expect(global.fetch).toHaveBeenCalledWith('/data/Recipes/Recipes_ja.xml');
-      expect(global.fetch).toHaveBeenCalledWith('/data/Machines/Machines_ja.xml');
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Items/Items_ja.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes_ja.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines_ja.xml'));
     });
 
     it('機械のboolean値（isPowerConsumer, isPowerExchanger）を正しく変換', async () => {

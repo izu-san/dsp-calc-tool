@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { getDataPath } from '../../../utils/paths';
 import { render, screen } from '@testing-library/react';
 import { BuildingCostView } from '../index';
 import type { CalculationResult } from '../../../types/calculation';
@@ -60,7 +61,7 @@ describe('BuildingCostView', () => {
           gridPos: 0,
           speed: 0.75,
           prefabId: 2303,
-          iconPath: '/data/Machines/Icons/2303.png',
+            iconPath: getDataPath('data/Machines/Icons/2303.png'),
         },
       ],
       [
@@ -73,7 +74,7 @@ describe('BuildingCostView', () => {
           gridPos: 0,
           speed: 1.0,
           prefabId: 2304,
-          iconPath: '/data/Machines/Icons/2304.png',
+            iconPath: getDataPath('data/Machines/Icons/2304.png'),
         },
       ],
     ]),
