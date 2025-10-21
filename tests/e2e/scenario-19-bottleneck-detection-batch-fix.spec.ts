@@ -1,6 +1,6 @@
 // シナリオ 19: ボトルネック検出と一括修正（WhatIfSimulator）
-// spec: TEST_PLAN.md
-// seed: seed.spec.ts
+// spec: docs/TEST_PLAN.md
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 

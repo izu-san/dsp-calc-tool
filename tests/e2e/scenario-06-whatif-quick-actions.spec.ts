@@ -1,5 +1,5 @@
 // spec: シナリオ 6: What-if分析とクイックアクションの適用
-// seed: seed.spec.ts
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 

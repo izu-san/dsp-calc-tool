@@ -11,8 +11,8 @@ export default defineConfig({
     exclude: [
       'node_modules/**',
       'dist/**',
-      'e2e_tests/**',
-      'seed.spec.ts',
+      'tests/e2e/**',
+      'tests/fixtures/**',
       '**/*.e2e.spec.ts'
     ],
     coverage: {
@@ -25,8 +25,8 @@ export default defineConfig({
         '**/*.config.*',
         '**/mockData',
         'dist/',
-        'e2e_tests/',
-        'seed.spec.ts'
+        'tests/e2e/',
+        'tests/fixtures/'
       ]
     }
   },
