@@ -14,13 +14,6 @@ interface BuildingCostViewProps {
 export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
   const { t } = useTranslation();
   const { data } = useGameDataStore();
-  
-  // Helper function to get machine name by ID
-  const getMachineName = (machineId: number): string => {
-    if (!data) return `Machine ${machineId}`;
-    const machine = data.machines.get(machineId);
-    return machine?.name || `Machine ${machineId}`;
-  };
 
   const buildingCost = useMemo(() => {
     if (!calculationResult) return null;
@@ -31,6 +24,13 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
   const enhancedBuildingCost = useMemo(() => {
     if (!buildingCost) return null;
     
+    // Helper function to get machine name by ID
+    const getMachineName = (machineId: number): string => {
+      if (!data) return `Machine ${machineId}`;
+      const machine = data.machines.get(machineId);
+      return machine?.name || `Machine ${machineId}`;
+    };
+    
     const enhancedMachines = buildingCost.machines.map(machine => ({
       ...machine,
       machineName: getMachineName(machine.machineId)
@@ -40,7 +40,7 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
       ...buildingCost,
       machines: enhancedMachines
     };
-  }, [buildingCost, data, t]); // Include 't' to re-calculate when language changes
+  }, [buildingCost, data]);
 
   if (!enhancedBuildingCost) {
     return (
