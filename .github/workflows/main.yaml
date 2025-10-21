@@ -8,14 +8,15 @@ on:
 
 jobs:
   cicd_test:
-    name: develop_to_main
+    name: develop_or_dependabot_to_main
     runs-on: ubuntu-latest
     steps:
-      - name: Check:if PR is from develop to main branch
+      - name: Check:if PR is from develop or dependabot to main branch
         run: |
-          if [ "${{ github.event.pull_request.base.ref }}" == "main" ] && [ "${{ github.event.pull_request.head.ref }}" != "develop" ]; then
-            echo "Pull request not from develop to main branch"
+          HEAD_REF="${{ github.event.pull_request.head.ref }}"
+          if [ "${{ github.event.pull_request.base.ref }}" == "main" ] && [ "$HEAD_REF" != "develop" ] && [[ ! "$HEAD_REF" =~ ^dependabot/ ]]; then
+            echo "Pull request not from develop or dependabot branch to main branch"
             exit 1
           else
-            echo "Pull request from develop to main branch"
+            echo "Pull request from develop or dependabot branch to main branch"
           fi
