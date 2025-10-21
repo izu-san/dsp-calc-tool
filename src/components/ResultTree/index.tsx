@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RecipeTreeNode } from '../../types';
-import { getItemIconPath } from '../../utils/grid';
+import { getItemIconPath, getRecipeIconPath } from '../../utils/grid';
 import { formatRate, formatNumber, formatPower } from '../../utils/format';
 import { parseColorTags } from '../../utils/html';
 import { NodeSettingsModal } from '../NodeSettingsModal';
@@ -50,12 +50,10 @@ export const ProductionTree = memo(function ProductionTree({
   if (node.isRawMaterial) {
     // Determine if this is a circular dependency
     const isCircular = node.isCircularDependency;
-    const iconId = isCircular && node.sourceRecipe 
-      ? node.sourceRecipe.Results[0]?.id 
-      : node.itemId!;
-    const displayName = isCircular && node.sourceRecipe
-      ? node.sourceRecipe.name
-      : node.itemName;
+    // For circular dependencies, always show the item (not the recipe)
+    // because we want to display which item needs external supply
+    const iconId = node.itemId!;
+    const displayName = node.itemName;
     
     return (
       <div className={`${depth > 0 ? 'ml-6 mt-2' : ''}`}>
@@ -173,7 +171,11 @@ export const ProductionTree = memo(function ProductionTree({
           {/* Recipe Icon */}
           <div className="w-12 h-12 flex-shrink-0 border border-neon-cyan/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,217,255,0.3)]">
             <img
-              src={getItemIconPath(node.recipe!.Results[0]?.id)}
+              src={getRecipeIconPath(
+                node.recipe!.SID,
+                node.recipe!.Explicit,
+                node.recipe!.Results[0]?.id
+              )}
               alt={node.recipe!.name}
               className="w-full h-full object-contain"
               onError={(e) => {

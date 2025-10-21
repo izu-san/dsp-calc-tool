@@ -168,7 +168,6 @@ export function buildRecipeTree(
     // Circular dependency detected - treat as raw material
     // This prevents infinite recursion for recipes like "Reforming Refine"
     // where refined oil is both input and output
-    console.warn(`Circular dependency detected for item ${outputItemId}, treating required input as external supply`);
   }
 
   // Stable path-based node ID
@@ -307,15 +306,11 @@ export function buildRecipeTree(
       const rawNodeId = `${nodeId}/raw-${input.itemId}`;
       const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
       
-      // For circular dependency, find the recipe that produces this item
+      // For circular dependency, use the current recipe itself
+      // (the recipe that requires its own output as input)
       let circularRecipe: Recipe | undefined;
       if (isCircular) {
-        const producerRecipes = gameData.recipesByItemId.get(input.itemId);
-        if (producerRecipes && producerRecipes.length > 0) {
-          circularRecipe = forceRecipe
-            ? producerRecipes.find(r => r.SID === preferredRecipeId) || producerRecipes[0]
-            : producerRecipes[0];
-        }
+        circularRecipe = recipe;
       }
       
       const rawNode: RecipeTreeNode = {

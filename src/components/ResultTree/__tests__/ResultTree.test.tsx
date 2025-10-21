@@ -69,7 +69,11 @@ describe('ProductionTree', () => {
         itemId: 1001,
         itemName: 'Iron Ore',
         targetOutputRate: 60,
-        conveyorBelts: { outputs: 1 },
+        machineCount: 0,
+        proliferator: { type: 'none' as const, mode: 'speed' as const, productionBonus: 0, speedBonus: 0, powerIncrease: 0 },
+        power: { total: 0, machines: 0, sorters: 0 },
+        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
+        inputs: [],
         miningFrom: 'Iron Vein',
         children: [],
     };
@@ -80,8 +84,12 @@ describe('ProductionTree', () => {
         recipe: {
             SID: 2001,
             name: 'Iron Ingot',
-            Type: 'Smelt',
-            Results: [{ id: 1002 }],
+            Type: 'Smelt' as const,
+            Explicit: false,
+            TimeSpend: 60,
+            Items: [{ id: 1001, name: 'Iron Ore', count: 1, Type: 'Material', isRaw: true }],
+            Results: [{ id: 1002, name: 'Iron Ingot', count: 1, Type: 'Material', isRaw: false }],
+            GridIndex: '1101',
             productive: true,
         },
         machine: {
@@ -93,7 +101,7 @@ describe('ProductionTree', () => {
         targetOutputRate: 60,
         power: { total: 120, machines: 120, sorters: 0 },
         conveyorBelts: { inputs: 1, outputs: 1, total: 2, saturation: 85, bottleneckType: 'input' },
-        proliferator: { type: 'none', mode: 'speed' },
+        proliferator: { type: 'none' as const, mode: 'speed' as const, productionBonus: 0, speedBonus: 0, powerIncrease: 0 },
         inputs: [
             { itemId: 1001, itemName: 'Iron Ore', requiredRate: 60 },
         ],
@@ -174,7 +182,7 @@ describe('ProductionTree', () => {
     it('プロリフェレータが設定されている場合、バッジが表示される', () => {
         const proliferatorNode = {
             ...mockRecipeNode,
-            proliferator: { type: 'mk2', mode: 'production' },
+            proliferator: { type: 'mk2' as const, mode: 'production' as const, productionBonus: 0.12, speedBonus: 0, powerIncrease: 0.7 },
         };
         
         render(<ProductionTree node={proliferatorNode} />);
@@ -255,5 +263,76 @@ describe('ProductionTree', () => {
         // 両方の子ノードが表示される
         expect(screen.getAllByText('Iron Ore')[0]).toBeInTheDocument(); // Use getAllByText to avoid ambiguity
         expect(screen.getByText('Copper Ore')).toBeInTheDocument();
+    });
+
+    it('Explicitレシピの場合、レシピ固有のアイコンが表示される', () => {
+        const explicitRecipeNode = {
+            ...mockRecipeNode,
+            recipe: {
+                SID: 120,
+                name: 'Plasma Refining',
+                Type: 'Refine' as const,
+                Explicit: true,
+                TimeSpend: 120,
+                Items: [{ id: 1120, name: 'Crude Oil', count: 2, Type: 'Fluid', isRaw: false }],
+                Results: [{ id: 1114, name: 'Refined Oil', count: 2, Type: 'Fluid', isRaw: false }],
+                GridIndex: '1201',
+                productive: true,
+            },
+        };
+        
+        render(<ProductionTree node={explicitRecipeNode} />);
+        
+        // Explicit=trueの場合、/data/Recipes/Icons/120.png が使用される
+        const img = screen.getByAltText('Plasma Refining') as HTMLImageElement;
+        expect(img.src).toContain('/data/Recipes/Icons/120.png');
+    });
+
+    it('非Explicitレシピの場合、結果アイテムのアイコンが表示される', () => {
+        render(<ProductionTree node={mockRecipeNode} />);
+        
+        // Explicit=falseの場合、/data/Items/Icons/1002.png が使用される
+        const img = screen.getByAltText('Iron Ingot') as HTMLImageElement;
+        expect(img.src).toContain('/data/Items/Icons/1002.png');
+    });
+
+    it('循環依存ノードの場合、特別なスタイルとアイコンが表示される', () => {
+        const circularDependencyNode = {
+            nodeId: 'raw-1114-1',
+            isRawMaterial: true,
+            isCircularDependency: true,
+            itemId: 1114,
+            itemName: 'Refined Oil',
+            miningFrom: 'externalSupplyCircular',
+            targetOutputRate: 2,
+            machineCount: 0,
+            proliferator: { type: 'none' as const, mode: 'speed' as const, productionBonus: 0, speedBonus: 0, powerIncrease: 0 },
+            power: { total: 0, machines: 0, sorters: 0 },
+            conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
+            inputs: [],
+            sourceRecipe: {
+                SID: 120,
+                name: 'Reforming Refine',
+                Type: 'Refine' as const,
+                Explicit: true,
+                TimeSpend: 180,
+                Items: [{ id: 1114, name: 'Refined Oil', count: 1, Type: 'Fluid', isRaw: false }],
+                Results: [{ id: 1114, name: 'Refined Oil', count: 3, Type: 'Fluid', isRaw: false }],
+                GridIndex: '1202',
+                productive: true,
+            },
+            children: [],
+        };
+        
+        render(<ProductionTree node={circularDependencyNode} />);
+        
+        // アイテム名が表示される
+        expect(screen.getByText('Refined Oil')).toBeInTheDocument();
+        
+        // 循環依存の説明が表示される
+        expect(screen.getByText('🔄 externalSupplyCircular')).toBeInTheDocument();
+        
+        // 生産速度が表示される
+        expect(screen.getByText('2.0/s')).toBeInTheDocument();
     });
 });
