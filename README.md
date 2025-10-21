@@ -1,193 +1,316 @@
-# Dyson Sphere Program - Recipe Calculator
+# Dyson Sphere Program - 生産チェーン計算機
 
-[![CI](https://github.com/izu-san/dsp-calc-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/ci.yml)
-[![Deploy](https://github.com/izu-san/dsp-calc-tool/actions/workflows/deploy.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/deploy.yml)
-[![Code Quality](https://github.com/izu-san/dsp-calc-tool/actions/workflows/code-quality.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/code-quality.yml)
+Dyson Sphere Programの生産ラインを最適化するためのWebベース計算ツールです。原材料から最終製品までの完全な生産チェーンを可視化し、必要な施設数・電力・ベルト要件を正確に算出します。
 
-A web-based production chain calculator for Dyson Sphere Program that helps you optimize factory layouts and resource planning.
+## ✨ 主要機能
 
-## Features
+### 🔢 生産計算
+- **完全な生産チェーン計算**: 原材料から最終製品までの全工程を自動計算
+- **増産剤サポート**: Mk.I/II/III の生産加速・増産モードに対応（排他モード）
+- **マシンランク選択**: 各種施設の段階別性能に対応
+  - 精錬設備: アーク溶鉱炉（100%）→ プレーン溶鉱炉（200%）→ 負エントロピー溶鉱炉（300%）
+  - 組立機: Mk.I（75%）→ Mk.II（100%）→ Mk.III（150%）→ 再構成式組立機（300%）
+  - 化学プラント: 標準（100%）→ 量子化学プラント（200%）
+  - 研究設備: 標準（100%）→ 自己進化ラボ（300%）
 
-- 🔢 **Recipe Calculation**: Calculate complete production chains from raw materials to final products
-- ⚡ **Proliferator Support**: Configure production boost or speed boost (exclusive modes)
-- 🏭 **Machine Tiers**: Select different machine ranks for optimal production
-- 🔌 **Power Consumption**: Calculate total power requirements including sorters
-- 🌳 **Tree View**: Visualize production dependencies in a clear tree structure
-- 💾 **Settings Persistence**: Your preferences are saved automatically
-- 🔄 **Alternative Recipes**: Choose between multiple production methods
+### 📊 可視化と分析
+- **生産ツリー表示**: 依存関係を階層的に表示、展開/折りたたみ可能
+- **統計ビュー**: 全アイテムの生産量・消費量を一覧表示
+- **電力グラフ**: 施設別の消費電力を円グラフで視覚化
+- **建設コスト計算**: 生産ライン構築に必要な建材を自動算出
+- **採掘速度計算**: 原材料の採掘に必要な採掘機・軌道採掘機の数を計算
 
-## Technology Stack
+### 🎯 最適化機能
+- **ボトルネック検出**: ベルト飽和度80%以上を自動検出
+- **What-ifシミュレーター**: 7種類のシナリオで最適化を提案
+  - 増産剤切替（Mk.I/II/III、加速/増産）
+  - マシンランクアップグレード
+  - ベルトアップグレード
+- **レシピ比較モーダル**: 代替レシピの性能を比較
+- **ノード別設定**: 各生産段階ごとに個別設定をオーバーライド可能
 
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite 5
-- **State Management**: Zustand
-- **Styling**: Tailwind CSS
-- **UI Components**: Radix UI
-- **Data Parsing**: fast-xml-parser
-- **Calculations**: decimal.js
+### 💾 プラン管理
+- **保存・読込**: プランをJSON形式で保存・読込
+- **URL共有**: 圧縮URLでプランを他のユーザーと共有
+- **テンプレート機能**: ゲーム進行度別のプリセット設定
+  - 序盤（Mk.Iベルト、増産剤なし）
+  - 中盤（Mk.IIベルト、Mk.I増産剤）
+  - 終盤（Mk.IIIベルト、Mk.II増産剤）
+  - エンドゲーム（Mk.III全装備、4スタック）
+  - 省電力（最小施設数）
 
-## Getting Started
+### 🌍 多言語対応
+- 日本語・英語に対応
+- ゲームデータの自動多言語化
 
-### Prerequisites
+## 🛠️ 技術スタック
 
-- Node.js 18 or higher
-- npm or yarn
+### フロントエンド
+- **React 19** - 最新のReactバージョン
+- **TypeScript** - 型安全な開発
+- **Vite 7** - 高速ビルドツール
+- **Tailwind CSS 4** - ユーティリティファーストCSS
 
-### Installation
+### 状態管理とUI
+- **Zustand** - 軽量な状態管理ライブラリ
+- **Radix UI** - アクセシブルなUIコンポーネント
+- **Chart.js** - データ可視化
+
+### データ処理
+- **fast-xml-parser** - ゲームデータXMLのパース
+- **decimal.js** - 高精度な数値計算
+- **zod** - スキーマバリデーション
+- **DOMPurify** - XMLサニタイゼーション
+
+### 国際化
+- **i18next** - 多言語対応
+- **react-i18next** - React統合
+
+### テスト
+- **Vitest** - 高速ユニットテスト
+- **Testing Library** - コンポーネントテスト
+- **V8 Coverage** - カバレッジレポート
+
+## 🚀 セットアップ
+
+### 前提条件
+- **Node.js** 18以上
+- **npm** または **yarn**
+
+### インストール
 
 ```bash
-# Install dependencies
+# 依存関係のインストール
 npm install
 
-# Start development server
+# 開発サーバーの起動
 npm run dev
 
-# Build for production
+# 本番用ビルド
 npm run build
 
-# Preview production build
+# ビルドのプレビュー
 npm run preview
 ```
 
-## Project Structure
+### テスト
+
+```bash
+# ユニットテストの実行
+npm run test
+
+# テストUIの起動
+npm run test:ui
+
+# カバレッジレポートの生成
+npm run test:coverage
+```
+
+### Lint
+
+```bash
+# コード品質チェック
+npm run lint
+```
+
+## 📁 プロジェクト構造
 
 ```
 src/
-├── components/        # React components
-│   ├── SettingsPanel/ # Global settings UI
-│   ├── RecipeSelector/ # Recipe grid selection
-│   └── ResultTree/    # Production chain tree view
-├── lib/              # Business logic
-│   └── parser.ts     # XML data parser
-├── stores/           # Zustand state management
-│   ├── gameDataStore.ts    # Game data (items, recipes, machines)
-│   └── settingsStore.ts    # User settings
-├── types/            # TypeScript type definitions
-│   ├── game-data.ts
-│   ├── settings.ts
-│   └── calculation.ts
-├── utils/            # Utility functions
-│   └── grid.ts       # Grid calculations
-└── App.tsx           # Main application component
+├── components/              # Reactコンポーネント
+│   ├── RecipeSelector/      # レシピ選択グリッド
+│   ├── ResultTree/          # 生産ツリー表示
+│   ├── SettingsPanel/       # 設定パネル（増産剤、マシンランク）
+│   ├── StatisticsView/      # 統計ビュー
+│   ├── BuildingCostView/    # 建設コスト表示
+│   ├── PowerGraphView/      # 電力グラフ
+│   ├── MiningCalculator/    # 採掘速度計算機
+│   ├── WhatIfSimulator/     # What-ifシミュレーター
+│   ├── PlanManager/         # プラン管理
+│   ├── AlternativeRecipeSelector/ # 代替レシピ選択
+│   ├── NodeSettingsModal/   # ノード設定モーダル
+│   ├── RecipeComparisonModal/ # レシピ比較モーダル
+│   ├── ModSettings/         # Mod設定（隠し機能）
+│   ├── LanguageSwitcher/    # 言語切替
+│   └── WelcomeModal.tsx     # ウェルカムモーダル
+│
+├── lib/                     # ビジネスロジック
+│   ├── calculator.ts        # 生産チェーン計算エンジン
+│   ├── parser.ts            # XMLデータパーサー
+│   ├── proliferator.ts      # 増産剤計算
+│   ├── powerCalculation.ts  # 電力計算
+│   ├── buildingCost.ts      # 建設コスト計算
+│   ├── miningCalculation.ts # 採掘速度計算
+│   └── statistics.ts        # 統計計算
+│
+├── stores/                  # Zustand状態管理
+│   ├── gameDataStore.ts     # ゲームデータ（アイテム、レシピ、施設）
+│   ├── settingsStore.ts     # ユーザー設定（永続化）
+│   ├── recipeSelectionStore.ts # レシピ選択状態
+│   ├── nodeOverrideStore.ts # ノード別オーバーライド設定
+│   └── favoritesStore.ts    # お気に入りレシピ
+│
+├── types/                   # TypeScript型定義
+│   ├── game-data.ts         # ゲームデータ型
+│   ├── settings.ts          # 設定型
+│   ├── calculation.ts       # 計算結果型
+│   └── saved-plan.ts        # プラン保存型
+│
+├── utils/                   # ユーティリティ関数
+│   ├── format.ts            # 数値フォーマット
+│   ├── grid.ts              # グリッド計算
+│   ├── planExport.ts        # プラン保存・復元
+│   └── urlShare.ts          # URL共有
+│
+├── constants/               # 定数定義
+│   ├── machines.ts          # 施設データ
+│   ├── rawMaterials.ts      # 原材料定義
+│   └── icons.ts             # アイコンマッピング
+│
+├── hooks/                   # カスタムReactフック
+│   └── useTheme.ts          # テーマ管理
+│
+├── i18n.ts                  # 国際化設定
+├── App.tsx                  # メインアプリケーション
+└── main.tsx                 # エントリーポイント
 
 public/
-└── data/             # Game data XML files
-    ├── Items/
-    ├── Recipes/
-    └── Machines/
+└── data/                    # ゲームデータ
+    ├── Items/               # アイテム画像・XML
+    ├── Recipes/             # レシピ画像・XML
+    └── Machines/            # 施設画像・XML
+
+tests/
+├── e2e/                     # E2Eテスト（Playwright）
+└── fixtures/                # テストフィクスチャ
 ```
 
-## Game Data
+## 📖 使い方
 
-The calculator uses XML data files exported from Dyson Sphere Program:
+### 基本的な流れ
 
-- **Items.xml**: All game items and resources
-- **Recipes.xml**: Production recipes
-- **Machines.xml**: Production facilities and their properties
+1. **レシピを選択**: グリッドから目的のレシピをクリック
+2. **目標生産量を入力**: 秒間アイテム数を指定
+3. **設定を調整**: 増産剤、マシンランク、ベルト速度などを設定
+4. **結果を確認**: 
+   - **生産ツリータブ**: 階層構造で全工程を確認
+   - **統計タブ**: アイテム別の生産量・消費量を一覧
+   - **建設コストタブ**: 必要な建材を確認
 
-## Key Concepts
+### 高度な機能
 
-### Proliferators
+#### ノード別設定
+各生産ノードで右側の設定ボタンをクリックし、個別に以下を調整可能：
+- 増産剤の種類とモード
+- マシンランク
+- 代替レシピの選択
 
-Proliferators boost production with **exclusive modes**:
-- **Production Boost**: Increases output quantity
-- **Speed Boost**: Increases production speed
+#### What-ifシミュレーター
+ボトルネックが検出された場合、自動的に最適化提案を表示：
+- **Apply Best**: 最適なシナリオを自動適用
+- **Fix All**: 全ボトルネックを一括解決
 
-Only one mode can be active at a time.
+#### プラン保存と共有
+1. **保存**: プランマネージャーから名前を付けて保存
+2. **読込**: 保存済みプランを選択して復元
+3. **URL共有**: Share URLボタンでリンクをコピー
 
-| Type | Production | Speed | Power |
-|------|-----------|-------|-------|
+#### テンプレート
+設定パネル下部のテンプレートセレクターから選択：
+- ゲーム進行度に応じた最適設定を瞬時に適用
+
+## ⚙️ ゲームデータについて
+
+本ツールはDyson Sphere Programから抽出されたXMLデータを使用：
+
+- **Items.xml**: 全アイテムとリソース
+- **Recipes.xml**: 生産レシピ
+- **Machines.xml**: 生産施設とその性能
+
+## 🧮 増産剤の仕組み
+
+増産剤は**排他モード**で動作：
+- **増産モード**: 出力量を増加
+- **加速モード**: 生産速度を増加
+
+同時に両方のモードは使用できません。
+
+| 種類 | 増産 | 加速 | 消費電力 |
+|------|------|------|---------|
 | Mk.I | +12.5% | +25% | +30% |
 | Mk.II | +20% | +50% | +70% |
 | Mk.III | +25% | +100% | +150% |
 
-### Machine Tiers
+## 🔌 電力計算
 
-Different machine tiers affect production speed:
+合計電力 = 施設電力 + ソーター電力
 
-- **Smelters**: Arc (100%) → Plane (200%) → Negentropy (300%)
-- **Assemblers**: Mk.I (75%) → Mk.II (100%) → Mk.III (150%)
-- **Chemical Plants**: Standard (100%) → Quantum (200%)
-- **Matrix Labs**: Standard (100%) → Self-evolution (200%)
+- **施設電力**: ランクと増産剤設定に基づく
+- **ソーター電力**: マテリアル搬送用（スループット計算なし）
 
-### Power Calculation
+## 🧪 テストカバレッジ
 
-Total power = Machine power + Sorter power
+包括的なテストスイートを実装：
 
-- **Machine power**: Based on tier and proliferator settings
-- **Sorter power**: Used for material handling (throughput not calculated)
+```bash
+# カバレッジレポート生成
+npm run test:coverage
 
-## Development
+# カバレッジをブラウザで確認
+open coverage/index.html
+```
 
-### Type Safety
+主要な計算ロジックは100%のカバレッジを目標としています。
 
-This project uses strict TypeScript. All game data is fully typed.
+## 🎨 開発ガイド
 
-### State Management
+### 型安全性
+本プロジェクトはTypeScript strictモードを使用。全てのゲームデータは完全に型付けされています。
 
-- **gameDataStore**: Holds parsed XML data
-- **settingsStore**: Persists user preferences to localStorage
+### 状態管理パターン
+- **gameDataStore**: パース済みXMLデータを保持
+- **settingsStore**: ユーザー設定をlocalStorageに永続化
+- **recipeSelectionStore**: 現在の選択状態
+- **nodeOverrideStore**: ノード別オーバーライド設定
 
-### Adding Features
+### 機能追加の流れ
+1. `src/types/` に型定義を追加
+2. `src/lib/` にビジネスロジックを実装
+3. `src/components/` にUIコンポーネントを作成
+4. 必要に応じて `src/stores/` を更新
+5. テストを `__tests__/` に追加
 
-1. Add types to `src/types/`
-2. Implement logic in `src/lib/`
-3. Create components in `src/components/`
-4. Update stores in `src/stores/` if needed
+### パフォーマンス最適化
+- **コード分割**: React.lazy()で重いコンポーネントを遅延読込
+- **チャンク最適化**: ViteのmanualChunksで依存関係を分割
+- **メモ化**: useMemo/useCallbackで再計算を最小化
 
-## License
+## 🌐 ビルドとデプロイ
 
-This project is for educational and personal use. Dyson Sphere Program is © Youthcat Studio.
+```bash
+# 本番用ビルド
+npm run build
 
-## Contributing
+# dist/ディレクトリが生成されます
+# 任意の静的ホスティングサービスにデプロイ可能
+```
 
-Contributions are welcome! Please ensure:
+ビルド設定（vite.config.ts）:
+- チャンクサイズ警告上限: 800KB
+- React、UI、Chart、i18n、Utilsを個別チャンクに分割
 
-- TypeScript strict mode compliance
-- Proper type definitions
-- Component documentation
-- Test coverage for calculations
+## 📜 ライセンス
 
-## Roadmap
+本プロジェクトは [MIT License](LICENSE) の下で公開されています。
 
-- [x] Project setup
-- [x] XML data parsing
-- [x] Type definitions
-- [x] Basic UI layout
-- [x] Recipe grid display
-- [x] Settings panel
-- [x] Calculation engine
-- [x] Production tree view
-- [x] Power optimization
-- [x] Dark mode
-- [x] Alternative recipes
-- [x] Bottleneck detection
-- [x] What-if simulator
-- [x] Statistics view
-- [x] Building cost calculator
-- [x] Mining calculator
-- [x] Power graph
-- [x] Template presets
-- [x] Custom XML upload (Hidden: Ctrl+Shift+M)
+自由に使用・改変・再配布が可能です。詳細はLICENSEファイルをご確認ください。
 
-## Hidden Features
+### ゲームの著作権について
 
-### Mod Settings (Ctrl+Shift+M)
+Dyson Sphere Program © Youthcat Studio
 
-Press `Ctrl+Shift+M` to access advanced mod settings:
+本ツールはファンメイドのプロジェクトであり、Youthcat Studioとは公式な関係はありません
 
-- **Custom Recipes.xml Upload**: Replace game recipes with modded versions
-  - XML validation and sanitization
-  - Security checks for malicious content
-  - File size limit: 10MB
-  
-- **Custom Proliferator Multipliers**: Adjust proliferator effects for modded gameplay
-  - Customize production and speed bonuses
-  - Supports all three proliferator tiers
-  - Reset to default values
+---
 
-**⚠️ Warning**: These features are intended for modded gameplay. Invalid data may cause calculation errors.
-
-## Credits
-
-Built with ❤️ for the Dyson Sphere Program community.
+**バグ報告や機能要望は Issues までお気軽にどうぞ！**
