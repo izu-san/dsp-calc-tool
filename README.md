@@ -1,5 +1,9 @@
 # Dyson Sphere Program - Recipe Calculator
 
+[![CI](https://github.com/izu-san/dsp-calc-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/ci.yml)
+[![Deploy](https://github.com/izu-san/dsp-calc-tool/actions/workflows/deploy.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/deploy.yml)
+[![Code Quality](https://github.com/izu-san/dsp-calc-tool/actions/workflows/code-quality.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/code-quality.yml)
+
 A web-based production chain calculator for Dyson Sphere Program that helps you optimize factory layouts and resource planning.
 
 ## Features
