@@ -104,7 +104,7 @@ export const DEFAULT_ALTERNATIVE_RECIPES: Record<number, number> = {
   1123: 1108, // Graphene -> SID 1108
   1117: 1209, // Organic Crystal -> SID 1209
   1126: 1505, // Casimir Crystal -> SID 1505
-  1120: 1120, // Hydrogen -> item id 1120 (mining)
+  1120: -1, // Hydrogen -> -1 (mining)
 };
 
 // Setting Templates for different game stages

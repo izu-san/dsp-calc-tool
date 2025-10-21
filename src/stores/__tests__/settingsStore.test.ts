@@ -41,6 +41,19 @@ describe('settingsStore', () => {
       
       expect(settings.alternativeRecipes).toBeInstanceOf(Map);
     });
+
+    it('should have default alternative recipes including hydrogen as mining', () => {
+      const { settings } = useSettingsStore.getState();
+      
+      // Hydrogen (1120) should be set to -1 (mining)
+      expect(settings.alternativeRecipes.get(1120)).toBe(-1);
+      
+      // Other default alternative recipes should also be set
+      expect(settings.alternativeRecipes.get(1116)).toBe(1406); // Sulfuric Acid
+      expect(settings.alternativeRecipes.get(1109)).toBe(1106); // Energetic Graphite
+      expect(settings.alternativeRecipes.get(1112)).toBe(1206); // Diamond
+      expect(settings.alternativeRecipes.get(1121)).toBe(1507); // Deuterium
+    });
   });
 
   describe('setProliferator', () => {
@@ -246,6 +259,18 @@ describe('settingsStore', () => {
       
       expect(mapRef1).not.toBe(mapRef2); // Different Map instances
     });
+
+    it('should include hydrogen as mining in all templates', () => {
+      const templates: Array<keyof typeof SETTINGS_TEMPLATES> = ['earlyGame', 'midGame', 'lateGame', 'endGame', 'powerSaver'];
+      
+      templates.forEach(templateId => {
+        const { applyTemplate } = useSettingsStore.getState();
+        applyTemplate(templateId);
+        
+        const { settings } = useSettingsStore.getState();
+        expect(settings.alternativeRecipes.get(1120)).toBe(-1); // Hydrogen should be mining
+      });
+    });
   });
 
   describe('updateSettings', () => {
@@ -288,6 +313,24 @@ describe('settingsStore', () => {
       const { settings } = useSettingsStore.getState();
       expect(settings.proliferator.type).toBe('none');
       expect(settings.machineRank.Assemble).toBe('mk1');
+    });
+
+    it('should reset alternative recipes including hydrogen to mining', () => {
+      const { setAlternativeRecipe, resetSettings } = useSettingsStore.getState();
+      
+      // Change hydrogen to a recipe instead of mining
+      setAlternativeRecipe(1120, 1107);
+      
+      // Verify change
+      let { settings } = useSettingsStore.getState();
+      expect(settings.alternativeRecipes.get(1120)).toBe(1107);
+      
+      // Reset
+      resetSettings();
+      
+      // Should be back to mining (-1)
+      settings = useSettingsStore.getState().settings;
+      expect(settings.alternativeRecipes.get(1120)).toBe(-1);
     });
   });
 
