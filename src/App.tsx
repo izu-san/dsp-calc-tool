@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense, useCallback } from 'react';
 import type { RecipeTreeNode } from './types';
 import { useTranslation } from 'react-i18next';
 import { useGameDataStore } from './stores/gameDataStore';
@@ -84,7 +84,7 @@ function App() {
   };
 
   // Helper function to collect all node IDs at depth >= targetDepth
-  const collectNodeIdsFromDepth = (node: RecipeTreeNode, currentDepth: number, targetDepth: number, parentNodeId: string = 'root'): Set<string> => {
+  const collectNodeIdsFromDepth = useCallback((node: RecipeTreeNode, currentDepth: number, targetDepth: number, parentNodeId: string = 'root'): Set<string> => {
     const nodeIds = new Set<string>();
     
     const traverse = (n: RecipeTreeNode, depth: number, parentId: string) => {
@@ -100,7 +100,7 @@ function App() {
     
     traverse(node, currentDepth, parentNodeId);
     return nodeIds;
-  };
+  }, []);
 
   const handleToggleCollapse = (nodeId: string) => {
     setCollapsedNodes(prev => {
@@ -144,7 +144,7 @@ function App() {
       setCollapsedNodes(depthOneAndBeyond);
       setIsTreeExpanded(false);
     }
-  }, [calculationResult]);
+  }, [calculationResult, collectNodeIdsFromDepth]);
 
   useEffect(() => {
     loadData();
@@ -163,7 +163,7 @@ function App() {
     } else {
       setCalculationResult(null);
     }
-  }, [selectedRecipe, targetQuantity, data, settings, nodeOverridesVersion, setCalculationResult]);
+  }, [selectedRecipe, targetQuantity, data, settings, nodeOverrides, nodeOverridesVersion, setCalculationResult]);
 
   if (isLoading) {
     return (

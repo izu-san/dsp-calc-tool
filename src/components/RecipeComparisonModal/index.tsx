@@ -145,7 +145,7 @@ export function RecipeComparisonModal({
 
     // Sort by efficiency (higher is better)
     return results.sort((a, b) => b.efficiency - a.efficiency);
-  }, [data, recipes, settings, itemId, itemName, canBeMined]);
+  }, [data, recipes, settings, itemId, itemName, canBeMined, t]);
 
   // Local helper removed; using centralized getMachineForRecipe
 

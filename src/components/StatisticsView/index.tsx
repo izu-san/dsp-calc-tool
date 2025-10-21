@@ -15,13 +15,6 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
   const { t } = useTranslation();
   const [showPowerGraph, setShowPowerGraph] = useState(false);
   const { data } = useGameDataStore();
-  
-  // Helper function to get item name by ID
-  const getItemName = (itemId: number): string => {
-    if (!data) return `Item ${itemId}`;
-    const item = data.items.get(itemId);
-    return item?.name || `Item ${itemId}`;
-  };
 
   const statistics = useMemo(() => {
     if (!calculationResult) return null;
@@ -31,6 +24,13 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
   // Enhanced statistics with resolved item names (language-dependent)
   const enhancedStatistics = useMemo(() => {
     if (!statistics) return null;
+    
+    // Helper function to get item name by ID
+    const getItemName = (itemId: number): string => {
+      if (!data) return `Item ${itemId}`;
+      const item = data.items.get(itemId);
+      return item?.name || `Item ${itemId}`;
+    };
     
     const enhancedItems = new Map();
     statistics.items.forEach((item, key) => {
@@ -44,7 +44,7 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
       ...statistics,
       items: enhancedItems
     };
-  }, [statistics, data, t]); // Include 't' to re-calculate when language changes
+  }, [statistics, data]);
 
   if (!enhancedStatistics) {
     return (
