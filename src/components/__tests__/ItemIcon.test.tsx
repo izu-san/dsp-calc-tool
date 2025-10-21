@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ItemIcon } from '../ItemIcon';
+import { getDataPath } from '../../utils/paths';
 
 describe('ItemIcon', () => {
   it('正しいitemIdでアイコンをレンダリングできる', () => {
@@ -34,15 +35,15 @@ describe('ItemIcon', () => {
     const picture = screen.getByAltText('Iron Ore').parentElement;
     const source = picture?.querySelector('source');
     
-    expect(source).toBeInTheDocument();
-    expect(source).toHaveAttribute('srcset', '/data/Items/Icons/1001.png');
+  expect(source).toBeInTheDocument();
+  expect(source).toHaveAttribute('srcset', getDataPath('data/Items/Icons/1001.png'));
   });
 
   it('フォールバックパスを設定する（Machines folder）', () => {
     render(<ItemIcon itemId={2001} alt="Assembler" />);
     
     const img = screen.getByAltText('Assembler');
-    expect(img).toHaveAttribute('src', '/data/Machines/Icons/2001.png');
+  expect(img).toHaveAttribute('src', getDataPath('data/Machines/Icons/2001.png'));
   });
 
   it('エラー時にフォールバック処理が動作する', () => {
@@ -57,7 +58,7 @@ describe('ItemIcon', () => {
     img.dispatchEvent(event);
     
     // 初期状態では機械フォルダのパスが設定されている
-    expect(img.src).toContain('/data/Machines/Icons/9999.png');
+  expect(img.src).toContain(getDataPath('data/Machines/Icons/9999.png'));
   });
 
   it('altテキストが空の場合でもレンダリングできる', () => {

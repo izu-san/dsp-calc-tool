@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { getDataPath } from '../../utils/paths';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
 import type { Recipe } from '../../types';
@@ -104,13 +105,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
     if (category === 'all') return { label: t('categoryAll') };
     
     const categoryIconMap: Record<string, { icon: string; label: string }> = {
-      'Smelt': { icon: '/data/Machines/Icons/2302.png', label: t('categorySmelt') },
-      'Assemble': { icon: '/data/Machines/Icons/2303.png', label: t('categoryAssemble') },
-      'Chemical': { icon: '/data/Machines/Icons/2309.png', label: t('categoryChemical') },
-      'Research': { icon: '/data/Machines/Icons/2901.png', label: t('categoryResearch') },
-      'Refine': { icon: '/data/Machines/Icons/2308.png', label: t('categoryRefine') },
-      'Particle': { icon: '/data/Machines/Icons/2310.png', label: t('categoryParticle') },
-      'Fractionate': { icon: '/data/Machines/Icons/2314.png', label: t('categoryFractionate') },
+      'Smelt': { icon: getDataPath('data/Machines/Icons/2302.png'), label: t('categorySmelt') },
+      'Assemble': { icon: getDataPath('data/Machines/Icons/2303.png'), label: t('categoryAssemble') },
+      'Chemical': { icon: getDataPath('data/Machines/Icons/2309.png'), label: t('categoryChemical') },
+      'Research': { icon: getDataPath('data/Machines/Icons/2901.png'), label: t('categoryResearch') },
+      'Refine': { icon: getDataPath('data/Machines/Icons/2308.png'), label: t('categoryRefine') },
+      'Particle': { icon: getDataPath('data/Machines/Icons/2310.png'), label: t('categoryParticle') },
+      'Fractionate': { icon: getDataPath('data/Machines/Icons/2314.png'), label: t('categoryFractionate') },
     };
     
     return categoryIconMap[category] || { label: category };
