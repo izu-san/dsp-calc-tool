@@ -241,7 +241,7 @@ function App() {
                     {t('target')}
                   </label>
                   <div className="flex items-center gap-3 mb-2">
-                    <ItemIcon itemId={selectedRecipe.Results[0]?.id || 0} size={32} />
+                    <ItemIcon itemId={selectedRecipe.Results?.[0]?.id || 0} size={32} />
                     <span className="font-medium text-white">
                       {selectedRecipe.name}
                     </span>

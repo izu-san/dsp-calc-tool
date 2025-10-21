@@ -1,5 +1,5 @@
 import type { SavedPlan } from '../types/saved-plan';
-import { compress, decompress } from 'lz-string';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
 /**
  * Encode a plan to URL-safe base64 string
@@ -7,9 +7,9 @@ import { compress, decompress } from 'lz-string';
 export function encodePlanToURL(plan: SavedPlan): string {
   try {
     const json = JSON.stringify(plan);
-    // Compress and encode to base64
-    const compressed = compress(json);
-    return encodeURIComponent(compressed);
+    // Compress and encode to URL-safe format
+    const compressed = compressToEncodedURIComponent(json);
+    return compressed;
   } catch (error) {
     console.error('Failed to encode plan:', error);
     throw new Error('Failed to encode plan for sharing');
@@ -21,8 +21,7 @@ export function encodePlanToURL(plan: SavedPlan): string {
  */
 export function decodePlanFromURL(encoded: string): SavedPlan | null {
   try {
-    const decoded = decodeURIComponent(encoded);
-    const decompressed = decompress(decoded);
+    const decompressed = decompressFromEncodedURIComponent(encoded);
     
     if (!decompressed) {
       throw new Error('Failed to decompress plan data');

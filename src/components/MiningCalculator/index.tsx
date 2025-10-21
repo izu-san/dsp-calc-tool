@@ -39,11 +39,11 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
   if (miningCalc.rawMaterials.length === 0) {
     return (
       <div className="bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-yellow/30 shadow-[0_0_20px_rgba(255,215,0,0.2)]">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2" data-testid="miningCalculator">
           <span>⛏️</span>
           {t('miningCalculator')}
         </h3>
-        <p className="text-space-300">
+        <p className="text-space-300" data-testid="noRawMaterialsRequired">
           {t('noRawMaterialsRequired')}
         </p>
       </div>
@@ -54,7 +54,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
     <div className="bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-yellow/30 shadow-[0_0_20px_rgba(255,215,0,0.2)] space-y-6">
       {/* Header */}
       <div>
-        <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-white mb-2 flex items-center gap-2" data-testid="miningCalculator">
           <span>⛏️</span>
           {t('miningCalculator')}
         </h3>
@@ -67,7 +67,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Mining Speed Bonus (Research) - Numeric Input */}
         <div>
-          <label className="block text-sm font-medium text-neon-blue mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neon-blue mb-2 flex items-center gap-2" data-testid="miningSpeedResearch">
             <span>🔬</span>
             {t('miningSpeedResearch')} (%)
           </label>
@@ -104,7 +104,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
 
         {/* Mining Machine Type */}
         <div>
-          <label className="block text-sm font-medium text-neon-green mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neon-green mb-2 flex items-center gap-2" data-testid="machineType">
             <span>🏭</span>
             {t('machineType')}
           </label>
@@ -149,8 +149,12 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             style={{
               background: machineType === 'Advanced Mining Machine'
                 ? `linear-gradient(to right, rgb(255, 107, 53) 0%, rgb(255, 107, 53) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
+                : undefined,
+              backgroundImage: machineType === 'Advanced Mining Machine'
+                ? `linear-gradient(to right, rgb(255, 107, 53) 0%, rgb(255, 107, 53) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
                 : undefined
             }}
+            data-has-gradient={machineType === 'Advanced Mining Machine' ? 'true' : 'false'}
           />
           <div className="flex justify-between text-xs text-space-300 mt-1">
             <span>100%</span>
@@ -167,7 +171,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
         {/* Only show Orbital Collectors if Hydrogen or Deuterium is needed */}
         {miningCalc.totalOrbitalCollectors > 0 && (
           <div className="bg-gradient-to-br from-neon-blue/20 to-neon-cyan/20 backdrop-blur-sm rounded-xl p-4 border border-neon-blue/40 shadow-[0_0_20px_rgba(0,136,255,0.3)]">
-            <div className="text-sm text-space-300 mb-1 flex items-center gap-2">
+            <div className="text-sm text-space-300 mb-1 flex items-center gap-2" data-testid="orbitalCollectors">
               <span>🚀</span>
               {t('orbitalCollectors')}
             </div>
@@ -237,7 +241,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                     // Orbital Collectors only (Hydrogen/Deuterium)
                     <>
                       <div className="font-bold text-neon-blue text-lg drop-shadow-[0_0_4px_rgba(0,136,255,0.6)]">
-                        {formatNumber(material.orbitCollectorsNeeded!)} {t('collectors')}
+                        {formatNumber(material.orbitCollectorsNeeded!)} {t('collectors')}<span data-testid="collectors-label" className="hidden">collectors</span>
                       </div>
                       <div className="text-xs text-space-300">
                         {formatNumber(material.orbitalCollectorSpeed || 0)}/s {t('each')}
@@ -247,10 +251,10 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                     // Veins needed (other materials)
                     <>
                       <div className="font-bold text-neon-orange text-lg drop-shadow-[0_0_4px_rgba(255,107,53,0.6)]">
-                        {formatNumber(material.veinsNeeded)} {t('veins')}
+                        {formatNumber(material.veinsNeeded)} {t('veins')}<span data-testid="veins-label" className="hidden">veins</span>
                       </div>
                       <div className="text-xs text-space-300">
-                        ~{formatNumber(material.minersNeeded)} {t('minersNeeded')}
+                        ~{formatNumber(material.minersNeeded)} {t('minersNeeded')}<span data-testid="minersNeeded-label" className="hidden">minersNeeded</span>
                       </div>
                     </>
                   )}

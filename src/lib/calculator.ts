@@ -22,8 +22,9 @@ import { getEffectiveBonuses } from './proliferator';
  * 
  * Production mode: Increases output per craft (more items per recipe execution)
  * Speed mode: Reduces time per craft (faster recipe execution)
+ * @internal - Exported for testing
  */
-function calculateProductionRate(
+export function calculateProductionRate(
   recipe: Recipe,
   machine: Machine,
   proliferator: ProliferatorConfig,
@@ -54,8 +55,9 @@ function calculateProductionRate(
 
 /**
  * Calculate power consumption for machines
+ * @internal - Exported for testing
  */
-function calculateMachinePower(
+export function calculateMachinePower(
   machine: Machine,
   machineCount: number,
   proliferator: ProliferatorConfig,
@@ -71,8 +73,9 @@ function calculateMachinePower(
 /**
  * Calculate sorter power consumption
  * Formula: ソーター1台あたりの消費電力 * (Inputsアイテム種別数 + Outputsアイテム種別数) * マシン台数
+ * @internal - Exported for testing
  */
-function calculateSorterPower(
+export function calculateSorterPower(
   recipe: Recipe,
   machineCount: number,
   sorterPowerPerUnit: number
@@ -89,8 +92,9 @@ function calculateSorterPower(
 /**
  * Calculate required conveyor belts
  * Formula: Number of belts = ceil(items per second / belt speed)
+ * @internal - Exported for testing
  */
-function calculateConveyorBelts(
+export function calculateConveyorBelts(
   targetOutputRate: number,
   inputs: { itemId: number; itemName: string; requiredRate: number }[],
   beltSpeed: number
@@ -141,8 +145,9 @@ const getMachineForRecipe = getMachineForRecipeFromConstants;
 
 /**
  * Build recipe tree recursively
+ * @internal - Exported for testing purposes only
  */
-function buildRecipeTree(
+export function buildRecipeTree(
   recipe: Recipe,
   targetRate: number,
   gameData: GameData,
@@ -167,16 +172,16 @@ function buildRecipeTree(
   let proliferator = override?.proliferator || settings.proliferator;
   
   // Apply smart mode selection based on recipe capabilities
-  if (settings.proliferator.type !== 'none') {
+  if (settings.proliferator && settings.proliferator.type !== 'none') {
     // If global setting is production mode but this recipe doesn't support it, use speed mode
-    if (settings.proliferator.mode === 'production' && !supportsProduction) {
+    if (settings.proliferator && settings.proliferator.mode === 'production' && !supportsProduction) {
       proliferator = {
         ...proliferator,
         mode: 'speed'
       };
     }
     // If global setting is speed mode but this recipe supports production, use production mode
-    else if (settings.proliferator.mode === 'speed' && supportsProduction) {
+    else if (settings.proliferator && settings.proliferator.mode === 'speed' && supportsProduction) {
       proliferator = {
         ...proliferator,
         mode: 'production'

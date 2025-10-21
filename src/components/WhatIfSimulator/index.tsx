@@ -49,35 +49,70 @@ export function WhatIfSimulator() {
   // Check if a scenario is already applied (current settings match scenario)
   const isScenarioAlreadyApplied = useCallback((scenario: Scenario): boolean => {
     const scenarioSettings = scenario.settings;
-    
+
     // Check proliferator
     if (scenarioSettings.proliferator) {
       if (settings.proliferator.type !== scenarioSettings.proliferator.type) {
         return false;
       }
+      if (
+        typeof scenarioSettings.proliferator.mode !== 'undefined' &&
+        settings.proliferator.mode !== scenarioSettings.proliferator.mode
+      ) {
+        return false;
+      }
     }
-    
+
     // Check conveyor belt
     if (scenarioSettings.conveyorBelt) {
-      if (scenarioSettings.conveyorBelt.tier && 
-          settings.conveyorBelt.tier !== scenarioSettings.conveyorBelt.tier) {
+      if (
+        scenarioSettings.conveyorBelt.tier &&
+        settings.conveyorBelt.tier !== scenarioSettings.conveyorBelt.tier
+      ) {
         return false;
       }
-      if (scenarioSettings.conveyorBelt.stackCount !== undefined && 
-          settings.conveyorBelt.stackCount !== scenarioSettings.conveyorBelt.stackCount) {
+      if (
+        scenarioSettings.conveyorBelt.stackCount !== undefined &&
+        settings.conveyorBelt.stackCount !== scenarioSettings.conveyorBelt.stackCount
+      ) {
         return false;
       }
     }
-    
-    // Check machine ranks
+
+    // Check machine ranks with rank ordering (current >= scenario requirement)
     if (scenarioSettings.machineRank) {
+      const assembleOrder = ['mk1', 'mk2', 'mk3', 'recomposing'] as const;
+      const smeltOrder = ['arc', 'plane', 'negentropy'] as const;
+      const chemicalOrder = ['standard', 'quantum'] as const;
+      const researchOrder = ['standard', 'self-evolution'] as const;
+
+      const isAtLeast = (current: string, required: string, order: readonly string[]) => {
+        const ci = order.indexOf(current);
+        const ri = order.indexOf(required);
+        return ci !== -1 && ri !== -1 && ci >= ri;
+      };
+
       for (const [type, rank] of Object.entries(scenarioSettings.machineRank)) {
-        if (settings.machineRank[type as keyof typeof settings.machineRank] !== rank) {
-          return false;
+        const currentRank = settings.machineRank[type as keyof typeof settings.machineRank] as string;
+        switch (type) {
+          case 'Assemble':
+            if (!isAtLeast(currentRank, rank as string, assembleOrder)) return false;
+            break;
+          case 'Smelt':
+            if (!isAtLeast(currentRank, rank as string, smeltOrder)) return false;
+            break;
+          case 'Chemical':
+            if (!isAtLeast(currentRank, rank as string, chemicalOrder)) return false;
+            break;
+          case 'Research':
+            if (!isAtLeast(currentRank, rank as string, researchOrder)) return false;
+            break;
+          default:
+            if (currentRank !== (rank as string)) return false;
         }
       }
     }
-    
+
     return true;
   }, [settings]);
 
