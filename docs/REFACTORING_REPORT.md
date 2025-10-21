@@ -2233,7 +2233,7 @@ npx vite-bundle-visualizer
 
 - [ ] **E2Eテストを実行**し、全テスト合格を確認
   ```bash
-  npx playwright test e2e_tests
+  npm run test:e2e
   ```
   - **合格基準**: 全21シナリオ成功
   - **失敗時の対応**: UIレベルの問題を修正してからリファクタリング開始
@@ -2284,7 +2284,7 @@ npx vite-bundle-visualizer
   ```
 
   ```bash
-  npx playwright test e2e_tests
+  npm run test:e2e
   ```
   - **合格基準**: 全21シナリオ成功
   - **実行時間**: 約13秒程度（16並列ワーカー）

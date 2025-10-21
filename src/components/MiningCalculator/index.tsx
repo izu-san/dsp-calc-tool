@@ -13,14 +13,9 @@ interface MiningCalculatorProps {
 export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
   const { t } = useTranslation();
   const { settings, setMiningSpeedResearch } = useSettingsStore();
-  const [miningSpeedBonus, setMiningSpeedBonus] = useState(settings.miningSpeedResearch);
+  const [miningSpeedBonus, setMiningSpeedBonus] = useState(() => settings.miningSpeedResearch);
   const [machineType, setMachineType] = useState<'Mining Machine' | 'Advanced Mining Machine'>('Advanced Mining Machine');
   const [workSpeedMultiplier, setWorkSpeedMultiplier] = useState(100);
-
-  // Sync with settings store on mount
-  useEffect(() => {
-    setMiningSpeedBonus(settings.miningSpeedResearch);
-  }, [settings.miningSpeedResearch]);
 
   // Save to settings store when changed
   useEffect(() => {

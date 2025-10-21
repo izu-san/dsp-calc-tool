@@ -102,6 +102,18 @@ function App() {
     return nodeIds;
   }, []);
 
+  // Initialize collapsed nodes when calculation result changes
+  useEffect(() => {
+    if (calculationResult?.rootNode) {
+      // Use queueMicrotask to defer state updates and avoid cascading renders
+      queueMicrotask(() => {
+        const depthOneAndBeyond = collectNodeIdsFromDepth(calculationResult.rootNode, 0, 1);
+        setCollapsedNodes(depthOneAndBeyond);
+        setIsTreeExpanded(false);
+      });
+    }
+  }, [calculationResult, collectNodeIdsFromDepth]);
+
   const handleToggleCollapse = (nodeId: string) => {
     setCollapsedNodes(prev => {
       const next = new Set(prev);
@@ -136,15 +148,6 @@ function App() {
       setIsTreeExpanded(true);
     }
   };
-
-  // Initialize with depth 0 only expanded (depth >= 1 collapsed)
-  useEffect(() => {
-    if (calculationResult?.rootNode) {
-      const depthOneAndBeyond = collectNodeIdsFromDepth(calculationResult.rootNode, 0, 1);
-      setCollapsedNodes(depthOneAndBeyond);
-      setIsTreeExpanded(false);
-    }
-  }, [calculationResult, collectNodeIdsFromDepth]);
 
   useEffect(() => {
     loadData();

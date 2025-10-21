@@ -35,11 +35,15 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
 
   useEffect(() => {
     if (isExpanded) {
+      // Sync state when expanded
       const override = nodeOverrides.get(node.nodeId);
-      setUseOverride(!!override);
-      setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
-      setProliferatorMode(override?.proliferator?.mode || settings.proliferator.mode);
-      setMachineRank(override?.machineRank || '');
+      // Use queueMicrotask to defer state updates
+      queueMicrotask(() => {
+        setUseOverride(!!override);
+        setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
+        setProliferatorMode(override?.proliferator?.mode || settings.proliferator.mode);
+        setMachineRank(override?.machineRank || '');
+      });
     }
   }, [isExpanded, node.nodeId, nodeOverrides, settings]);
 

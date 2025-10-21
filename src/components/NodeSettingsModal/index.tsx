@@ -35,11 +35,15 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
 
   useEffect(() => {
     if (isOpen) {
+      // Sync state when modal opens
       const override = nodeOverrides.get(node.nodeId);
-      setUseOverride(!!override);
-      setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
-      setProliferatorMode(override?.proliferator?.mode || settings.proliferator.mode);
-      setMachineRank(override?.machineRank || '');
+      // Use queueMicrotask to defer state updates
+      queueMicrotask(() => {
+        setUseOverride(!!override);
+        setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
+        setProliferatorMode(override?.proliferator?.mode || settings.proliferator.mode);
+        setMachineRank(override?.machineRank || '');
+      });
     }
   }, [isOpen, node.nodeId, nodeOverrides, settings]);
 
