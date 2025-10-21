@@ -1,5 +1,5 @@
-// spec: TEST_PLAN.md シナリオ 20: テンプレート設定（プリセット）の適用
-// seed: seed.spec.ts
+// spec: docs/TEST_PLAN.md シナリオ 20: テンプレート設定（プリセット）の適用
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 

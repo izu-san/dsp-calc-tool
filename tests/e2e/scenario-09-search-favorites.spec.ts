@@ -1,5 +1,5 @@
 // spec: シナリオ 9: 検索とお気に入り（RecipeSelector）の検証 - バグ2修正後の再テスト
-// seed: seed.spec.ts
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 

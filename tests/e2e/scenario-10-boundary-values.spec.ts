@@ -1,5 +1,5 @@
-// spec: TEST_PLAN.md - シナリオ 10
-// seed: seed.spec.ts
+// spec: docs/TEST_PLAN.md - シナリオ 10
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 

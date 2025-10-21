@@ -1,5 +1,5 @@
-// spec: TEST_PLAN.md (Scenario 5: Production Tree の展開/折り畳みと全展開/全折り畳み)
-// seed: seed.spec.ts
+// spec: docs/TEST_PLAN.md (Scenario 5: Production Tree の展開/折り畳みと全展開/全折り畳み)
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 

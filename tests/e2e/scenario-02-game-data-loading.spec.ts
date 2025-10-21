@@ -1,5 +1,5 @@
-// spec: TEST_PLAN.md (シナリオ 2: ゲームデータ読み込みと初期表示（ハッピーパス）)
-// seed: seed.spec.ts
+// spec: docs/TEST_PLAN.md (シナリオ 2: ゲームデータ読み込みと初期表示（ハッピーパス）)
+// seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
 
