@@ -2278,6 +2278,11 @@ npx vite-bundle-visualizer
 
 ##### ステップ 7: E2Eテストの再実行（変更後）
 - [ ] **E2Eテストを再実行**し、全テスト合格を確認
+  - ローカル環境でアプリケーションが起動していない場合、E2Eテストの実行前にアプリケーションを起動すること
+  ```bash
+  npm run dev
+  ```
+
   ```bash
   npx playwright test e2e_tests
   ```

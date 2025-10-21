@@ -6,6 +6,10 @@ on:
       - develop
       - main
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   # コードサイズ分析
   bundle-size:
