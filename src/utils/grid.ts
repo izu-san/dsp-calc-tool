@@ -1,4 +1,5 @@
 import type { GridPosition } from '../types';
+import { getDataPath } from './paths';
 
 /**
  * Parse GridIndex string to grid position
@@ -27,9 +28,9 @@ export function toGridIndex(position: GridPosition): string {
  */
 export function getRecipeIconPath(recipeId: number, isExplicit: boolean, firstResultId?: number): string {
   if (isExplicit) {
-    return `/data/Recipes/Icons/${recipeId}.png`;
+    return getDataPath(`data/Recipes/Icons/${recipeId}.png`);
   } else if (firstResultId) {
-    return `/data/Items/Icons/${firstResultId}.png`;
+    return getDataPath(`data/Items/Icons/${firstResultId}.png`);
   }
   return '';
 }
@@ -38,12 +39,12 @@ export function getRecipeIconPath(recipeId: number, isExplicit: boolean, firstRe
  * Get icon path for an item
  */
 export function getItemIconPath(itemId: number): string {
-  return `/data/Items/Icons/${itemId}.png`;
+  return getDataPath(`data/Items/Icons/${itemId}.png`);
 }
 
 /**
  * Get icon path for a machine
  */
 export function getMachineIconPath(machineId: number): string {
-  return `/data/Machines/Icons/${machineId}.png`;
+  return getDataPath(`data/Machines/Icons/${machineId}.png`);
 }
