@@ -103,13 +103,14 @@ describe('grid', () => {
     it('Explicit=trueの場合、レシピIDでアイコンパスを取得', () => {
       const path = getRecipeIconPath(1001, true);
 
-      expect(path).toBe('/data/Recipes/Icons/1001.png');
+      // BASE_URLが含まれるパスになる
+      expect(path).toContain('data/Recipes/Icons/1001.png');
     });
 
     it('Explicit=falseかつfirstResultIdありの場合、アイテムアイコンパスを取得', () => {
       const path = getRecipeIconPath(1001, false, 2001);
 
-      expect(path).toBe('/data/Items/Icons/2001.png');
+      expect(path).toContain('data/Items/Icons/2001.png');
     });
 
     it('Explicit=falseかつfirstResultIdなしの場合、空文字列を返す', () => {
@@ -123,13 +124,13 @@ describe('grid', () => {
     it('アイテムIDからアイコンパスを生成する', () => {
       const path = getItemIconPath(1101);
 
-      expect(path).toBe('/data/Items/Icons/1101.png');
+      expect(path).toContain('data/Items/Icons/1101.png');
     });
 
     it('異なるアイテムIDでも正しく動作する', () => {
       const path = getItemIconPath(9999);
 
-      expect(path).toBe('/data/Items/Icons/9999.png');
+      expect(path).toContain('data/Items/Icons/9999.png');
     });
   });
 
@@ -137,13 +138,13 @@ describe('grid', () => {
     it('機械IDからアイコンパスを生成する', () => {
       const path = getMachineIconPath(2303);
 
-      expect(path).toBe('/data/Machines/Icons/2303.png');
+      expect(path).toContain('data/Machines/Icons/2303.png');
     });
 
     it('異なる機械IDでも正しく動作する', () => {
       const path = getMachineIconPath(5555);
 
-      expect(path).toBe('/data/Machines/Icons/5555.png');
+      expect(path).toContain('data/Machines/Icons/5555.png');
     });
   });
 });
