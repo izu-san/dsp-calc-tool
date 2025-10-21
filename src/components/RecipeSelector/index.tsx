@@ -229,7 +229,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           return (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => {
+                setSelectedCategory(category);
+                // カテゴリー変更時にお気に入りフィルターを解除
+                if (showOnlyFavorites) {
+                  setShowOnlyFavorites(false);
+                }
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect ${
                 selectedCategory === category
                   ? 'bg-neon-blue/40 border-neon-blue text-white shadow-[0_0_20px_rgba(0,136,255,0.6)] scale-110 font-bold'

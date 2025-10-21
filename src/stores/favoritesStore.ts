@@ -1,11 +1,16 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface FavoritesStore {
   favoriteRecipes: Set<number>;
   toggleFavorite: (recipeId: number) => void;
   isFavorite: (recipeId: number) => boolean;
   clearFavorites: () => void;
+}
+
+// 永続化用の型（SetをJSON化できる形式に）
+interface PersistedFavoritesStore {
+  favoriteRecipes: number[];
 }
 
 export const useFavoritesStore = create<FavoritesStore>()(
@@ -30,27 +35,20 @@ export const useFavoritesStore = create<FavoritesStore>()(
     }),
     {
       name: 'dsp-calculator-favorites',
-      storage: {
-        getItem: (name) => {
-          const str = localStorage.getItem(name);
-          if (!str) return null;
-          const { state } = JSON.parse(str);
-          // Convert array back to Set
-          if (state?.favoriteRecipes && Array.isArray(state.favoriteRecipes)) {
-            state.favoriteRecipes = new Set(state.favoriteRecipes);
-          }
-          return { state };
-        },
-        setItem: (name, value) => {
-          const str = JSON.stringify({
-            state: {
-              ...value.state,
-              favoriteRecipes: Array.from(value.state.favoriteRecipes),
-            },
-          });
-          localStorage.setItem(name, str);
-        },
-        removeItem: (name) => localStorage.removeItem(name),
+      storage: createJSONStorage(() => localStorage),
+      // SetをJSON保存用に配列に変換
+      partialize: (state): PersistedFavoritesStore => ({
+        favoriteRecipes: Array.from(state.favoriteRecipes),
+      }),
+      // localStorageから読み込んだ配列をSetに変換
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as PersistedFavoritesStore | undefined;
+        return {
+          ...currentState,
+          favoriteRecipes: persisted?.favoriteRecipes 
+            ? new Set(persisted.favoriteRecipes)
+            : new Set<number>(),
+        };
       },
     }
   )
