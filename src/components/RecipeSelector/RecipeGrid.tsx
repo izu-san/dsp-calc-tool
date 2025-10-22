@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Recipe } from '../../types';
-import { parseGridIndex, getRecipeIconPath } from '../../utils/grid';
+import { parseGridIndex } from '../../utils/grid';
 import { useFavoritesStore } from '../../stores/favoritesStore';
+import { ItemIcon } from '../ItemIcon';
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -64,11 +65,9 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
     return <div className="aspect-square bg-dark-800/30 rounded border border-dark-600/50" />;
   }
 
-  const iconPath = getRecipeIconPath(
-    recipe.SID,
-    recipe.Explicit,
-    recipe.Results[0]?.id
-  );
+  // Determine the icon ID based on recipe type
+  // Explicit recipes use recipe SID, implicit recipes use first result item ID
+  const itemId = recipe.Explicit ? recipe.SID : (recipe.Results[0]?.id || recipe.SID);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -110,14 +109,12 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
         title={recipe.name}
       >
         <div className="w-full h-full flex items-center justify-center p-1">
-          <img
-            src={iconPath}
+          <ItemIcon
+            itemId={itemId}
             alt={recipe.name}
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              // Fallback if image fails to load
-              e.currentTarget.style.display = 'none';
-            }}
+            className=""
+            preferRecipes={recipe.Explicit}
+            size={80}
           />
         </div>
       </button>

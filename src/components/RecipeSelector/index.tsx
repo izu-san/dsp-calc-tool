@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
-import { getDataPath } from '../../utils/paths';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
 import type { Recipe } from '../../types';
 import { RecipeGrid } from './RecipeGrid';
 import { useFavoritesStore } from '../../stores/favoritesStore';
+import { ItemIcon } from '../ItemIcon';
 
 interface RecipeSelectorProps {
   recipes: Recipe[];
@@ -100,18 +100,18 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
     });
   }, [recipes, searchQuery, selectedCategory, showOnlyFavorites, favoriteRecipes]);
 
-  // Get category icon path and label (memoized to update when language changes)
-  const getCategoryInfo = useMemo(() => (category: string): { icon?: string; label: string } => {
+  // Get category icon ID and label (memoized to update when language changes)
+  const getCategoryInfo = useMemo(() => (category: string): { iconId?: number; label: string } => {
     if (category === 'all') return { label: t('categoryAll') };
     
-    const categoryIconMap: Record<string, { icon: string; label: string }> = {
-      'Smelt': { icon: getDataPath('data/Machines/Icons/2302.png'), label: t('categorySmelt') },
-      'Assemble': { icon: getDataPath('data/Machines/Icons/2303.png'), label: t('categoryAssemble') },
-      'Chemical': { icon: getDataPath('data/Machines/Icons/2309.png'), label: t('categoryChemical') },
-      'Research': { icon: getDataPath('data/Machines/Icons/2901.png'), label: t('categoryResearch') },
-      'Refine': { icon: getDataPath('data/Machines/Icons/2308.png'), label: t('categoryRefine') },
-      'Particle': { icon: getDataPath('data/Machines/Icons/2310.png'), label: t('categoryParticle') },
-      'Fractionate': { icon: getDataPath('data/Machines/Icons/2314.png'), label: t('categoryFractionate') },
+    const categoryIconMap: Record<string, { iconId: number; label: string }> = {
+      'Smelt': { iconId: 2302, label: t('categorySmelt') },
+      'Assemble': { iconId: 2303, label: t('categoryAssemble') },
+      'Chemical': { iconId: 2309, label: t('categoryChemical') },
+      'Research': { iconId: 2901, label: t('categoryResearch') },
+      'Refine': { iconId: 2308, label: t('categoryRefine') },
+      'Particle': { iconId: 2310, label: t('categoryParticle') },
+      'Fractionate': { iconId: 2314, label: t('categoryFractionate') },
     };
     
     return categoryIconMap[category] || { label: category };
@@ -243,14 +243,11 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                   : 'bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105'
               }`}
             >
-              {categoryInfo.icon && (
-                <img 
-                  src={categoryInfo.icon} 
+              {categoryInfo.iconId && (
+                <ItemIcon 
+                  itemId={categoryInfo.iconId} 
                   alt={categoryInfo.label}
-                  className="w-5 h-5 object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
+                  size={20}
                 />
               )}
               {categoryInfo.label}

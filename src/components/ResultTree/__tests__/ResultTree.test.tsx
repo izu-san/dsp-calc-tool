@@ -9,6 +9,20 @@ vi.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+// ItemIcon モック（スプライトシート対応）
+vi.mock('../../ItemIcon', () => ({
+    ItemIcon: ({ itemId, alt, size, preferRecipes }: any) => (
+        <div 
+            data-testid={`item-icon-${itemId}`} 
+            data-alt={alt} 
+            data-size={size}
+            data-prefer-recipes={preferRecipes}
+        >
+            {`Icon ${itemId}`}
+        </div>
+    ),
+}));
+
 // CompactNodeSettings を簡素化
 vi.mock('../CompactNodeSettings', () => ({
     CompactNodeSettings: (props: any) => (
@@ -274,7 +288,7 @@ describe('ProductionTree', () => {
         expect(screen.getByText('Copper Ore')).toBeInTheDocument();
     });
 
-    it('Explicitレシピの場合、レシピ固有のアイコンが表示される', () => {
+    it('Explicitレシピの場合、レシピ固有のアイコンが表示される（スプライトシート対応）', () => {
         const explicitRecipeNode = {
             ...mockRecipeNode,
             recipe: {
@@ -290,19 +304,23 @@ describe('ProductionTree', () => {
             },
         };
         
-        render(<ProductionTree node={explicitRecipeNode} />);
+        const { container } = render(<ProductionTree node={explicitRecipeNode} />);
         
-    // Explicit=trueの場合、recipes固有のアイコンが使用される
-    const img = screen.getByAltText('Plasma Refining') as HTMLImageElement;
-    expect(img.src).toContain(getDataPath('data/Recipes/Icons/120.png'));
+        // Explicit=trueの場合、レシピSIDのアイコンが使用され、preferRecipes=trueが渡される
+        const icon = container.querySelector('[data-testid="item-icon-120"]');
+        expect(icon).toBeInTheDocument();
+        expect(icon).toHaveAttribute('data-prefer-recipes', 'true');
+        expect(icon).toHaveAttribute('data-alt', 'Plasma Refining');
     });
 
-    it('非Explicitレシピの場合、結果アイテムのアイコンが表示される', () => {
-        render(<ProductionTree node={mockRecipeNode} />);
+    it('非Explicitレシピの場合、結果アイテムのアイコンが表示される（スプライトシート対応）', () => {
+        const { container } = render(<ProductionTree node={mockRecipeNode} />);
         
-    // Explicit=falseの場合、結果アイテムのアイコンが使用される
-    const img = screen.getByAltText('Iron Ingot') as HTMLImageElement;
-    expect(img.src).toContain(getDataPath('data/Items/Icons/1002.png'));
+        // Explicit=falseの場合、結果アイテムIDのアイコンが使用され、preferRecipes=falseが渡される
+        const icon = container.querySelector('[data-testid="item-icon-1002"]');
+        expect(icon).toBeInTheDocument();
+        expect(icon).toHaveAttribute('data-prefer-recipes', 'false');
+        expect(icon).toHaveAttribute('data-alt', 'Iron Ingot');
     });
 
     it('循環依存ノードの場合、特別なスタイルとアイコンが表示される', () => {
