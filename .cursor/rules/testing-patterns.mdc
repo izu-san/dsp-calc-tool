@@ -1,0 +1,265 @@
+---
+globs: **/__tests__/**/*.ts,**/__tests__/**/*.tsx,*.test.ts,*.test.tsx,*.spec.ts,*.spec.tsx
+description: テストのパターンとベストプラクティス
+---
+
+# テストパターン
+
+## テストファイルの配置
+
+### ディレクトリ構造
+```
+src/
+├── lib/
+│   ├── calculator.ts
+│   └── __tests__/
+│       └── calculator.test.ts
+├── components/
+│   ├── RecipeSelector/
+│   │   └── RecipeSelector.tsx
+│   └── __tests__/
+│       └── RecipeSelector.test.tsx
+└── stores/
+    ├── settingsStore.ts
+    └── __tests__/
+        └── settingsStore.test.ts
+```
+
+## Vitest の基本パターン
+
+### テストの構造
+```typescript
+import { describe, it, expect, beforeEach } from 'vitest';
+import { functionToTest } from '../module';
+
+describe('ModuleName', () => {
+  describe('functionToTest', () => {
+    it('should do something specific', () => {
+      // Arrange
+      const input = 'test';
+      
+      // Act
+      const result = functionToTest(input);
+      
+      // Assert
+      expect(result).toBe('expected');
+    });
+    
+    it('should handle edge case', () => {
+      // ...
+    });
+  });
+});
+```
+
+### ファクトリ関数の使用
+テストデータは [test/factories/](mdc:src/test/factories/) に配置:
+```typescript
+// test/factories/recipeFactory.ts
+export function createMockRecipe(overrides?: Partial<Recipe>): Recipe {
+  return {
+    ID: 1,
+    SID: 1,
+    Name: 'Test Recipe',
+    Type: 'Assemble',
+    TimeSpend: 60,
+    Results: [{ itemId: 1, count: 1 }],
+    Items: [{ itemId: 2, count: 1 }],
+    ...overrides,
+  };
+}
+
+// テストでの使用
+const recipe = createMockRecipe({ Name: 'Custom Recipe' });
+```
+
+## React コンポーネントのテスト
+
+### Testing Library のセットアップ
+```typescript
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { Component } from '../Component';
+
+describe('Component', () => {
+  it('should render correctly', () => {
+    render(<Component />);
+    expect(screen.getByText('Expected Text')).toBeInTheDocument();
+  });
+  
+  it('should handle user interaction', async () => {
+    const handleClick = vi.fn();
+    render(<Component onClick={handleClick} />);
+    
+    const button = screen.getByRole('button');
+    await fireEvent.click(button);
+    
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+### Zustand ストアのテスト
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useSettingsStore } from '../settingsStore';
+
+describe('settingsStore', () => {
+  it('should update proliferator settings', () => {
+    const { result } = renderHook(() => useSettingsStore());
+    
+    act(() => {
+      result.current.setProliferator('mk1', 'production');
+    });
+    
+    expect(result.current.settings.proliferator.type).toBe('mk1');
+    expect(result.current.settings.proliferator.mode).toBe('production');
+  });
+});
+```
+
+## カスタムフックのテスト
+
+```typescript
+import { renderHook } from '@testing-library/react';
+import { useCustomHook } from '../useCustomHook';
+
+describe('useCustomHook', () => {
+  it('should return expected value', () => {
+    const { result } = renderHook(() => useCustomHook(input));
+    expect(result.current.value).toBe(expected);
+  });
+});
+```
+
+## 計算ロジックのテスト
+
+### decimal.js の扱い
+```typescript
+import Decimal from 'decimal.js';
+import { calculateProductionRate } from '../calculator';
+
+describe('calculateProductionRate', () => {
+  it('should calculate correct production rate', () => {
+    const result = calculateProductionRate(recipe, machine, proliferator, multiplier);
+    
+    // Decimal の比較
+    expect(new Decimal(result).toNumber()).toBeCloseTo(1.5, 2);
+  });
+});
+```
+
+### エッジケースのテスト
+```typescript
+describe('edge cases', () => {
+  it('should handle zero values', () => {
+    const result = functionToTest(0);
+    expect(result).toBe(0);
+  });
+  
+  it('should handle negative values', () => {
+    expect(() => functionToTest(-1)).toThrow();
+  });
+  
+  it('should handle null/undefined', () => {
+    expect(functionToTest(null)).toBeNull();
+    expect(functionToTest(undefined)).toBeUndefined();
+  });
+});
+```
+
+## モックの使用
+
+### vi.fn() でモック関数
+```typescript
+import { vi } from 'vitest';
+
+const mockCallback = vi.fn();
+component.onAction(mockCallback);
+expect(mockCallback).toHaveBeenCalledWith(expectedArg);
+```
+
+### モジュールのモック
+```typescript
+import { vi } from 'vitest';
+
+vi.mock('../module', () => ({
+  functionToMock: vi.fn(() => 'mocked value'),
+}));
+```
+
+## カバレッジ目標
+
+### 優先度
+1. **100% カバレッジ**: [src/lib/](mdc:src/lib/) (計算ロジック)
+2. **80%+ カバレッジ**: [src/stores/](mdc:src/stores/) (状態管理)
+3. **50%+ カバレッジ**: [src/components/](mdc:src/components/) (UI コンポーネント)
+
+### カバレッジレポート
+```bash
+npm run test:coverage
+```
+
+## E2E テスト (Playwright)
+
+### テストファイルの配置
+```
+tests/
+├── e2e/
+│   ├── recipe-selection.spec.ts
+│   ├── production-calculation.spec.ts
+│   └── settings-management.spec.ts
+└── fixtures/
+    └── seed.spec.ts
+```
+
+### 基本パターン
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Production Calculator', () => {
+  test('should calculate production chain', async ({ page }) => {
+    await page.goto('/');
+    
+    // レシピを選択
+    await page.click('[data-testid="recipe-1"]');
+    
+    // 数量を入力
+    await page.fill('[data-testid="target-quantity"]', '10');
+    
+    // 結果を確認
+    await expect(page.locator('[data-testid="result-tree"]')).toBeVisible();
+  });
+});
+```
+
+## テスト実行コマンド
+
+```bash
+# ユニットテスト (watch mode)
+npm run test
+
+# テスト UI
+npm run test:ui
+
+# カバレッジレポート
+npm run test:coverage
+
+# E2E テスト
+npm run test:e2e
+
+# E2E テスト (UI mode)
+npm run test:e2e:ui
+
+# E2E テスト (debug mode)
+npm run test:e2e:debug
+```
+
+## テストのベストプラクティス
+
+1. **AAA パターン**: Arrange, Act, Assert を明確に分離
+2. **1テスト1アサーション**: 可能な限り1つのテストで1つの事柄を検証
+3. **説明的なテスト名**: `should [expected behavior] when [condition]`
+4. **テストの独立性**: 各テストは独立して実行可能であること
+5. **モックの最小化**: 必要最小限のモックを使用
+6. **エッジケースの網羅**: 正常系だけでなく異常系もテスト

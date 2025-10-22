@@ -1,0 +1,291 @@
+---
+globs: src/stores/**/*.ts
+description: Zustand ストアのパターンとベストプラクティス
+---
+
+# Zustand ストアパターン
+
+## ストア定義の基本構造
+
+### インターフェースの定義
+```typescript
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface StoreState {
+  // State properties
+  value: string;
+  count: number;
+  
+  // Actions
+  setValue: (value: string) => void;
+  increment: () => void;
+  decrement: () => void;
+  reset: () => void;
+}
+
+export const useStore = create<StoreState>()(
+  (set) => ({
+    // Initial state
+    value: '',
+    count: 0,
+    
+    // Actions
+    setValue: (value) => set({ value }),
+    increment: () => set((state) => ({ count: state.count + 1 })),
+    decrement: () => set((state) => ({ count: state.count - 1 })),
+    reset: () => set({ value: '', count: 0 }),
+  })
+);
+```
+
+## 永続化 (persist)
+
+### localStorage への保存
+```typescript
+export const useSettingsStore = create<SettingsStore>()(
+  persist(
+    (set) => ({
+      settings: defaultSettings,
+      
+      updateSettings: (newSettings) => set((state) => ({
+        settings: { ...state.settings, ...newSettings }
+      })),
+    }),
+    {
+      name: 'dsp-calculator-settings',  // localStorage のキー名
+      storage: {
+        getItem: (name) => {
+          const str = localStorage.getItem(name);
+          if (!str) return null;
+          const { state } = JSON.parse(str);
+          
+          // Map の復元などカスタムデシリアライズ
+          if (state?.settings?.alternativeRecipes && Array.isArray(state.settings.alternativeRecipes)) {
+            state.settings.alternativeRecipes = new Map(state.settings.alternativeRecipes);
+          }
+          
+          return { state };
+        },
+        setItem: (name, value) => {
+          const str = JSON.stringify({
+            state: {
+              ...value.state,
+              settings: {
+                ...value.state.settings,
+                // Map のシリアライズ
+                alternativeRecipes: Array.from(value.state.settings.alternativeRecipes.entries()),
+              },
+            },
+          });
+          localStorage.setItem(name, str);
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+      },
+    }
+  )
+);
+```
+
+## ストアのパターン
+
+### [gameDataStore.ts](mdc:src/stores/gameDataStore.ts) - ゲームデータ
+- XML から解析したゲームデータを保持
+- Map 構造でアイテム、レシピ、マシンを管理
+- 多言語対応のロケール管理
+
+```typescript
+interface GameDataStore {
+  data: GameData | null;
+  isLoading: boolean;
+  error: string | null;
+  locale: string;
+  loadData: () => Promise<void>;
+  setLocale: (locale: string) => void;
+}
+```
+
+### [settingsStore.ts](mdc:src/stores/settingsStore.ts) - ユーザー設定
+- グローバル設定（増産剤、マシンランク、ベルトなど）
+- localStorage に永続化
+- テンプレート適用機能
+
+```typescript
+interface SettingsStore {
+  settings: GlobalSettings;
+  setProliferator: (type: keyof typeof PROLIFERATOR_DATA, mode: 'production' | 'speed') => void;
+  setMachineRank: (recipeType: keyof MachineRankSettings, rank: string) => void;
+  setConveyorBelt: (tier: keyof typeof CONVEYOR_BELT_DATA, stackCount?: number) => void;
+  applyTemplate: (templateId: keyof typeof SETTINGS_TEMPLATES) => void;
+  updateSettings: (settings: Partial<GlobalSettings>) => void;
+  resetSettings: () => void;
+}
+```
+
+### [recipeSelectionStore.ts](mdc:src/stores/recipeSelectionStore.ts) - レシピ選択状態
+- 選択中のレシピと目標生産量
+- 計算結果の保持
+
+```typescript
+interface RecipeSelectionStore {
+  selectedRecipe: Recipe | null;
+  targetQuantity: number;
+  calculationResult: CalculationResult | null;
+  setSelectedRecipe: (recipe: Recipe | null) => void;
+  setTargetQuantity: (quantity: number) => void;
+  setCalculationResult: (result: CalculationResult | null) => void;
+}
+```
+
+### [nodeOverrideStore.ts](mdc:src/stores/nodeOverrideStore.ts) - ノード別オーバーライド
+- 生産ノードごとの個別設定
+- バージョン管理で変更を追跡
+- localStorage に永続化
+
+```typescript
+interface NodeOverrideStore {
+  nodeOverrides: Map<string, NodeOverrideSettings>;
+  version: number;
+  setNodeOverride: (nodeId: string, overrides: NodeOverrideSettings) => void;
+  clearNodeOverride: (nodeId: string) => void;
+  clearAllOverrides: () => void;
+  setAllOverrides: (overrides: Map<string, NodeOverrideSettings>) => void;
+}
+```
+
+### [favoritesStore.ts](mdc:src/stores/favoritesStore.ts) - お気に入り
+- お気に入りレシピの管理
+- localStorage に永続化
+
+```typescript
+interface FavoritesStore {
+  favorites: Set<number>;
+  toggleFavorite: (recipeId: number) => void;
+  isFavorite: (recipeId: number) => boolean;
+  clearFavorites: () => void;
+}
+```
+
+## ストア使用時のベストプラクティス
+
+### 選択的なサブスクリプション
+```typescript
+// Good: 必要な値のみを取得 (再レンダリング最小化)
+const settings = useSettingsStore((state) => state.settings);
+const updateSettings = useSettingsStore((state) => state.updateSettings);
+
+// Bad: 全体を取得 (不要な再レンダリング)
+const store = useSettingsStore();
+```
+
+### 複数の値を取得する場合
+```typescript
+// Good: shallow equal で比較
+import { shallow } from 'zustand/shallow';
+
+const { selectedRecipe, targetQuantity } = useRecipeSelectionStore(
+  (state) => ({ 
+    selectedRecipe: state.selectedRecipe, 
+    targetQuantity: state.targetQuantity 
+  }),
+  shallow
+);
+```
+
+### Actions の使用
+```typescript
+// Good: ストアのアクションを使用
+const setProliferator = useSettingsStore((state) => state.setProliferator);
+setProliferator('mk1', 'production');
+
+// Bad: 直接 set を使用しない (コンポーネントから)
+```
+
+## Map と Set の扱い
+
+### Map のシリアライズ
+```typescript
+// 保存時: Map → Array
+alternativeRecipes: Array.from(value.state.settings.alternativeRecipes.entries())
+
+// 読み込み時: Array → Map
+alternativeRecipes: new Map(state.settings.alternativeRecipes)
+```
+
+### Set のシリアライズ
+```typescript
+// 保存時: Set → Array
+favorites: Array.from(value.state.favorites)
+
+// 読み込み時: Array → Set
+favorites: new Set(state.favorites)
+```
+
+## バージョン管理
+
+ノードオーバーライドストアでは、変更を検出するためにバージョン番号を使用:
+```typescript
+setNodeOverride: (nodeId, overrides) => set((state) => {
+  const newOverrides = new Map(state.nodeOverrides);
+  newOverrides.set(nodeId, overrides);
+  return {
+    nodeOverrides: newOverrides,
+    version: state.version + 1,  // バージョンをインクリメント
+  };
+}),
+```
+
+useEffect の依存配列でバージョンを監視:
+```typescript
+useEffect(() => {
+  // nodeOverridesVersion が変更されたら再計算
+}, [nodeOverridesVersion]);
+```
+
+## テンプレート機能
+
+設定テンプレートの適用:
+```typescript
+applyTemplate: (templateId) => set(() => {
+  const template = SETTINGS_TEMPLATES[templateId];
+  return {
+    settings: {
+      ...template.settings,
+      alternativeRecipes: new Map(template.settings.alternativeRecipes),
+    },
+  };
+}),
+```
+
+## ストアのリセット
+
+```typescript
+resetSettings: () => set({ settings: defaultSettings }),
+clearAllOverrides: () => set({ nodeOverrides: new Map(), version: 0 }),
+```
+
+## 非同期アクション
+
+ゲームデータのロード:
+```typescript
+loadData: async () => {
+  set({ isLoading: true, error: null });
+  try {
+    const [itemsData, recipesData, machinesData] = await Promise.all([
+      parseItemsXML(),
+      parseRecipesXML(),
+      parseMachinesXML(),
+    ]);
+    
+    set({
+      data: { items: itemsData, recipes: recipesData, machines: machinesData },
+      isLoading: false,
+    });
+  } catch (err) {
+    set({ 
+      error: err instanceof Error ? err.message : 'Unknown error', 
+      isLoading: false 
+    });
+  }
+},
+```
