@@ -145,11 +145,10 @@ describe('useTreeCollapse', () => {
 
     rerender({ calcResult: calculationResult2 });
 
-    // queueMicrotaskで遅延されるため、少し待つ
-    await new Promise(resolve => setTimeout(resolve, 10));
-
-    // 折りたたみ状態がリセットされる
-    expect(result.current.isTreeExpanded).toBe(false);
+    // queueMicrotaskで遅延されるため、waitForで待つ
+    await waitFor(() => {
+      expect(result.current.isTreeExpanded).toBe(false);
+    });
   });
 
   it('深いネストされたツリーを正しく処理する', async () => {
