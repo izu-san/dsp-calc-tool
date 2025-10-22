@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getDataPath } from '../utils/paths';
 
 interface SpriteCoordinates {
@@ -46,58 +46,39 @@ async function loadSpriteData(type: 'items' | 'recipes'): Promise<SpriteData | n
     const data = await response.json();
     spriteCache.set(type, data);
     return data;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
 
 export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo | null {
-  const [spriteInfo, setSpriteInfo] = useState<SpriteInfo | null>(() => {
-    // 初期状態でキャッシュをチェック（同期）
-    const itemKey = String(itemId);
-    
-    // Check sprites in order based on preferRecipes
-    const spritesToCheck = preferRecipes 
-      ? ['recipes' as const, 'items' as const] 
-      : ['items' as const, 'recipes' as const];
-    
-    for (const spriteType of spritesToCheck) {
-      const spriteData = spriteCache.get(spriteType);
-      if (spriteData?.coordinates[itemKey]) {
-        return {
-          spriteUrl: getDataPath(`data/sprites/${spriteType}-sprite.png`),
-          coords: spriteData.coordinates[itemKey],
-          spriteData: spriteData,
-        };
-      }
-    }
-    
-    return null;
-  });
+  // state は非同期ロード結果を保持するために使う
+  const [spriteInfo, setSpriteInfo] = useState<SpriteInfo | null>(null);
 
+  // itemId を文字列に変換（JSONキーは文字列）
+  const itemKey = String(itemId);
+  // preferRecipes に基づいてチェック順を決める（安定化のため useMemo を使用）
+  const spritesToCheck = useMemo(
+    () => (preferRecipes ? (['recipes', 'items'] as const) : (['items', 'recipes'] as const)),
+    [preferRecipes]
+  );
+
+  // キャッシュを同期的にチェックして即時に返せる結果を準備
+  let immediateResult: SpriteInfo | null = null;
+  for (const spriteType of spritesToCheck) {
+    const spriteData = spriteCache.get(spriteType);
+    if (spriteData?.coordinates[itemKey]) {
+      immediateResult = {
+        spriteUrl: getDataPath(`data/sprites/${spriteType}-sprite.png`),
+        coords: spriteData.coordinates[itemKey],
+        spriteData: spriteData,
+      };
+      break;
+    }
+  }
+
+  // キャッシュになければ非同期でロードして state を更新する（effect 内では同期的な setState は行わない）
   useEffect(() => {
-    // itemIdを文字列に変換（JSONキーは文字列）
-    const itemKey = String(itemId);
-    
-    // Check sprites in order based on preferRecipes
-    const spritesToCheck = preferRecipes 
-      ? ['recipes' as const, 'items' as const] 
-      : ['items' as const, 'recipes' as const];
-    
-    // まずキャッシュから同期的にチェック
-    for (const spriteType of spritesToCheck) {
-      const spriteData = spriteCache.get(spriteType);
-      if (spriteData?.coordinates[itemKey]) {
-        setSpriteInfo({
-          spriteUrl: getDataPath(`data/sprites/${spriteType}-sprite.png`),
-          coords: spriteData.coordinates[itemKey],
-          spriteData: spriteData,
-        });
-        return;
-      }
-    }
-
-    // キャッシュになければ非同期ロード
     let mounted = true;
 
     async function loadSprites() {
@@ -113,7 +94,6 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
         }
       }
 
-      // 見つからなかった
       if (mounted) {
         setSpriteInfo(null);
       }
@@ -124,8 +104,9 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
     return () => {
       mounted = false;
     };
-  }, [itemId, preferRecipes]);
+  }, [itemId, preferRecipes, itemKey, spritesToCheck]);
 
-  return spriteInfo;
+  // 即時結果があればそれを返し、なければ state の結果を返す
+  return immediateResult ?? spriteInfo;
 }
 
