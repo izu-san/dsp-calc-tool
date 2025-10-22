@@ -1,11 +1,11 @@
 import { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RecipeTreeNode } from '../../types';
-import { getItemIconPath, getRecipeIconPath } from '../../utils/grid';
 import { formatRate, formatNumber, formatPower } from '../../utils/format';
 import { parseColorTags } from '../../utils/html';
 import { NodeSettingsModal } from '../NodeSettingsModal';
 import { CompactNodeSettings } from './CompactNodeSettings';
+import { ItemIcon } from '../ItemIcon';
 
 interface ProductionTreeProps {
   node: RecipeTreeNode;
@@ -72,13 +72,10 @@ export const ProductionTree = memo(function ProductionTree({
                 ? 'border-neon-purple/50 shadow-[0_0_10px_rgba(168,85,247,0.3)]'
                 : 'border-neon-green/50 shadow-[0_0_10px_rgba(0,255,136,0.3)]'
             }`}>
-              <img
-                src={getItemIconPath(iconId)}
+              <ItemIcon
+                itemId={iconId}
                 alt={displayName}
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
+                size={32}
               />
             </div>
 
@@ -169,18 +166,12 @@ export const ProductionTree = memo(function ProductionTree({
           )}
           
           {/* Recipe Icon */}
-          <div className="w-12 h-12 flex-shrink-0 border border-neon-cyan/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,217,255,0.3)]">
-            <img
-              src={getRecipeIconPath(
-                node.recipe!.SID,
-                node.recipe!.Explicit,
-                node.recipe!.Results[0]?.id
-              )}
+          <div className="w-10 h-10 flex-shrink-0 border border-neon-cyan/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,217,255,0.3)]">
+            <ItemIcon
+              itemId={node.recipe!.Explicit ? node.recipe!.SID : (node.recipe!.Results[0]?.id || node.recipe!.SID)}
               alt={node.recipe!.name}
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
+              size={32}
+              preferRecipes={node.recipe!.Explicit}
             />
           </div>
 

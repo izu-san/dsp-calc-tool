@@ -8,6 +8,15 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (k: string) => k }),
 }));
 
+// ItemIcon モック（スプライトシート対応）
+vi.mock('../../ItemIcon', () => ({
+  ItemIcon: ({ itemId, alt, size }: any) => (
+    <div data-testid={`item-icon-${itemId}`} data-alt={alt} data-size={size}>
+      {`Icon ${itemId}`}
+    </div>
+  ),
+}));
+
 // お気に入りストアをモック
 const toggleFavorite = vi.fn();
 const isFavorite = vi.fn(() => false);

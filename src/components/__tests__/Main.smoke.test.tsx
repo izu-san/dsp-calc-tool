@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { act } from 'react';
-import { act } from 'react-dom/test-utils';
+
+// Mock useSpriteData to make preloadSpriteData synchronous
+vi.mock('../../hooks/useSpriteData', () => ({
+  preloadSpriteData: vi.fn().mockResolvedValue(undefined),
+  useSpriteData: vi.fn().mockReturnValue({ spriteData: null, spriteImage: null }),
+}));
 
 // Mock ErrorBoundary to a pass-through
 vi.mock('../../components/ErrorBoundary.tsx', () => ({
@@ -22,6 +27,8 @@ describe('main.tsx smoke', () => {
     const spy = vi.spyOn(document, 'getElementById');
     await act(async () => {
       await import('../../main');
+      // preloadSpriteData() が解決されるのを待つ
+      await new Promise(resolve => setTimeout(resolve, 0));
     });
 
     expect(spy).toHaveBeenCalledWith('root');

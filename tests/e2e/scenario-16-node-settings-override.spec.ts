@@ -36,11 +36,12 @@ test.describe('ノード個別設定（NodeSettingsModal）のオーバーライ
     // スイッチがオンになったことを確認
     await expect(customSettingsSwitch).toBeChecked();
     
-    // カスタム設定のコンボボックスが表示されることを確認
-    await expect(page.getByLabel('増産剤')).toBeVisible();
-    
-    // 9. 増産剤をMk.IIIに設定する
-    await page.getByLabel('増産剤').selectOption(['Mk.III']);
+  // カスタム設定のコンボボックスが表示されることを確認
+  // aria-label を厳密一致で指定し、画像等のラベルと衝突しないようにする
+  await expect(page.getByLabel('増産剤', { exact: true })).toBeVisible();
+
+  // 9. 増産剤をMk.IIIに設定する
+  await page.getByLabel('増産剤', { exact: true }).selectOption(['Mk.III']);
     
     // 10. マシンランクを最高ランク（負エントロピー溶鉱炉）に設定する
     await page.getByRole('combobox').nth(2).selectOption(['負エントロピー溶鉱炉']);
