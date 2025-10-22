@@ -27,8 +27,7 @@ describe('main.tsx smoke', () => {
     const spy = vi.spyOn(document, 'getElementById');
     await act(async () => {
       await import('../../main');
-      // preloadSpriteData() が解決されるのを待つ
-      await new Promise(resolve => setTimeout(resolve, 0));
+      // preloadSpriteData() はモックで即座に解決するため、await だけで十分
     });
 
     expect(spy).toHaveBeenCalledWith('root');
