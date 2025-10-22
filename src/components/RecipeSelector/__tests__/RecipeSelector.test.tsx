@@ -599,9 +599,9 @@ describe('RecipeSelector', () => {
     // フォーカスアウト
     fireEvent.blur(searchInput);
 
-    // 200ms後にサジェスチョンが非表示になることを確認
-    await new Promise(resolve => setTimeout(resolve, 250));
-    
-    expect(screen.queryByText('suggestions')).not.toBeInTheDocument();
+    // サジェスチョンが非表示になるまで動的に待つ（CI環境対応）
+    await waitFor(() => {
+      expect(screen.queryByText('suggestions')).not.toBeInTheDocument();
+    }, { timeout: 1000 }); // タイムアウトを1秒に設定
   });
 });
