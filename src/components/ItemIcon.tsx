@@ -1,5 +1,6 @@
 import { useSpriteData } from '../hooks/useSpriteData';
 import { getDataPath } from '../utils/paths';
+import { getOptimalImagePath, getImageSourceSet } from '../utils/imageFormat';
 
 interface ItemIconProps {
   itemId: number;
@@ -38,25 +39,34 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
     );
   }
 
-  // フォールバック: 個別PNG（スプライトがロード中または利用不可の場合）
-  const itemIconPath = getDataPath(`data/Items/Icons/${itemId}.png`);
-  const machineIconPath = getDataPath(`data/Machines/Icons/${itemId}.png`);
+  // フォールバック: 個別画像（スプライトがロード中または利用不可の場合）
+  const itemIconPathPng = getDataPath(`data/Items/Icons/${itemId}.png`);
+  const machineIconPathPng = getDataPath(`data/Machines/Icons/${itemId}.png`);
+  
+  // WebP対応のソースセットを取得
+  const itemSources = getImageSourceSet(itemIconPathPng);
+  const machineSources = getImageSourceSet(machineIconPathPng);
   
   return (
     <picture>
-      <source srcSet={itemIconPath} type="image/png" />
+      {/* WebP形式を優先 */}
+      <source srcSet={itemSources.webp} type="image/webp" />
+      <source srcSet={itemSources.png} type="image/png" />
       <img
-        src={machineIconPath}
+        src={getOptimalImagePath(itemIconPathPng)}
         alt={alt}
         width={size}
         height={size}
         className={`inline-block ${className}`}
         loading="lazy"
         onError={(e) => {
-          // Fallback to a placeholder if both fail
+          // アイテム画像が失敗したらマシン画像を試す
           const target = e.target as HTMLImageElement;
-          if (target.src !== machineIconPath) {
-            target.src = machineIconPath;
+          const currentSrc = target.src;
+          
+          // まだマシン画像を試していない場合
+          if (!currentSrc.includes(machineIconPathPng) && !currentSrc.includes(machineSources.webp)) {
+            target.src = getOptimalImagePath(machineIconPathPng);
           }
         }}
       />

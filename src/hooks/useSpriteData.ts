@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getDataPath } from '../utils/paths';
+import { getOptimalImagePath } from '../utils/imageFormat';
 
 interface SpriteCoordinates {
   x: number;
@@ -68,8 +69,9 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
   for (const spriteType of spritesToCheck) {
     const spriteData = spriteCache.get(spriteType);
     if (spriteData?.coordinates[itemKey]) {
+      const spritePngPath = getDataPath(`data/sprites/${spriteType}-sprite.png`);
       immediateResult = {
-        spriteUrl: getDataPath(`data/sprites/${spriteType}-sprite.png`),
+        spriteUrl: getOptimalImagePath(spritePngPath),
         coords: spriteData.coordinates[itemKey],
         spriteData: spriteData,
       };
@@ -85,8 +87,9 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
       for (const spriteType of spritesToCheck) {
         const spriteData = await loadSpriteData(spriteType);
         if (mounted && spriteData?.coordinates[itemKey]) {
+          const spritePngPath = getDataPath(`data/sprites/${spriteType}-sprite.png`);
           setSpriteInfo({
-            spriteUrl: getDataPath(`data/sprites/${spriteType}-sprite.png`),
+            spriteUrl: getOptimalImagePath(spritePngPath),
             coords: spriteData.coordinates[itemKey],
             spriteData: spriteData,
           });

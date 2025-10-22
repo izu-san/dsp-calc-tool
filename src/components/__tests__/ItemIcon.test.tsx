@@ -43,17 +43,18 @@ describe('ItemIcon', () => {
       render(<ItemIcon itemId={1001} alt="Iron Ore" />);
       
       const picture = screen.getByAltText('Iron Ore').parentElement;
-      const source = picture?.querySelector('source');
+      const source = picture?.querySelector('source[type="image/webp"]');
       
       expect(source).toBeInTheDocument();
-      expect(source).toHaveAttribute('srcset', getDataPath('data/Items/Icons/1001.png'));
+      expect(source).toHaveAttribute('srcset', getDataPath('data/Items/Icons/1001.webp'));
     });
 
     it('フォールバックパスを設定する（Machines folder）', () => {
       render(<ItemIcon itemId={2001} alt="Assembler" />);
       
       const img = screen.getByAltText('Assembler');
-      expect(img).toHaveAttribute('src', getDataPath('data/Machines/Icons/2001.png'));
+      // WebP対応により、imgのsrcはWebPになる
+      expect(img).toHaveAttribute('src', getDataPath('data/Items/Icons/2001.webp'));
     });
 
     it('エラー時にフォールバック処理が動作する', () => {
@@ -67,8 +68,8 @@ describe('ItemIcon', () => {
       const event = new Event('error');
       img.dispatchEvent(event);
       
-      // 初期状態では機械フォルダのパスが設定されている
-      expect(img.src).toContain(getDataPath('data/Machines/Icons/9999.png'));
+      // WebP対応により、機械フォルダのWebPパスが設定されている
+      expect(img.src).toContain(getDataPath('data/Machines/Icons/9999.webp'));
     });
 
     it('altテキストが空の場合でもレンダリングできる', () => {
