@@ -41,7 +41,7 @@ describe('useSpriteData', () => {
     });
 
     expect(result.current).toEqual({
-      spriteUrl: getDataPath('data/sprites/items-sprite.png'),
+      spriteUrl: getDataPath('data/sprites/items-sprite.webp'),
       coords: { x: 0, y: 0, width: 80, height: 80 },
       spriteData: mockItemsSprite,
     });
@@ -89,7 +89,7 @@ describe('useSpriteData', () => {
     });
 
     expect(result.current).toEqual({
-      spriteUrl: getDataPath('data/sprites/recipes-sprite.png'),
+      spriteUrl: getDataPath('data/sprites/recipes-sprite.webp'),
       coords: { x: 0, y: 0, width: 80, height: 80 },
       spriteData: mockRecipesSprite,
     });
@@ -124,7 +124,7 @@ describe('useSpriteData', () => {
     });
 
     // Items スプライトから取得される
-    expect(result.current?.spriteUrl).toBe(getDataPath('data/sprites/items-sprite.png'));
+    expect(result.current?.spriteUrl).toBe(getDataPath('data/sprites/items-sprite.webp'));
 
     // machines-sprite.json へのリクエストは一切ない
     expect(mockFetch).toHaveBeenCalledTimes(1);
@@ -215,7 +215,7 @@ describe('useSpriteData', () => {
       expect(result.current).not.toBeNull();
     });
 
-    expect(result.current?.spriteUrl).toBe(getDataPath('data/sprites/recipes-sprite.png'));
+    expect(result.current?.spriteUrl).toBe(getDataPath('data/sprites/recipes-sprite.webp'));
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 

@@ -5,6 +5,10 @@ import './i18n' // Initialize i18n
 import App from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 import { preloadSpriteData } from './hooks/useSpriteData'
+import { initializeImageFormatSupport } from './utils/imageFormat'
+
+// 画像フォーマットサポートを初期化
+initializeImageFormatSupport();
 
 // アプリをレンダリングする前にスプライトデータをプリロード
 preloadSpriteData().then(() => {

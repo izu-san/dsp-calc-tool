@@ -1,6 +1,7 @@
 import Spritesmith from 'spritesmith';
 import fs from 'fs';
 import path from 'path';
+import sharp from 'sharp';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -50,8 +51,14 @@ async function generateSprite(
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  // 画像を保存
+  // PNG画像を保存
   fs.writeFileSync(outputImage, result.image);
+
+  // WebP形式でも保存
+  const outputImageWebp = outputImage.replace('.png', '.webp');
+  await sharp(result.image)
+    .webp({ quality: 90, effort: 6 })
+    .toFile(outputImageWebp);
 
   // 座標データをJSON形式で保存（itemIdをキーにする）
   const coordinates: Record<number, { x: number; y: number; width: number; height: number }> = {};
@@ -73,7 +80,8 @@ async function generateSprite(
   
   console.log(`   ✅ ${name} sprite generated: ${iconFiles.length} icons`);
   console.log(`   📐 Size: ${result.properties.width}x${result.properties.height}px`);
-  console.log(`   🖼️  Image: ${path.relative(process.cwd(), outputImage)}`);
+  console.log(`   🖼️  PNG: ${path.relative(process.cwd(), outputImage)}`);
+  console.log(`   🖼️  WebP: ${path.relative(process.cwd(), outputImageWebp)}`);
   console.log(`   📄 Data: ${path.relative(process.cwd(), outputJson)}`);
 }
 
