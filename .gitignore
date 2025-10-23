@@ -24,4 +24,7 @@ dist-ssr
 *.sw?
 
 coverage/
-test-results/.last-run.json
+
+# Playwright test results and reports
+playwright-report/
+test-results/
