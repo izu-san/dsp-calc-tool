@@ -13,6 +13,13 @@ interface RecipeSelectorProps {
 }
 
 export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: RecipeSelectorProps) {
+  // 同じレシピが選択された場合は何もしない
+  const handleRecipeSelect = (recipe: Recipe) => {
+    if (recipe.SID === selectedRecipeId) {
+      return;
+    }
+    onRecipeSelect(recipe);
+  };
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'1' | '2'>('1');
   const [searchQuery, setSearchQuery] = useState('');
@@ -294,7 +301,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           <RecipeGrid
             recipes={filteredRecipes}
             tab={1}
-            onRecipeSelect={onRecipeSelect}
+            onRecipeSelect={handleRecipeSelect}
             selectedRecipeId={selectedRecipeId}
           />
         </Tabs.Content>
@@ -303,7 +310,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           <RecipeGrid
             recipes={filteredRecipes}
             tab={2}
-            onRecipeSelect={onRecipeSelect}
+            onRecipeSelect={handleRecipeSelect}
             selectedRecipeId={selectedRecipeId}
           />
         </Tabs.Content>
