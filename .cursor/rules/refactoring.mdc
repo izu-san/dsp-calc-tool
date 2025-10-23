@@ -49,6 +49,7 @@ alwaysApply: true
 - ✅ コミット前に必ず `git status` と `git diff` で変更内容を確認
 - ✅ 意図しないファイル（デバッグコード、一時ファイル等）が含まれていないか確認
 - ✅ コミットメッセージは変更内容を正確に反映（例: `refactor: App.tsxを分割してカスタムフックを抽出`）
+- ✅ **既存ファイルを削除する場合は `git rm` コマンドを使用**して、作業ディレクトリとGitリポジトリの両方から削除する
 - ✅ ユーザーに各ステップの実行結果を報告すること
 
 ---
@@ -130,6 +131,39 @@ alwaysApply: true
 
 ##### ステップ 3: リファクタリングの実施
 - [ ] 計画に沿ったコード変更を実施
+
+- [ ] **既存ファイルを削除する場合**（コード統合、ファイル移動などで不要になった場合）
+
+  **ファイル削除のガイドライン**:
+  - 必ず `git rm` コマンドを使用すること（`rm` コマンドではなく）
+  - 作業ディレクトリとGitリポジトリの両方から削除される
+  - コミット時にGitHubからも削除される
+
+  ```bash
+  # 単一ファイルを削除
+  git rm <削除するファイルパス>
+  
+  # 複数ファイルを一度に削除
+  git rm <ファイル1> <ファイル2> <ファイル3>
+  
+  # ディレクトリごと削除
+  git rm -r <ディレクトリパス>
+  
+  # 例: 統合されたファイルを削除
+  git rm src/components/OldComponent.tsx
+  ```
+
+  **削除するべきファイルの例**:
+  - 新しいファイルに統合された古いファイル
+  - 移動・リネームされた後の元のファイル
+  - 不要になったヘルパーファイルやユーティリティファイル
+  - 使用されなくなったテストファイル
+
+  **注意事項**:
+  - 削除前に、そのファイルが他の場所で import されていないか確認
+  - テストファイルも対応する本体が削除される場合は削除すること
+  - 削除後は必ず TypeScript のコンパイル確認を実施
+
 - [ ] TypeScriptのコンパイルエラーがないことを確認
 
   ```bash
@@ -297,6 +331,26 @@ alwaysApply: true
   git diff
   ```
 
+  **`git status` で確認すべき項目**:
+  - 追加されたファイル（`new file:`）
+  - 変更されたファイル（`modified:`）
+  - **削除されたファイル（`deleted:`）** - `git rm` で削除されたファイルが正しくリストアップされているか確認
+
+- [ ] **削除されたファイルの確認**（ファイル削除を行った場合）
+
+  ```bash
+  # 削除されたファイルを確認
+  git status | grep deleted
+  
+  # または git diff で削除されたファイルを詳細確認
+  git diff --cached --diff-filter=D --name-only
+  ```
+
+  **確認項目**:
+  - 削除予定のファイルが全て `git rm` されているか
+  - 意図しないファイルが削除されていないか
+  - 対応するテストファイルも削除されているか（必要に応じて）
+
 - [ ] 不要なファイル（一時ファイル、デバッグコードなど）が含まれていないことを確認
 - [ ] コミットメッセージが適切であることを確認
 
@@ -454,6 +508,11 @@ if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyCo
 
 # ステップ 3: リファクタリング実施
 # ... コード変更 ...
+
+# 既存ファイルを削除する場合（git rm を使用）
+git rm src/components/OldComponent.tsx
+git rm src/components/__tests__/OldComponent.test.tsx
+
 npx tsc --noEmit
 
 # ステップ 3.5: ユーザー確認 🔴 必須
@@ -497,8 +556,13 @@ npm run dev               # 動作確認
 git status
 git diff
 
+# 削除されたファイルを確認（ファイル削除を行った場合）
+git status | grep deleted
+git diff --cached --diff-filter=D --name-only
+
 # ステップ 10: コミット＆プッシュ
 git add <変更したファイル>
+# git rm で削除したファイルは自動的にステージングされる
 git commit -m "refactor: App.tsxを分割してカスタムフックを抽出"
 git push origin feature/refactoring-app-component
 
