@@ -339,7 +339,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
 
 ---
 
-### 3. calculator.ts の複雑性
+### 3. calculator.ts の複雑性 ✅ **完了**
 
 **影響**: 保守性、テストの困難さ
 
