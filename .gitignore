@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Environment variables
+.env
+.env*.local
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -23,8 +28,23 @@ dist-ssr
 *.sln
 *.sw?
 
+# OS
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Cache
+.eslintcache
+.stylelintcache
+
+# Test coverage
 coverage/
 
 # Playwright test results and reports
 playwright-report/
 test-results/
+
+# Deployment
+.vercel
+.netlify
