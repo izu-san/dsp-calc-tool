@@ -101,13 +101,14 @@ alwaysApply: true
   **Windows (PowerShell)**:
   ```powershell
   # devサーバーをバックグラウンドで起動
-  $devServer = Start-Process pwsh -ArgumentList "-Command", "npm run dev" -PassThru
+  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
   # 数秒待機してサーバー起動を確認
-  Start-Sleep -Seconds 3
+  Start-Sleep -Seconds 5
   # E2Eテスト実行
   npm run test:e2e
-  # テスト後、devサーバーを停止
-  Stop-Process -Id $devServer.Id
+  # テスト後、Viteを実行しているプロセスを停止（ポート5173）
+  $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+  if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
   ```
 
   **Unix/Mac (Bash)**:
@@ -218,13 +219,14 @@ alwaysApply: true
   **Windows (PowerShell)**:
   ```powershell
   # devサーバーをバックグラウンドで起動
-  $devServer = Start-Process pwsh -ArgumentList "-Command", "npm run dev" -PassThru
+  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
   # 数秒待機してサーバー起動を確認
-  Start-Sleep -Seconds 3
+  Start-Sleep -Seconds 5
   # E2Eテスト実行
   npm run test:e2e
-  # テスト後、devサーバーを停止
-  Stop-Process -Id $devServer.Id
+  # テスト後、Viteを実行しているプロセスを停止（ポート5173）
+  $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+  if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
   ```
 
   **Unix/Mac (Bash)**:
@@ -414,13 +416,18 @@ git checkout -b feature/refactoring-app-component
 # ステップ 2: 変更前のテスト実行
 npm test                    # 単体テスト
 # E2Eテスト（devサーバーをバックグラウンドで起動）
-$devServer = Start-Process pwsh -ArgumentList "-Command", "npm run dev" -PassThru  # Windows
-# npm run dev & ; DEV_PID=$!  # Unix/Mac
-Start-Sleep -Seconds 3  # Windows
-# sleep 3  # Unix/Mac
+# Windows
+Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+Start-Sleep -Seconds 5
 npm run test:e2e
-Stop-Process -Id $devServer.Id  # Windows
-# kill $DEV_PID  # Unix/Mac
+$viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
+
+# Unix/Mac
+# npm run dev & ; DEV_PID=$!
+# sleep 3
+# npm run test:e2e
+# kill $DEV_PID
 
 # ステップ 3: リファクタリング実施
 # ... コード変更 ...
@@ -444,13 +451,18 @@ npm run test:coverage      # カバレッジ確認
 npm test -- <新規テストファイル名>
 
 # ステップ 7: E2Eテスト再実行（devサーバーをバックグラウンドで起動）
-$devServer = Start-Process pwsh -ArgumentList "-Command", "npm run dev" -PassThru  # Windows
-# npm run dev & ; DEV_PID=$!  # Unix/Mac
-Start-Sleep -Seconds 3  # Windows
-# sleep 3  # Unix/Mac
+# Windows
+Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+Start-Sleep -Seconds 5
 npm run test:e2e
-Stop-Process -Id $devServer.Id  # Windows
-# kill $DEV_PID  # Unix/Mac
+$viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
+
+# Unix/Mac
+# npm run dev & ; DEV_PID=$!
+# sleep 3
+# npm run test:e2e
+# kill $DEV_PID
 
 # ステップ 8: 最終確認
 npm run lint               # コード品質チェック

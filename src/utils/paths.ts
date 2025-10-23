@@ -1,7 +1,6 @@
 /**
  * Get the base URL for assets
- * In development: /
- * In production (GitHub Pages): /dsp-calc-tool/
+ * Always returns '/' for custom domain (dsp-calc.com)
  */
 export function getBasePath(): string {
   return import.meta.env.BASE_URL || '/';
