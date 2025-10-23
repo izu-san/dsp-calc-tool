@@ -108,6 +108,61 @@ describe('RecipeSelector/RecipeGrid coverage additions', () => {
     fireEvent.click(star);
     expect(toggleFavorite).toHaveBeenCalled();
   });
+
+  // Issue #34: 同じレシピを再選択した場合の挙動テスト
+  it('同じレシピを再選択してもonRecipeSelectが呼ばれない', () => {
+    const onSelect = vi.fn();
+    render(<RecipeSelector recipes={baseRecipes} onRecipeSelect={onSelect} selectedRecipeId={1001} />);
+
+    // Items タブで Smelt カテゴリを選択
+    fireEvent.click(screen.getByText('Items'));
+    fireEvent.click(screen.getByText('categorySmelt'));
+    
+    // すでに選択されているレシピ (SID: 1001) をクリック
+    const ironButton = screen.queryByTitle('Iron Ingot');
+    expect(ironButton).toBeTruthy();
+    
+    if (ironButton) {
+      fireEvent.click(ironButton);
+      // 同じレシピなので onRecipeSelect は呼ばれない
+      expect(onSelect).not.toHaveBeenCalled();
+    }
+  });
+
+  it('異なるレシピを選択するとonRecipeSelectが呼ばれる', () => {
+    const recipes = [
+      ...baseRecipes,
+      {
+        SID: 1002,
+        name: 'Copper Ingot',
+        Type: 'Smelt',
+        GridIndex: '1102', // Items タブ (z=1) に配置
+        Items: [{ id: 112, name: 'Copper Ore', quantity: 1 }],
+        Results: [{ id: 122, name: 'Copper Ingot', quantity: 1 }],
+        Explicit: false,
+      },
+    ] as any[];
+    
+    const onSelect = vi.fn();
+    render(<RecipeSelector recipes={recipes} onRecipeSelect={onSelect} selectedRecipeId={1001} />);
+
+    // Items タブで Smelt カテゴリを選択（既に選択されているはず）
+    fireEvent.click(screen.getByText('Items'));
+    fireEvent.click(screen.getByText('categorySmelt'));
+    
+    // 異なるレシピ (SID: 1002) をクリック
+    const copperButton = screen.queryByTitle('Copper Ingot');
+    expect(copperButton).toBeTruthy();
+    
+    if (copperButton) {
+      fireEvent.click(copperButton);
+      // 異なるレシピなので onRecipeSelect が呼ばれる
+      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({
+        SID: 1002,
+        name: 'Copper Ingot'
+      }));
+    }
+  });
 });
 
 
