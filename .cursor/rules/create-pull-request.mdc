@@ -37,12 +37,17 @@ git log origin/$(git branch --show-current)..HEAD
 - ユーザーから指定がない場合: `develop` ブランチ
 - 指定がある場合: その指定に従う
 
-### 2.2 差分の統計を確認
+### 2.2 Issue番号の確認
+- ユーザーから Issue 番号の指定があるか確認
+- 指定がある場合: Issue番号を記録（例: `#123`）
+- 指定がない場合: Issue紐づけなしでPRを作成
+
+### 2.3 差分の統計を確認
 ```bash
 git diff <マージ先ブランチ> --stat
 ```
 
-### 2.3 コミットログを確認
+### 2.4 コミットログを確認
 ```bash
 git log <マージ先ブランチ>..HEAD --oneline
 ```
@@ -129,6 +134,21 @@ PR本文生成前に、以下の情報を収集する：
 ## 参考
 
 <関連するIssue、ドキュメント、参考URLなどがあれば記載>
+
+---
+
+**Issue番号が指定されている場合**:
+- 本文の末尾に以下を追加してIssueを自動クローズ:
+  - `Closes #<Issue番号>` (バグ修正、機能実装の場合)
+  - `Resolves #<Issue番号>` (問題解決の場合)
+  - `Fixes #<Issue番号>` (修正の場合)
+  - `Related to #<Issue番号>` (関連するが自動クローズしない場合)
+
+**キーワードの使い分け**:
+- `Closes`: 機能実装、タスク完了
+- `Fixes`: バグ修正
+- `Resolves`: 問題解決
+- `Related to`: 関連するが自動クローズしない
 ```
 
 ### 本文生成の具体例（リファクタリングの場合）
@@ -169,6 +189,46 @@ App.tsxが1000行を超え、保守性が低下していたため、責任を分
 - リファクタリングガイド: @refactoring.mdc
 ```
 
+### 本文生成の具体例（Issue番号がある場合）
+
+```markdown
+採掘速度計算機能を追加
+
+## 目的
+
+Issue #45 で要望された採掘速度計算機能を実装し、ユーザーが鉱床の採掘効率を簡単に計算できるようにする。
+
+## 変更内容
+
+- `src/lib/miningCalculation.ts`: 採掘速度計算ロジックを実装
+- `src/components/MiningCalculator/MiningCalculator.tsx`: UIコンポーネントを追加
+- `src/lib/__tests__/miningCalculation.test.ts`: 単体テストを追加
+- `src/App.tsx`: MiningCalculatorコンポーネントを統合
+
+## 品質保証結果
+
+### 単体テスト
+- 実行結果: ✅ passed (0 failed)
+- カバレッジ: 95.2%
+
+### E2Eテスト
+- 実行結果: ✅ passed
+- シナリオ数: 21/21
+
+### ビルド
+- ビルド結果: ✅ success
+
+### ESLint
+- エラー: 0
+- 警告: 0
+
+## 参考
+
+- 設計ドキュメント: @miningCalculation.mdc
+
+Closes #45
+```
+
 ---
 
 ## ステップ 5: PR作成コマンドの実行
@@ -176,12 +236,21 @@ App.tsxが1000行を超え、保守性が低下していたため、責任を分
 ### 5.1 本文をファイルに保存
 複数行の本文を扱うため、一時ファイルに保存：
 
+**Issue番号の追加**:
+- Issue番号が指定されている場合、PR本文の末尾に以下を追加:
+  - バグ修正: `Fixes #<Issue番号>`
+  - 機能実装: `Closes #<Issue番号>`
+  - 問題解決: `Resolves #<Issue番号>`
+  - 関連のみ: `Related to #<Issue番号>`
+
 **Windows (PowerShell)**:
 ```powershell
 # 本文を一時ファイルに保存
 $prBody = @"
 <生成したPR本文>
 "@
+# Issue番号がある場合は追加
+# $prBody += "`n`nCloses #<Issue番号>"
 $prBody | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
 ```
 
@@ -191,6 +260,8 @@ $prBody | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
 cat > /tmp/pr_body.md << 'EOF'
 <生成したPR本文>
 EOF
+# Issue番号がある場合は追加
+# echo -e "\n\nCloses #<Issue番号>" >> /tmp/pr_body.md
 ```
 
 ### 5.2 PRを作成
@@ -258,6 +329,47 @@ rm /tmp/pr_body.md
 
 ---
 
+## Issue紐づけの詳細
+
+### Issueを自動クローズするキーワード
+
+PR本文に以下のキーワードを含めると、PRがマージされたときに自動的にIssueがクローズされます：
+
+| キーワード | 用途 | 例 |
+|---------|-----|-----|
+| `Closes #123` | 機能実装、タスク完了 | `Closes #45` |
+| `Fixes #123` | バグ修正 | `Fixes #78` |
+| `Resolves #123` | 問題解決 | `Resolves #92` |
+
+### 複数のIssueを紐づける
+
+複数のIssueに関連する場合：
+```markdown
+Closes #45, #67
+Fixes #78
+```
+
+### 関連するが自動クローズしない
+
+関連するが自動クローズしたくない場合：
+```markdown
+Related to #45
+See also #67
+```
+
+### 使用例
+
+```markdown
+## 参考
+
+- 設計ドキュメント: @miningCalculation.mdc
+- 関連PR: #42
+
+Closes #45
+```
+
+---
+
 ## 重要な注意事項
 
 1. **PRタイトルは具体的に**: 変更内容が一目で分かるようにする
@@ -266,5 +378,6 @@ rm /tmp/pr_body.md
 4. **差分を確認**: PR作成前に必ず差分を確認し、意図しない変更がないかチェック
 5. **ユーザーに報告**: 各ステップの実行結果をユーザーに報告する
 6. **OS対応**: ユーザーのOS（Windows/Unix/Mac）を検出し、適切なコマンドを使用する
+7. **Issue紐づけ**: Issue番号が指定されている場合、適切なキーワード（Closes/Fixes/Resolves）を使用してPRとIssueを紐づける
 
 ---
