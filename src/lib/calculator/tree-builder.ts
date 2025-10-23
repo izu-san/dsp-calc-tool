@@ -1,0 +1,347 @@
+import Decimal from 'decimal.js';
+import type {
+  Recipe,
+  Machine,
+  GameData,
+  GlobalSettings,
+  RecipeTreeNode,
+  PowerConsumption,
+  ProliferatorConfig,
+  NodeOverrideSettings,
+} from '../../types';
+import { isRawMaterial } from '../../constants/rawMaterials';
+import { MACHINE_IDS_BY_RECIPE_TYPE, getMachineForRecipe as getMachineForRecipeFromConstants } from '../../constants/machines';
+import { calculateProductionRate } from './production-rate';
+import { calculateMachinePower, calculateSorterPower } from './power-calculation';
+import { calculateConveyorBelts } from './belt-calculation';
+
+/**
+ * Find the appropriate machine for a recipe type
+ */
+const getMachineForRecipe = getMachineForRecipeFromConstants;
+
+/**
+ * Resolve proliferator mode for a specific recipe
+ * Applies smart mode selection based on recipe capabilities
+ * @internal - Exported for testing
+ */
+export function resolveProliferatorMode(
+  recipe: Recipe,
+  settings: GlobalSettings,
+  override: NodeOverrideSettings | undefined
+): ProliferatorConfig {
+  const supportsProduction = recipe.productive === true;
+  let proliferator = override?.proliferator || settings.proliferator;
+  
+  // Apply smart mode selection based on recipe capabilities
+  if (settings.proliferator && settings.proliferator.type !== 'none') {
+    // If global setting is production mode but this recipe doesn't support it, use speed mode
+    if (settings.proliferator.mode === 'production' && !supportsProduction) {
+      proliferator = {
+        ...proliferator,
+        mode: 'speed'
+      };
+    }
+    // If global setting is speed mode but this recipe supports production, use production mode
+    else if (settings.proliferator.mode === 'speed' && supportsProduction) {
+      proliferator = {
+        ...proliferator,
+        mode: 'production'
+      };
+    }
+  }
+  
+  return proliferator;
+}
+
+/**
+ * Resolve machine by rank override
+ * @internal - Exported for testing
+ */
+export function resolveMachineByRank(
+  recipe: Recipe,
+  machineRank: string,
+  gameData: GameData
+): Machine | undefined {
+  const ids = MACHINE_IDS_BY_RECIPE_TYPE[recipe.Type] || [];
+  let targetId = ids[0];
+
+  switch (recipe.Type) {
+    case 'Smelt':
+      targetId = machineRank === 'arc' ? ids[0]
+        : machineRank === 'plane' ? ids[1]
+        : ids[2];
+      break;
+    case 'Assemble':
+      targetId = machineRank === 'mk1' ? ids[0]
+        : machineRank === 'mk2' ? ids[1]
+        : machineRank === 'mk3' ? ids[2]
+        : ids[3]; // recomposing
+      break;
+    case 'Chemical':
+      targetId = machineRank === 'standard' ? ids[0] : ids[1];
+      break;
+    case 'Research':
+      targetId = machineRank === 'standard' ? ids[0]
+        : ids[1]; // matrixLab/self-evolution
+      break;
+    case 'Refine':
+    case 'Particle':
+      // Only one option; keep default
+      break;
+    default:
+      break;
+  }
+
+  return gameData.machines.get(targetId);
+}
+
+/**
+ * Resolve machine for a recipe, considering overrides
+ * @internal - Exported for testing
+ */
+export function resolveMachine(
+  recipe: Recipe,
+  gameData: GameData,
+  settings: GlobalSettings,
+  override: NodeOverrideSettings | undefined
+): Machine {
+  if (override?.machineRank) {
+    const foundMachine = resolveMachineByRank(recipe, override.machineRank, gameData);
+    if (foundMachine) {
+      return foundMachine;
+    }
+  }
+  return getMachineForRecipe(recipe.Type, gameData.machines, settings);
+}
+
+/**
+ * Create a raw material node
+ * @internal - Exported for testing
+ */
+export function createRawMaterialNode(
+  itemId: number,
+  itemName: string,
+  requiredRate: number,
+  settings: GlobalSettings,
+  nodeId: string,
+  isCircular: boolean,
+  sourceRecipe?: Recipe
+): RecipeTreeNode {
+  const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
+  
+  return {
+    isRawMaterial: true,
+    itemId,
+    itemName,
+    miningFrom: isCircular ? 'externalSupplyCircular' : 'Unknown Source',
+    targetOutputRate: requiredRate,
+    machineCount: 0,
+    proliferator: settings.proliferator,
+    power: { machines: 0, sorters: 0, total: 0 },
+    conveyorBelts: {
+      inputs: 0,
+      outputs: Math.ceil(requiredRate / totalBeltSpeed),
+      total: Math.ceil(requiredRate / totalBeltSpeed),
+    },
+    inputs: [],
+    children: [],
+    nodeId,
+    isCircularDependency: isCircular,
+    sourceRecipe,
+  };
+}
+
+/**
+ * Build child nodes for all inputs
+ * @internal - Exported for testing
+ */
+export function buildChildNodes(
+  inputs: { itemId: number; itemName: string; requiredRate: number }[],
+  gameData: GameData,
+  settings: GlobalSettings,
+  nodeOverrides: Map<string, NodeOverrideSettings>,
+  depth: number,
+  maxDepth: number,
+  nodeId: string,
+  visitingItems: Set<number>,
+  currentRecipe: Recipe
+): RecipeTreeNode[] {
+  const children: RecipeTreeNode[] = [];
+  
+  for (const input of inputs) {
+    const inputItem = gameData.allItems.get(input.itemId);
+    if (!inputItem) continue;
+    
+    // Check for alternative recipe preference (-1 means mining)
+    const preferredRecipeId = settings.alternativeRecipes.get(input.itemId);
+    const forceMining = preferredRecipeId === -1;
+    const forceRecipe = preferredRecipeId && preferredRecipeId > 0;
+    
+    // Check for circular dependency: if input item is currently being visited, treat as raw material
+    const isCircular = visitingItems.has(input.itemId);
+    
+    if ((isRawMaterial(input.itemId) && !forceRecipe) || forceMining || isCircular) {
+      // Create a leaf node for raw material or circular dependency
+      const rawNodeId = `${nodeId}/raw-${input.itemId}`;
+      
+      // For circular dependency, use the current recipe itself
+      const rawNode = createRawMaterialNode(
+        input.itemId,
+        input.itemName,
+        input.requiredRate,
+        settings,
+        rawNodeId,
+        isCircular,
+        isCircular ? currentRecipe : undefined
+      );
+      
+      // If item has miningFrom, use it
+      if (inputItem.miningFrom && !isCircular) {
+        rawNode.miningFrom = inputItem.miningFrom;
+      }
+      
+      children.push(rawNode);
+    } else {
+      // Find recipe to produce this item
+      const producerRecipes = gameData.recipesByItemId.get(input.itemId);
+      if (producerRecipes && producerRecipes.length > 0) {
+        // Use preferred recipe if specified, otherwise use first recipe
+        const selectedRecipe = forceRecipe
+          ? producerRecipes.find(r => r.SID === preferredRecipeId) || producerRecipes[0]
+          : producerRecipes[0];
+
+        const childNode = buildRecipeTree(
+          selectedRecipe,
+          input.requiredRate,
+          gameData,
+          settings,
+          nodeOverrides,
+          depth + 1,
+          maxDepth,
+          `${nodeId}/r-${selectedRecipe.SID}`,
+          visitingItems
+        );
+        children.push(childNode);
+      }
+    }
+  }
+  
+  return children;
+}
+
+/**
+ * Build recipe tree recursively
+ * @internal - Exported for testing purposes only
+ */
+export function buildRecipeTree(
+  recipe: Recipe,
+  targetRate: number,
+  gameData: GameData,
+  settings: GlobalSettings,
+  nodeOverrides: Map<string, NodeOverrideSettings>,
+  depth: number = 0,
+  maxDepth: number = 20,
+  nodePath: string = `r-${recipe.SID}`,
+  visitingItems: Set<number> = new Set()
+): RecipeTreeNode {
+  if (depth > maxDepth) {
+    throw new Error('Maximum recursion depth reached');
+  }
+  
+  // Track the output item to detect circular dependencies
+  const outputItemId = recipe.Results[0]?.id;
+  if (outputItemId && visitingItems.has(outputItemId)) {
+    // Circular dependency detected - treat as raw material
+    // This prevents infinite recursion for recipes like "Reforming Refine"
+    // where refined oil is both input and output
+  }
+
+  // Stable path-based node ID
+  const nodeId = nodePath;
+
+  // Check for node-specific overrides
+  const override = nodeOverrides.get(nodeId);
+  
+  // Resolve proliferator mode
+  const proliferator = resolveProliferatorMode(recipe, settings, override);
+  
+  // Resolve machine
+  const machine = resolveMachine(recipe, gameData, settings, override);
+
+  // Calculate production rate per machine
+  const ratePerMachine = calculateProductionRate(recipe, machine, proliferator, settings.proliferatorMultiplier);
+
+  // Calculate required machines
+  const machineCount = new Decimal(targetRate).div(ratePerMachine).toDecimalPlaces(2).toNumber();
+
+  // Calculate power
+  const machinePower = calculateMachinePower(machine, machineCount, proliferator, settings.proliferatorMultiplier);
+  const sorterPower = calculateSorterPower(recipe, machineCount, settings.sorter.powerConsumption);
+  const power: PowerConsumption = {
+    machines: machinePower,
+    sorters: sorterPower,
+    total: machinePower + sorterPower,
+  };
+
+  // Build input requirements
+  // Production mode reduces input consumption (more output from same input)
+  // Speed mode doesn't affect input ratios, just reduces machine count
+  // Apply multiplier to production bonus (with fallback for old saved data)
+  const prodMult = settings.proliferatorMultiplier?.production ?? 1;
+  const effectiveProductionBonus = proliferator.productionBonus * prodMult;
+  const inputMultiplier = proliferator.mode === 'production' 
+    ? 1 / (1 + effectiveProductionBonus)  // e.g., +25% production means 80% input (1/1.25)
+    : 1;
+  
+  const inputs = recipe.Items.map(item => ({
+    itemId: item.id,
+    itemName: item.name,
+    requiredRate: new Decimal(item.count)
+      .mul(targetRate)
+      .div(recipe.Results[0]?.count || 1)
+      .mul(inputMultiplier)  // Apply production bonus to reduce input
+      .toNumber(),
+  }));
+
+  // Calculate conveyor belts
+  const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
+  const conveyorBelts = calculateConveyorBelts(
+    targetRate,
+    inputs,
+    totalBeltSpeed
+  );
+
+  // Add current output item to visiting set to detect circular dependencies
+  const newVisitingItems = new Set(visitingItems);
+  if (outputItemId) {
+    newVisitingItems.add(outputItemId);
+  }
+  
+  // Build child nodes for all inputs
+  const children = buildChildNodes(
+    inputs,
+    gameData,
+    settings,
+    nodeOverrides,
+    depth,
+    maxDepth,
+    nodeId,
+    newVisitingItems,
+    recipe
+  );
+
+  return {
+    recipe,
+    targetOutputRate: targetRate,
+    machineCount,
+    proliferator,
+    machine,
+    power,
+    inputs,
+    children,
+    conveyorBelts,
+    nodeId,
+  };
+}
+
