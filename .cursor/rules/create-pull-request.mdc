@@ -34,8 +34,29 @@ git log origin/$(git branch --show-current)..HEAD
 ## ステップ 2: マージ先ブランチとの差分確認
 
 ### 2.1 マージ先ブランチの決定
-- ユーザーから指定がない場合: `develop` ブランチ
-- 指定がある場合: その指定に従う
+現在のブランチ名から作業タイプを自動判定し、マージ先ブランチを決定する：
+
+| 現在のブランチパターン | マージ先ブランチ | 作業タイプ |
+|-------------------|--------------|----------|
+| `hotfix/fix-*` | `main` | 不具合修正 |
+| `feature/refactoring-*` | `develop` | リファクタリング |
+| `feature/*` | `develop` | 機能エンハンス |
+| その他 | `develop` (デフォルト) | - |
+
+**判定ロジック**:
+```bash
+current_branch=$(git branch --show-current)
+
+if [[ $current_branch == hotfix/fix-* ]]; then
+  base_branch="main"
+elif [[ $current_branch == feature/* ]]; then
+  base_branch="develop"
+else
+  base_branch="develop"  # デフォルト
+fi
+```
+
+- ユーザーから明示的に指定がある場合: その指定に従う（自動判定を上書き）
 
 ### 2.2 Issue番号の確認
 - ユーザーから Issue 番号の指定があるか確認
