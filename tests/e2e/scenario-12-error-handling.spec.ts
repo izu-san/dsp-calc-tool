@@ -2,7 +2,7 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
-import { waitForDataLoading, closeWelcomeModal } from './helpers/common-actions';
+import { waitForDataLoading, closeWelcomeModal, initializeApp } from './helpers/common-actions';
 import { HEADINGS } from './helpers/constants';
 
 test.describe('データ不整合時のエラーハンドリング', () => {
@@ -50,12 +50,8 @@ test.describe('データ不整合時のエラーハンドリング', () => {
   });
 
   test('存在しないレシピへのアクセスでエラーハンドリングを検証', async ({ page }) => {
-    // アプリを起動
-    await page.goto('http://localhost:5173');
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcomeモーダルをスキップ
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 不正なURLパラメータでエラーハンドリングをテスト
     await page.goto('http://localhost:5173/?recipe=invalid-recipe-id-9999');

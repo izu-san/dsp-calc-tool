@@ -10,7 +10,7 @@ import {
   getProductionRootTitleLocator,
   getProductionHeadingLocator,
 } from './helpers/i18n-helpers';
-import { waitForDataLoading } from './helpers/common-actions';
+import { waitForDataLoading, initializeApp } from './helpers/common-actions';
 import { BUTTON_LABELS } from './helpers/constants';
 
 test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
@@ -67,14 +67,7 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   });
 
   test('シナリオ11A: 設定エリアのアイテム名が言語切替で翻訳されること', async ({ page }) => {
-    await page.goto('http://localhost:5173');
-
-    // データ読み込み待ち（軽い待機）
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcome モーダルがあればスキップ
-    const skipButtons = await page.getByRole('button', { name: 'スキップ' }).count();
-    if (skipButtons > 0) await page.getByRole('button', { name: 'スキップ' }).click();
+    await initializeApp(page);
 
   // RecipeSelector で "重力マトリックス" を選択
   // RecipeGrid renders recipe buttons with title=recipe.name, so use role=button locator
@@ -93,14 +86,7 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   });
 
   test('シナリオ11B: 生産チェーンのルートノード名と入力アイテム名が翻訳されること', async ({ page }) => {
-    await page.goto('http://localhost:5173');
-
-    // データ読み込み待ち
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcome モーダルがあればスキップ
-    const skipCount = await page.getByRole('button', { name: 'スキップ' }).count();
-    if (skipCount > 0) await page.getByRole('button', { name: 'スキップ' }).click();
+    await initializeApp(page);
 
     // レシピ選択と目標入力
   await clickRecipeByName(page, '重力マトリックス');

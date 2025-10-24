@@ -10,7 +10,7 @@ test.describe('プランのエクスポートとインポート（JSONファイ�
 
     try {
       // 1-3. アプリを起動し、初期状態まで準備
-      const { initializeApp, setTargetQuantity } = await import('./helpers/common-actions');
+      const { initializeApp, setTargetQuantity, waitForDataLoading } = await import('./helpers/common-actions');
       await initializeApp(page);
       
       // 4. 代替レシピを持つグラフェンレシピを選択してプランを作成
@@ -39,10 +39,10 @@ test.describe('プランのエクスポートとインポート（JSONファイ�
       expect(downloadPath).toBeTruthy();
       
       // 9. ページをリフレッシュして初期状態に戻す
-      await page.goto('http://localhost:5173');
+      await page.goto('/');
       
       // 10. データ読み込み完了を待機
-      await new Promise(f => setTimeout(f, 3 * 1000));
+      await waitForDataLoading(page);
       
       // 注: 以前のテストでブラウザに保存されたプランが復元される可能性があるため、
       // 初期状態の確認はスキップする
