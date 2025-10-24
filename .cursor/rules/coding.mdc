@@ -104,6 +104,138 @@ type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
 - コードよりも型を重視
 - 複雑さに応じてアプローチを調整
 
+## コードドキュメント
+
+### TSDoc（複雑なロジックのみ）
+
+以下の場合は必ずTSDocを記載：
+- `lib/calculator/`, `lib/parser.ts`, `lib/proliferator.ts` などの複雑なロジック
+- 公開APIとなる関数・型
+- 複雑なアルゴリズム（再帰、最適化ロジックなど）
+
+```typescript
+/**
+ * 生産チェーンを再帰的に計算する
+ * @param recipe - 計算対象のレシピ
+ * @param targetRate - 目標生産速度（個/秒）
+ * @param settings - グローバル設定
+ * @returns 計算結果ツリー
+ */
+export function calculateProductionChain(...)
+```
+
+**注**: 自明な関数まで全てドキュメント化する必要はない
+
+## 型安全の強化
+
+- `unknown` からの型ガードを明示的に実装
+- 型アサーション（`as`）は最小限に、使用時は理由をコメント
+
+```typescript
+// ✅ 明示的な型ガード
+function isItem(data: unknown): data is Item {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'id' in data &&
+    'name' in data
+  );
+}
+
+// ⚠️ 型アサーションは最小限に
+const item = data as Item; // 理由: 外部APIから取得したデータで型保証済み
+```
+
+## フォールバック処理
+
+### 暗黙のフォールバック禁止
+
+`||`、`??` の安易な使用を避ける
+
+```typescript
+// ❌ 暗黙のフォールバック（禁止）
+function getItem(id: string) {
+  return items.get(id) || defaultItem; // なぜdefaultItem？
+}
+
+// ✅ 明示的なフォールバック（許可）
+function getItemWithFallback(id: string): Item {
+  const item = items.get(id);
+  if (!item) {
+    console.warn(`Item ${id} not found, using fallback`);
+    return createDefaultItem();
+  }
+  return item;
+}
+```
+
+フォールバックが必要な場合は、明示的に理由をログ出力すること
+
+## 関数設計
+
+### boolean引数は最小限に
+
+Reactの慣習的なもの（`disabled`、`isOpen` など）を除き、boolean引数は避ける
+
+```typescript
+// ❌ boolean引数（避ける）
+function calculate(recipe: Recipe, useProliferator: boolean)
+
+// ✅ 明示的な列挙型または別関数（推奨）
+function calculate(recipe: Recipe, proliferatorMode: ProliferatorMode)
+function calculateWithProliferator(recipe: Recipe)
+function calculateWithoutProliferator(recipe: Recipe)
+```
+
+### オプショナル引数の制限
+
+オプショナル引数が3つ以上の場合は、オプションオブジェクトにまとめる
+
+```typescript
+// ❌ オプショナル引数が多すぎる
+function createNode(
+  id: string,
+  name?: string,
+  type?: string,
+  color?: string,
+  icon?: string
+)
+
+// ✅ オプションオブジェクトにまとめる
+interface NodeOptions {
+  name?: string;
+  type?: string;
+  color?: string;
+  icon?: string;
+}
+
+function createNode(id: string, options?: NodeOptions)
+```
+
+## リファクタリング時の禁止事項
+
+### 挙動の変更は絶対に禁止
+
+- リファクタリング時に機能の挙動を変更してはならない
+- ユニットテストの変更も原則禁止
+- 例外: テストが間違っている場合のみ（必ず理由を説明）
+
+### 環境変数の追加禁止
+
+- 新しい環境変数を安易に追加しない
+- データは `public/data/` と localStorage で管理する
+
+### 設定ファイルの書き換えは慎重に
+
+- `package.json`、`tsconfig.json`、`vite.config.ts` などの変更は必ず理由を説明
+- ビルド設定の変更は影響範囲を確認してから実施
+
+### 将来的な拡張性の考慮を禁じる
+
+- YAGNI原則: 必要になってから実装する
+- 「将来使うかもしれない」機能の実装を禁止
+- 過剰な抽象化を避ける
+
 ## コードスタイル
 
 - 関数優先（クラスは必要な場合のみ）
