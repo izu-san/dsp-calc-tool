@@ -4,6 +4,9 @@ import { ICONS } from '../../constants/icons';
 import { useTranslation } from 'react-i18next';
 import type { ConveyorBeltTier } from '../../types/settings';
 import { ItemIcon } from '../ItemIcon';
+import { createLogger } from '../../utils/logger';
+
+const logger = createLogger('ConveyorBeltSettings');
 
 const CONVEYOR_BELT_OPTIONS = [
   { tier: 'mk1' as ConveyorBeltTier, label: 'Mk.I', speed: '6/s', color: 'yellow', iconId: ICONS.belt.mk1 },
@@ -32,9 +35,9 @@ export function ConveyorBeltSettings() {
   const stackCount = typeof conveyorBelt.stackCount === 'number' ? conveyorBelt.stackCount : 1;
   const totalSpeed = speed * stackCount;
 
-  // Debug: Log values if they're invalid (remove in production)
+  // Debug: Log values if they're invalid
   if (typeof conveyorBelt.speed !== 'number' || typeof conveyorBelt.stackCount !== 'number') {
-    console.warn('ConveyorBeltSettings: Invalid values detected', {
+    logger.warn('Invalid values detected', {
       speed: conveyorBelt.speed,
       stackCount: conveyorBelt.stackCount,
       conveyorBelt

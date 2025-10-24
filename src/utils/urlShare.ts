@@ -1,5 +1,8 @@
 import type { SavedPlan } from '../types/saved-plan';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
+import { createLogger } from './logger';
+
+const logger = createLogger('URLShare');
 
 /**
  * Encode a plan to URL-safe base64 string
@@ -11,7 +14,7 @@ export function encodePlanToURL(plan: SavedPlan): string {
     const compressed = compressToEncodedURIComponent(json);
     return compressed;
   } catch (error) {
-    console.error('Failed to encode plan:', error);
+    logger.error('Failed to encode plan:', error);
     throw new Error('Failed to encode plan for sharing');
   }
 }
@@ -36,7 +39,7 @@ export function decodePlanFromURL(encoded: string): SavedPlan | null {
     
     return plan;
   } catch (error) {
-    console.error('Failed to decode plan:', error);
+    logger.error('Failed to decode plan:', error);
     return null;
   }
 }

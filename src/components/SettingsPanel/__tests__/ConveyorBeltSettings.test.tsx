@@ -271,7 +271,7 @@ describe('ConveyorBeltSettings', () => {
       // totalSpeed = 0 * 2 = 0
       expect(screen.getByText('0')).toBeInTheDocument();
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'ConveyorBeltSettings: Invalid values detected',
+        '[WARN] [DSP-Calc:ConveyorBeltSettings] Invalid values detected',
         expect.objectContaining({
           speed: 'invalid',
           stackCount: 2,
