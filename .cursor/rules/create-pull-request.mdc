@@ -1,5 +1,5 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Pull Requestの作り方
@@ -346,26 +346,31 @@ gh pr create --base develop --title "feat: カスタムコマンドを追加" --
 
 ### 5.3 一時ファイルを削除
 
-AIアシスタントは、ステップAで取得した実際のパスを使用して **`delete_file` ツール**で一時ファイルを削除する：
+**重要**: `delete_file` ツールはワークスペース内のファイルのみ対応しており、ワークスペース外の絶対パス（一時フォルダなど）には対応していません。
 
-```
-Windows: C:\Users\YourName\AppData\Local\Temp\pr_body.md
-Unix/Mac: /tmp/pr_body.md
-```
-
-ただし、削除に失敗しても問題ありません（一時ファイルは自動的にクリーンアップされます）。
-
-**代替方法（delete_fileツールが失敗した場合のフォールバック）**:
+そのため、一時ファイルの削除には **`run_terminal_cmd` ツールでターミナルコマンドを使用**してください：
 
 **Windows (PowerShell)**:
 ```powershell
 Remove-Item "<ステップAで取得したパス>\pr_body.md" -ErrorAction SilentlyContinue
 ```
 
+例:
+```powershell
+Remove-Item "C:\Users\YourName\AppData\Local\Temp\pr_body.md" -ErrorAction SilentlyContinue
+```
+
 **Unix/Mac (Bash)**:
 ```bash
 rm -f <ステップAで取得したパス>/pr_body.md
 ```
+
+例:
+```bash
+rm -f /tmp/pr_body.md
+```
+
+**注意**: 削除に失敗しても問題ありません（一時ファイルは自動的にクリーンアップされます）。`-ErrorAction SilentlyContinue` または `-f` オプションにより、エラーが発生しても処理を継続します。
 
 ### 5.4 結果を確認
 - PR URLが表示されることを確認

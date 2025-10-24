@@ -1,5 +1,7 @@
 import type { SavedPlan, SerializedPlan, GlobalSettings, NodeOverrideSettings } from '../types';
+import { createLogger } from './logger';
 
+const logger = createLogger('PlanExport');
 const PLAN_VERSION = '1.0.0';
 
 /**
@@ -85,7 +87,7 @@ export async function importPlan(file: File): Promise<SavedPlan> {
         
         // Version compatibility check (for future versions)
         if (data.version !== PLAN_VERSION) {
-          console.warn(`Plan version mismatch: ${data.version} vs ${PLAN_VERSION}`);
+          logger.warn(`Plan version mismatch: ${data.version} vs ${PLAN_VERSION}`);
         }
         
         resolve(data.plan);

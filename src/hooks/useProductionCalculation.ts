@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import type { Recipe, GameData, GlobalSettings, NodeOverrideSettings, CalculationResult } from '../types';
 import { calculateProductionChain } from '../lib/calculator';
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('ProductionCalculation');
 
 /**
  * 生産チェーンの計算を管理するカスタムフック
@@ -20,7 +23,7 @@ export function useProductionCalculation(
         const result = calculateProductionChain(selectedRecipe, targetQuantity, data, settings, nodeOverrides);
         setCalculationResult(result);
       } catch (err) {
-        console.error('Calculation error:', err);
+        logger.error('Calculation error:', err);
         setCalculationResult(null);
       }
     } else {

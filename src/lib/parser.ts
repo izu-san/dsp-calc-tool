@@ -1,7 +1,9 @@
 import { XMLParser } from 'fast-xml-parser';
 import type { Item, Recipe, Machine, GameData } from '../types';
 import { getDataPath } from '../utils/paths';
+import { createLogger } from '../utils/logger';
 
+const logger = createLogger('Parser');
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: '@_',
@@ -16,16 +18,16 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
   const [itemsXml, recipesXml, machinesXml] = await Promise.all([
     fetch(itemsPath).then(r => r.text()).catch(() => {
       // Fallback to default if locale-specific file doesn't exist
-      console.warn(`${itemsPath} not found, falling back to default`);
+      logger.warn(`${itemsPath} not found, falling back to default`);
       return fetch(getDataPath('data/Items/Items.xml')).then(r => r.text());
     }),
     customRecipesXml ? Promise.resolve(customRecipesXml) : 
       fetch(recipesPath).then(r => r.text()).catch(() => {
-        console.warn(`${recipesPath} not found, falling back to default`);
+        logger.warn(`${recipesPath} not found, falling back to default`);
         return fetch(getDataPath('data/Recipes/Recipes.xml')).then(r => r.text());
       }),
     fetch(machinesPath).then(r => r.text()).catch(() => {
-      console.warn(`${machinesPath} not found, falling back to default`);
+      logger.warn(`${machinesPath} not found, falling back to default`);
       return fetch(getDataPath('data/Machines/Machines.xml')).then(r => r.text());
     }),
   ]);
