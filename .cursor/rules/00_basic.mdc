@@ -1,0 +1,234 @@
+---
+alwaysApply: true
+---
+
+# 重要
+
+ユーザーはRooよりプログラミングが得意ですが、時短のためにRooにコーディングを依頼しています。
+
+2回以上連続でテストを失敗した時は、現在の状況を整理して、一緒に解決方法を考えます。
+
+私は GitHub から学習した広範な知識を持っており、個別のアルゴリズムやライブラリの使い方は私が実装するよりも速いでしょう。テストコードを書いて動作確認しながら、ユーザーに説明しながらコードを書きます。
+
+反面、現在のコンテキストに応じた処理は苦手です。コンテキストが不明瞭な時は、ユーザーに確認します。
+
+## 作業開始準備
+
+`git status` で現在の git のコンテキストを確認します。
+もし指示された内容と無関係な変更が多い場合、現在の変更からユーザーに別のタスクとして開始するように提案してください。
+
+無視するように言われた場合は、そのまま続行します。
+
+
+# Dyson Sphere Program 生産チェーン計算機 - プロジェクトアーキテクチャ
+
+## プロジェクト概要
+このプロジェクトは Dyson Sphere Program の生産チェーンを計算・可視化する React ベースの Web アプリケーションです。
+
+## 技術スタック
+- **React 19** + **TypeScript** (Strict mode)
+- **Vite 7** - ビルドツール
+- **Tailwind CSS 4** - スタイリング
+- **Zustand** - 状態管理 (localStorage 永続化)
+- **Radix UI** - アクセシブルな UI コンポーネント
+- **Vitest** - ユニットテスト
+- **Playwright** - E2E テスト
+- **decimal.js** - 高精度数値計算
+- **i18next** - 多言語対応 (日本語・英語)
+
+## ディレクトリ構造とファイルの役割
+
+### [src/components/](mdc:src/components/)
+React コンポーネント。各機能は専用のディレクトリに分割されています:
+- `RecipeSelector/` - レシピ選択グリッド
+- `ResultTree/` - 生産ツリー表示
+- `SettingsPanel/` - 設定パネル
+- `StatisticsView/` - 統計ビュー
+- `BuildingCostView/` - 建設コスト表示
+- `PowerGraphView/` - 電力グラフ
+- `Layout/` - レイアウトコンポーネント（App.tsx のリファクタリング結果）
+
+### [src/lib/](mdc:src/lib/)
+ビジネスロジック層。UI から独立した純粋関数:
+- [calculator.ts](mdc:src/lib/calculator.ts) - **コアロジック**: 生産チェーン計算エンジン
+- [parser.ts](mdc:src/lib/parser.ts) - XML データパーサー
+- [proliferator.ts](mdc:src/lib/proliferator.ts) - 増産剤計算
+- [powerCalculation.ts](mdc:src/lib/powerCalculation.ts) - 電力計算
+- [buildingCost.ts](mdc:src/lib/buildingCost.ts) - 建設コスト計算
+- [miningCalculation.ts](mdc:src/lib/miningCalculation.ts) - 採掘速度計算
+- [statistics.ts](mdc:src/lib/statistics.ts) - 統計計算
+
+### [src/stores/](mdc:src/stores/)
+Zustand 状態管理ストア:
+- [gameDataStore.ts](mdc:src/stores/gameDataStore.ts) - ゲームデータ (Items, Recipes, Machines)
+- [settingsStore.ts](mdc:src/stores/settingsStore.ts) - ユーザー設定 (localStorage 永続化)
+- [recipeSelectionStore.ts](mdc:src/stores/recipeSelectionStore.ts) - レシピ選択状態
+- [nodeOverrideStore.ts](mdc:src/stores/nodeOverrideStore.ts) - ノード別オーバーライド設定
+- [favoritesStore.ts](mdc:src/stores/favoritesStore.ts) - お気に入りレシピ
+
+### [src/types/](mdc:src/types/)
+TypeScript 型定義:
+- [game-data.ts](mdc:src/types/game-data.ts) - ゲームデータ型
+- [settings.ts](mdc:src/types/settings.ts) - 設定型
+- [calculation.ts](mdc:src/types/calculation.ts) - 計算結果型
+- [saved-plan.ts](mdc:src/types/saved-plan.ts) - プラン保存型
+
+### [src/utils/](mdc:src/utils/)
+ユーティリティ関数:
+- [format.ts](mdc:src/utils/format.ts) - 数値フォーマット
+- [planExport.ts](mdc:src/utils/planExport.ts) - プラン保存・復元
+- [urlShare.ts](mdc:src/utils/urlShare.ts) - URL 共有機能
+
+### [src/constants/](mdc:src/constants/)
+定数定義:
+- [machines.ts](mdc:src/constants/machines.ts) - 施設データ
+- [rawMaterials.ts](mdc:src/constants/rawMaterials.ts) - 原材料定義
+
+## 重要な設計パターン
+
+### 計算の流れ
+1. ユーザーがレシピを選択 → `recipeSelectionStore`
+2. 設定を適用 → `settingsStore`, `nodeOverrideStore`
+3. 計算実行 → [calculator.ts](mdc:src/lib/calculator.ts) の `calculateRecipeTree()`
+4. 結果を表示 → `ResultTree`, `StatisticsView` など
+
+### データフロー
+```
+XML (public/data/) 
+  → parser.ts (XMLパース) 
+  → gameDataStore (Map 構造で保持)
+  → calculator.ts (計算)
+  → UI コンポーネント (表示)
+```
+
+## 実装パターン
+
+### Zustandストアの実装パターン
+
+#### 基本構造
+```typescript
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface MyStore {
+  // 状態
+  value: number;
+  // アクション
+  setValue: (value: number) => void;
+}
+
+export const useMyStore = create<MyStore>()(
+  persist(
+    (set) => ({
+      value: 0,
+      setValue: (value) => set({ value }),
+    }),
+    {
+      name: 'storage-key', // localStorage のキー名
+      partialize: (state) => ({
+        // 永続化する状態のみを選択
+        value: state.value,
+      }),
+    }
+  )
+);
+```
+
+#### パターン
+- **状態と状態を更新するアクションをセットで定義**
+- **`persist` ミドルウェア**で localStorage に自動保存
+- **`partialize`** で永続化する状態を選択（計算結果など一時データは除外）
+- **複雑なオブジェクトは不変更新**（スプレッド構文を使用）
+
+#### ストア間の参照
+- **ストア間の直接参照は避ける**
+- コンポーネントで複数のストアを組み合わせる
+- 共通の型は `src/types/` で定義
+
+### Calculator関数の設計
+
+#### メイン計算関数
+```typescript
+export function calculateProductionChain(
+  recipe: Recipe,
+  targetRate: number,
+  gameData: GameData,
+  settings: GlobalSettings,
+  nodeOverrides: Map<string, NodeOverrideSettings> = new Map()
+): CalculationResult
+```
+
+#### 計算ロジックの分割
+- **`calculator/index.ts`**: メイン関数と公開API
+- **`calculator/tree-builder.ts`**: ツリー構築ロジック
+- **`calculator/production-rate.ts`**: 生産速度計算
+- **`calculator/power-calculation.ts`**: 電力計算
+- **`calculator/aggregations.ts`**: 集計処理
+
+#### decimal.js の使用
+- **浮動小数点誤差を避けるため**、重要な計算には `Decimal` を使用
+- 最後に `.toNumber()` で通常の数値に変換
+- パフォーマンスが重要な箇所では通常の数値演算も許容
+
+### Reactコンポーネントのパターン
+
+#### カスタムフックの抽出基準
+- **複雑なロジックを持つ `useEffect`** → カスタムフックに抽出
+- **複数コンポーネントで共有されるロジック** → カスタムフックに抽出
+- **テストしやすくするため** → ロジックをフックに分離
+
+例: `useProductionCalculation.ts`
+```typescript
+export function useProductionCalculation(
+  selectedRecipe: Recipe | null,
+  targetQuantity: number,
+  data: GameData | null,
+  settings: GlobalSettings,
+  nodeOverrides: Map<string, NodeOverrideSettings>,
+  nodeOverridesVersion: number,
+  setCalculationResult: (result: CalculationResult | null) => void
+)
+```
+
+#### コンポーネント構造
+- **`components/`**: 機能ごとにディレクトリで分割
+- **`index.tsx`**: メインコンポーネント
+- **`types.ts`**: コンポーネント固有の型定義（必要に応じて）
+- **ErrorBoundary**: トップレベルでエラーをキャッチ
+
+#### Radix UI の使用
+- アクセシビリティが重要な UI コンポーネント（Dialog, Select, Tabs など）
+- `@radix-ui/react-*` をインストールして使用
+- Tailwind CSS でスタイリング
+
+### テストの書き方
+
+#### テストファイル構成
+- **単体テスト**: `src/**/__tests__/*.test.ts(x)`
+- **E2Eテスト**: `tests/e2e/*.spec.ts`
+- **テストデータファクトリ**: `src/test/factories/testDataFactory.ts`
+- **テストヘルパー**: `src/test/helpers/`
+
+#### ファクトリ関数の使用
+```typescript
+import { createMockGameData, createMockSettings } from '@/test/factories/testDataFactory';
+
+// テスト内で使用
+const gameData = createMockGameData();
+const settings = createMockSettings();
+```
+
+#### テストパターン
+1. **Arrange**: ファクトリでテストデータを準備
+2. **Act**: テスト対象の関数を実行
+3. **Assert**: 期待する結果を検証
+
+#### モックの使用
+- **Vitest の `vi.mock()`** でモジュールをモック
+- **`@testing-library/react`** でコンポーネントテスト
+- **Playwright** でE2Eテスト
+
+#### カバレッジ目標
+- **新規コード**: 85%以上
+- **クリティカルパス（calculator, parser）**: 90%以上
+- **UIコンポーネント**: スモークテスト + 主要フロー
