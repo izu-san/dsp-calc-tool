@@ -36,6 +36,16 @@ function App() {
     document.documentElement.lang = locale;
   }, [locale]);
   
+  // 言語変更時に選択されたレシピを新しいデータから再取得
+  useEffect(() => {
+    if (data && selectedRecipe) {
+      const updatedRecipe = data.recipes.get(selectedRecipe.SID);
+      if (updatedRecipe && updatedRecipe !== selectedRecipe) {
+        setSelectedRecipe(updatedRecipe);
+      }
+    }
+  }, [locale, data, selectedRecipe, setSelectedRecipe]);
+  
   // ダークモードを永続的に有効化
   useEffect(() => {
     document.documentElement.classList.add('dark');
