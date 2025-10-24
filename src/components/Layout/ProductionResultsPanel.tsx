@@ -1,6 +1,7 @@
 import { useState, Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Recipe, CalculationResult } from '../../types';
+import { cn } from '../../utils/classNames';
 
 const ProductionTree = lazy(() => import('../ResultTree').then(m => ({ default: m.ProductionTree })));
 const StatisticsView = lazy(() => import('../StatisticsView').then(m => ({ default: m.StatisticsView })));
@@ -40,37 +41,37 @@ export function ProductionResultsPanel({
             <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">
               <button
                 onClick={() => { setShowStatistics(false); setShowBuildingCost(false); }}
-                className={`
-                  px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect
-                  ${!showStatistics && !showBuildingCost
-                    ? 'border-neon-blue text-neon-cyan shadow-neon-blue' 
-                    : 'border-transparent text-space-300 hover:text-neon-cyan'
+                className={cn(
+                  'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
+                  {
+                    'border-neon-blue text-neon-cyan shadow-neon-blue': !showStatistics && !showBuildingCost,
+                    'border-transparent text-space-300 hover:text-neon-cyan': showStatistics || showBuildingCost,
                   }
-                `}
+                )}
               >
                 {t('productionTree')}
               </button>
               <button
                 onClick={() => { setShowStatistics(true); setShowBuildingCost(false); }}
-                className={`
-                  px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect
-                  ${showStatistics 
-                    ? 'border-neon-blue text-neon-cyan shadow-neon-blue' 
-                    : 'border-transparent text-space-300 hover:text-neon-cyan'
+                className={cn(
+                  'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
+                  {
+                    'border-neon-blue text-neon-cyan shadow-neon-blue': showStatistics,
+                    'border-transparent text-space-300 hover:text-neon-cyan': !showStatistics,
                   }
-                `}
+                )}
               >
                 {t('statistics')}
               </button>
               <button
                 onClick={() => { setShowStatistics(false); setShowBuildingCost(true); }}
-                className={`
-                  px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect
-                  ${showBuildingCost
-                    ? 'border-neon-blue text-neon-cyan shadow-neon-blue' 
-                    : 'border-transparent text-space-300 hover:text-neon-cyan'
+                className={cn(
+                  'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
+                  {
+                    'border-neon-blue text-neon-cyan shadow-neon-blue': showBuildingCost,
+                    'border-transparent text-space-300 hover:text-neon-cyan': !showBuildingCost,
                   }
-                `}
+                )}
               >
                 {t('buildingCost')}
               </button>
@@ -79,16 +80,19 @@ export function ProductionResultsPanel({
               {!showStatistics && !showBuildingCost && (
                 <button
                   onClick={handleToggleAll}
-                  className={`
-                    ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect
-                    ${isTreeExpanded 
-                      ? 'bg-neon-blue/20 text-neon-cyan border-neon-blue shadow-neon-blue hover:bg-neon-blue/30' 
-                      : 'bg-dark-700/50 text-space-200 border-neon-blue/30 hover:bg-dark-600 hover:border-neon-blue/50 hover:text-neon-cyan'
+                  className={cn(
+                    'ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect',
+                    {
+                      'bg-neon-blue/20 text-neon-cyan border-neon-blue shadow-neon-blue hover:bg-neon-blue/30': isTreeExpanded,
+                      'bg-dark-700/50 text-space-200 border-neon-blue/30 hover:bg-dark-600 hover:border-neon-blue/50 hover:text-neon-cyan': !isTreeExpanded,
                     }
-                  `}
+                  )}
                 >
                   <span className="inline-flex items-center gap-2">
-                    <span className={`transition-transform duration-300 ${isTreeExpanded ? 'rotate-180' : 'rotate-0'}`}>
+                    <span className={cn('transition-transform duration-300', {
+                      'rotate-180': isTreeExpanded,
+                      'rotate-0': !isTreeExpanded,
+                    })}>
                       ▼
                     </span>
                     <span>{isTreeExpanded ? t('collapseAll') : t('expandAll')}</span>

@@ -6,6 +6,7 @@ import { RecipeGrid } from './RecipeGrid';
 import { useFavoritesStore } from '../../stores/favoritesStore';
 import { ItemIcon } from '../ItemIcon';
 import { useDebounce } from '../../hooks/useDebounce';
+import { cn } from '../../utils/classNames';
 
 interface RecipeSelectorProps {
   recipes: Recipe[];
@@ -227,11 +228,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         {/* Favorites Toggle */}
         <button
           onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect ${
-            showOnlyFavorites
-              ? 'bg-neon-yellow/40 border-neon-yellow text-white shadow-[0_0_20px_rgba(255,215,0,0.6)] scale-110 font-bold'
-              : 'bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105'
-          }`}
+          className={cn(
+            'px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect',
+            {
+              'bg-neon-yellow/40 border-neon-yellow text-white shadow-[0_0_20px_rgba(255,215,0,0.6)] scale-110 font-bold': showOnlyFavorites,
+              'bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105': !showOnlyFavorites,
+            }
+          )}
         >
           ⭐ {t('favorites')} {favoriteRecipes.size > 0 && `(${favoriteRecipes.size})`}
         </button>
@@ -249,11 +252,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                   setShowOnlyFavorites(false);
                 }
               }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect ${
-                selectedCategory === category
-                  ? 'bg-neon-blue/40 border-neon-blue text-white shadow-[0_0_20px_rgba(0,136,255,0.6)] scale-110 font-bold'
-                  : 'bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105'
-              }`}
+              className={cn(
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect',
+                {
+                  'bg-neon-blue/40 border-neon-blue text-white shadow-[0_0_20px_rgba(0,136,255,0.6)] scale-110 font-bold': selectedCategory === category,
+                  'bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105': selectedCategory !== category,
+                }
+              )}
             >
               {categoryInfo.iconId && (
                 <ItemIcon 
