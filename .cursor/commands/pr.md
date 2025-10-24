@@ -134,28 +134,86 @@ Closes #<Issue番号>  (または Fixes #<Issue番号>)
 
 #### 5.1 本文をファイルに保存
 
-**推奨方法**: `write` ツールを使用して直接ファイルに書き込む
+**ステップA: 一時フォルダパスを取得**
 
-```
-Windows: $env:TEMP\pr_body.md
-Unix/Mac: /tmp/pr_body.md
-```
-
-#### 5.2 PRを作成
+AIアシスタントは、まず一時フォルダパスを取得する：
 
 **Windows (PowerShell)**:
 ```powershell
-gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file "$env:TEMP\pr_body.md"
+echo $env:TEMP
 ```
 
 **Unix/Mac (Bash)**:
 ```bash
-gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file /tmp/pr_body.md
+echo $TMPDIR
+```
+
+出力例:
+- Windows: `C:\Users\YourName\AppData\Local\Temp`
+- Unix/Mac: `/tmp` または `/var/folders/...`
+
+**ステップB: 取得したパスでwriteツールを使用**
+
+AIアシスタントは、ステップAで取得した実際のパスを使用して`write`ツールでPR本文を作成する：
+
+```
+Windows: C:\Users\YourName\AppData\Local\Temp\pr_body.md
+Unix/Mac: /tmp/pr_body.md
+```
+
+**重要**: `write`ツールでは環境変数（`$env:TEMP`など）を直接使用できないため、必ず実際のパス文字列を使用すること。
+
+**代替方法（writeツールが失敗した場合のフォールバック）**:
+
+PowerShellコマンドで直接作成：
+```powershell
+$prBody | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
+```
+
+#### 5.2 PRを作成
+
+AIアシスタントは、ステップAで取得した一時フォルダパスを使用してPRを作成する：
+
+**Windows (PowerShell)**:
+```powershell
+gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file "<ステップAで取得したパス>\pr_body.md"
+```
+
+例:
+```powershell
+gh pr create --base develop --title "feat: カスタムコマンドを追加" --body-file "C:\Users\YourName\AppData\Local\Temp\pr_body.md"
+```
+
+**Unix/Mac (Bash)**:
+```bash
+gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file <ステップAで取得したパス>/pr_body.md
+```
+
+例:
+```bash
+gh pr create --base develop --title "feat: カスタムコマンドを追加" --body-file "/tmp/pr_body.md"
 ```
 
 #### 5.3 一時ファイルを削除
 
-**推奨方法**: `delete_file` ツールを使用
+AIアシスタントは、ステップAで取得した実際のパスを使用して`delete_file`ツールで一時ファイルを削除する：
+
+```
+Windows: C:\Users\YourName\AppData\Local\Temp\pr_body.md
+Unix/Mac: /tmp/pr_body.md
+```
+
+**代替方法（delete_fileツールが失敗した場合のフォールバック）**:
+
+**Windows (PowerShell)**:
+```powershell
+Remove-Item "<ステップAで取得したパス>\pr_body.md" -ErrorAction SilentlyContinue
+```
+
+**Unix/Mac (Bash)**:
+```bash
+rm -f <ステップAで取得したパス>/pr_body.md
+```
 
 #### 5.4 結果を確認
 

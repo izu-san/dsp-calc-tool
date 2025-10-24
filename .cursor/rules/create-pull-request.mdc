@@ -264,13 +264,40 @@ Closes #45
   - 問題解決: `Resolves #<Issue番号>`
   - 関連のみ: `Related to #<Issue番号>`
 
-**AIアシスタント向けの推奨方法**:
-AIアシスタントは、ターミナルコマンドではなく **`write` ツールを使用**して直接ファイルを作成することを推奨します。
-これにより、シェルの構文エラーを回避し、確実にPR本文を作成できます。
+**AIアシスタント向けの推奨方法（重要）**:
+
+**ステップA: 一時フォルダパスを取得**
+
+AIアシスタントは、まず一時フォルダパスを取得する：
+
+**Windows (PowerShell)**:
+```powershell
+echo $env:TEMP
+```
+
+**Unix/Mac (Bash)**:
+```bash
+echo $TMPDIR
+```
+
+出力例:
+- Windows: `C:\Users\YourName\AppData\Local\Temp`
+- Unix/Mac: `/tmp` または `/var/folders/...`
+
+**ステップB: 取得したパスでwriteツールを使用**
+
+AIアシスタントは、ステップAで取得した実際のパスを使用して **`write` ツール**でPR本文を作成する：
 
 ```
-write ツールで $env:TEMP\pr_body.md (Windows) または /tmp/pr_body.md (Unix/Mac) に直接書き込む
+Windows: C:\Users\YourName\AppData\Local\Temp\pr_body.md
+Unix/Mac: /tmp/pr_body.md
 ```
+
+**重要**: `write`ツールでは環境変数（`$env:TEMP`など）を直接使用できないため、必ず実際のパス文字列を使用すること。
+
+これにより、シェルの構文エラーを回避し、確実にPR本文を作成できます。
+
+**代替方法（writeツールが失敗した場合のフォールバック）**:
 
 **Windows (PowerShell)**:
 ```powershell
@@ -281,23 +308,6 @@ write ツールで $env:TEMP\pr_body.md (Windows) または /tmp/pr_body.md (Uni
 
 # Issue番号がある場合は追記
 # Add-Content -Path "$env:TEMP\pr_body.md" -Value "`n`nCloses #<Issue番号>" -Encoding utf8
-```
-
-**別の方法（より確実）**:
-```powershell
-# 複数行の文字列を配列で定義してファイルに書き込む
-$lines = @(
-  "<生成したPR本文の1行目>",
-  "",
-  "## 目的",
-  "",
-  "<目的の説明>",
-  # ... 以下同様
-)
-$lines | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
-
-# またはSet-Contentを使用
-Set-Content -Path "$env:TEMP\pr_body.md" -Value "<生成したPR本文>" -Encoding utf8
 ```
 
 **Unix/Mac (Bash)**:
@@ -312,30 +322,49 @@ EOF
 
 ### 5.2 PRを作成
 
-**Windows**:
+AIアシスタントは、ステップAで取得した一時フォルダパスを使用してPRを作成する：
+
+**Windows (PowerShell)**:
 ```powershell
-gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file "$env:TEMP\pr_body.md"
+gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file "<ステップAで取得したパス>\pr_body.md"
 ```
 
-**Unix/Mac**:
+例:
+```powershell
+gh pr create --base develop --title "feat: カスタムコマンドを追加" --body-file "C:\Users\YourName\AppData\Local\Temp\pr_body.md"
+```
+
+**Unix/Mac (Bash)**:
 ```bash
-gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file /tmp/pr_body.md
+gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file <ステップAで取得したパス>/pr_body.md
+```
+
+例:
+```bash
+gh pr create --base develop --title "feat: カスタムコマンドを追加" --body-file "/tmp/pr_body.md"
 ```
 
 ### 5.3 一時ファイルを削除
 
-**AIアシスタント向けの推奨方法**:
-AIアシスタントは **`delete_file` ツール**を使用することを推奨します。
-ただし、削除に失敗しても問題ありません（一時ファイルは自動的にクリーンアップされます）。
+AIアシスタントは、ステップAで取得した実際のパスを使用して **`delete_file` ツール**で一時ファイルを削除する：
 
-**Windows**:
-```powershell
-Remove-Item "$env:TEMP\pr_body.md" -ErrorAction SilentlyContinue
+```
+Windows: C:\Users\YourName\AppData\Local\Temp\pr_body.md
+Unix/Mac: /tmp/pr_body.md
 ```
 
-**Unix/Mac**:
+ただし、削除に失敗しても問題ありません（一時ファイルは自動的にクリーンアップされます）。
+
+**代替方法（delete_fileツールが失敗した場合のフォールバック）**:
+
+**Windows (PowerShell)**:
+```powershell
+Remove-Item "<ステップAで取得したパス>\pr_body.md" -ErrorAction SilentlyContinue
+```
+
+**Unix/Mac (Bash)**:
 ```bash
-rm -f /tmp/pr_body.md
+rm -f <ステップAで取得したパス>/pr_body.md
 ```
 
 ### 5.4 結果を確認
