@@ -20,7 +20,12 @@ test.describe('アクセシビリティとキーボード操作', () => {
     await page.keyboard.press('Tab');
     
     // 「読み込み」ボタンにフォーカスが当たっていることを確認
+    // フォーカス移動には時間がかかる場合があるため、明示的に待機
     const loadButton = page.getByRole('button', { name: '📂 読み込み' });
+    await loadButton.waitFor({ state: 'visible' });
+    
+    // 短い待機を入れてフォーカスの移動を確実にする
+    await page.waitForTimeout(100);
     await expect(loadButton).toBeFocused();
 
     // 6. Enter/Spaceでボタン操作が可能か確認
