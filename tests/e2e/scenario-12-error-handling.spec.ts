@@ -2,6 +2,8 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { waitForDataLoading, closeWelcomeModal, initializeApp } from './helpers/common-actions';
+import { HEADINGS } from './helpers/constants';
 
 test.describe('データ不整合時のエラーハンドリング', () => {
   test('正常なデータ読み込みとエラーハンドリング機構の検証', async ({ page }) => {
@@ -9,10 +11,10 @@ test.describe('データ不整合時のエラーハンドリング', () => {
     // 正常なデータ読み込みとエラーハンドリングの仕組みが存在することを検証します。
 
     // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 2. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 2. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // データが正常に読み込まれたことを確認
     // エラーメッセージが表示されていないことを確認
@@ -21,10 +23,10 @@ test.describe('データ不整合時のエラーハンドリング', () => {
     await expect(page.getByText(/データが見つかりません/)).not.toBeVisible();
 
     // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    await closeWelcomeModal(page);
 
     // UI が正常に表示されていることを確認
-    await expect(page.getByRole('heading', { name: 'Dyson Sphere Program - レシピ計算機', level: 1 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: HEADINGS.APP_TITLE, level: 1 })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'レシピ選択', level: 2 })).toBeVisible();
     await expect(page.getByRole('heading', { name: '設定', level: 2 })).toBeVisible();
 
@@ -48,12 +50,8 @@ test.describe('データ不整合時のエラーハンドリング', () => {
   });
 
   test('存在しないレシピへのアクセスでエラーハンドリングを検証', async ({ page }) => {
-    // アプリを起動
-    await page.goto('http://localhost:5173');
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcomeモーダルをスキップ
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 不正なURLパラメータでエラーハンドリングをテスト
     await page.goto('http://localhost:5173/?recipe=invalid-recipe-id-9999');

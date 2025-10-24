@@ -2,18 +2,27 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
-import { waitForLanguage, selectLanguage, clickRecipeByName, getTargetLabelLocator, getProductionRootTitleLocator, getProductionHeadingLocator } from './helpers/i18n-helpers';
+import {
+  waitForLanguage,
+  selectLanguage,
+  clickRecipeByName,
+  getTargetLabelLocator,
+  getProductionRootTitleLocator,
+  getProductionHeadingLocator,
+} from './helpers/i18n-helpers';
+import { waitForDataLoading, initializeApp } from './helpers/common-actions';
+import { BUTTON_LABELS } from './helpers/constants';
 
 test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   test('設定とロケールが再起動後も反映される', async ({ page }) => {
     // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 2. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 2. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    await page.getByRole('button', { name: BUTTON_LABELS.SKIP }).click();
 
     // 4. 言語セレクターで現在の言語を確認する（初期: 日本語）
     const languageSelector = page.getByRole('combobox');
@@ -33,10 +42,10 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
     await page.getByRole('button', { name: 'Mk.III 30/s' }).click();
 
     // 9. ページをリロードする
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 10. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 10. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 12. 言語が英語のまま維持されていることを確認
     await expect(languageSelector).toHaveValue('en');
@@ -58,14 +67,7 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   });
 
   test('シナリオ11A: 設定エリアのアイテム名が言語切替で翻訳されること', async ({ page }) => {
-    await page.goto('http://localhost:5173');
-
-    // データ読み込み待ち（軽い待機）
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcome モーダルがあればスキップ
-    const skipButtons = await page.getByRole('button', { name: 'スキップ' }).count();
-    if (skipButtons > 0) await page.getByRole('button', { name: 'スキップ' }).click();
+    await initializeApp(page);
 
   // RecipeSelector で "重力マトリックス" を選択
   // RecipeGrid renders recipe buttons with title=recipe.name, so use role=button locator
@@ -84,14 +86,7 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   });
 
   test('シナリオ11B: 生産チェーンのルートノード名と入力アイテム名が翻訳されること', async ({ page }) => {
-    await page.goto('http://localhost:5173');
-
-    // データ読み込み待ち
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcome モーダルがあればスキップ
-    const skipCount = await page.getByRole('button', { name: 'スキップ' }).count();
-    if (skipCount > 0) await page.getByRole('button', { name: 'スキップ' }).click();
+    await initializeApp(page);
 
     // レシピ選択と目標入力
   await clickRecipeByName(page, '重力マトリックス');

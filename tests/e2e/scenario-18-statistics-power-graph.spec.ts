@@ -2,23 +2,19 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp, switchTab } from './helpers/common-actions';
+import { BUTTON_LABELS } from './helpers/constants';
 
 test.describe('統計ビュー（StatisticsView）と電力グラフ（PowerGraphView）の表示', () => {
   test('統計タブと電力グラフが正しく表示される', async ({ page }) => {
-    // 1. アプリを起動してProduction Treeを準備
-    await page.goto('http://localhost:5173');
-
-    // 2. XMLデータの読み込み完了を待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcomeモーダルをスキップ
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. 電磁タービンレシピを選択（複数素材あり、統計確認に適している）
     await page.getByRole('button', { name: '電磁タービン' }).click();
 
     // 5. 統計タブに切り替えて、StatisticsViewを表示
-    await page.getByRole('button', { name: '統計' }).click();
+    await switchTab(page, BUTTON_LABELS.STATISTICS);
 
     // 統計ビューが表示されることを確認
     await expect(page.getByRole('heading', { name: '📊 生産概要' })).toBeVisible();

@@ -34,4 +34,11 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': 'off',
     },
   },
+  {
+    files: ['tests/e2e/**/*.ts'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

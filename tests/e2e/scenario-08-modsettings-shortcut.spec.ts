@@ -2,17 +2,12 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp } from './helpers/common-actions';
 
 test.describe('ModSettings（ショートカット Ctrl+Shift+M）とカスタム XML アップロード', () => {
   test('ショートカットでModSettingsを開き、XML アップロード UI が存在することを確認', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-
-    // 2. データ読み込みを待機する（3秒）
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcome モーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. ショートカット Ctrl+Shift+M を押して ModSettings を開く
     await page.keyboard.press('Control+Shift+M');

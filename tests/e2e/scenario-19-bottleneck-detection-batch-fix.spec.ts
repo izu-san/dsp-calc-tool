@@ -3,17 +3,13 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp } from './helpers/common-actions';
+import { RECIPES } from './helpers/constants';
 
 test.describe('ボトルネック検出と一括修正（WhatIfSimulator）', () => {
   test('ボトルネック検出と修正が正しく機能する', async ({ page }) => {
-    // 1. アプリを起動してボトルネック検出テストを開始
-    await page.goto('http://localhost:5173');
-
-    // 2. XMLデータの読み込み完了を待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcomeモーダルをスキップ
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. ベルトランクをMk.I (6/s)に変更してボトルネックを発生させやすくする
     await page.getByRole('button', { name: 'Mk.I 6/s' }).click();

@@ -2,17 +2,12 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp } from './helpers/common-actions';
 
 test.describe('アクセシビリティとキーボード操作', () => {
   test('キーボードのみで主要機能を操作可能', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-
-    // 2. データ読み込み完了まで3秒待機
-    await page.waitForTimeout(3000);
-
-    // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. Tabキーで主要要素にフォーカス移動できるか確認
     await page.keyboard.press('Tab');
@@ -25,7 +20,12 @@ test.describe('アクセシビリティとキーボード操作', () => {
     await page.keyboard.press('Tab');
     
     // 「読み込み」ボタンにフォーカスが当たっていることを確認
+    // フォーカス移動には時間がかかる場合があるため、明示的に待機
     const loadButton = page.getByRole('button', { name: '📂 読み込み' });
+    await loadButton.waitFor({ state: 'visible' });
+    
+    // 短い待機を入れてフォーカスの移動を確実にする
+    await page.waitForTimeout(100);
     await expect(loadButton).toBeFocused();
 
     // 6. Enter/Spaceでボタン操作が可能か確認
