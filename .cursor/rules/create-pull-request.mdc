@@ -264,15 +264,40 @@ Closes #45
   - 問題解決: `Resolves #<Issue番号>`
   - 関連のみ: `Related to #<Issue番号>`
 
+**AIアシスタント向けの推奨方法**:
+AIアシスタントは、ターミナルコマンドではなく **`write` ツールを使用**して直接ファイルを作成することを推奨します。
+これにより、シェルの構文エラーを回避し、確実にPR本文を作成できます。
+
+```
+write ツールで $env:TEMP\pr_body.md (Windows) または /tmp/pr_body.md (Unix/Mac) に直接書き込む
+```
+
 **Windows (PowerShell)**:
 ```powershell
 # 本文を一時ファイルに保存
-$prBody = @"
+@"
 <生成したPR本文>
-"@
-# Issue番号がある場合は追加
-# $prBody += "`n`nCloses #<Issue番号>"
-$prBody | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
+"@ | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
+
+# Issue番号がある場合は追記
+# Add-Content -Path "$env:TEMP\pr_body.md" -Value "`n`nCloses #<Issue番号>" -Encoding utf8
+```
+
+**別の方法（より確実）**:
+```powershell
+# 複数行の文字列を配列で定義してファイルに書き込む
+$lines = @(
+  "<生成したPR本文の1行目>",
+  "",
+  "## 目的",
+  "",
+  "<目的の説明>",
+  # ... 以下同様
+)
+$lines | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
+
+# またはSet-Contentを使用
+Set-Content -Path "$env:TEMP\pr_body.md" -Value "<生成したPR本文>" -Encoding utf8
 ```
 
 **Unix/Mac (Bash)**:
@@ -299,14 +324,18 @@ gh pr create --base <マージ先ブランチ> --title "<生成したタイト�
 
 ### 5.3 一時ファイルを削除
 
+**AIアシスタント向けの推奨方法**:
+AIアシスタントは **`delete_file` ツール**を使用することを推奨します。
+ただし、削除に失敗しても問題ありません（一時ファイルは自動的にクリーンアップされます）。
+
 **Windows**:
 ```powershell
-Remove-Item "$env:TEMP\pr_body.md"
+Remove-Item "$env:TEMP\pr_body.md" -ErrorAction SilentlyContinue
 ```
 
 **Unix/Mac**:
 ```bash
-rm /tmp/pr_body.md
+rm -f /tmp/pr_body.md
 ```
 
 ### 5.4 結果を確認
