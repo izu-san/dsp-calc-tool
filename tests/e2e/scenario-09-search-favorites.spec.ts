@@ -2,17 +2,13 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp, waitForDataLoading } from './helpers/common-actions';
+import { TIMEOUTS } from './helpers/constants';
 
 test.describe('検索とお気に入り（RecipeSelector）の検証', () => {
   test('RecipeSelector の検索、お気に入り、localStorage永続性の動作を検証', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-
-    // 2. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. 検索ボックスに「鉄」と入力して検索する
     const searchBox = page.getByRole('textbox', { name: 'レシピ、アイテム、素材を検索' });
@@ -40,8 +36,8 @@ test.describe('検索とお気に入り（RecipeSelector）の検証', () => {
     // 9. ページをリロードしてlocalStorage永続性をテスト
     await page.reload();
 
-    // 10. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 10. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 11. リロード後もお気に入りタブに (1) が表示されることを確認
     // BUG FIX VERIFICATION: バグ2（localStorage永続性の問題）が修正されたことを確認

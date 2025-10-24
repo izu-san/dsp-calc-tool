@@ -9,20 +9,15 @@ test.describe('プランのエクスポートとインポート（JSONファイ�
     let downloadPath: string | null = null;
 
     try {
-      // 1. アプリを起動し、プランを作成するための準備
-      await page.goto('http://localhost:5173');
-      
-      // 2. XMLデータの読み込みを待機
-      await new Promise(f => setTimeout(f, 3 * 1000));
-      
-      // 3. Welcomeモーダルをスキップして、メイン画面にアクセス
-      await page.getByRole('button', { name: 'スキップ' }).click();
+      // 1-3. アプリを起動し、初期状態まで準備
+      const { initializeApp, setTargetQuantity } = await import('./helpers/common-actions');
+      await initializeApp(page);
       
       // 4. 代替レシピを持つグラフェンレシピを選択してプランを作成
       await page.getByRole('button', { name: 'グラフェン', exact: true }).click();
       
       // 5. 目標数量を10に設定してプランをより複雑にする
-      await page.getByRole('spinbutton').fill('10');
+      await setTargetQuantity(page, 10);
       
       // 6. 増産剤をMk.IIIに設定して設定を変更
       await page.locator('button').filter({ hasText: '増産剤 Mk.III' }).click();

@@ -2,32 +2,28 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp, selectRecipe, assertProductionTreeVisible } from './helpers/common-actions';
+import { RECIPES, BUTTON_LABELS, HEADINGS } from './helpers/constants';
 
 test.describe('Production Tree の展開/折り畳みと全展開/全折り畳み', () => {
   test('Production Tree ノードの展開と折りたたみが正しく機能する', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-
-    // 2. 3秒待機してXMLデータの読み込みを待つ
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. レシピ（電磁マトリックス）を選択する
-    await page.getByRole('button', { name: '電磁マトリックス' }).click();
+    await selectRecipe(page, RECIPES.ELECTROMAGNETIC_MATRIX);
 
     // 5. Production Treeが表示されることを確認
-    await expect(page.getByRole('heading', { name: '生産チェーン', level: 2 })).toBeVisible();
+    await assertProductionTreeVisible(page);
     await expect(page.getByRole('heading', { name: '電磁マトリックス', level: 4 })).toBeVisible();
 
     // 6. ルートノードの「折りたたむ」トグルを押して折り畳みを確認
-    const collapseButton = page.getByRole('button', { name: '折りたたむ' });
+    const collapseButton = page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE });
     await expect(collapseButton).toBeVisible();
     await collapseButton.click();
     
     // 折りたたまれた後、「展開」ボタンが表示されることを確認
-    const expandButton = page.getByRole('button', { name: '展開', exact: true });
+    const expandButton = page.getByRole('button', { name: BUTTON_LABELS.EXPAND, exact: true });
     await expect(expandButton).toBeVisible();
 
     // 7. ルートノードの「展開」トグルを押して展開を確認
@@ -46,7 +42,7 @@ test.describe('Production Tree の展開/折り畳みと全展開/全折り畳�
     await expect(collapseAllButton).toBeVisible();
     
     // 子ノードが展開されていることを確認（複数の「折りたたむ」ボタンが表示される）
-    const allCollapseButtons = page.getByRole('button', { name: '折りたたむ' });
+    const allCollapseButtons = page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE });
     const collapseCount = await allCollapseButtons.count();
     await expect(collapseCount).toBeGreaterThan(1); // ルート + 複数の子ノード
 

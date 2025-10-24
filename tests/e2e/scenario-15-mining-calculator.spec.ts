@@ -2,26 +2,22 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp, selectRecipe, setTargetQuantity, switchTab } from './helpers/common-actions';
+import { RECIPES, BUTTON_LABELS } from './helpers/constants';
 
 test.describe('採掘計算機の表示と設定反映', () => {
   test('採掘計算機が建設コストビューに正しく表示される', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-
-    // データ読み込み完了まで待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // Welcomeモーダルを閉じる
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 2. 鉄インゴットレシピを選択
-    await page.getByRole('button', { name: '鉄インゴット' }).click();
+    await selectRecipe(page, RECIPES.IRON_INGOT);
 
     // 3. 目標数量を10に設定
-    await page.getByRole('spinbutton').fill('10');
+    await setTargetQuantity(page, 10);
 
     // 4. 建設コストビューに切り替える
-    await page.getByRole('button', { name: '建設コスト' }).click();
+    await switchTab(page, BUTTON_LABELS.BUILDING_COST);
 
     // 5. 採掘計算機セクションが表示されることを確認
     await expect(page.getByRole('heading', { name: '⛏️ 採掘計算機' })).toBeVisible();

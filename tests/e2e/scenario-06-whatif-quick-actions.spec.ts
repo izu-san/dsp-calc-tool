@@ -2,20 +2,16 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp, selectRecipe } from './helpers/common-actions';
+import { RECIPES } from './helpers/constants';
 
 test.describe('What-if分析とクイックアクションの適用', () => {
   test('What-if 提案の適用とクイックアクションの実行', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-
-    // 2. 3秒待機してXMLデータの読み込みを待つ
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. レシピ（電磁マトリックス）を選択する
-    await page.getByRole('button', { name: '電磁マトリックス' }).click();
+    await selectRecipe(page, RECIPES.ELECTROMAGNETIC_MATRIX);
 
     // 5. What-if セクションが表示されることを確認
     await expect(page.getByRole('heading', { name: 'What-if分析', level: 3 })).toBeVisible();

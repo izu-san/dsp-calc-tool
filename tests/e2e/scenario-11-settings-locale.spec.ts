@@ -2,18 +2,27 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
-import { waitForLanguage, selectLanguage, clickRecipeByName, getTargetLabelLocator, getProductionRootTitleLocator, getProductionHeadingLocator } from './helpers/i18n-helpers';
+import {
+  waitForLanguage,
+  selectLanguage,
+  clickRecipeByName,
+  getTargetLabelLocator,
+  getProductionRootTitleLocator,
+  getProductionHeadingLocator,
+} from './helpers/i18n-helpers';
+import { waitForDataLoading } from './helpers/common-actions';
+import { BUTTON_LABELS } from './helpers/constants';
 
 test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   test('設定とロケールが再起動後も反映される', async ({ page }) => {
     // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 2. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 2. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    await page.getByRole('button', { name: BUTTON_LABELS.SKIP }).click();
 
     // 4. 言語セレクターで現在の言語を確認する（初期: 日本語）
     const languageSelector = page.getByRole('combobox');
@@ -33,10 +42,10 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
     await page.getByRole('button', { name: 'Mk.III 30/s' }).click();
 
     // 9. ページをリロードする
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 10. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 10. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 12. 言語が英語のまま維持されていることを確認
     await expect(languageSelector).toHaveValue('en');
