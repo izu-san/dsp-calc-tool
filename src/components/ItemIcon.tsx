@@ -1,6 +1,7 @@
 import { useSpriteData } from '../hooks/useSpriteData';
 import { getDataPath } from '../utils/paths';
 import { getOptimalImagePath, getImageSourceSet } from '../utils/imageFormat';
+import { cn } from '../utils/classNames';
 
 interface ItemIconProps {
   itemId: number;
@@ -22,7 +23,7 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
     
     return (
       <div
-        className={`inline-block ${className}`}
+        className={cn('inline-block', className)}
         style={{
           width: size,
           height: size,
@@ -57,7 +58,7 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
         alt={alt}
         width={size}
         height={size}
-        className={`inline-block ${className}`}
+        className={cn('inline-block', className)}
         loading="lazy"
         onError={(e) => {
           // アイテム画像が失敗したらマシン画像を試す

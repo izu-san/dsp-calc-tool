@@ -5,6 +5,7 @@ import { calculateMiningRequirements } from '../../lib/miningCalculation';
 import { formatNumber } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { cn } from '../../utils/classNames';
 
 interface MiningCalculatorProps {
   calculationResult: CalculationResult;
@@ -162,7 +163,13 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
       </div>
 
       {/* Summary Cards */}
-      <div className={`grid grid-cols-1 gap-4 ${miningCalc.totalOrbitalCollectors > 0 ? 'md:grid-cols-2' : 'md:grid-cols-1'}`}>
+      <div className={cn(
+        'grid grid-cols-1 gap-4',
+        {
+          'md:grid-cols-2': miningCalc.totalOrbitalCollectors > 0,
+          'md:grid-cols-1': miningCalc.totalOrbitalCollectors === 0,
+        }
+      )}>
         {/* Only show Orbital Collectors if Hydrogen or Deuterium is needed */}
         {miningCalc.totalOrbitalCollectors > 0 && (
           <div className="bg-gradient-to-br from-neon-blue/20 to-neon-cyan/20 backdrop-blur-sm rounded-xl p-4 border border-neon-blue/40 shadow-[0_0_20px_rgba(0,136,255,0.3)]">
