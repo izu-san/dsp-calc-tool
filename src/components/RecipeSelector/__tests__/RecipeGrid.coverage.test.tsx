@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { RecipeSelector } from '../index';
 
 // i18n モック
@@ -61,10 +61,21 @@ describe('RecipeSelector/RecipeGrid coverage additions', () => {
   ] as any[];
 
   it('空データ時、検索後の noResultsFound が表示される', () => {
-    render(<RecipeSelector recipes={[]} onRecipeSelect={vi.fn()} />);
-    const input = screen.getByPlaceholderText('searchRecipesItemsMaterials') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 'iron' } });
-    expect(screen.getByText('noResultsFound')).toBeInTheDocument();
+    vi.useFakeTimers();
+    try {
+      render(<RecipeSelector recipes={[]} onRecipeSelect={vi.fn()} />);
+      const input = screen.getByPlaceholderText('searchRecipesItemsMaterials') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: 'iron' } });
+      
+      // デバウンス処理を待つ（300ms）
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+      
+      expect(screen.getByText('noResultsFound')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('カテゴリ/タブ切替で該当レシピが表示され選択できる（Many/Filter）', async () => {
