@@ -1,4 +1,4 @@
-name: CI
+name: main_branch_protection
 
 on:
   pull_request:
