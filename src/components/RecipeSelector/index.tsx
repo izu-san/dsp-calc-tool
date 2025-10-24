@@ -5,6 +5,7 @@ import type { Recipe } from '../../types';
 import { RecipeGrid } from './RecipeGrid';
 import { useFavoritesStore } from '../../stores/favoritesStore';
 import { ItemIcon } from '../ItemIcon';
+import { useDebounce } from '../../hooks/useDebounce';
 
 interface RecipeSelectorProps {
   recipes: Recipe[];
@@ -26,6 +27,9 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  // 検索クエリをデバウンス（300ms）してパフォーマンスを向上
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   
   const { favoriteRecipes } = useFavoritesStore();
 
@@ -72,6 +76,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
   }, [searchQuery, recipes]);
 
   // Filter recipes based on search query and category (enhanced with ingredient search)
+  // デバウンスされた検索クエリを使用してパフォーマンスを向上
   const filteredRecipes = useMemo(() => {
     return recipes.filter(recipe => {
       // Favorites filter
@@ -85,8 +90,8 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       }
 
       // Search filter (enhanced with ingredients)
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
+      if (debouncedSearchQuery) {
+        const query = debouncedSearchQuery.toLowerCase();
         const nameMatch = recipe.name.toLowerCase().includes(query);
         const sidMatch = recipe.SID.toString().includes(query);
         
@@ -105,7 +110,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
 
       return true;
     });
-  }, [recipes, searchQuery, selectedCategory, showOnlyFavorites, favoriteRecipes]);
+  }, [recipes, debouncedSearchQuery, selectedCategory, showOnlyFavorites, favoriteRecipes]);
 
   // Get category icon ID and label (memoized to update when language changes)
   const getCategoryInfo = useMemo(() => (category: string): { iconId?: number; label: string } => {
@@ -193,7 +198,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       </div>
 
       {/* Search Help */}
-      {searchQuery && filteredRecipes.length === 0 && (
+      {debouncedSearchQuery && filteredRecipes.length === 0 && (
         <div className="bg-neon-blue/10 border border-neon-blue/40 rounded-lg p-4 backdrop-blur-sm">
           <div className="flex items-start gap-3">
             <svg className="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -266,10 +271,10 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       {/* Results Count */}
       <div className="text-sm text-space-200">
         <span className="text-neon-cyan font-semibold">{filteredRecipes.length}</span> {filteredRecipes.length !== 1 ? t('recipes') : t('recipe')} {t('found')}
-        {searchQuery && (
+        {debouncedSearchQuery && (
           <span>
             {' '}{t('for')}{' '}
-            <span className="font-semibold text-neon-cyan">"{searchQuery}"</span>
+            <span className="font-semibold text-neon-cyan">"{debouncedSearchQuery}"</span>
             <span className="text-xs ml-2 text-space-400">
               ({t('searchingInNamesIDsInputsOutputs')})
             </span>
