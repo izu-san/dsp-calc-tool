@@ -230,11 +230,45 @@ function createNode(id: string, options?: NodeOptions)
 - `package.json`、`tsconfig.json`、`vite.config.ts` などの変更は必ず理由を説明
 - ビルド設定の変更は影響範囲を確認してから実施
 
-### 将来的な拡張性の考慮を禁じる
+### 将来的な拡張性の考慮を禁じる（YAGNI 原則）
 
-- YAGNI原則: 必要になってから実装する
-- 「将来使うかもしれない」機能の実装を禁止
-- 過剰な抽象化を避ける
+**YAGNI (You Aren't Gonna Need It)**: 必要になってから実装する
+
+#### 禁止事項
+
+- ❌ 「将来使うかもしれない」機能の実装
+- ❌ 1箇所でしか使われていない共通化
+- ❌ 型安全性を犠牲にした汎用化
+- ❌ 「拡張性のため」のインターフェース追加
+
+#### 汎用化のタイミング
+
+- **1箇所**: 汎用化しない（特化した実装）
+- **2箇所**: まだ汎用化しない（WET > DRY）
+- **3箇所**: 汎用化を検討する（パターンが明確になってから）
+
+#### 具体例
+
+```typescript
+// ❌ 悪い例: 1箇所でしか使わない汎用ユーティリティ
+function getNestedValue(obj: unknown, path: string): unknown {
+  // 型安全性を失う + 現在は1箇所でしか使わない
+}
+
+// ✅ 良い例: 特化した型安全な関数
+function deserializeSettings(data: unknown): GlobalSettings | null {
+  // 型安全 + 明確な責任
+}
+```
+
+#### 過剰な抽象化のコスト
+
+- 型安全性の喪失（`as any` の増加）
+- テストの複雑化
+- 保守コストの増加
+- 実際には使われない「拡張性」
+
+**原則**: 3回目の重複が現れるまで汎用化しない（Three Strikes Rule）
 
 ## コードスタイル
 
