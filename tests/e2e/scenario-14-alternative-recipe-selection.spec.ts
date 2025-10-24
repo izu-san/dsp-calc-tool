@@ -16,7 +16,7 @@ test.describe('代替レシピの選択と比較', () => {
     await expect(page.getByRole('heading', { name: '🔀 代替レシピ' })).toBeVisible();
     
     // 精製油に代替レシピがあることを確認
-    await expect(page.getByText('精製油')).toBeVisible();
+    await expect(page.getByText('精製油').first()).toBeVisible();
     await expect(page.getByText('2 代替レシピ').first()).toBeVisible();
     
     // 4. 精製油の代替レシピ「比較」ボタンをクリックする
