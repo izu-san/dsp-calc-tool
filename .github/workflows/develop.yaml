@@ -1,4 +1,4 @@
-name: CI
+name: develop_branch_protection
 
 on:
   pull_request:
@@ -8,14 +8,14 @@ on:
 
 jobs:
   cicd_test:
-    name: feature_to_devlop
+    name: develop_branch_protection
     runs-on: ubuntu-latest
     steps:
-      - name: Check:if PR is from feature to develop branch
+      - name: Check:if PR is from feature or hotfix to develop branch
         run: |
-          if [ "${{ github.event.pull_request.base.ref }}" == "develop" ] && [[ "${{ github.event.pull_request.head.ref }}" =~ ^feature/.* ]]; then
-            echo "Pull request from feature to develop branch"  
+          if [ "${{ github.event.pull_request.base.ref }}" == "develop" ] && ([[ "${{ github.event.pull_request.head.ref }}" =~ ^feature/.* ]] || [[ "${{ github.event.pull_request.head.ref }}" =~ ^hotfix/.* ]]); then
+            echo "Pull request from feature or hotfix to develop branch"  
           else
-            echo "Pull request not from feature to develop branch, exiting with code 1"
+            echo "Pull request not from feature or hotfix to develop branch, exiting with code 1"
             exit 1
           fi
