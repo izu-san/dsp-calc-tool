@@ -344,7 +344,7 @@ describe('planExport', () => {
     it('無効なJSON処理（エラーthrow）', async () => {
       const mockFile = new File(['invalid json {{{'], 'test.json', { type: 'application/json' });
 
-      await expect(importPlan(mockFile)).rejects.toThrow('Failed to parse plan file');
+      await expect(importPlan(mockFile)).rejects.toThrow(/is not valid JSON/);
     });
 
     it('ファイル読み込みエラー処理', async () => {
@@ -387,7 +387,7 @@ describe('planExport', () => {
       const fileContent = JSON.stringify(invalidPlan);
       const mockFile = new File([fileContent], 'test.json', { type: 'application/json' });
 
-      await expect(importPlan(mockFile)).rejects.toThrow('Failed to parse plan file');
+      await expect(importPlan(mockFile)).rejects.toThrow('Invalid plan file format');
     });
 
     it('planフィールドがない場合のエラー', async () => {
@@ -398,7 +398,7 @@ describe('planExport', () => {
       const fileContent = JSON.stringify(invalidData);
       const mockFile = new File([fileContent], 'test.json', { type: 'application/json' });
 
-      await expect(importPlan(mockFile)).rejects.toThrow('Failed to parse plan file');
+      await expect(importPlan(mockFile)).rejects.toThrow('Invalid plan file format');
     });
   });
 

@@ -3,17 +3,13 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp } from './helpers/common-actions';
+import { RECIPES } from './helpers/constants';
 
 test.describe('ボトルネック検出と一括修正（WhatIfSimulator）', () => {
   test('ボトルネック検出と修正が正しく機能する', async ({ page }) => {
-    // 1. アプリを起動してボトルネック検出テストを開始
-    await page.goto('http://localhost:5173');
-
-    // 2. XMLデータの読み込み完了を待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
-
-    // 3. Welcomeモーダルをスキップ
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-3. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
 
     // 4. ベルトランクをMk.I (6/s)に変更してボトルネックを発生させやすくする
     await page.getByRole('button', { name: 'Mk.I 6/s' }).click();
@@ -35,14 +31,10 @@ test.describe('ボトルネック検出と一括修正（WhatIfSimulator）', ()
     await page.keyboard.press('Enter');
 
     // ボトルネック検出メッセージが表示されることを確認
-    await expect(page.getByText('ボトルネック検出 (2)')).toBeVisible();
+    await expect(page.getByText('ボトルネック検出 (1)')).toBeVisible();
     
-    // 低優先度のボトルネックが検出されることを確認
+    // 低優先度のボトルネックが検出されることを確認（増産剤のみ）
     await expect(page.getByText('LOW')).toBeVisible();
-    await expect(page.getByText('コンベアベルト飽和度 83.3%')).toBeVisible();
-    
-    // 中優先度のボトルネックが検出されることを確認
-    await expect(page.getByText('MEDIUM')).toBeVisible();
     await expect(page.getByText('Mk.III増産剤を使用していません')).toBeVisible();
 
     // 9. 「🔧 すべて修正」ボタンをクリックして検出されたボトルネックを一括修正する
@@ -54,10 +46,7 @@ test.describe('ボトルネック検出と一括修正（WhatIfSimulator）', ()
 
     // ボトルネックが解消されたことを確認
     await expect(page.getByText('ボトルネックなし')).toBeVisible();
-    await expect(page.getByText('生産チェーンは飽和問題なくスムーズに稼働しています。すべてのコンベアベルトは最適容量（<80%）内で動作しています。')).toBeVisible();
-
-    // ベルト総速度がMk.IIIに変更されたことを確認
-    await expect(page.getByText('30 アイテム/秒')).toBeVisible();
+    await expect(page.getByText('生産チェーンはスムーズに稼働しています。現在のところ、最適化の提案はありません。')).toBeVisible();
 
     // 増産剤の効果が適用されたことを確認
     await expect(page.getByText('⚡ 速度ボーナス:')).toBeVisible();

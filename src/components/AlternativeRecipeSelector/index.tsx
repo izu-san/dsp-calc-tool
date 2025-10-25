@@ -8,6 +8,7 @@ import { formatNumber } from '../../utils/format';
 import { parseColorTags } from '../../utils/html';
 import { isRawMaterial } from '../../constants/rawMaterials';
 import { RecipeComparisonModal } from '../RecipeComparisonModal';
+import { cn } from '../../utils/classNames';
 import type { Recipe, RecipeTreeNode } from '../../types';
 
 export function AlternativeRecipeSelector() {
@@ -161,7 +162,12 @@ export function AlternativeRecipeSelector() {
                       : recipes.find(r => r.SID === selectedRecipeId)?.name || 'None selected'
                     }
                   </span>
-                  <span className={`transition-transform dark:text-gray-400 flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}>
+                  <span className={cn(
+                    'transition-transform dark:text-gray-400 flex-shrink-0',
+                    {
+                      'rotate-180': isExpanded,
+                    }
+                  )}>
                     ▼
                   </span>
                 </div>

@@ -1,31 +1,73 @@
+import { useSpriteData } from '../hooks/useSpriteData';
 import { getDataPath } from '../utils/paths';
+import { getOptimalImagePath, getImageSourceSet } from '../utils/imageFormat';
+import { cn } from '../utils/classNames';
 
 interface ItemIconProps {
   itemId: number;
   size?: number;
   className?: string;
   alt?: string;
+  preferRecipes?: boolean; // Prefer recipes sprite over items sprite
 }
 
-export function ItemIcon({ itemId, size = 32, className = '', alt = '' }: ItemIconProps) {
-  // Try Items folder first, then Machines folder (use getDataPath to handle base path)
-  const itemIconPath = getDataPath(`data/Items/Icons/${itemId}.png`);
-  const machineIconPath = getDataPath(`data/Machines/Icons/${itemId}.png`);
+export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRecipes = false }: ItemIconProps) {
+  const spriteInfo = useSpriteData(itemId, preferRecipes);
+
+  // スプライトが使える場合
+  if (spriteInfo) {
+    const { coords, spriteUrl, spriteData } = spriteInfo;
+    
+    // 元のアイコンサイズに対するスケール比率を計算
+    const scale = size / coords.width;
+    
+    return (
+      <div
+        className={cn('inline-block', className)}
+        style={{
+          width: size,
+          height: size,
+          backgroundImage: `url(${spriteUrl})`,
+          backgroundPosition: `${-coords.x * scale}px ${-coords.y * scale}px`,
+          backgroundSize: `${spriteData.width * scale}px ${spriteData.height * scale}px`,
+          backgroundRepeat: 'no-repeat',
+          imageRendering: 'auto', // 高品質なスケーリング
+        }}
+        role="img"
+        aria-label={alt}
+        title={alt}
+      />
+    );
+  }
+
+  // フォールバック: 個別画像（スプライトがロード中または利用不可の場合）
+  const itemIconPathPng = getDataPath(`data/Items/Icons/${itemId}.png`);
+  const machineIconPathPng = getDataPath(`data/Machines/Icons/${itemId}.png`);
+  
+  // WebP対応のソースセットを取得
+  const itemSources = getImageSourceSet(itemIconPathPng);
+  const machineSources = getImageSourceSet(machineIconPathPng);
   
   return (
     <picture>
-      <source srcSet={itemIconPath} type="image/png" />
+      {/* WebP形式を優先 */}
+      <source srcSet={itemSources.webp} type="image/webp" />
+      <source srcSet={itemSources.png} type="image/png" />
       <img
-        src={machineIconPath}
+        src={getOptimalImagePath(itemIconPathPng)}
         alt={alt}
         width={size}
         height={size}
-        className={`inline-block ${className}`}
+        className={cn('inline-block', className)}
+        loading="lazy"
         onError={(e) => {
-          // Fallback to a placeholder if both fail
+          // アイテム画像が失敗したらマシン画像を試す
           const target = e.target as HTMLImageElement;
-          if (target.src !== machineIconPath) {
-            target.src = machineIconPath;
+          const currentSrc = target.src;
+          
+          // まだマシン画像を試していない場合
+          if (!currentSrc.includes(machineIconPathPng) && !currentSrc.includes(machineSources.webp)) {
+            target.src = getOptimalImagePath(machineIconPathPng);
           }
         }}
       />

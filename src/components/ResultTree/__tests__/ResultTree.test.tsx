@@ -9,6 +9,20 @@ vi.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+// ItemIcon モック（スプライトシート対応）
+vi.mock('../../ItemIcon', () => ({
+    ItemIcon: ({ itemId, alt, size, preferRecipes }: any) => (
+        <div 
+            data-testid={`item-icon-${itemId}`} 
+            data-alt={alt} 
+            data-size={size}
+            data-prefer-recipes={preferRecipes}
+        >
+            {`Icon ${itemId}`}
+        </div>
+    ),
+}));
+
 // CompactNodeSettings を簡素化
 vi.mock('../CompactNodeSettings', () => ({
     CompactNodeSettings: (props: any) => (
@@ -171,7 +185,7 @@ describe('ProductionTree', () => {
         expect(ironOreElements.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('ボトルネックが検出された場合、警告アイコンが表示される', () => {
+    it('飽和度が表示される', () => {
         const bottleneckNode = {
             ...mockRecipeNode,
             conveyorBelts: { 
@@ -183,9 +197,100 @@ describe('ProductionTree', () => {
         
         render(<ProductionTree node={bottleneckNode} />);
         
-        // 警告アイコンが表示される
-        expect(screen.getByText('⚠️')).toBeInTheDocument();
+        // 飽和度のパーセンテージが表示される
         expect(screen.getByText('85.0%')).toBeInTheDocument();
+    });
+
+    it('bottleneckTypeがinputの場合、入力ベルトがオレンジ色になる', () => {
+        const inputBottleneckNode = {
+            ...mockRecipeNode,
+            conveyorBelts: { 
+                inputs: 3,
+                outputs: 1,
+                total: 4,
+                saturation: 95, 
+                bottleneckType: 'input' as const 
+            },
+        };
+        
+        const { container } = render(<ProductionTree node={inputBottleneckNode} />);
+        
+        // "inputs:" ラベルの次の兄弟要素を探す（ベルトセクション内）
+        const inputsLabel = Array.from(container.querySelectorAll('.text-space-200')).find(
+            el => el.textContent === 'inputs:'
+        );
+        const inputValue = inputsLabel?.nextElementSibling;
+        expect(inputValue).toHaveClass('text-neon-orange');
+        expect(inputValue?.textContent).toBe('3');
+    });
+
+    it('bottleneckTypeがoutputの場合、出力ベルトがオレンジ色になる', () => {
+        const outputBottleneckNode = {
+            ...mockRecipeNode,
+            conveyorBelts: { 
+                inputs: 1,
+                outputs: 5,
+                total: 6,
+                saturation: 98, 
+                bottleneckType: 'output' as const 
+            },
+        };
+        
+        const { container } = render(<ProductionTree node={outputBottleneckNode} />);
+        
+        // "outputs:" ラベルの次の兄弟要素を探す
+        const outputsLabel = Array.from(container.querySelectorAll('.text-space-200')).find(
+            el => el.textContent === 'outputs:'
+        );
+        const outputValue = outputsLabel?.nextElementSibling;
+        expect(outputValue).toHaveClass('text-neon-orange');
+        expect(outputValue?.textContent).toBe('5');
+    });
+
+    it('bottleneckTypeがinputではない場合、入力ベルトが黄色になる', () => {
+        const outputBottleneckNode = {
+            ...mockRecipeNode,
+            conveyorBelts: { 
+                inputs: 2,
+                outputs: 4,
+                total: 6,
+                saturation: 90, 
+                bottleneckType: 'output' as const 
+            },
+        };
+        
+        const { container } = render(<ProductionTree node={outputBottleneckNode} />);
+        
+        // "inputs:" ラベルの次の兄弟要素を探す
+        const inputsLabel = Array.from(container.querySelectorAll('.text-space-200')).find(
+            el => el.textContent === 'inputs:'
+        );
+        const inputValue = inputsLabel?.nextElementSibling;
+        expect(inputValue).toHaveClass('text-neon-yellow');
+        expect(inputValue?.textContent).toBe('2');
+    });
+
+    it('bottleneckTypeがoutputではない場合、出力ベルトが青色になる', () => {
+        const inputBottleneckNode = {
+            ...mockRecipeNode,
+            conveyorBelts: { 
+                inputs: 4,
+                outputs: 2,
+                total: 6,
+                saturation: 85, 
+                bottleneckType: 'input' as const 
+            },
+        };
+        
+        const { container } = render(<ProductionTree node={inputBottleneckNode} />);
+        
+        // "outputs:" ラベルの次の兄弟要素を探す
+        const outputsLabel = Array.from(container.querySelectorAll('.text-space-200')).find(
+            el => el.textContent === 'outputs:'
+        );
+        const outputValue = outputsLabel?.nextElementSibling;
+        expect(outputValue).toHaveClass('text-neon-blue');
+        expect(outputValue?.textContent).toBe('2');
     });
 
     it('プロリフェレータが設定されている場合、バッジが表示される', () => {
@@ -274,7 +379,7 @@ describe('ProductionTree', () => {
         expect(screen.getByText('Copper Ore')).toBeInTheDocument();
     });
 
-    it('Explicitレシピの場合、レシピ固有のアイコンが表示される', () => {
+    it('Explicitレシピの場合、レシピ固有のアイコンが表示される（スプライトシート対応）', () => {
         const explicitRecipeNode = {
             ...mockRecipeNode,
             recipe: {
@@ -290,19 +395,23 @@ describe('ProductionTree', () => {
             },
         };
         
-        render(<ProductionTree node={explicitRecipeNode} />);
+        const { container } = render(<ProductionTree node={explicitRecipeNode} />);
         
-    // Explicit=trueの場合、recipes固有のアイコンが使用される
-    const img = screen.getByAltText('Plasma Refining') as HTMLImageElement;
-    expect(img.src).toContain(getDataPath('data/Recipes/Icons/120.png'));
+        // Explicit=trueの場合、レシピSIDのアイコンが使用され、preferRecipes=trueが渡される
+        const icon = container.querySelector('[data-testid="item-icon-120"]');
+        expect(icon).toBeInTheDocument();
+        expect(icon).toHaveAttribute('data-prefer-recipes', 'true');
+        expect(icon).toHaveAttribute('data-alt', 'Plasma Refining');
     });
 
-    it('非Explicitレシピの場合、結果アイテムのアイコンが表示される', () => {
-        render(<ProductionTree node={mockRecipeNode} />);
+    it('非Explicitレシピの場合、結果アイテムのアイコンが表示される（スプライトシート対応）', () => {
+        const { container } = render(<ProductionTree node={mockRecipeNode} />);
         
-    // Explicit=falseの場合、結果アイテムのアイコンが使用される
-    const img = screen.getByAltText('Iron Ingot') as HTMLImageElement;
-    expect(img.src).toContain(getDataPath('data/Items/Icons/1002.png'));
+        // Explicit=falseの場合、結果アイテムIDのアイコンが使用され、preferRecipes=falseが渡される
+        const icon = container.querySelector('[data-testid="item-icon-1002"]');
+        expect(icon).toBeInTheDocument();
+        expect(icon).toHaveAttribute('data-prefer-recipes', 'false');
+        expect(icon).toHaveAttribute('data-alt', 'Iron Ingot');
     });
 
     it('循環依存ノードの場合、特別なスタイルとアイコンが表示される', () => {

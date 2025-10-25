@@ -460,7 +460,7 @@ describe('WhatIfSimulator', () => {
     it('個別ボトルネック修正ボタンが動作する', async () => {
         currentSettings = {
             ...currentSettings,
-            conveyorBelt: { tier: 'mk1', stackCount: 1 },
+            proliferator: { type: 'none', mode: 'speed' },
         };
 
         render(<WhatIfSimulator />);
@@ -470,7 +470,7 @@ describe('WhatIfSimulator', () => {
             await userEvent.click(fixNowButtons[0]);
             
             await waitFor(() => {
-                expect(setConveyorBeltMock).toHaveBeenCalled();
+                expect(setProliferatorMock).toHaveBeenCalled();
             });
         }
     });

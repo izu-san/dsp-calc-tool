@@ -7,6 +7,7 @@ import type {
   MatrixLabRank 
 } from '../../types/settings';
 import { ItemIcon } from '../ItemIcon';
+import { cn } from '../../utils/classNames';
 
 interface MachineOption {
   value: string;
@@ -102,13 +103,15 @@ export function MachineRankSettings() {
               <button
                 key={option.value}
                 onClick={() => handleRankChange('Smelt', option.value as SmelterRank)}
-                className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                  ${machineRank.Smelt === option.value
-                    ? 'bg-neon-orange/30 text-white border-neon-orange shadow-[0_0_20px_rgba(255,107,53,0.6),inset_0_0_20px_rgba(255,107,53,0.2)] backdrop-blur-sm font-bold scale-105'
-                    : 'bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange'
+                className={cn(
+                  'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
+                  {
+                    'bg-neon-orange/30 text-white border-neon-orange shadow-[0_0_20px_rgba(255,107,53,0.6),inset_0_0_20px_rgba(255,107,53,0.2)] backdrop-blur-sm font-bold scale-105': 
+                      machineRank.Smelt === option.value,
+                    'bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange': 
+                      machineRank.Smelt !== option.value,
                   }
-                `}
+                )}
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
@@ -132,13 +135,15 @@ export function MachineRankSettings() {
               <button
                 key={option.value}
                 onClick={() => handleRankChange('Assemble', option.value as AssemblerRank)}
-                className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                  ${machineRank.Assemble === option.value
-                    ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105'
-                    : 'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:bg-neon-blue/10 hover:border-neon-blue/50 hover:text-neon-blue'
+                className={cn(
+                  'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
+                  {
+                    'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105': 
+                      machineRank.Assemble === option.value,
+                    'bg-dark-700/50 text-space-200 border-neon-blue/20 hover:bg-neon-blue/10 hover:border-neon-blue/50 hover:text-neon-blue': 
+                      machineRank.Assemble !== option.value,
                   }
-                `}
+                )}
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
@@ -162,13 +167,15 @@ export function MachineRankSettings() {
               <button
                 key={option.value}
                 onClick={() => handleRankChange('Chemical', option.value as ChemicalPlantRank)}
-                className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                  ${machineRank.Chemical === option.value
-                    ? 'bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-105'
-                    : 'bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green'
+                className={cn(
+                  'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
+                  {
+                    'bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-105': 
+                      machineRank.Chemical === option.value,
+                    'bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green': 
+                      machineRank.Chemical !== option.value,
                   }
-                `}
+                )}
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
@@ -192,13 +199,15 @@ export function MachineRankSettings() {
               <button
                 key={option.value}
                 onClick={() => handleRankChange('Research', option.value as MatrixLabRank)}
-                className={`
-                  px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                  ${machineRank.Research === option.value
-                    ? 'bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105'
-                    : 'bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple'
+                className={cn(
+                  'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
+                  {
+                    'bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105': 
+                      machineRank.Research === option.value,
+                    'bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple': 
+                      machineRank.Research !== option.value,
                   }
-                `}
+                )}
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />

@@ -1,5 +1,9 @@
 import type { SavedPlan, SerializedPlan, GlobalSettings, NodeOverrideSettings } from '../types';
+import { createLogger } from './logger';
+import { ParseError, StorageError } from './errors';
+import { getErrorMessage } from './errorHandler';
 
+const logger = createLogger('PlanExport');
 const PLAN_VERSION = '1.0.0';
 
 /**
@@ -80,22 +84,23 @@ export async function importPlan(file: File): Promise<SavedPlan> {
         
         // Validate version
         if (!data.version || !data.plan) {
-          throw new Error('Invalid plan file format');
+          throw new ParseError('Invalid plan file format');
         }
         
         // Version compatibility check (for future versions)
         if (data.version !== PLAN_VERSION) {
-          console.warn(`Plan version mismatch: ${data.version} vs ${PLAN_VERSION}`);
+          logger.warn(`Plan version mismatch: ${data.version} vs ${PLAN_VERSION}`);
         }
         
         resolve(data.plan);
       } catch (error) {
-        reject(new Error(`Failed to parse plan file: ${error}`));
+        const message = getErrorMessage(error, 'Failed to parse plan file');
+        reject(new ParseError(message, error));
       }
     };
     
     reader.onerror = () => {
-      reject(new Error('Failed to read file'));
+      reject(new StorageError('Failed to read file'));
     };
     
     reader.readAsText(file);

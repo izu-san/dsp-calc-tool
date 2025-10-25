@@ -69,18 +69,17 @@ describe('gameDataStore', () => {
     it('should set loading state while loading', async () => {
       const { loadGameData } = await import('../../lib/parser');
       
-      // Make loadGameData hang
+      // Make loadGameData hang indefinitely
       vi.mocked(loadGameData).mockImplementation(() => new Promise(() => {}));
       
       const { loadData } = useGameDataStore.getState();
-      const loadPromise = loadData();
+      void loadData(); // fire-and-forget
       
-      // Check loading state immediately
+      // Check loading state immediately (should be synchronously set)
       const { isLoading } = useGameDataStore.getState();
       expect(isLoading).toBe(true);
       
-      // Cleanup
-      await Promise.race([loadPromise, new Promise(resolve => setTimeout(resolve, 100))]);
+      // No cleanup needed as the promise never resolves
     });
 
     it('should load data successfully', async () => {
@@ -134,7 +133,7 @@ describe('gameDataStore', () => {
       await loadData();
       
       const { error } = useGameDataStore.getState();
-      expect(error).toBe('Failed to load game data');
+      expect(error).toBe('Unknown error: String error');
     });
 
     it('should use provided locale', async () => {
@@ -201,14 +200,15 @@ describe('gameDataStore', () => {
       const { setLocale } = useGameDataStore.getState();
       setLocale('en');
       
-      // Wait for async loadData to complete
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait for loadGameData to be called and completed
+      await vi.waitFor(() => {
+        expect(loadGameData).toHaveBeenCalledWith(undefined, 'en');
+      });
       
       const { locale } = useGameDataStore.getState();
       expect(locale).toBe('en');
       expect(i18n.default.changeLanguage).toHaveBeenCalledWith('en');
       expect(localStorage.getItem('dsp_locale')).toBe('en');
-      expect(loadGameData).toHaveBeenCalledWith(undefined, 'en');
     });
 
     it('should save locale to localStorage', () => {
@@ -253,13 +253,13 @@ describe('gameDataStore', () => {
       vi.mocked(loadGameData).mockImplementation(() => new Promise(() => {}));
       
       const { loadData } = useGameDataStore.getState();
-      const loadPromise = loadData();
+      void loadData(); // fire-and-forget
       
+      // Error should be synchronously cleared when starting new load
       const { error } = useGameDataStore.getState();
       expect(error).toBeNull();
       
-      // Cleanup
-      await Promise.race([loadPromise, new Promise(resolve => setTimeout(resolve, 100))]);
+      // No cleanup needed as the promise never resolves
     });
   });
 

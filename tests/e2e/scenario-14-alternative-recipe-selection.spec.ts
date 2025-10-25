@@ -2,17 +2,12 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import { initializeApp } from './helpers/common-actions';
 
 test.describe('代替レシピの選択と比較', () => {
   test('代替レシピ選択UIとRecipeComparisonModalの動作確認', async ({ page }) => {
-    // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
-    
-    // データ読み込み完了まで待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
-    
-    // 2. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    // 1-2. アプリを起動し、初期状態まで準備
+    await initializeApp(page);
     
     // 3. 代替レシピがあるアイテム「グラフェン」を選択する
     await page.getByRole('button', { name: 'グラフェン', exact: true }).click();
@@ -21,7 +16,7 @@ test.describe('代替レシピの選択と比較', () => {
     await expect(page.getByRole('heading', { name: '🔀 代替レシピ' })).toBeVisible();
     
     // 精製油に代替レシピがあることを確認
-    await expect(page.getByText('精製油')).toBeVisible();
+    await expect(page.getByText('精製油').first()).toBeVisible();
     await expect(page.getByText('2 代替レシピ').first()).toBeVisible();
     
     // 4. 精製油の代替レシピ「比較」ボタンをクリックする

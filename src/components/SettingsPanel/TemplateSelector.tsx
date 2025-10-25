@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { SETTINGS_TEMPLATES } from '../../types/settings';
+import { cn } from '../../utils/classNames';
 
 export function TemplateSelector() {
   const { t } = useTranslation();
@@ -52,7 +53,11 @@ export function TemplateSelector() {
             <button
               key={templateId}
               onClick={() => handleTemplateClick(templateId)}
-              className="px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-neon-blue/20 backdrop-blur-sm text-white hover:border-neon-blue hover:bg-neon-blue/30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect"
+              className={cn(
+                'px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-neon-blue/20 backdrop-blur-sm text-white',
+                'hover:border-neon-blue hover:bg-neon-blue/30 hover:scale-105 active:scale-95 transition-all',
+                'shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect'
+              )}
               title={t(`${templateId}Desc`)}
             >
               <span className="mr-1">{template.icon}</span>
@@ -65,7 +70,11 @@ export function TemplateSelector() {
       {/* Power Saver Template */}
       <button
         onClick={() => handleTemplateClick('powerSaver')}
-        className="w-full px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-green/40 bg-neon-green/20 backdrop-blur-sm text-white hover:border-neon-green hover:bg-neon-green/30 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect"
+        className={cn(
+          'w-full px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-green/40 bg-neon-green/20 backdrop-blur-sm text-white',
+          'hover:border-neon-green hover:bg-neon-green/30 hover:scale-105 active:scale-95 transition-all',
+          'shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect'
+        )}
         title={t('powerSaverDesc')}
       >
         <span className="mr-1">{SETTINGS_TEMPLATES.powerSaver.icon}</span>
@@ -124,13 +133,20 @@ export function TemplateSelector() {
             <div className="flex gap-3">
               <button
                 onClick={handleCancel}
-                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-dark-700/50 text-space-200 hover:border-neon-blue hover:bg-neon-blue/20 hover:text-neon-cyan transition-all ripple-effect"
+                className={cn(
+                  'flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-dark-700/50 text-space-200',
+                  'hover:border-neon-blue hover:bg-neon-blue/20 hover:text-neon-cyan transition-all ripple-effect'
+                )}
               >
                 {t('cancel')}
               </button>
               <button
                 onClick={handleConfirm}
-                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white hover:bg-neon-green/40 transition-all shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
+                className={cn(
+                  'flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white',
+                  'hover:bg-neon-green/40 transition-all',
+                  'shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect'
+                )}
               >
                 {t('apply')}
               </button>

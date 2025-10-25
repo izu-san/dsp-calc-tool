@@ -1,0 +1,440 @@
+---
+alwaysApply: false
+---
+
+# Pull Requestの作り方
+
+## 自動実行ルール
+
+ユーザーからPR作成を依頼された場合、以下の全ステップを**自動的に実行**すること。
+
+---
+
+## ステップ 1: 前提条件の確認
+
+### 1.1 現在のブランチを確認
+```bash
+git branch --show-current
+```
+
+### 1.2 コミット状態を確認
+```bash
+git status
+```
+- 未コミットの変更がある場合は警告し、コミットを促す
+
+### 1.3 プッシュ状態を確認
+```bash
+git log origin/$(git branch --show-current)..HEAD
+```
+- プッシュされていないコミットがある場合は、先にプッシュを実行
+
+---
+
+## ステップ 2: マージ先ブランチとの差分確認
+
+### 2.1 マージ先ブランチの決定
+現在のブランチ名から作業タイプを自動判定し、マージ先ブランチを決定する：
+
+| 現在のブランチパターン | マージ先ブランチ | 作業タイプ |
+|-------------------|--------------|----------|
+| `hotfix/fix-*` | `main` | 不具合修正 |
+| `feature/refactoring-*` | `develop` | リファクタリング |
+| `feature/*` | `develop` | 機能エンハンス |
+| その他 | `develop` (デフォルト) | - |
+
+**判定ロジック**:
+```bash
+current_branch=$(git branch --show-current)
+
+if [[ $current_branch == hotfix/fix-* ]]; then
+  base_branch="main"
+elif [[ $current_branch == feature/* ]]; then
+  base_branch="develop"
+else
+  base_branch="develop"  # デフォルト
+fi
+```
+
+- ユーザーから明示的に指定がある場合: その指定に従う（自動判定を上書き）
+
+### 2.2 Issue番号の確認
+- ユーザーから Issue 番号の指定があるか確認
+- 指定がある場合: Issue番号を記録（例: `#123`）
+- 指定がない場合: Issue紐づけなしでPRを作成
+
+### 2.3 差分の統計を確認
+```bash
+git diff <マージ先ブランチ> --stat
+```
+
+### 2.4 コミットログを確認
+```bash
+git log <マージ先ブランチ>..HEAD --oneline
+```
+
+---
+
+## ステップ 3: PRタイトルの生成
+
+以下の形式に従ってタイトルを自動生成する：
+
+| 変更の種類 | タイトル形式 | 例 |
+|-----------|------------|-----|
+| **リファクタリング** | `refactor: <変更内容>` | `refactor: App.tsxを分割してカスタムフックを抽出` |
+| **新機能** | `feat: <機能名>` | `feat: 採掘速度計算機能を追加` |
+| **バグ修正** | `fix: <修正内容>` | `fix: 増産剤計算の誤りを修正` |
+| **ドキュメント** | `docs: <ドキュメント名>` | `docs: READMEにインストール手順を追加` |
+| **テスト** | `test: <テスト内容>` | `test: calculator.tsのテストカバレッジを向上` |
+| **スタイル** | `style: <変更内容>` | `style: ESLintエラーを修正` |
+| **パフォーマンス** | `perf: <改善内容>` | `perf: メモ化により再計算を最適化` |
+
+**生成方法**:
+1. `git log` のコミットメッセージから変更の種類を判定
+2. 変更されたファイルから主要な変更内容を抽出
+3. 簡潔で分かりやすいタイトルを生成（50文字以内を推奨）
+
+---
+
+## ステップ 4: PR本文の生成
+
+### 4.1 品質保証結果の収集
+PR本文生成前に、以下の情報を収集する：
+
+1. **単体テスト結果**: テスト実行時の出力を解析
+   - `npm test` の終了コード（0=成功、非0=失敗）を確認
+   - 出力から "Tests:" または "Test Suites:" 行を抽出してテスト合格数を取得
+   - `npm run test:coverage` 実行後、coverage サマリーからカバレッジ率を取得
+   - 例: "All files | 92.5 | 90.2 | 95.3 | 92.5 |" から 92.5% を抽出
+
+2. **E2Eテスト結果**: テスト実行時の出力を解析
+   - `npm run test:e2e` の終了コード（0=成功、非0=失敗）を確認
+   - 出力から "passed" または "failed" を含む行を抽出
+   - 例: "21 passed (13s)" から成功数を取得
+
+3. **ビルド結果**: コマンド実行の終了コードから判定
+   - `npm run build` の終了コード
+   - 成功: exit code 0 → "✅ success"
+   - 失敗: exit code 非0 → "❌ failed"
+
+4. **ESLint結果**: `npm run lint` の出力を解析
+   - 出力から "error" と "warning" の数をカウント
+   - 例: "0 errors, 2 warnings" から抽出
+
+### 4.2 テンプレート構造
+以下のテンプレートに従って、具体的な内容を自動生成する：
+```markdown
+<1-2行で変更内容を要約>
+
+## 目的
+
+<なぜこの変更が必要か、解決する課題を記載>
+
+## 変更内容
+
+<変更したファイルと内容を箇条書きで記載>
+- ファイル名: 変更内容
+
+## 品質保証結果
+
+### 単体テスト
+- 実行結果: <passed/failed>
+- カバレッジ: <カバレッジ率>
+
+### E2Eテスト
+- 実行結果: <passed/failed>
+- シナリオ数: <成功数/総数>
+
+### ビルド
+- ビルド結果: <success/failed>
+
+### ESLint
+- エラー: <エラー数>
+- 警告: <警告数>
+
+## 参考
+
+<関連するIssue、ドキュメント、参考URLなどがあれば記載>
+
+---
+
+**Issue番号が指定されている場合**:
+- 本文の末尾に以下を追加してIssueを自動クローズ:
+  - `Closes #<Issue番号>` (バグ修正、機能実装の場合)
+  - `Resolves #<Issue番号>` (問題解決の場合)
+  - `Fixes #<Issue番号>` (修正の場合)
+  - `Related to #<Issue番号>` (関連するが自動クローズしない場合)
+
+**キーワードの使い分け**:
+- `Closes`: 機能実装、タスク完了
+- `Fixes`: バグ修正
+- `Resolves`: 問題解決
+- `Related to`: 関連するが自動クローズしない
+```
+
+### 本文生成の具体例（リファクタリングの場合）
+
+```markdown
+App.tsxを複数のレイアウトコンポーネントに分割し、カスタムフックを抽出してコードの保守性を向上
+
+## 目的
+
+App.tsxが1000行を超え、保守性が低下していたため、責任を分離し、テスタビリティを向上させる。
+
+## 変更内容
+
+- `src/App.tsx`: メインロジックを300行に削減
+- `src/components/Layout/MainLayout.tsx`: レイアウトコンポーネントを抽出
+- `src/hooks/useProductionCalculation.ts`: 計算ロジックをカスタムフックに抽出
+- `src/components/__tests__/Main.smoke.test.tsx`: スモークテストを追加
+
+## 品質保証結果
+
+### 単体テスト
+- 実行結果: ✅ passed (0 failed)
+- カバレッジ: 92.5%
+
+### E2Eテスト
+- 実行結果: ✅ passed
+- シナリオ数: 21/21
+
+### ビルド
+- ビルド結果: ✅ success
+
+### ESLint
+- エラー: 0
+- 警告: 0
+
+## 参考
+
+- リファクタリングガイド: @refactoring.mdc
+```
+
+### 本文生成の具体例（Issue番号がある場合）
+
+```markdown
+採掘速度計算機能を追加
+
+## 目的
+
+Issue #45 で要望された採掘速度計算機能を実装し、ユーザーが鉱床の採掘効率を簡単に計算できるようにする。
+
+## 変更内容
+
+- `src/lib/miningCalculation.ts`: 採掘速度計算ロジックを実装
+- `src/components/MiningCalculator/MiningCalculator.tsx`: UIコンポーネントを追加
+- `src/lib/__tests__/miningCalculation.test.ts`: 単体テストを追加
+- `src/App.tsx`: MiningCalculatorコンポーネントを統合
+
+## 品質保証結果
+
+### 単体テスト
+- 実行結果: ✅ passed (0 failed)
+- カバレッジ: 95.2%
+
+### E2Eテスト
+- 実行結果: ✅ passed
+- シナリオ数: 21/21
+
+### ビルド
+- ビルド結果: ✅ success
+
+### ESLint
+- エラー: 0
+- 警告: 0
+
+## 参考
+
+- 設計ドキュメント: @miningCalculation.mdc
+
+Closes #45
+```
+
+---
+
+## ステップ 5: PR作成コマンドの実行
+
+### 5.1 リポジトリ情報の取得
+
+PR作成にはリポジトリのowner（ユーザー名または組織名）とrepo名が必要です。以下のコマンドで取得します：
+
+```bash
+git remote get-url origin
+```
+
+**出力例**:
+- HTTPS形式: `https://github.com/owner/repo.git`
+- SSH形式: `git@github.com:owner/repo.git`
+
+**owner/repoの抽出方法**:
+
+**Windows (PowerShell)**:
+```powershell
+$remoteUrl = git remote get-url origin
+if ($remoteUrl -match "github\.com[:/]([^/]+)/([^/\.]+)") {
+    $owner = $matches[1]
+    $repo = $matches[2]
+    Write-Host "Owner: $owner, Repo: $repo"
+}
+```
+
+**Unix/Mac (Bash)**:
+```bash
+remote_url=$(git remote get-url origin)
+if [[ $remote_url =~ github\.com[:/]([^/]+)/([^/\.]+) ]]; then
+    owner="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]}"
+    echo "Owner: $owner, Repo: $repo"
+fi
+```
+
+### 5.2 PR本文の準備
+
+**Issue番号の追加**:
+- Issue番号が指定されている場合、PR本文の末尾に以下を追加:
+  - バグ修正: `Fixes #<Issue番号>`
+  - 機能実装: `Closes #<Issue番号>`
+  - 問題解決: `Resolves #<Issue番号>`
+  - 関連のみ: `Related to #<Issue番号>`
+
+例:
+```markdown
+<生成したPR本文>
+
+Closes #45
+```
+
+### 5.3 GitHub MCPでPRを作成
+
+AIアシスタントは、**`mcp_github_create_pull_request` ツール**を使用してPRを直接作成します：
+
+**必須パラメータ**:
+- `owner`: リポジトリのオーナー（ステップ5.1で取得）
+- `repo`: リポジトリ名（ステップ5.1で取得）
+- `title`: PRタイトル（ステップ3で生成）
+- `head`: 現在のブランチ名（ステップ1.1で取得）
+- `base`: マージ先ブランチ（ステップ2.1で決定）
+
+**オプションパラメータ**:
+- `body`: PR本文（ステップ4で生成、Issue番号を含む）
+- `draft`: ドラフトPRとして作成する場合は `true`（デフォルト: `false`）
+
+**使用例**:
+```typescript
+mcp_github_create_pull_request({
+  owner: "your-username",
+  repo: "DysonSphereProgram",
+  title: "feat: 採掘速度計算機能を追加",
+  head: "feature/add-mining-calculator",
+  base: "develop",
+  body: "採掘速度計算機能を追加\n\n## 目的\n...\n\nCloses #45"
+})
+```
+
+### 5.4 結果を確認
+- MCPコマンドの実行結果からPR番号とURLを取得
+- ユーザーに作成されたPRのURLを報告
+
+---
+
+## エラーハンドリング
+
+### GitHub MCPが利用できない場合
+```
+エラー: GitHub MCPが有効化されていません。
+Cursorの設定でGitHub MCPを有効化してください。
+```
+
+### リポジトリ情報の取得に失敗した場合
+```
+エラー: リモートリポジトリのURLを取得できませんでした。
+以下を確認してください：
+- `git remote -v` でリモートリポジトリが設定されているか
+- リモート名が "origin" であるか
+```
+
+### GitHub API認証エラーの場合
+```
+エラー: GitHubの認証に失敗しました。
+Cursorの設定でGitHub MCPの認証トークンを確認してください。
+```
+
+### プッシュされていない場合
+```
+警告: 変更がリモートにプッシュされていません。
+先に以下のコマンドを実行してください：
+`git push origin <ブランチ名>`
+```
+
+### 未コミットの変更がある場合
+```
+警告: 未コミットの変更があります。
+先にコミットしてください：
+`git add .`
+`git commit -m "..."`
+```
+
+### PR作成に失敗した場合
+```
+エラー: PRの作成に失敗しました。
+以下を確認してください：
+- ブランチが正しくプッシュされているか
+- base ブランチが存在するか
+- 同じブランチからのPRが既に存在しないか
+```
+
+---
+
+## Issue紐づけの詳細
+
+### Issueを自動クローズするキーワード
+
+PR本文に以下のキーワードを含めると、PRがマージされたときに自動的にIssueがクローズされます：
+
+| キーワード | 用途 | 例 |
+|---------|-----|-----|
+| `Closes #123` | 機能実装、タスク完了 | `Closes #45` |
+| `Fixes #123` | バグ修正 | `Fixes #78` |
+| `Resolves #123` | 問題解決 | `Resolves #92` |
+
+### 複数のIssueを紐づける
+
+複数のIssueに関連する場合：
+```markdown
+Closes #45, #67
+Fixes #78
+```
+
+### 関連するが自動クローズしない
+
+関連するが自動クローズしたくない場合：
+```markdown
+Related to #45
+See also #67
+```
+
+### 使用例
+
+```markdown
+## 参考
+
+- 設計ドキュメント: @miningCalculation.mdc
+- 関連PR: #42
+
+Closes #45
+```
+
+---
+
+## 重要な注意事項
+
+1. **PRタイトルは具体的に**: 変更内容が一目で分かるようにする
+2. **本文は詳細に**: レビュアーが文脈を理解できるように十分な情報を提供
+3. **テスト結果は必須**: 品質保証セクションは必ず埋める
+4. **差分を確認**: PR作成前に必ず差分を確認し、意図しない変更がないかチェック
+5. **ユーザーに報告**: 各ステップの実行結果をユーザーに報告する
+6. **リポジトリ情報の取得**: `git remote get-url origin` から正確にowner/repoを抽出する
+7. **Issue紐づけ**: Issue番号が指定されている場合、適切なキーワード（Closes/Fixes/Resolves）を使用してPRとIssueを紐づける
+8. **MCPツールの使用**: `mcp_github_create_pull_request` ツールを使用してPRを作成（一時ファイル不要）
+
+---

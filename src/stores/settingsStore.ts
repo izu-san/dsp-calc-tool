@@ -11,6 +11,7 @@ import {
   DEFAULT_ALTERNATIVE_RECIPES,
   SETTINGS_TEMPLATES,
 } from '../types/settings';
+import { serializeSettings, deserializeSettings } from '../utils/storageSerializer';
 
 const defaultSettings: GlobalSettings = {
   proliferator: {
@@ -149,36 +150,38 @@ export const useSettingsStore = create<SettingsStore>()(
         getItem: (name) => {
           const str = localStorage.getItem(name);
           if (!str) return null;
-          const { state } = JSON.parse(str);
           
-          // Convert alternativeRecipes array back to Map
-          if (state?.settings?.alternativeRecipes && Array.isArray(state.settings.alternativeRecipes)) {
-            state.settings.alternativeRecipes = new Map(state.settings.alternativeRecipes);
+          try {
+            const { state } = JSON.parse(str);
+            
+            // 型安全なデシリアライズ
+            if (state?.settings) {
+              const deserialized = deserializeSettings(state.settings);
+              if (deserialized) {
+                state.settings = deserialized;
+              }
+            }
+            
+            return { state };
+          } catch (error) {
+            console.warn('Failed to deserialize settings from localStorage:', error);
+            return null;
           }
-          
-          // Ensure conveyorBelt has stackCount (merge with defaults if missing)
-          if (state?.settings?.conveyorBelt && typeof state.settings.conveyorBelt.stackCount !== 'number') {
-            const tier = state.settings.conveyorBelt.tier as keyof typeof CONVEYOR_BELT_DATA || 'mk3';
-            state.settings.conveyorBelt = {
-              ...CONVEYOR_BELT_DATA[tier],
-              ...state.settings.conveyorBelt,
-              stackCount: 1, // Default to 1 if missing
-            };
-          }
-          
-          return { state };
         },
         setItem: (name, value) => {
-          const str = JSON.stringify({
-            state: {
-              ...value.state,
-              settings: {
-                ...value.state.settings,
-                alternativeRecipes: Array.from(value.state.settings.alternativeRecipes.entries()),
+          try {
+            // 型安全なシリアライズ
+            const serialized = serializeSettings(value.state.settings);
+            const str = JSON.stringify({
+              state: {
+                ...value.state,
+                settings: serialized,
               },
-            },
-          });
-          localStorage.setItem(name, str);
+            });
+            localStorage.setItem(name, str);
+          } catch (error) {
+            console.error('Failed to serialize settings to localStorage:', error);
+          }
         },
         removeItem: (name) => localStorage.removeItem(name),
       },

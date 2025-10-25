@@ -1,11 +1,12 @@
 import { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RecipeTreeNode } from '../../types';
-import { getItemIconPath, getRecipeIconPath } from '../../utils/grid';
 import { formatRate, formatNumber, formatPower } from '../../utils/format';
 import { parseColorTags } from '../../utils/html';
 import { NodeSettingsModal } from '../NodeSettingsModal';
 import { CompactNodeSettings } from './CompactNodeSettings';
+import { ItemIcon } from '../ItemIcon';
+import { cn } from '../../utils/classNames';
 
 interface ProductionTreeProps {
   node: RecipeTreeNode;
@@ -56,39 +57,42 @@ export const ProductionTree = memo(function ProductionTree({
     const displayName = node.itemName;
     
     return (
-      <div className={`${depth > 0 ? 'ml-6 mt-2' : ''}`}>
-        <div className={`border rounded-lg p-3 backdrop-blur-sm relative overflow-hidden animate-fadeIn ${
-          isCircular 
-            ? 'bg-neon-purple/20 border-neon-purple/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
-            : 'bg-neon-green/20 border-neon-green/50 shadow-[0_0_20px_rgba(0,255,136,0.3)]'
-        }`}>
+      <div className={cn({ 'ml-6 mt-2': depth > 0 })}>
+        <div className={cn(
+          'border rounded-lg p-3 backdrop-blur-sm relative overflow-hidden animate-fadeIn',
+          {
+            'bg-neon-purple/20 border-neon-purple/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]': isCircular,
+            'bg-neon-green/20 border-neon-green/50 shadow-[0_0_20px_rgba(0,255,136,0.3)]': !isCircular,
+          }
+        )}>
           {/* Data stream effect */}
           <div className="absolute inset-0 data-stream opacity-20 pointer-events-none"></div>
           <div className="relative z-10">
           <div className="flex items-center gap-3">
             {/* Icon (Recipe or Item) */}
-            <div className={`w-10 h-10 flex-shrink-0 border rounded bg-dark-800/50 backdrop-blur-sm p-1 ${
-              isCircular
-                ? 'border-neon-purple/50 shadow-[0_0_10px_rgba(168,85,247,0.3)]'
-                : 'border-neon-green/50 shadow-[0_0_10px_rgba(0,255,136,0.3)]'
-            }`}>
-              <img
-                src={getItemIconPath(iconId)}
+            <div className={cn(
+              'w-10 h-10 flex-shrink-0 border rounded bg-dark-800/50 backdrop-blur-sm p-1',
+              {
+                'border-neon-purple/50 shadow-[0_0_10px_rgba(168,85,247,0.3)]': isCircular,
+                'border-neon-green/50 shadow-[0_0_10px_rgba(0,255,136,0.3)]': !isCircular,
+              }
+            )}>
+              <ItemIcon
+                itemId={iconId}
                 alt={displayName}
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
+                size={32}
               />
             </div>
 
             {/* Raw Material / Circular Dependency Info */}
             <div className="flex-1 min-w-0">
-              <h4 className={`font-semibold text-white truncate ${
-                isCircular
-                  ? 'drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]'
-                  : 'drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]'
-              }`}>
+              <h4 className={cn(
+                'font-semibold text-white truncate',
+                {
+                  'drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]': isCircular,
+                  'drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]': !isCircular,
+                }
+              )}>
                 {displayName}
               </h4>
               <p className="text-xs text-space-200">
@@ -102,11 +106,13 @@ export const ProductionTree = memo(function ProductionTree({
 
             {/* Required Rate */}
             <div className="text-right">
-              <div className={`text-sm font-bold ${
-                isCircular 
-                  ? 'text-neon-purple drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]'
-                  : 'text-neon-green drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]'
-              }`}>
+              <div className={cn(
+                'text-sm font-bold',
+                {
+                  'text-neon-purple drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]': isCircular,
+                  'text-neon-green drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]': !isCircular,
+                }
+              )}>
                 {formatRate(node.targetOutputRate)}
               </div>
               <div className="text-xs text-space-200">
@@ -124,21 +130,18 @@ export const ProductionTree = memo(function ProductionTree({
   const isBottleneck = node.conveyorBelts.saturation && node.conveyorBelts.saturation > 80;
   
   return (
-    <div className={`${depth > 0 ? 'ml-6 mt-2' : ''}`}>
+    <div className={cn({ 'ml-6 mt-2': depth > 0 })}>
       {/* Tree Node */}
       <div 
-        className={`
-          border rounded-lg p-3 bg-dark-700/50 backdrop-blur-sm relative overflow-hidden animate-fadeIn
-          ${isRoot 
-            ? isBottleneck 
-              ? 'border-neon-orange/60 border-2 shadow-[0_0_25px_rgba(255,107,53,0.4)]' 
-              : 'border-neon-blue/60 border-2 shadow-[0_0_25px_rgba(0,136,255,0.4)]'
-            : isBottleneck
-              ? 'border-neon-orange/40 border-2 shadow-[0_0_20px_rgba(255,107,53,0.3)]'
-              : 'border-neon-cyan/30 shadow-[0_0_15px_rgba(0,217,255,0.2)]'
+        className={cn(
+          'border rounded-lg p-3 bg-dark-700/50 backdrop-blur-sm relative overflow-hidden animate-fadeIn hover:shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all',
+          {
+            'border-neon-orange/60 border-2 shadow-[0_0_25px_rgba(255,107,53,0.4)]': isRoot && isBottleneck,
+            'border-neon-blue/60 border-2 shadow-[0_0_25px_rgba(0,136,255,0.4)]': isRoot && !isBottleneck,
+            'border-neon-orange/40 border-2 shadow-[0_0_20px_rgba(255,107,53,0.3)]': !isRoot && isBottleneck,
+            'border-neon-cyan/30 shadow-[0_0_15px_rgba(0,217,255,0.2)]': !isRoot && !isBottleneck,
           }
-          hover:shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all
-        `}
+        )}
       >
         {/* Data stream effect */}
         <div className="absolute inset-0 data-stream opacity-20 pointer-events-none"></div>
@@ -169,18 +172,12 @@ export const ProductionTree = memo(function ProductionTree({
           )}
           
           {/* Recipe Icon */}
-          <div className="w-12 h-12 flex-shrink-0 border border-neon-cyan/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,217,255,0.3)]">
-            <img
-              src={getRecipeIconPath(
-                node.recipe!.SID,
-                node.recipe!.Explicit,
-                node.recipe!.Results[0]?.id
-              )}
+          <div className="w-10 h-10 flex-shrink-0 border border-neon-cyan/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,217,255,0.3)]">
+            <ItemIcon
+              itemId={node.recipe!.Explicit ? node.recipe!.SID : (node.recipe!.Results[0]?.id || node.recipe!.SID)}
               alt={node.recipe!.name}
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
+              size={32}
+              preferRecipes={node.recipe!.Explicit}
             />
           </div>
 
@@ -256,20 +253,23 @@ export const ProductionTree = memo(function ProductionTree({
           <div>
             <div className="text-xs font-medium text-neon-cyan mb-1">
               🛤️ {t('belts')}
-              {node.conveyorBelts.saturation && node.conveyorBelts.saturation > 80 && (
-                <span className="ml-1 text-neon-orange" title={t('bottleneckDetected')}>⚠️</span>
-              )}
             </div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
                 <span className="text-space-200">{t('inputs')}:</span>
-                <span className={`font-medium ${node.conveyorBelts.bottleneckType === 'input' ? 'text-neon-orange' : 'text-neon-yellow'}`}>
+                <span className={cn('font-medium', {
+                  'text-neon-orange': node.conveyorBelts.bottleneckType === 'input',
+                  'text-neon-yellow': node.conveyorBelts.bottleneckType !== 'input',
+                })}>
                   {node.conveyorBelts.inputs}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-space-200">{t('outputs')}:</span>
-                <span className={`font-medium ${node.conveyorBelts.bottleneckType === 'output' ? 'text-neon-orange' : 'text-neon-blue'}`}>
+                <span className={cn('font-medium', {
+                  'text-neon-orange': node.conveyorBelts.bottleneckType === 'output',
+                  'text-neon-blue': node.conveyorBelts.bottleneckType !== 'output',
+                })}>
                   {node.conveyorBelts.outputs}
                 </span>
               </div>

@@ -1,12 +1,17 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // GitHub Pagesでリポジトリ名をベースパスとして使用
-  // カスタムドメインを使用する場合は '/' に設定
-  base: process.env.NODE_ENV === 'production' ? '/dsp-calc-tool/' : '/',
+  // カスタムドメイン (dsp-calc.com) を使用
+  base: '/',
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   test: {
     globals: true,
     environment: 'happy-dom',

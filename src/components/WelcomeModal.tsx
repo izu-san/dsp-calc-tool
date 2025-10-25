@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 
@@ -6,15 +6,11 @@ const TUTORIAL_SEEN_KEY = 'dsp_calc_tutorial_seen';
 
 export function WelcomeModal() {
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-
-  useEffect(() => {
+  const [isOpen, setIsOpen] = useState(() => {
     const seen = localStorage.getItem(TUTORIAL_SEEN_KEY);
-    if (!seen) {
-      setIsOpen(true);
-    }
-  }, []);
+    return !seen;
+  });
+  const [currentStep, setCurrentStep] = useState(0);
 
   const handleClose = () => {
     setIsOpen(false);

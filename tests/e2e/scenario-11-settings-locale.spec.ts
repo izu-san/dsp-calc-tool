@@ -2,17 +2,27 @@
 // seed: tests/fixtures/seed.spec.ts
 
 import { test, expect } from '@playwright/test';
+import {
+  waitForLanguage,
+  selectLanguage,
+  clickRecipeByName,
+  getTargetLabelLocator,
+  getProductionRootTitleLocator,
+  getProductionHeadingLocator,
+} from './helpers/i18n-helpers';
+import { waitForDataLoading, initializeApp } from './helpers/common-actions';
+import { BUTTON_LABELS } from './helpers/constants';
 
 test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   test('設定とロケールが再起動後も反映される', async ({ page }) => {
     // 1. アプリを起動する
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 2. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 2. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 3. Welcomeモーダルをスキップする
-    await page.getByRole('button', { name: 'スキップ' }).click();
+    await page.getByRole('button', { name: BUTTON_LABELS.SKIP }).click();
 
     // 4. 言語セレクターで現在の言語を確認する（初期: 日本語）
     const languageSelector = page.getByRole('combobox');
@@ -32,10 +42,10 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
     await page.getByRole('button', { name: 'Mk.III 30/s' }).click();
 
     // 9. ページをリロードする
-    await page.goto('http://localhost:5173');
+    await page.goto('/');
 
-    // 10. データ読み込み完了まで3秒待機
-    await new Promise(f => setTimeout(f, 3 * 1000));
+    // 10. データ読み込み完了を待機
+    await waitForDataLoading(page);
 
     // 12. 言語が英語のまま維持されていることを確認
     await expect(languageSelector).toHaveValue('en');
@@ -54,5 +64,56 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
     // 15. HTML lang属性が"en"になっていることを確認
     const htmlLang = await page.locator('html').getAttribute('lang');
     expect(htmlLang).toBe('en');
+  });
+
+  test('シナリオ11A: 設定エリアのアイテム名が言語切替で翻訳されること', async ({ page }) => {
+    await initializeApp(page);
+
+  // RecipeSelector で "重力マトリックス" を選択
+  // RecipeGrid renders recipe buttons with title=recipe.name, so use role=button locator
+  await clickRecipeByName(page, '重力マトリックス');
+
+  // 設定領域の "目標" ラベルが日本語で表示されていることを確認（label 要素を明示的に取得）
+  const targetLabelJa = page.locator('label', { hasText: '目標' }).first();
+  await expect(targetLabelJa).toBeVisible();
+
+  // 言語を英語に切替（ヘルパーで待機含む）
+  await selectLanguage(page, 'en');
+
+  // 英語のラベルに変わっていることを確認（ヘルパーを使って label を取得）
+  const targetLabelEn = getTargetLabelLocator(page);
+  await expect(targetLabelEn).toBeVisible();
+  });
+
+  test('シナリオ11B: 生産チェーンのルートノード名と入力アイテム名が翻訳されること', async ({ page }) => {
+    await initializeApp(page);
+
+    // レシピ選択と目標入力
+  await clickRecipeByName(page, '重力マトリックス');
+
+    const spin = page.getByRole('spinbutton');
+    await expect(spin).toBeVisible();
+    await spin.fill('1');
+
+  // Production Results パネルの見出しが表示されることを待つ
+  const productionHeading = getProductionHeadingLocator(page);
+  await expect(productionHeading).toBeVisible();
+
+  // ルートノードのタイトル（h4）を取得（ヘルパーを利用）
+  const rootNodeH4 = getProductionRootTitleLocator(page);
+  const rootBefore = (await rootNodeH4.innerText()) ?? '';
+
+  // 言語切替（ヘルパー）
+  await selectLanguage(page, 'en');
+
+  const rootAfter = (await rootNodeH4.innerText()) ?? '';
+
+  expect(rootAfter).not.toBe(rootBefore);
+
+  // ページリロード後も状態が維持されることを確認
+  await page.reload();
+  await waitForLanguage(page, 'en');
+  const rootReload = (await rootNodeH4.innerText()) ?? '';
+  expect(rootReload).toBe(rootAfter);
   });
 });

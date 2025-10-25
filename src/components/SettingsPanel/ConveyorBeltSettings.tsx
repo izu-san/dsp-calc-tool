@@ -4,6 +4,10 @@ import { ICONS } from '../../constants/icons';
 import { useTranslation } from 'react-i18next';
 import type { ConveyorBeltTier } from '../../types/settings';
 import { ItemIcon } from '../ItemIcon';
+import { createLogger } from '../../utils/logger';
+import { cn } from '../../utils/classNames';
+
+const logger = createLogger('ConveyorBeltSettings');
 
 const CONVEYOR_BELT_OPTIONS = [
   { tier: 'mk1' as ConveyorBeltTier, label: 'Mk.I', speed: '6/s', color: 'yellow', iconId: ICONS.belt.mk1 },
@@ -32,9 +36,9 @@ export function ConveyorBeltSettings() {
   const stackCount = typeof conveyorBelt.stackCount === 'number' ? conveyorBelt.stackCount : 1;
   const totalSpeed = speed * stackCount;
 
-  // Debug: Log values if they're invalid (remove in production)
+  // Debug: Log values if they're invalid
   if (typeof conveyorBelt.speed !== 'number' || typeof conveyorBelt.stackCount !== 'number') {
-    console.warn('ConveyorBeltSettings: Invalid values detected', {
+    logger.warn('Invalid values detected', {
       speed: conveyorBelt.speed,
       stackCount: conveyorBelt.stackCount,
       conveyorBelt
@@ -55,17 +59,21 @@ export function ConveyorBeltSettings() {
             <button
               key={option.tier}
               onClick={() => setConveyorBelt(option.tier, conveyorBelt.stackCount)}
-              className={`
-                px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                ${conveyorBelt.tier === option.tier
-                  ? option.color === 'yellow'
-                    ? 'bg-neon-yellow/30 text-white border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.6),inset_0_0_20px_rgba(255,215,0,0.2)] backdrop-blur-sm font-bold scale-105'
-                    : option.color === 'blue'
-                    ? 'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105'
-                    : 'bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105'
-                  : 'bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan'
+              className={cn(
+                'px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
+                {
+                  // Selected state
+                  'bg-neon-yellow/30 text-white border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.6),inset_0_0_20px_rgba(255,215,0,0.2)] backdrop-blur-sm font-bold scale-105': 
+                    conveyorBelt.tier === option.tier && option.color === 'yellow',
+                  'bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105': 
+                    conveyorBelt.tier === option.tier && option.color === 'blue',
+                  'bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105': 
+                    conveyorBelt.tier === option.tier && option.color === 'purple',
+                  // Unselected state
+                  'bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan': 
+                    conveyorBelt.tier !== option.tier,
                 }
-              `}
+              )}
             >
               <div className="flex flex-col items-center gap-1">
                 <ItemIcon itemId={option.iconId} size={28} />
@@ -85,13 +93,15 @@ export function ConveyorBeltSettings() {
             <button
               key={count}
               onClick={() => handleStackCountChange(count)}
-              className={`
-                px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-110
-                ${conveyorBelt.stackCount === count
-                  ? 'bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-110'
-                  : 'bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green'
+              className={cn(
+                'px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-110',
+                {
+                  'bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-110': 
+                    conveyorBelt.stackCount === count,
+                  'bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green': 
+                    conveyorBelt.stackCount !== count,
                 }
-              `}
+              )}
             >
               ×{count}
             </button>

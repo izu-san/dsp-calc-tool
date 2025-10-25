@@ -1,0 +1,670 @@
+---
+alwaysApply: false
+---
+
+# 開発ワークフロー
+
+## 重要
+コード変更（リファクタリング、不具合修正、機能エンハンス）を実施する際は、このワークフローの**全ステップを必ず自動的に実行**すること。
+
+## 作業タイプの判定
+
+ユーザーからの依頼内容に応じて、以下の3つの作業タイプを自動判定する：
+
+| 作業タイプ | ブランチ命名規則 | PR先ブランチ | コミットプレフィックス | 例 |
+|-----------|----------------|-------------|---------------------|-----|
+| **リファクタリング** | `feature/refactoring-<機能名>` | `develop` | `refactor:` | `feature/refactoring-app` |
+| **不具合修正** | `hotfix/fix-<問題の説明>` | `main` | `fix:` | `hotfix/fix-calculation-error` |
+| **機能エンハンス** | `feature/<機能名>` | `develop` | `feat:` | `feature/mining-calculator` |
+
+### 判定基準
+
+- **不具合修正**: 「バグ」「修正」「エラー」「不具合」などのキーワード、または既存機能の異常動作を修正する場合
+- **リファクタリング**: 「リファクタリング」「コード整理」「分割」「抽出」などのキーワード、または機能を変えずに内部構造を改善する場合
+- **機能エンハンス**: 「新機能」「追加」「実装」「エンハンス」などのキーワード、または新しい機能や既存機能の拡張を行う場合
+
+---
+
+## 自動実行ルール
+
+ユーザーから開発依頼を受けた場合、以下の**全ステップを必ず自動的に実行**すること：
+
+### 必須実行ステップ
+
+1. ✅ **ステップ 1**: 作業タイプの判定とブランチ作成
+   - 依頼内容から作業タイプ（リファクタリング/不具合修正/機能エンハンス）を判定
+   - 現在のブランチを確認
+   - 適切なベースブランチ（develop または main）を最新化
+   - 作業タイプに応じたブランチを作成
+
+2. ✅ **ステップ 2**: 既存テストの実行（変更前）
+   - 単体テスト (`npm test`) を実行してベースラインを確立
+   - E2Eテスト: devサーバーをバックグラウンドで起動して実行
+   - テスト結果を記録（終了コードと出力から解析、PR本文生成に使用）
+
+3. ✅ **ステップ 3**: コード変更の実施
+   - 依頼内容に沿ったコード変更を実施
+   - TypeScriptコンパイル確認
+
+4. ✅ **ステップ 3.5**: ユーザー確認 🔴 必須実行
+   - 変更内容をユーザーに報告
+   - ユーザーの承認を得る（NG → ステップ3に戻る、OK → 次へ進む）
+
+5. ✅ **ステップ 4-6**: ビルドとテスト
+   - ビルド確認、単体テスト再実行、必要に応じてテスト追加・変更
+   - テスト追加・変更が不要な場合は理由を報告
+
+6. ✅ **ステップ 7**: E2Eテストの再実行（変更後）
+   - 時間がかかるが**必ず実行**すること
+   - UIレベルのリグレッションを検出
+
+7. ✅ **ステップ 8**: 最終確認
+   - ESLint、TypeScriptコンパイル確認
+
+8. ✅ **ステップ 9-11**: コミット、プッシュ、PR作成
+   - 変更内容を確認してコミット
+   - リモートリポジトリにプッシュ
+   - プルリクエストを作成
+
+### Git操作の安全性ガイドライン
+
+- ✅ コミット前に必ず `git status` と `git diff` で変更内容を確認
+- ✅ 意図しないファイル（デバッグコード、一時ファイル等）が含まれていないか確認
+- ✅ コミットメッセージは作業タイプに応じた適切なプレフィックスを使用
+- ✅ **既存ファイルを削除する場合は `git rm` コマンドを使用**して、作業ディレクトリとGitリポジトリの両方から削除する
+- ✅ ユーザーに各ステップの実行結果を報告すること
+
+---
+
+## 実施手順（必須チェックリスト）
+
+各ステップを勝手にスキップすることは禁止します。
+
+### ステップ 1: 作業タイプの判定とブランチ作成 🔴 必須実行
+
+- [ ] **作業タイプを判定**（必ず実行すること）
+  
+  依頼内容から以下のいずれかを判定：
+  - **不具合修正** (`hotfix/fix-*` → `main`)
+  - **リファクタリング** (`feature/refactoring-*` → `develop`)
+  - **機能エンハンス** (`feature/*` → `develop`)
+
+- [ ] 現在のブランチを確認（必ず実行すること）
+
+  ```bash
+  git branch --show-current
+  ```
+
+- [ ] **ベースブランチを最新化**（必ず実行すること）
+
+  **不具合修正の場合（mainブランチ）**:
+  ```bash
+  git checkout main
+  git pull origin main
+  ```
+
+  **リファクタリング・機能エンハンスの場合（developブランチ）**:
+  ```bash
+  git checkout develop
+  git pull origin develop
+  ```
+
+- [ ] **作業ブランチを作成**（必ず実行すること）
+
+  **ブランチ名の決定方法**:
+  
+  **不具合修正の場合**:
+  - 形式: `hotfix/fix-<問題の説明>`
+  - 例: 
+    - `hotfix/fix-calculation-error` (計算エラー修正)
+    - `hotfix/fix-proliferator-bug` (増産剤バグ修正)
+    - `hotfix/fix-null-pointer` (Null参照エラー修正)
+
+  ```bash
+  git checkout -b hotfix/fix-<問題の説明>
+  ```
+
+  **リファクタリングの場合**:
+  - 形式: `feature/refactoring-<機能名>`
+  - 例:
+    - `feature/refactoring-app` (App.tsx のリファクタリング)
+    - `feature/refactoring-custom-hooks` (カスタムフック抽出)
+
+  ```bash
+  git checkout -b feature/refactoring-<機能名>
+  ```
+
+  **機能エンハンスの場合**:
+  - 形式: `feature/<機能名>`
+  - 例:
+    - `feature/mining-calculator` (採掘計算機能追加)
+    - `feature/export-json` (JSON エクスポート機能)
+    - `feature/recipe-comparison` (レシピ比較機能)
+
+  ```bash
+  git checkout -b feature/<機能名>
+  ```
+
+### ステップ 2: 既存テストの実行（変更前） 🔴 必須実行
+
+- [ ] **単体テストを実行**し、全テスト合格を確認（必ず実行すること）
+
+  ```bash
+  npm test
+  ```
+
+  - **合格基準**: 全テスト成功（0 failed）
+  - **失敗時の対応**: 既存バグの可能性があるため、修正してから作業開始
+
+- [ ] **E2Eテストを実行**し、全テスト合格を確認（必ず実行すること）
+
+  **Windows (PowerShell)**:
+  ```powershell
+  # devサーバーをバックグラウンドで起動
+  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  # 数秒待機してサーバー起動を確認
+  Start-Sleep -Seconds 5
+  # E2Eテスト実行
+  npm run test:e2e
+  # テスト後、Viteを実行しているプロセスを停止（ポート5173）
+  $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+  if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
+  ```
+
+  **Unix/Mac (Bash)**:
+  ```bash
+  # devサーバーをバックグラウンドで起動
+  npm run dev &
+  DEV_PID=$!
+  # 数秒待機してサーバー起動を確認
+  sleep 3
+  # E2Eテスト実行
+  npm run test:e2e
+  # テスト後、devサーバーを停止
+  kill $DEV_PID
+  ```
+
+  - **合格基準**: 全21シナリオ成功
+  - **失敗時の対応**: UIレベルの問題を修正してから作業開始
+
+### ステップ 3: コード変更の実施
+
+- [ ] 依頼内容に沿ったコード変更を実施
+
+- [ ] **既存ファイルを削除する場合**（コード統合、ファイル移動などで不要になった場合）
+
+  **ファイル削除のガイドライン**:
+  - 必ず `git rm` コマンドを使用すること（`rm` コマンドではなく）
+  - 作業ディレクトリとGitリポジトリの両方から削除される
+  - コミット時にGitHubからも削除される
+
+  ```bash
+  # 単一ファイルを削除
+  git rm <削除するファイルパス>
+  
+  # 複数ファイルを一度に削除
+  git rm <ファイル1> <ファイル2> <ファイル3>
+  
+  # ディレクトリごと削除
+  git rm -r <ディレクトリパス>
+  
+  # 例: 統合されたファイルを削除
+  git rm src/components/OldComponent.tsx
+  ```
+
+  **削除するべきファイルの例**:
+  - 新しいファイルに統合された古いファイル
+  - 移動・リネームされた後の元のファイル
+  - 不要になったヘルパーファイルやユーティリティファイル
+  - 使用されなくなったテストファイル
+
+  **注意事項**:
+  - 削除前に、そのファイルが他の場所で import されていないか確認
+  - テストファイルも対応する本体が削除される場合は削除すること
+  - 削除後は必ず TypeScript のコンパイル確認を実施
+
+- [ ] TypeScriptのコンパイルエラーがないことを確認
+
+  ```bash
+  npx tsc --noEmit
+  ```
+
+### ステップ 3.5: ユーザー確認 🔴 必須実行
+
+- [ ] **変更内容をユーザーに報告**（必ず実行すること）
+  
+  以下の情報を報告する：
+  - 作業タイプ（リファクタリング/不具合修正/機能エンハンス）
+  - 変更したファイルと変更内容の概要
+  - 追加・削除・変更した関数・コンポーネント・モジュールのリスト
+  - 変更の意図と効果
+  
+  **報告方法**:
+  ```bash
+  # 変更されたファイルを確認
+  git status
+  
+  # 差分を確認
+  git diff --stat
+  ```
+  
+  **確認内容をユーザーに提示**:
+  - 「以下の変更を実施しました。確認してOK/NGをお知らせください。」
+  - 変更内容の詳細を箇条書きで説明
+  - 主要な変更点をコードブロックで表示（必要に応じて）
+
+- [ ] **ユーザーの承認を待つ**
+  
+  **ユーザーの判断**:
+  - ✅ **OK**: ステップ4に進む
+  - ❌ **NG**: ステップ3に戻り、フィードバックに基づいて再度変更
+  
+  **NGの場合の対応**:
+  1. ユーザーからのフィードバックを受け取る
+  2. フィードバックに基づいて変更方針を調整
+  3. ステップ3からやり直す
+  4. 再度ステップ3.5で確認を取る
+  
+  **重要**: ユーザーがOKを出すまでステップ4以降には進まない
+
+### ステップ 4: ビルド確認
+
+- [ ] **プロダクションビルドが成功**することを確認
+
+  ```bash
+  npm run build
+  ```
+
+  - **合格基準**: エラーなしでビルド完了
+  - **出力確認**: `dist/` ディレクトリが正常に生成されている
+  - **失敗時の対応**: ビルドエラーを解消してから次のステップへ
+
+### ステップ 5: 単体テストの再実行（変更後）
+
+- [ ] **単体テストを再実行**し、全テスト合格を確認
+
+  ```bash
+  npm test
+  ```
+
+  - **合格基準**: 全テスト成功（変更前と同じ結果）
+  - **カバレッジ確認**: カバレッジが低下していないか確認
+
+    ```bash
+    npm run test:coverage
+    ```
+
+  - **失敗時の対応**: リグレッションが発生している可能性があるため、コードを見直し
+
+### ステップ 6: 単体テストの追加・変更（必要に応じて）
+
+- [ ] **変更内容に応じて単体テストを追加・変更**する
+  
+  **テスト追加が必要な場合**:
+  - **新しい関数・モジュールを追加した場合**: 対応するテストを追加
+  - **新しいロジックを追加した場合**: 新規ロジックのテストを追加
+  - **不具合修正の場合**: バグを再現するテストを追加してからコード修正（TDD推奨）
+  - テストファイル: `src/**/__tests__/*.test.ts(x)`
+  - カバレッジ目標: 新規コードは85%以上
+  
+  **既存テストの変更が必要な場合**:
+  - **関数シグネチャが変更された場合**: テストの呼び出し方を更新
+  - **モジュール構造が変更された場合**: import文やモックを更新
+  - **内部実装が大幅に変更された場合**: テストケースを見直し・更新
+  
+  **追加・変更が不要な場合の判断基準**:
+  - **既存コードの構造のみを変更した場合**: ファイル分割、関数抽出など構造のみの変更
+  - **既存テストが全て合格している場合**: リグレッションが発生していない
+  - **カバレッジが維持されている場合**: テストカバレッジが低下していない
+  
+- [ ] **追加・変更が不要な場合は、その理由をユーザーに報告**する
+  
+  **報告内容**:
+  - 「ステップ 6: 単体テストの追加・変更は不要です」
+  - 理由を明記（例: 「既存コードの構造のみを変更し、既存テストが全て合格しているため」）
+  
+- [ ] **追加・変更したテストが合格することを確認**
+
+  ```bash
+  # 特定のテストファイルのみ実行
+  npm test -- <テストファイル名>
+  
+  # 全テストを再実行
+  npm test
+  ```
+
+### ステップ 7: E2Eテストの再実行（変更後） 🔴 必須実行
+
+- [ ] **E2Eテストを再実行**し、全テスト合格を確認（必ず実行すること）
+
+  **実行方法**:
+  
+  **Windows (PowerShell)**:
+  ```powershell
+  # devサーバーをバックグラウンドで起動
+  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  # 数秒待機してサーバー起動を確認
+  Start-Sleep -Seconds 5
+  # E2Eテスト実行
+  npm run test:e2e
+  # テスト後、Viteを実行しているプロセスを停止（ポート5173）
+  $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+  if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
+  ```
+
+  **Unix/Mac (Bash)**:
+  ```bash
+  # devサーバーをバックグラウンドで起動
+  npm run dev &
+  DEV_PID=$!
+  # 数秒待機してサーバー起動を確認
+  sleep 3
+  # E2Eテスト実行
+  npm run test:e2e
+  # テスト後、devサーバーを停止
+  kill $DEV_PID
+  ```
+
+  - **合格基準**: 全21シナリオ成功
+  - **実行時間**: 約13秒程度（16並列ワーカー）
+  - **失敗時の対応**: UIまたはユーザーフローに影響が出ている可能性があるため、修正
+
+### ステップ 8: 最終確認
+
+- [ ] ESLintでコード品質を確認
+
+  ```bash
+  npm run lint
+  ```
+
+  - **合格基準**: エラー0件、警告0件（または許容範囲内）
+
+- [ ] ローカル環境でアプリケーションを起動し、動作確認
+
+  ```bash
+  npm run dev
+  ```
+
+  - **確認項目**:
+    - アプリケーションが正常に起動する
+    - 主要な機能（レシピ選択、計算、保存/読込）が動作する
+    - コンソールにエラーが出ていない
+    - **不具合修正の場合**: 修正した不具合が再現しないことを確認
+    - **機能エンハンスの場合**: 新機能が期待通りに動作することを確認
+
+### ステップ 9: コミット前の最終確認 🔴 必須実行
+
+- [ ] 変更内容を確認（必ず実行すること）
+
+  ```bash
+  git status
+  git diff
+  ```
+
+  **`git status` で確認すべき項目**:
+  - 追加されたファイル（`new file:`）
+  - 変更されたファイル（`modified:`）
+  - **削除されたファイル（`deleted:`）** - `git rm` で削除されたファイルが正しくリストアップされているか確認
+
+- [ ] **削除されたファイルの確認**（ファイル削除を行った場合）
+
+  ```bash
+  # 削除されたファイルを確認
+  git status | grep deleted
+  
+  # または git diff で削除されたファイルを詳細確認
+  git diff --cached --diff-filter=D --name-only
+  ```
+
+  **確認項目**:
+  - 削除予定のファイルが全て `git rm` されているか
+  - 意図しないファイルが削除されていないか
+  - 対応するテストファイルも削除されているか（必要に応じて）
+
+- [ ] 不要なファイル（一時ファイル、デバッグコードなど）が含まれていないことを確認
+- [ ] コミットメッセージが適切であることを確認
+
+### ステップ 10: コミットとプッシュ 🔴 必須実行
+
+- [ ] 変更をステージングしてコミット（必ず実行すること）
+
+  **コミットメッセージの生成方法**:
+  
+  作業タイプに応じて以下の形式でメッセージを生成：
+
+  | 作業タイプ | 形式 | 例 |
+  |-----------|------|-----|
+  | **不具合修正** | `fix: <修正内容>` | `fix: 増産剤計算の誤りを修正` |
+  | **リファクタリング** | `refactor: <主要ファイル>を<変更内容>` | `refactor: App.tsxを分割してカスタムフックを抽出` |
+  | **機能エンハンス** | `feat: <機能名>` | `feat: 採掘速度計算機能を追加` |
+
+  ```bash
+  # 変更内容を再確認
+  git status
+  # 変更をステージング（慎重に）
+  git add <変更したファイル>
+  # または全変更をステージング（.cursor/rules/ の変更は除く）
+  git add src/ tests/ package.json
+  # コミット（自動生成したメッセージを使用）
+  git commit -m "<作業タイプのプレフィックス>: <自動生成したメッセージ>"
+  ```
+  
+- [ ] リモートリポジトリにプッシュ
+
+  **不具合修正の場合**:
+  ```bash
+  git push origin hotfix/fix-<問題の説明>
+  ```
+
+  **リファクタリングの場合**:
+  ```bash
+  git push origin feature/refactoring-<機能名>
+  ```
+
+  **機能エンハンスの場合**:
+  ```bash
+  git push origin feature/<機能名>
+  ```
+
+### ステップ 11: プルリクエストの作成 🔴 必須実行
+
+- [ ] プルリクエストを作成（必ず実行すること）
+- [ ] @create-pull-request.mdc の**全ステップを自動実行**すること
+  - ステップ 1: 前提条件の確認（ブランチ、コミット、プッシュ状態）
+  - ステップ 2: **作業タイプに応じたマージ先ブランチとの差分確認**
+    - 不具合修正: `main` ブランチとの差分
+    - リファクタリング・機能エンハンス: `develop` ブランチとの差分
+  - ステップ 3: PRタイトル自動生成（Conventional Commits形式）
+  - ステップ 4: PR本文自動生成（目的、変更内容、品質保証結果を含む）
+  - ステップ 5: `gh pr create` コマンドで実際にPRを作成
+
+---
+
+## 品質保証の成功基準
+
+作業が成功したと判断する基準（全作業タイプ共通）：
+
+| 項目 | 成功基準 | 確認方法 |
+|------|---------|---------|
+| **単体テスト** | 全テスト合格（0 failed） | `npm test` |
+| **E2Eテスト** | 全21シナリオ合格 | `npm run test:e2e` |
+| **ビルド** | エラーなしで完了 | `npm run build` |
+| **コード品質** | ESLintエラー0件 | `npm run lint` |
+| **カバレッジ** | 変更前と同等以上 | `npm run test:coverage` |
+| **TypeScript** | コンパイルエラー0件 | `npx tsc --noEmit` |
+| **動作確認** | 主要機能が正常動作 | 手動テスト |
+
+---
+
+## 重要な注意事項
+
+1. **テストを先に実行する**: コード変更前に既存テストを実行し、ベースラインを確立してください。
+
+2. **段階的な変更**: 大規模な変更は複数のPRに分割し、各ステップで品質保証を実施してください。
+
+3. **テストの追加**: 新しいロジックや不具合修正には、必ず対応する単体テストを追加してください。
+
+4. **E2Eテストの重要性**: 単体テストだけでなく、E2Eテストも必ず実行してください。UIレベルのリグレッションを検出できます。
+
+5. **ビルド確認**: プロダクションビルドが成功することを確認してください。開発環境だけで動作しても本番環境で問題が起きる可能性があります。
+
+6. **カバレッジの維持**: 変更によってテストカバレッジが低下しないよう注意してください。
+
+7. **不具合修正の場合**: TDD（テスト駆動開発）を推奨します。バグを再現するテストを先に書き、そのテストが合格するようにコードを修正してください。
+
+---
+
+## トラブルシューティング
+
+### テストが失敗した場合
+
+1. **変更内容を再確認**し、問題箇所を特定
+2. **差分を確認**して意図しない変更がないか確認
+
+   ```bash
+   git diff
+   ```
+
+3. **段階的にロールバック**して原因を特定
+
+   ```bash
+   # 変更を一時退避
+   git stash
+   # 特定のファイルのみ復元して確認
+   git checkout HEAD -- <ファイル名>
+   ```
+
+4. **修正が難しい場合**は、より小さい単位で変更を実施
+
+### ビルドが失敗した場合
+
+1. TypeScriptのコンパイルエラーを確認
+
+   ```bash
+   npx tsc --noEmit
+   ```
+
+2. 依存関係の問題を確認
+
+   ```bash
+   npm ci
+   ```
+
+3. キャッシュをクリア
+
+   ```bash
+   rm -rf node_modules dist
+   npm install
+   npm run build
+   ```
+
+### E2Eテストが失敗した場合
+
+1. **UIモード**でテストを実行して視覚的に確認
+
+   ```bash
+   npm run test:e2e -- --ui
+   ```
+
+2. **特定のテストのみ**を実行して問題を絞り込み
+
+   ```bash
+   npm run test:e2e -- tests/e2e/basic-flow.spec.ts
+   ```
+
+3. **スクリーンショット**を確認（`test-results/` ディレクトリ）
+
+---
+
+## ワークフロー例
+
+### 例1: 不具合修正の場合
+
+```bash
+# ステップ 1: ブランチ作成（mainから）
+git checkout main
+git pull origin main
+git checkout -b hotfix/fix-calculation-error
+
+# ステップ 2: 変更前のテスト実行
+npm test
+# E2Eテスト（devサーバーをバックグラウンドで起動）
+# Windows
+Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+Start-Sleep -Seconds 5
+npm run test:e2e
+$viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
+
+# ステップ 3: バグを再現するテストを追加（TDD推奨）
+# ... テストコード追加 ...
+# バグ修正のコード変更
+# ... コード変更 ...
+npx tsc --noEmit
+
+# ステップ 3.5: ユーザー確認 🔴 必須
+git status
+git diff --stat
+# ユーザーに変更内容を報告し、OK/NGの承認を待つ
+
+# ステップ 4-8: ビルド、テスト、最終確認
+npm run build
+npm test
+npm run test:coverage
+# E2Eテスト再実行
+Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+Start-Sleep -Seconds 5
+npm run test:e2e
+$viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
+npm run lint
+npm run dev  # 動作確認
+
+# ステップ 9-10: コミット＆プッシュ
+git add <変更したファイル>
+git commit -m "fix: 増産剤計算の誤りを修正"
+git push origin hotfix/fix-calculation-error
+
+# ステップ 11: GitHubでPR作成（main ブランチへ）
+gh pr create --base main --title "fix: 増産剤計算の誤りを修正" --body-file pr_body.md
+```
+
+### 例2: リファクタリングの場合
+
+```bash
+# ステップ 1: ブランチ作成（developから）
+git checkout develop
+git pull origin develop
+git checkout -b feature/refactoring-app-component
+
+# ステップ 2-11: （上記と同様の手順）
+
+# コミットメッセージは refactor: プレフィックスを使用
+git commit -m "refactor: App.tsxを分割してカスタムフックを抽出"
+
+# PR作成（develop ブランチへ）
+gh pr create --base develop --title "refactor: App.tsxを分割してカスタムフックを抽出" --body-file pr_body.md
+```
+
+### 例3: 機能エンハンスの場合
+
+```bash
+# ステップ 1: ブランチ作成（developから）
+git checkout develop
+git pull origin develop
+git checkout -b feature/mining-calculator
+
+# ステップ 2-11: （上記と同様の手順）
+
+# コミットメッセージは feat: プレフィックスを使用
+git commit -m "feat: 採掘速度計算機能を追加"
+
+# PR作成（develop ブランチへ）
+gh pr create --base develop --title "feat: 採掘速度計算機能を追加" --body-file pr_body.md
+```
+
+---
+
+この品質保証手順を遵守することで、すべての作業タイプにおいて安定した品質を維持できます。
+
+---

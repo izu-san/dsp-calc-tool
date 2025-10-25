@@ -36,14 +36,18 @@ export function WhatIfSimulator() {
   const [appliedScenario, setAppliedScenario] = useState<string | null>(null);
   const [optimizationGoal, setOptimizationGoal] = useState<OptimizationGoal>(null);
 
+  // Recursive function to count total belts (memoized)
   const countTotalBelts = useCallback((node: RecipeTreeNode): number => {
-    let total = node.conveyorBelts?.total || 0;
-    if (node.children) {
-      for (const child of node.children) {
-        total += countTotalBelts(child);
+    const count = (n: RecipeTreeNode): number => {
+      let total = n.conveyorBelts?.total || 0;
+      if (n.children) {
+        for (const child of n.children) {
+          total += count(child);
+        }
       }
-    }
-    return total;
+      return total;
+    };
+    return count(node);
   }, []);
 
   // Check if a scenario is already applied (current settings match scenario)
@@ -337,62 +341,17 @@ export function WhatIfSimulator() {
     
     const suggestions: BottleneckSuggestion[] = [];
     
-    // Check for conveyor belt bottlenecks
-    const checkNodeForBottlenecks = (node: RecipeTreeNode) => {
-      if (node.conveyorBelts?.saturation && node.conveyorBelts.saturation > 80) {
-        const severity = node.conveyorBelts.saturation > 95 ? 'high' : 
-                        node.conveyorBelts.saturation > 85 ? 'medium' : 'low';
-        
-        // Suggest belt upgrade if not using Mk3
-        if (settings.conveyorBelt.tier !== 'mk3') {
-          suggestions.push({
-            nodeId: node.nodeId,
-            issue: `${t('conveyorBeltSaturationAt')} ${node.conveyorBelts.saturation.toFixed(1)}%`,
-            severity,
-            suggestion: t('upgradeToMk3ConveyorBelts'),
-            scenarioId: 'belt_mk3',
-          });
-        }
-        
-        // Suggest stack increase if less than 4
-        // Only suggest if not already at max stack and belt upgrade won't fix it alone
-        if (settings.conveyorBelt.stackCount < 4 && 
-            (settings.conveyorBelt.tier === 'mk3' || node.conveyorBelts.saturation > 90)) {
-          suggestions.push({
-            nodeId: node.nodeId,
-            issue: `${t('conveyorBeltSaturationAt')} ${node.conveyorBelts.saturation.toFixed(1)}%`,
-            severity,
-            suggestion: t('increaseBeltStackTo4'),
-            scenarioId: 'stack_4',
-          });
-        }
-      }
-      
-      // Recursively check children
-      if (node.children) {
-        node.children.forEach((child) => checkNodeForBottlenecks(child));
-      }
-    };
-    
-    checkNodeForBottlenecks(results.baseResult.rootNode);
-    
     // Check for overall inefficiency - only if proliferator upgrade would help
     if (settings.proliferator.type !== 'mk3') {
-      const hasBottleneck = suggestions.length > 0;
       suggestions.push({
         issue: t('notUsingMk3Proliferator'),
-        severity: hasBottleneck ? 'medium' : 'low',
+        severity: 'low',
         suggestion: t('upgradeToMk3ProliferatorSuggestion'),
         scenarioId: 'proliferator_mk3',
       });
     }
     
-    // Remove duplicate suggestions (same scenarioId)
-    const uniqueSuggestions = suggestions.filter((suggestion, index, self) =>
-      index === self.findIndex((s) => s.scenarioId === suggestion.scenarioId)
-    );
-    
-    return uniqueSuggestions;
+    return suggestions;
   }, [results.baseResult, settings, t]);
 
   const toggleScenario = (scenarioId: string) => {

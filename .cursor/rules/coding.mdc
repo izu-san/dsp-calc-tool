@@ -1,0 +1,285 @@
+---
+alwaysApply: true
+---
+
+# コーディングプラクティス
+
+**このドキュメントの位置づけ**: 汎用的な設計原則と理想的なパターンを記載しています。実際にこのプロジェクトで使用する具体的な実装パターンは `TypeScript.mdc` を参照してください。
+
+## 原則
+
+### 関数型アプローチ (FP)
+
+- 純粋関数を優先
+- 不変データ構造を使用
+- 副作用を分離
+- 型安全性を確保
+
+### ドメイン駆動設計 (DDD)
+
+- 値オブジェクトとエンティティを区別
+- 集約で整合性を保証
+- リポジトリでデータアクセスを抽象化
+- 境界付けられたコンテキストを意識
+
+
+## 実装パターン
+
+### 型定義
+
+```typescript
+// ブランデッド型で型安全性を確保
+type Branded<T, B> = T & { _brand: B };
+type Money = Branded<number, "Money">;
+type Email = Branded<string, "Email">;
+```
+
+### 値オブジェクト
+
+- 不変
+- 値に基づく同一性
+- 自己検証
+- ドメイン操作を持つ
+
+```typescript
+// 作成関数はバリデーション付き
+function createMoney(amount: number): Result<Money, Error> {
+  if (amount < 0) return err(new Error("負の金額不可"));
+  return ok(amount as Money);
+}
+```
+
+### エンティティ
+
+- IDに基づく同一性
+- 制御された更新
+- 整合性ルールを持つ
+
+### Result型（理想的なパターン）
+
+```typescript
+type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
+```
+
+- 成功/失敗を明示
+- 早期リターンパターンを使用
+- エラー型を定義
+
+**注**: このプロジェクトでは現在、標準的な `try-catch` を使用しています（詳細は `TypeScript.mdc` を参照）。将来的にResult型を導入する場合の参考として記載しています。
+
+### リポジトリ
+
+- ドメインモデルのみを扱う
+- 永続化の詳細を隠蔽
+- テスト用のインメモリ実装を提供
+
+### アダプターパターン
+
+- 外部依存を抽象化
+- インターフェースは呼び出し側で定義
+- テスト時は容易に差し替え可能
+
+## 実装手順
+
+1. **型設計**
+   - まず型を定義
+   - ドメインの言語を型で表現
+
+2. **純粋関数から実装**
+   - 外部依存のない関数を先に
+   - テストを先に書く
+
+3. **副作用を分離**
+   - IO操作は関数の境界に押し出す
+   - 副作用を持つ処理をPromiseでラップ
+
+4. **アダプター実装**
+   - 外部サービスやDBへのアクセスを抽象化
+   - テスト用モックを用意
+
+## プラクティス
+
+- 小さく始めて段階的に拡張
+- 過度な抽象化を避ける
+- コードよりも型を重視
+- 複雑さに応じてアプローチを調整
+
+## コードドキュメント
+
+### TSDoc（複雑なロジックのみ）
+
+以下の場合は必ずTSDocを記載：
+- `lib/calculator/`, `lib/parser.ts`, `lib/proliferator.ts` などの複雑なロジック
+- 公開APIとなる関数・型
+- 複雑なアルゴリズム（再帰、最適化ロジックなど）
+
+```typescript
+/**
+ * 生産チェーンを再帰的に計算する
+ * @param recipe - 計算対象のレシピ
+ * @param targetRate - 目標生産速度（個/秒）
+ * @param settings - グローバル設定
+ * @returns 計算結果ツリー
+ */
+export function calculateProductionChain(...)
+```
+
+**注**: 自明な関数まで全てドキュメント化する必要はない
+
+## 型安全の強化
+
+- `unknown` からの型ガードを明示的に実装
+- 型アサーション（`as`）は最小限に、使用時は理由をコメント
+
+```typescript
+// ✅ 明示的な型ガード
+function isItem(data: unknown): data is Item {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'id' in data &&
+    'name' in data
+  );
+}
+
+// ⚠️ 型アサーションは最小限に
+const item = data as Item; // 理由: 外部APIから取得したデータで型保証済み
+```
+
+## フォールバック処理
+
+### 暗黙のフォールバック禁止
+
+`||`、`??` の安易な使用を避ける
+
+```typescript
+// ❌ 暗黙のフォールバック（禁止）
+function getItem(id: string) {
+  return items.get(id) || defaultItem; // なぜdefaultItem？
+}
+
+// ✅ 明示的なフォールバック（許可）
+function getItemWithFallback(id: string): Item {
+  const item = items.get(id);
+  if (!item) {
+    console.warn(`Item ${id} not found, using fallback`);
+    return createDefaultItem();
+  }
+  return item;
+}
+```
+
+フォールバックが必要な場合は、明示的に理由をログ出力すること
+
+## 関数設計
+
+### boolean引数は最小限に
+
+Reactの慣習的なもの（`disabled`、`isOpen` など）を除き、boolean引数は避ける
+
+```typescript
+// ❌ boolean引数（避ける）
+function calculate(recipe: Recipe, useProliferator: boolean)
+
+// ✅ 明示的な列挙型または別関数（推奨）
+function calculate(recipe: Recipe, proliferatorMode: ProliferatorMode)
+function calculateWithProliferator(recipe: Recipe)
+function calculateWithoutProliferator(recipe: Recipe)
+```
+
+### オプショナル引数の制限
+
+オプショナル引数が3つ以上の場合は、オプションオブジェクトにまとめる
+
+```typescript
+// ❌ オプショナル引数が多すぎる
+function createNode(
+  id: string,
+  name?: string,
+  type?: string,
+  color?: string,
+  icon?: string
+)
+
+// ✅ オプションオブジェクトにまとめる
+interface NodeOptions {
+  name?: string;
+  type?: string;
+  color?: string;
+  icon?: string;
+}
+
+function createNode(id: string, options?: NodeOptions)
+```
+
+## リファクタリング時の禁止事項
+
+### 挙動の変更は絶対に禁止
+
+- リファクタリング時に機能の挙動を変更してはならない
+- ユニットテストの変更も原則禁止
+- 例外: テストが間違っている場合のみ（必ず理由を説明）
+
+### 環境変数の追加禁止
+
+- 新しい環境変数を安易に追加しない
+- データは `public/data/` と localStorage で管理する
+
+### 設定ファイルの書き換えは慎重に
+
+- `package.json`、`tsconfig.json`、`vite.config.ts` などの変更は必ず理由を説明
+- ビルド設定の変更は影響範囲を確認してから実施
+
+### 将来的な拡張性の考慮を禁じる（YAGNI 原則）
+
+**YAGNI (You Aren't Gonna Need It)**: 必要になってから実装する
+
+#### 禁止事項
+
+- ❌ 「将来使うかもしれない」機能の実装
+- ❌ 1箇所でしか使われていない共通化
+- ❌ 型安全性を犠牲にした汎用化
+- ❌ 「拡張性のため」のインターフェース追加
+
+#### 汎用化のタイミング
+
+- **1箇所**: 汎用化しない（特化した実装）
+- **2箇所**: まだ汎用化しない（WET > DRY）
+- **3箇所**: 汎用化を検討する（パターンが明確になってから）
+
+#### 具体例
+
+```typescript
+// ❌ 悪い例: 1箇所でしか使わない汎用ユーティリティ
+function getNestedValue(obj: unknown, path: string): unknown {
+  // 型安全性を失う + 現在は1箇所でしか使わない
+}
+
+// ✅ 良い例: 特化した型安全な関数
+function deserializeSettings(data: unknown): GlobalSettings | null {
+  // 型安全 + 明確な責任
+}
+```
+
+#### 過剰な抽象化のコスト
+
+- 型安全性の喪失（`as any` の増加）
+- テストの複雑化
+- 保守コストの増加
+- 実際には使われない「拡張性」
+
+**原則**: 3回目の重複が現れるまで汎用化しない（Three Strikes Rule）
+
+## コードスタイル
+
+- 関数優先（クラスは必要な場合のみ）
+- 不変更新パターンの活用
+- 早期リターンで条件分岐をフラット化
+- エラーとユースケースの列挙型定義
+
+## テスト戦略
+
+- 純粋関数の単体テストを優先
+- インメモリ実装によるリポジトリテスト
+- テスト可能性を設計に組み込む
+- アサートファースト：期待結果から逆算

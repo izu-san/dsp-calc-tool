@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
-import { getDataPath } from '../../utils/paths';
 import { useTranslation } from 'react-i18next';
 import * as Tabs from '@radix-ui/react-tabs';
 import type { Recipe } from '../../types';
 import { RecipeGrid } from './RecipeGrid';
 import { useFavoritesStore } from '../../stores/favoritesStore';
+import { ItemIcon } from '../ItemIcon';
+import { useDebounce } from '../../hooks/useDebounce';
+import { cn } from '../../utils/classNames';
 
 interface RecipeSelectorProps {
   recipes: Recipe[];
@@ -13,12 +15,22 @@ interface RecipeSelectorProps {
 }
 
 export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: RecipeSelectorProps) {
+  // 同じレシピが選択された場合は何もしない
+  const handleRecipeSelect = (recipe: Recipe) => {
+    if (recipe.SID === selectedRecipeId) {
+      return;
+    }
+    onRecipeSelect(recipe);
+  };
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'1' | '2'>('1');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  // 検索クエリをデバウンス（300ms）してパフォーマンスを向上
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   
   const { favoriteRecipes } = useFavoritesStore();
 
@@ -65,6 +77,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
   }, [searchQuery, recipes]);
 
   // Filter recipes based on search query and category (enhanced with ingredient search)
+  // デバウンスされた検索クエリを使用してパフォーマンスを向上
   const filteredRecipes = useMemo(() => {
     return recipes.filter(recipe => {
       // Favorites filter
@@ -78,8 +91,8 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       }
 
       // Search filter (enhanced with ingredients)
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
+      if (debouncedSearchQuery) {
+        const query = debouncedSearchQuery.toLowerCase();
         const nameMatch = recipe.name.toLowerCase().includes(query);
         const sidMatch = recipe.SID.toString().includes(query);
         
@@ -98,20 +111,20 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
 
       return true;
     });
-  }, [recipes, searchQuery, selectedCategory, showOnlyFavorites, favoriteRecipes]);
+  }, [recipes, debouncedSearchQuery, selectedCategory, showOnlyFavorites, favoriteRecipes]);
 
-  // Get category icon path and label (memoized to update when language changes)
-  const getCategoryInfo = useMemo(() => (category: string): { icon?: string; label: string } => {
+  // Get category icon ID and label (memoized to update when language changes)
+  const getCategoryInfo = useMemo(() => (category: string): { iconId?: number; label: string } => {
     if (category === 'all') return { label: t('categoryAll') };
     
-    const categoryIconMap: Record<string, { icon: string; label: string }> = {
-      'Smelt': { icon: getDataPath('data/Machines/Icons/2302.png'), label: t('categorySmelt') },
-      'Assemble': { icon: getDataPath('data/Machines/Icons/2303.png'), label: t('categoryAssemble') },
-      'Chemical': { icon: getDataPath('data/Machines/Icons/2309.png'), label: t('categoryChemical') },
-      'Research': { icon: getDataPath('data/Machines/Icons/2901.png'), label: t('categoryResearch') },
-      'Refine': { icon: getDataPath('data/Machines/Icons/2308.png'), label: t('categoryRefine') },
-      'Particle': { icon: getDataPath('data/Machines/Icons/2310.png'), label: t('categoryParticle') },
-      'Fractionate': { icon: getDataPath('data/Machines/Icons/2314.png'), label: t('categoryFractionate') },
+    const categoryIconMap: Record<string, { iconId: number; label: string }> = {
+      'Smelt': { iconId: 2302, label: t('categorySmelt') },
+      'Assemble': { iconId: 2303, label: t('categoryAssemble') },
+      'Chemical': { iconId: 2309, label: t('categoryChemical') },
+      'Research': { iconId: 2901, label: t('categoryResearch') },
+      'Refine': { iconId: 2308, label: t('categoryRefine') },
+      'Particle': { iconId: 2310, label: t('categoryParticle') },
+      'Fractionate': { iconId: 2314, label: t('categoryFractionate') },
     };
     
     return categoryIconMap[category] || { label: category };
@@ -186,7 +199,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       </div>
 
       {/* Search Help */}
-      {searchQuery && filteredRecipes.length === 0 && (
+      {debouncedSearchQuery && filteredRecipes.length === 0 && (
         <div className="bg-neon-blue/10 border border-neon-blue/40 rounded-lg p-4 backdrop-blur-sm">
           <div className="flex items-start gap-3">
             <svg className="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,11 +228,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         {/* Favorites Toggle */}
         <button
           onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect ${
-            showOnlyFavorites
-              ? 'bg-neon-yellow/40 border-neon-yellow text-white shadow-[0_0_20px_rgba(255,215,0,0.6)] scale-110 font-bold'
-              : 'bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105'
-          }`}
+          className={cn(
+            'px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect',
+            {
+              'bg-neon-yellow/40 border-neon-yellow text-white shadow-[0_0_20px_rgba(255,215,0,0.6)] scale-110 font-bold': showOnlyFavorites,
+              'bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105': !showOnlyFavorites,
+            }
+          )}
         >
           ⭐ {t('favorites')} {favoriteRecipes.size > 0 && `(${favoriteRecipes.size})`}
         </button>
@@ -237,20 +252,19 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                   setShowOnlyFavorites(false);
                 }
               }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect ${
-                selectedCategory === category
-                  ? 'bg-neon-blue/40 border-neon-blue text-white shadow-[0_0_20px_rgba(0,136,255,0.6)] scale-110 font-bold'
-                  : 'bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105'
-              }`}
+              className={cn(
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect',
+                {
+                  'bg-neon-blue/40 border-neon-blue text-white shadow-[0_0_20px_rgba(0,136,255,0.6)] scale-110 font-bold': selectedCategory === category,
+                  'bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105': selectedCategory !== category,
+                }
+              )}
             >
-              {categoryInfo.icon && (
-                <img 
-                  src={categoryInfo.icon} 
+              {categoryInfo.iconId && (
+                <ItemIcon 
+                  itemId={categoryInfo.iconId} 
                   alt={categoryInfo.label}
-                  className="w-5 h-5 object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
+                  size={20}
                 />
               )}
               {categoryInfo.label}
@@ -262,10 +276,10 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       {/* Results Count */}
       <div className="text-sm text-space-200">
         <span className="text-neon-cyan font-semibold">{filteredRecipes.length}</span> {filteredRecipes.length !== 1 ? t('recipes') : t('recipe')} {t('found')}
-        {searchQuery && (
+        {debouncedSearchQuery && (
           <span>
             {' '}{t('for')}{' '}
-            <span className="font-semibold text-neon-cyan">"{searchQuery}"</span>
+            <span className="font-semibold text-neon-cyan">"{debouncedSearchQuery}"</span>
             <span className="text-xs ml-2 text-space-400">
               ({t('searchingInNamesIDsInputsOutputs')})
             </span>
@@ -297,7 +311,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           <RecipeGrid
             recipes={filteredRecipes}
             tab={1}
-            onRecipeSelect={onRecipeSelect}
+            onRecipeSelect={handleRecipeSelect}
             selectedRecipeId={selectedRecipeId}
           />
         </Tabs.Content>
@@ -306,7 +320,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           <RecipeGrid
             recipes={filteredRecipes}
             tab={2}
-            onRecipeSelect={onRecipeSelect}
+            onRecipeSelect={handleRecipeSelect}
             selectedRecipeId={selectedRecipeId}
           />
         </Tabs.Content>

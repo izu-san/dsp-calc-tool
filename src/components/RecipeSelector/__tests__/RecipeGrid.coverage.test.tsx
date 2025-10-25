@@ -1,11 +1,20 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { RecipeSelector } from '../index';
 
 // i18n モック
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (k: string) => k }),
+}));
+
+// ItemIcon モック（スプライトシート対応）
+vi.mock('../../ItemIcon', () => ({
+  ItemIcon: ({ itemId, alt, size }: any) => (
+    <div data-testid={`item-icon-${itemId}`} data-alt={alt} data-size={size}>
+      {`Icon ${itemId}`}
+    </div>
+  ),
 }));
 
 // お気に入りストアをモック
@@ -52,10 +61,21 @@ describe('RecipeSelector/RecipeGrid coverage additions', () => {
   ] as any[];
 
   it('空データ時、検索後の noResultsFound が表示される', () => {
-    render(<RecipeSelector recipes={[]} onRecipeSelect={vi.fn()} />);
-    const input = screen.getByPlaceholderText('searchRecipesItemsMaterials') as HTMLInputElement;
-    fireEvent.change(input, { target: { value: 'iron' } });
-    expect(screen.getByText('noResultsFound')).toBeInTheDocument();
+    vi.useFakeTimers();
+    try {
+      render(<RecipeSelector recipes={[]} onRecipeSelect={vi.fn()} />);
+      const input = screen.getByPlaceholderText('searchRecipesItemsMaterials') as HTMLInputElement;
+      fireEvent.change(input, { target: { value: 'iron' } });
+      
+      // デバウンス処理を待つ（300ms）
+      act(() => {
+        vi.advanceTimersByTime(300);
+      });
+      
+      expect(screen.getByText('noResultsFound')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('カテゴリ/タブ切替で該当レシピが表示され選択できる（Many/Filter）', async () => {
@@ -98,6 +118,61 @@ describe('RecipeSelector/RecipeGrid coverage additions', () => {
     const star = screen.getAllByTitle('addToFavorites')[0];
     fireEvent.click(star);
     expect(toggleFavorite).toHaveBeenCalled();
+  });
+
+  // Issue #34: 同じレシピを再選択した場合の挙動テスト
+  it('同じレシピを再選択してもonRecipeSelectが呼ばれない', () => {
+    const onSelect = vi.fn();
+    render(<RecipeSelector recipes={baseRecipes} onRecipeSelect={onSelect} selectedRecipeId={1001} />);
+
+    // Items タブで Smelt カテゴリを選択
+    fireEvent.click(screen.getByText('Items'));
+    fireEvent.click(screen.getByText('categorySmelt'));
+    
+    // すでに選択されているレシピ (SID: 1001) をクリック
+    const ironButton = screen.queryByTitle('Iron Ingot');
+    expect(ironButton).toBeTruthy();
+    
+    if (ironButton) {
+      fireEvent.click(ironButton);
+      // 同じレシピなので onRecipeSelect は呼ばれない
+      expect(onSelect).not.toHaveBeenCalled();
+    }
+  });
+
+  it('異なるレシピを選択するとonRecipeSelectが呼ばれる', () => {
+    const recipes = [
+      ...baseRecipes,
+      {
+        SID: 1002,
+        name: 'Copper Ingot',
+        Type: 'Smelt',
+        GridIndex: '1102', // Items タブ (z=1) に配置
+        Items: [{ id: 112, name: 'Copper Ore', quantity: 1 }],
+        Results: [{ id: 122, name: 'Copper Ingot', quantity: 1 }],
+        Explicit: false,
+      },
+    ] as any[];
+    
+    const onSelect = vi.fn();
+    render(<RecipeSelector recipes={recipes} onRecipeSelect={onSelect} selectedRecipeId={1001} />);
+
+    // Items タブで Smelt カテゴリを選択（既に選択されているはず）
+    fireEvent.click(screen.getByText('Items'));
+    fireEvent.click(screen.getByText('categorySmelt'));
+    
+    // 異なるレシピ (SID: 1002) をクリック
+    const copperButton = screen.queryByTitle('Copper Ingot');
+    expect(copperButton).toBeTruthy();
+    
+    if (copperButton) {
+      fireEvent.click(copperButton);
+      // 異なるレシピなので onRecipeSelect が呼ばれる
+      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({
+        SID: 1002,
+        name: 'Copper Ingot'
+      }));
+    }
   });
 });
 
