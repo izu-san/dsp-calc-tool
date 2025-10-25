@@ -12,7 +12,7 @@ export function Header() {
   const { t } = useTranslation();
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-dark-600/80 shadow-panel border-b border-neon-blue/30 relative overflow-hidden">
+    <header className="sticky top-0 z-50 backdrop-blur-md bg-dark-600/90 shadow-panel border-b border-neon-blue/30 relative overflow-hidden">
       {/* Animated background line */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neon-cyan to-transparent opacity-50 animate-pulse-slow"></div>

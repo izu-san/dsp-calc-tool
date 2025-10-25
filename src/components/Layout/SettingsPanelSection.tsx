@@ -19,7 +19,7 @@ export function SettingsPanelSection({ selectedRecipe, targetQuantity, setTarget
 
   return (
     <div className="xl:col-span-1 animate-slideInLeft">
-      <div className="hologram-panel rounded-lg shadow-panel p-4 sticky top-6 max-h-[calc(100vh-8rem)] overflow-y-auto border border-neon-blue/20 hover-lift">
+      <div className="hologram-panel rounded-lg shadow-panel p-4 sticky top-20 xl:sticky xl:top-20 max-h-[calc(100vh-6rem)] xl:max-h-[calc(100vh-6rem)] overflow-y-auto border border-neon-blue/20 hover-lift">
         <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t('settings')}</h2>
         
         {/* Target Quantity Input */}
