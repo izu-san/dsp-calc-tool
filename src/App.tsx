@@ -107,14 +107,14 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-500 relative overflow-x-hidden">
+    <div className="min-h-screen bg-dark-500 relative">
       <BackgroundEffects />
       <Suspense fallback={null}>
         <ModSettings />
       </Suspense>
       <Header />
 
-      <main className="max-w-[1920px] mx-auto px-4 py-6 sm:px-6 lg:px-8 relative z-10">
+      <main className="max-w-[1920px] mx-auto px-4 py-6 sm:px-6 lg:px-8 relative z-10 mt-20">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           <SettingsPanelSection
             selectedRecipe={selectedRecipe}
