@@ -253,9 +253,6 @@ export const ProductionTree = memo(function ProductionTree({
           <div>
             <div className="text-xs font-medium text-neon-cyan mb-1">
               🛤️ {t('belts')}
-              {node.conveyorBelts.saturation && node.conveyorBelts.saturation > 80 && (
-                <span className="ml-1 text-neon-orange" title={t('bottleneckDetected')}>⚠️</span>
-              )}
             </div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">

@@ -45,7 +45,7 @@ export function calculateConveyorBelts(
     outputs: outputBelts,
     total: inputBelts + outputBelts,
     saturation: maxSaturation,
-    bottleneckType: maxSaturation > 80 ? bottleneckType : undefined,
+    bottleneckType,
   };
 }
 

@@ -244,7 +244,7 @@
   "fixAll": "すべて修正",
   "fixNow": "今すぐ修正",
   "noBottlenecksDetected": "ボトルネックなし",
-  "productionChainSmooth": "生産チェーンは飽和問題なくスムーズに稼働しています。すべてのコンベアベルトは最適容量（<80%）内で動作しています。",
+  "productionChainSmooth": "生産チェーンはスムーズに稼働しています。現在のところ、最適化の提案はありません。",
   "optimizationEngine": "最適化エンジン",
   "selectOptimizationGoal": "最適化目標を選択すると、シナリオが自動的にランク付けされます",
   "allOptimizationsComplete": "すべての最適化が完了しました！",
