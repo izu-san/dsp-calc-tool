@@ -1,4 +1,4 @@
-# Dyson Sphere Program - 生産チェーン計算機
+# [Dyson Sphere Program - 生産チェーン計算機](https://dsp-calc.com/){:target="_blank"}
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-dsp--calc.com-blue?style=for-the-badge&logo=react)](https://dsp-calc.com/)
 [![Version](https://img.shields.io/badge/version-v0.0.1-green?style=for-the-badge)](https://github.com/izu-san/dsp-calc-tool/releases)
