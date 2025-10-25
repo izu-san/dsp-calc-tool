@@ -254,8 +254,41 @@ Closes #45
 
 ## ステップ 5: PR作成コマンドの実行
 
-### 5.1 本文をファイルに保存
-複数行の本文を扱うため、一時ファイルに保存：
+### 5.1 リポジトリ情報の取得
+
+PR作成にはリポジトリのowner（ユーザー名または組織名）とrepo名が必要です。以下のコマンドで取得します：
+
+```bash
+git remote get-url origin
+```
+
+**出力例**:
+- HTTPS形式: `https://github.com/owner/repo.git`
+- SSH形式: `git@github.com:owner/repo.git`
+
+**owner/repoの抽出方法**:
+
+**Windows (PowerShell)**:
+```powershell
+$remoteUrl = git remote get-url origin
+if ($remoteUrl -match "github\.com[:/]([^/]+)/([^/\.]+)") {
+    $owner = $matches[1]
+    $repo = $matches[2]
+    Write-Host "Owner: $owner, Repo: $repo"
+}
+```
+
+**Unix/Mac (Bash)**:
+```bash
+remote_url=$(git remote get-url origin)
+if [[ $remote_url =~ github\.com[:/]([^/]+)/([^/\.]+) ]]; then
+    owner="${BASH_REMATCH[1]}"
+    repo="${BASH_REMATCH[2]}"
+    echo "Owner: $owner, Repo: $repo"
+fi
+```
+
+### 5.2 PR本文の準備
 
 **Issue番号の追加**:
 - Issue番号が指定されている場合、PR本文の末尾に以下を追加:
@@ -264,136 +297,66 @@ Closes #45
   - 問題解決: `Resolves #<Issue番号>`
   - 関連のみ: `Related to #<Issue番号>`
 
-**AIアシスタント向けの推奨方法（重要）**:
-
-**ステップA: 一時フォルダパスを取得**
-
-AIアシスタントは、まず一時フォルダパスを取得する：
-
-**Windows (PowerShell)**:
-```powershell
-echo $env:TEMP
-```
-
-**Unix/Mac (Bash)**:
-```bash
-echo $TMPDIR
-```
-
-出力例:
-- Windows: `C:\Users\YourName\AppData\Local\Temp`
-- Unix/Mac: `/tmp` または `/var/folders/...`
-
-**ステップB: 取得したパスでwriteツールを使用**
-
-AIアシスタントは、ステップAで取得した実際のパスを使用して **`write` ツール**でPR本文を作成する：
-
-```
-Windows: C:\Users\YourName\AppData\Local\Temp\pr_body.md
-Unix/Mac: /tmp/pr_body.md
-```
-
-**重要**: `write`ツールでは環境変数（`$env:TEMP`など）を直接使用できないため、必ず実際のパス文字列を使用すること。
-
-これにより、シェルの構文エラーを回避し、確実にPR本文を作成できます。
-
-**代替方法（writeツールが失敗した場合のフォールバック）**:
-
-**Windows (PowerShell)**:
-```powershell
-# 本文を一時ファイルに保存
-@"
+例:
+```markdown
 <生成したPR本文>
-"@ | Out-File -FilePath "$env:TEMP\pr_body.md" -Encoding utf8
 
-# Issue番号がある場合は追記
-# Add-Content -Path "$env:TEMP\pr_body.md" -Value "`n`nCloses #<Issue番号>" -Encoding utf8
+Closes #45
 ```
 
-**Unix/Mac (Bash)**:
-```bash
-# 本文を一時ファイルに保存
-cat > /tmp/pr_body.md << 'EOF'
-<生成したPR本文>
-EOF
-# Issue番号がある場合は追加
-# echo -e "\n\nCloses #<Issue番号>" >> /tmp/pr_body.md
+### 5.3 GitHub MCPでPRを作成
+
+AIアシスタントは、**`mcp_github_create_pull_request` ツール**を使用してPRを直接作成します：
+
+**必須パラメータ**:
+- `owner`: リポジトリのオーナー（ステップ5.1で取得）
+- `repo`: リポジトリ名（ステップ5.1で取得）
+- `title`: PRタイトル（ステップ3で生成）
+- `head`: 現在のブランチ名（ステップ1.1で取得）
+- `base`: マージ先ブランチ（ステップ2.1で決定）
+
+**オプションパラメータ**:
+- `body`: PR本文（ステップ4で生成、Issue番号を含む）
+- `draft`: ドラフトPRとして作成する場合は `true`（デフォルト: `false`）
+
+**使用例**:
+```typescript
+mcp_github_create_pull_request({
+  owner: "your-username",
+  repo: "DysonSphereProgram",
+  title: "feat: 採掘速度計算機能を追加",
+  head: "feature/add-mining-calculator",
+  base: "develop",
+  body: "採掘速度計算機能を追加\n\n## 目的\n...\n\nCloses #45"
+})
 ```
-
-### 5.2 PRを作成
-
-AIアシスタントは、ステップAで取得した一時フォルダパスを使用してPRを作成する：
-
-**Windows (PowerShell)**:
-```powershell
-gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file "<ステップAで取得したパス>\pr_body.md"
-```
-
-例:
-```powershell
-gh pr create --base develop --title "feat: カスタムコマンドを追加" --body-file "C:\Users\YourName\AppData\Local\Temp\pr_body.md"
-```
-
-**Unix/Mac (Bash)**:
-```bash
-gh pr create --base <マージ先ブランチ> --title "<生成したタイトル>" --body-file <ステップAで取得したパス>/pr_body.md
-```
-
-例:
-```bash
-gh pr create --base develop --title "feat: カスタムコマンドを追加" --body-file "/tmp/pr_body.md"
-```
-
-### 5.3 一時ファイルを削除
-
-**重要**: `delete_file` ツールはワークスペース内のファイルのみ対応しており、ワークスペース外の絶対パス（一時フォルダなど）には対応していません。
-
-そのため、一時ファイルの削除には **`run_terminal_cmd` ツールでターミナルコマンドを使用**してください：
-
-**Windows (PowerShell)**:
-```powershell
-Remove-Item "<ステップAで取得したパス>\pr_body.md" -ErrorAction SilentlyContinue
-```
-
-例:
-```powershell
-Remove-Item "C:\Users\YourName\AppData\Local\Temp\pr_body.md" -ErrorAction SilentlyContinue
-```
-
-**Unix/Mac (Bash)**:
-```bash
-rm -f <ステップAで取得したパス>/pr_body.md
-```
-
-例:
-```bash
-rm -f /tmp/pr_body.md
-```
-
-**注意**: 削除に失敗しても問題ありません（一時ファイルは自動的にクリーンアップされます）。`-ErrorAction SilentlyContinue` または `-f` オプションにより、エラーが発生しても処理を継続します。
 
 ### 5.4 結果を確認
-- PR URLが表示されることを確認
-- ブラウザで自動的に開かれることを確認
+- MCPコマンドの実行結果からPR番号とURLを取得
+- ユーザーに作成されたPRのURLを報告
 
 ---
 
 ## エラーハンドリング
 
-### `gh` コマンドが見つからない場合
+### GitHub MCPが利用できない場合
 ```
-エラー: GitHub CLI (`gh`) がインストールされていません。
-以下のコマンドでインストールしてください：
-- Windows: `winget install GitHub.cli`
-- Mac: `brew install gh`
-- Linux: https://github.com/cli/cli#installation
+エラー: GitHub MCPが有効化されていません。
+Cursorの設定でGitHub MCPを有効化してください。
 ```
 
-### 認証エラーの場合
+### リポジトリ情報の取得に失敗した場合
 ```
-エラー: GitHub CLIで認証されていません。
-以下のコマンドで認証してください：
-`gh auth login`
+エラー: リモートリポジトリのURLを取得できませんでした。
+以下を確認してください：
+- `git remote -v` でリモートリポジトリが設定されているか
+- リモート名が "origin" であるか
+```
+
+### GitHub API認証エラーの場合
+```
+エラー: GitHubの認証に失敗しました。
+Cursorの設定でGitHub MCPの認証トークンを確認してください。
 ```
 
 ### プッシュされていない場合
@@ -409,6 +372,15 @@ rm -f /tmp/pr_body.md
 先にコミットしてください：
 `git add .`
 `git commit -m "..."`
+```
+
+### PR作成に失敗した場合
+```
+エラー: PRの作成に失敗しました。
+以下を確認してください：
+- ブランチが正しくプッシュされているか
+- base ブランチが存在するか
+- 同じブランチからのPRが既に存在しないか
 ```
 
 ---
@@ -461,7 +433,8 @@ Closes #45
 3. **テスト結果は必須**: 品質保証セクションは必ず埋める
 4. **差分を確認**: PR作成前に必ず差分を確認し、意図しない変更がないかチェック
 5. **ユーザーに報告**: 各ステップの実行結果をユーザーに報告する
-6. **OS対応**: ユーザーのOS（Windows/Unix/Mac）を検出し、適切なコマンドを使用する
+6. **リポジトリ情報の取得**: `git remote get-url origin` から正確にowner/repoを抽出する
 7. **Issue紐づけ**: Issue番号が指定されている場合、適切なキーワード（Closes/Fixes/Resolves）を使用してPRとIssueを紐づける
+8. **MCPツールの使用**: `mcp_github_create_pull_request` ツールを使用してPRを作成（一時ファイル不要）
 
 ---
