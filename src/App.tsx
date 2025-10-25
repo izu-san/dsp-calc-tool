@@ -107,7 +107,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-500 relative overflow-hidden">
+    <div className="min-h-screen bg-dark-500 relative overflow-x-hidden">
       <BackgroundEffects />
       <Suspense fallback={null}>
         <ModSettings />
