@@ -1,8 +1,7 @@
 import type { SavedPlan } from '../types/saved-plan';
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
-import { createLogger } from './logger';
-
-const logger = createLogger('URLShare');
+import { ParseError, ValidationError } from './errors';
+import { handleError } from './errorHandler';
 
 /**
  * Encode a plan to URL-safe base64 string
@@ -14,8 +13,8 @@ export function encodePlanToURL(plan: SavedPlan): string {
     const compressed = compressToEncodedURIComponent(json);
     return compressed;
   } catch (error) {
-    logger.error('Failed to encode plan:', error);
-    throw new Error('Failed to encode plan for sharing');
+    handleError(error, 'Failed to encode plan');
+    throw new ParseError('Failed to encode plan for sharing', error);
   }
 }
 
@@ -27,19 +26,19 @@ export function decodePlanFromURL(encoded: string): SavedPlan | null {
     const decompressed = decompressFromEncodedURIComponent(encoded);
     
     if (!decompressed) {
-      throw new Error('Failed to decompress plan data');
+      throw new ParseError('Failed to decompress plan data');
     }
     
     const plan = JSON.parse(decompressed) as SavedPlan;
     
     // Basic validation
     if (!plan.name || !plan.settings || !plan.recipeSID) {
-      throw new Error('Invalid plan data structure');
+      throw new ValidationError('Invalid plan data structure');
     }
     
     return plan;
   } catch (error) {
-    logger.error('Failed to decode plan:', error);
+    handleError(error, 'Failed to decode plan');
     return null;
   }
 }
