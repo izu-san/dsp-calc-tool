@@ -244,7 +244,7 @@
   "fixAll": "Fix All",
   "fixNow": "Fix Now",
   "noBottlenecksDetected": "No Bottlenecks Detected",
-  "productionChainSmooth": "Your production chain is running smoothly with no saturation issues. All conveyor belts are operating within optimal capacity (<80%).",
+  "productionChainSmooth": "Your production chain is running smoothly. No optimization suggestions at this time.",
   "optimizationEngine": "Optimization Engine",
   "selectOptimizationGoal": "Select your optimization goal to rank scenarios automatically",
   "allOptimizationsComplete": "All optimizations complete!",
