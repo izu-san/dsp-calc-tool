@@ -57,7 +57,7 @@ export function getMachineForRecipe(
 
   const fallback = machines.values().next().value as Machine | undefined;
   if (!fallback) {
-    throw new Error(`No machine found for recipe type: ${recipeType}`);
+    throw new Error(`No machine found for recipe type: ${recipeType || 'undefined'}`);
   }
   return fallback;
 }

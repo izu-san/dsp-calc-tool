@@ -112,6 +112,9 @@ export function resolveMachine(
       return foundMachine;
     }
   }
+  if (!recipe.Type) {
+    throw new Error(`Recipe type is undefined for recipe: ${recipe.name || 'Unknown'}`);
+  }
   return getMachineForRecipe(recipe.Type, gameData.machines, settings);
 }
 
@@ -250,7 +253,7 @@ export function buildRecipeTree(
   }
   
   // Track the output item to detect circular dependencies
-  const outputItemId = recipe.Results[0]?.id;
+  const outputItemId = recipe.Results?.[0]?.id;
   if (outputItemId && visitingItems.has(outputItemId)) {
     // Circular dependency detected - treat as raw material
     // This prevents infinite recursion for recipes like "Reforming Refine"

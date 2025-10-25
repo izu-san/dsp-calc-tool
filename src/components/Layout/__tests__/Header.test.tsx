@@ -31,7 +31,7 @@ describe('Header', () => {
     
     const header = container.querySelector('header');
     expect(header).toBeInTheDocument();
-    expect(header).toHaveClass('sticky', 'top-0', 'z-50');
+    expect(header).toHaveClass('fixed', 'top-0', 'left-0', 'right-0', 'z-50');
   });
 
   it('タイトルが表示される', () => {
