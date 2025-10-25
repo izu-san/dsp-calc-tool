@@ -157,7 +157,7 @@ describe('useProductionCalculation', () => {
 
     expect(calculator.calculateProductionChain).toHaveBeenCalled();
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
-    expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] [DSP-Calc:ProductionCalculation] Calculation error:', error);
+    expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] [DSP-Calc] Calculation error: Calculation failed', error);
 
     consoleErrorSpy.mockRestore();
   });

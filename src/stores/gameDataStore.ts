@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { GameData, Machine } from '../types';
 import { loadGameData } from '../lib/parser';
 import i18n from '../i18n';
+import { handleError } from '../utils/errorHandler';
 
 interface GameDataStore {
   data: GameData | null;
@@ -33,8 +34,9 @@ export const useGameDataStore = create<GameDataStore>((set, get) => {
       set({ data, isLoading: false, locale: currentLocale });
       localStorage.setItem('dsp_locale', currentLocale);
     } catch (error) {
+      const errorMessage = handleError(error, 'Failed to load game data');
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to load game data',
+        error: errorMessage,
         isLoading: false 
       });
     }

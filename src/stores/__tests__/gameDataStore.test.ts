@@ -133,7 +133,7 @@ describe('gameDataStore', () => {
       await loadData();
       
       const { error } = useGameDataStore.getState();
-      expect(error).toBe('Failed to load game data');
+      expect(error).toBe('Unknown error: String error');
     });
 
     it('should use provided locale', async () => {
