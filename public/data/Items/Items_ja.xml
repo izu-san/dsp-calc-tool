@@ -8,6 +8,7 @@
     <miningFrom>鉄鉱脈</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1002</id>
@@ -17,6 +18,7 @@
     <miningFrom>銅鉱脈</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1003</id>
@@ -26,6 +28,7 @@
     <miningFrom>シリコン鉱脈</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1004</id>
@@ -35,6 +38,7 @@
     <miningFrom>チタン鉱脈</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1005</id>
@@ -44,6 +48,7 @@
     <miningFrom>石鉱脈</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1006</id>
@@ -53,6 +58,7 @@
     <miningFrom>石炭鉱脈</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>2700000</HeatValue>
   </Item>
   <Item>
     <id>1030</id>
@@ -62,6 +68,7 @@
     <miningFrom>木</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>1500000</HeatValue>
   </Item>
   <Item>
     <id>1031</id>
@@ -71,6 +78,7 @@
     <miningFrom>植物</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>500000</HeatValue>
   </Item>
   <Item>
     <id>1011</id>
@@ -80,6 +88,7 @@
     <miningFrom>メタンハイドレート鉱脈&lt;color="#FFFFFFC1"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>4800000</HeatValue>
   </Item>
   <Item>
     <id>1012</id>
@@ -89,6 +98,7 @@
     <miningFrom>キンバーライト鉱脈&lt;color="#B9DFFFC4"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1013</id>
@@ -98,6 +108,7 @@
     <miningFrom>フラクタルシリコン鉱脈&lt;color="#43FF89D4"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1014</id>
@@ -107,6 +118,7 @@
     <miningFrom>光格子結晶鉱脈&lt;color="#E37AFFDA"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1015</id>
@@ -116,6 +128,7 @@
     <miningFrom>紡錘状石筍結晶鉱脈&lt;color="#7AF0FFC8"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1016</id>
@@ -125,6 +138,7 @@
     <miningFrom>単極磁石鉱脈&lt;color="#FFA086C8"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1101</id>
@@ -134,6 +148,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1104</id>
@@ -143,6 +158,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1105</id>
@@ -152,6 +168,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1106</id>
@@ -161,6 +178,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1108</id>
@@ -170,6 +188,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1109</id>
@@ -179,6 +198,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>6750000</HeatValue>
   </Item>
   <Item>
     <id>1103</id>
@@ -188,6 +208,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1107</id>
@@ -197,6 +218,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1110</id>
@@ -206,6 +228,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1119</id>
@@ -215,6 +238,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1111</id>
@@ -224,6 +248,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1112</id>
@@ -233,6 +258,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>900000</HeatValue>
   </Item>
   <Item>
     <id>1113</id>
@@ -242,6 +268,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1201</id>
@@ -251,6 +278,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1102</id>
@@ -260,6 +288,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1202</id>
@@ -269,6 +298,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1203</id>
@@ -278,6 +308,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1204</id>
@@ -287,6 +318,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1205</id>
@@ -296,6 +328,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1206</id>
@@ -305,6 +338,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1127</id>
@@ -314,6 +348,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1301</id>
@@ -323,6 +358,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1303</id>
@@ -332,6 +368,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1305</id>
@@ -341,6 +378,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1302</id>
@@ -350,6 +388,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1304</id>
@@ -359,6 +398,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1402</id>
@@ -368,6 +408,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1401</id>
@@ -377,6 +418,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1404</id>
@@ -386,6 +428,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1501</id>
@@ -395,6 +438,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1000</id>
@@ -404,6 +448,7 @@
     <miningFrom>海洋</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1007</id>
@@ -413,6 +458,7 @@
     <miningFrom>油田</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>4050000</HeatValue>
   </Item>
   <Item>
     <id>1114</id>
@@ -422,6 +468,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>4500000</HeatValue>
   </Item>
   <Item>
     <id>1116</id>
@@ -431,6 +478,7 @@
     <miningFrom>硫酸の海</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1120</id>
@@ -440,6 +488,7 @@
     <miningFrom>巨大ガス惑星軌道</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>9000000</HeatValue>
   </Item>
   <Item>
     <id>1121</id>
@@ -449,6 +498,7 @@
     <miningFrom>巨大ガス惑星軌道</miningFrom>
     <produceFrom>分留器</produceFrom>
     <isRaw>true</isRaw>
+    <HeatValue>9000000</HeatValue>
   </Item>
   <Item>
     <id>1122</id>
@@ -458,6 +508,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1208</id>
@@ -467,6 +518,7 @@
     <miningFrom />
     <produceFrom>γ線レシーバー</produceFrom>
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1801</id>
@@ -476,6 +528,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>54000000</HeatValue>
   </Item>
   <Item>
     <id>1802</id>
@@ -485,6 +538,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>600000000</HeatValue>
   </Item>
   <Item>
     <id>1803</id>
@@ -494,6 +548,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>7200000000</HeatValue>
   </Item>
   <Item>
     <id>1804</id>
@@ -503,6 +558,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>72000000000</HeatValue>
   </Item>
   <Item>
     <id>1115</id>
@@ -512,6 +568,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1123</id>
@@ -521,6 +578,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>96000</HeatValue>
   </Item>
   <Item>
     <id>1124</id>
@@ -530,6 +588,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>84000</HeatValue>
   </Item>
   <Item>
     <id>1117</id>
@@ -539,6 +598,7 @@
     <miningFrom>有機結晶鉱脈&lt;color="#F5FF4FC1"&gt;(レア)&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>1800000</HeatValue>
   </Item>
   <Item>
     <id>1118</id>
@@ -548,6 +608,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1126</id>
@@ -557,6 +618,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1128</id>
@@ -566,6 +628,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>9720000</HeatValue>
   </Item>
   <Item>
     <id>1129</id>
@@ -575,6 +638,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>21600000</HeatValue>
   </Item>
   <Item>
     <id>1130</id>
@@ -584,6 +648,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>54000000</HeatValue>
   </Item>
   <Item>
     <id>1209</id>
@@ -593,6 +658,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1210</id>
@@ -602,6 +668,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1403</id>
@@ -611,6 +678,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1407</id>
@@ -620,6 +688,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1405</id>
@@ -629,6 +698,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1406</id>
@@ -638,6 +708,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5003</id>
@@ -647,6 +718,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5001</id>
@@ -656,6 +728,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5002</id>
@@ -665,6 +738,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1125</id>
@@ -674,6 +748,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1502</id>
@@ -683,6 +758,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1503</id>
@@ -692,6 +768,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1131</id>
@@ -701,6 +778,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1141</id>
@@ -710,6 +788,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>3240000</HeatValue>
   </Item>
   <Item>
     <id>1142</id>
@@ -719,6 +798,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>8856000</HeatValue>
   </Item>
   <Item>
     <id>1143</id>
@@ -728,6 +808,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>21255000</HeatValue>
   </Item>
   <Item>
     <id>1601</id>
@@ -737,6 +818,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1602</id>
@@ -746,6 +828,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1603</id>
@@ -755,6 +838,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1604</id>
@@ -764,6 +848,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1605</id>
@@ -773,6 +858,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1606</id>
@@ -782,6 +868,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1607</id>
@@ -791,6 +878,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1608</id>
@@ -800,6 +888,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1609</id>
@@ -809,6 +898,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1610</id>
@@ -818,6 +908,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1611</id>
@@ -827,6 +918,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1612</id>
@@ -836,6 +928,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1613</id>
@@ -845,6 +938,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5101</id>
@@ -854,6 +948,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5102</id>
@@ -863,6 +958,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5103</id>
@@ -872,6 +968,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5111</id>
@@ -881,6 +978,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5112</id>
@@ -890,6 +988,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5201</id>
@@ -899,6 +998,7 @@
     <miningFrom>ダークフォグの残骸</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5202</id>
@@ -908,6 +1008,7 @@
     <miningFrom>ダークフォグの残骸</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5203</id>
@@ -917,6 +1018,7 @@
     <miningFrom>ダークフォグの残骸</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5204</id>
@@ -926,6 +1028,7 @@
     <miningFrom>ダークフォグの残骸</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5205</id>
@@ -935,6 +1038,7 @@
     <miningFrom>ダークフォグの残骸</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>5206</id>
@@ -944,6 +1048,7 @@
     <miningFrom>ダークフォグの残骸</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>3600000</HeatValue>
   </Item>
   <Item>
     <id>2001</id>
@@ -953,6 +1058,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2002</id>
@@ -962,6 +1068,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2003</id>
@@ -971,6 +1078,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2020</id>
@@ -980,6 +1088,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2101</id>
@@ -989,6 +1098,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2102</id>
@@ -998,6 +1108,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2106</id>
@@ -1007,6 +1118,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2201</id>
@@ -1016,6 +1128,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2202</id>
@@ -1025,6 +1138,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2212</id>
@@ -1034,6 +1148,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2203</id>
@@ -1043,6 +1158,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2204</id>
@@ -1052,6 +1168,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2211</id>
@@ -1061,6 +1178,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2213</id>
@@ -1070,6 +1188,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2205</id>
@@ -1079,6 +1198,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2206</id>
@@ -1088,6 +1208,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2207</id>
@@ -1097,6 +1218,7 @@
     <miningFrom />
     <produceFrom>エネルギー交換器</produceFrom>
     <isRaw>true</isRaw>
+    <HeatValue>540000000</HeatValue>
   </Item>
   <Item>
     <id>2208</id>
@@ -1106,6 +1228,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2210</id>
@@ -1115,6 +1238,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>2105</id>
@@ -1124,6 +1248,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>3007</id>
@@ -1133,6 +1258,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>6001</id>
@@ -1142,6 +1268,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>6002</id>
@@ -1151,6 +1278,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>6003</id>
@@ -1160,6 +1288,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>6004</id>
@@ -1169,6 +1298,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>6005</id>
@@ -1178,6 +1308,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>6006</id>
@@ -1187,6 +1318,7 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1099</id>
@@ -1196,5 +1328,6 @@
     <miningFrom />
     <produceFrom />
     <isRaw>true</isRaw>
+    <HeatValue>0</HeatValue>
   </Item>
 </ArrayOfItem>

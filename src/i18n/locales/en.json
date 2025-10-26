@@ -420,6 +420,25 @@
   "clearDataRestart": "🗑️ Clear Data and Restart",
   "backToHome": "🏠 Back to Home",
   "errorTip": "💡 Tip: If this error occurs repeatedly, try \"Clear Data and Restart\".",
-  "confirmClearData": "Clear all saved data and reset? This action cannot be undone."
+  "confirmClearData": "Clear all saved data and reset? This action cannot be undone.",
+  "powerGeneration": {
+    "title": "Power Generation",
+    "requiredPower": "Required Power",
+    "generatorAllocation": "Generator Allocation",
+    "baseOutput": "Base Output",
+    "operatingRate": "Operating Rate",
+    "count": "Count",
+    "totalOutput": "Total Output",
+    "fuel": "Fuel",
+    "energyPerItem": "Energy/Item",
+    "fuelConsumption": "Fuel Consumption",
+    "itemsPerSecond": "items/s",
+    "units": "units",
+    "summary": "Summary",
+    "totalGenerators": "Total Generators",
+    "totalFuelConsumption": "Total Fuel Consumption",
+    "noPowerRequired": "No power required",
+    "variableOutputWarning": "{{name}} has variable output. Actual output depends on planetary conditions."
+  }
 }
 
