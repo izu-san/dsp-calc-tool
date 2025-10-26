@@ -25,11 +25,15 @@ import type { GameTemplate } from '@/types/settings/templates';
  *
  * @param requiredPower - 必要電力 (kW)
  * @param template - ゲームテンプレート
+ * @param manualGenerator - 手動選択された発電設備（nullの場合は自動選択）
+ * @param manualFuel - 手動選択された燃料（nullの場合は自動選択）
  * @returns 発電計算結果
  */
 export function calculatePowerGeneration(
   requiredPower: number,
-  template: GameTemplate
+  template: GameTemplate,
+  manualGenerator?: PowerGeneratorType | null,
+  manualFuel?: string | null
 ): PowerGenerationResult {
   // 必要電力が0以下の場合は空の結果を返す
   if (requiredPower <= 0) {
@@ -41,12 +45,17 @@ export function calculatePowerGeneration(
     };
   }
 
-  // テンプレートで使用可能な発電設備を取得
-  const availableGeneratorTypes =
-    TEMPLATE_POWER_GENERATORS[template] || TEMPLATE_POWER_GENERATORS.endGame;
-
-  // 最も高出力の発電設備を選択
-  const bestGenerator = selectBestGenerator(availableGeneratorTypes);
+  // 発電設備の選択: 手動選択があればそれを優先、なければ自動選択
+  let bestGenerator: PowerGeneratorInfo | null = null;
+  if (manualGenerator) {
+    // 手動選択された発電設備を使用
+    bestGenerator = POWER_GENERATORS[manualGenerator];
+  } else {
+    // テンプレートで使用可能な発電設備から自動選択
+    const availableGeneratorTypes =
+      TEMPLATE_POWER_GENERATORS[template] || TEMPLATE_POWER_GENERATORS.endGame;
+    bestGenerator = selectBestGenerator(availableGeneratorTypes);
+  }
 
   if (!bestGenerator) {
     // 発電設備が見つからない場合（通常はありえない）
@@ -58,14 +67,30 @@ export function calculatePowerGeneration(
     };
   }
 
-  // 燃料を使用する場合、最もエネルギー効率が良い燃料を選択
+  // 燃料の選択: 手動選択があればそれを優先、なければ自動選択
   let bestFuel: FuelItem | null = null;
   if (bestGenerator.acceptedFuelTypes.length > 0) {
-    const availableFuels = TEMPLATE_FUELS[template] || TEMPLATE_FUELS.endGame;
-    bestFuel = selectBestFuel(
-      bestGenerator.acceptedFuelTypes[0],
-      availableFuels
-    );
+    if (manualFuel) {
+      // 手動選択された燃料を使用
+      bestFuel = FUEL_ITEMS[manualFuel] || null;
+    } else {
+      // 自動選択の場合
+      if (manualGenerator) {
+        // 手動で発電設備を選択している場合は、全燃料から最適な燃料を選択
+        const allFuelKeys = Object.keys(FUEL_ITEMS);
+        bestFuel = selectBestFuel(
+          bestGenerator.acceptedFuelTypes[0],
+          allFuelKeys
+        );
+      } else {
+        // テンプレートで使用可能な燃料から自動選択
+        const availableFuels = TEMPLATE_FUELS[template] || TEMPLATE_FUELS.endGame;
+        bestFuel = selectBestFuel(
+          bestGenerator.acceptedFuelTypes[0],
+          availableFuels
+        );
+      }
+    }
   }
 
   // 実際の出力を計算（稼働率を考慮）

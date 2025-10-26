@@ -210,3 +210,114 @@ describe('getActualOutput', () => {
   });
 });
 
+describe('手動選択ロジック', () => {
+  describe('発電設備の手動選択', () => {
+    it('手動で人工恒星を選択すると、テンプレートに関係なく人工恒星が使用される', () => {
+      // 序盤テンプレートでも人工恒星を手動選択
+      const result = calculatePowerGeneration(
+        100000,
+        'earlyGame',
+        'artificialStar'
+      );
+
+      expect(result.generators[0].generator.type).toBe('artificialStar');
+      expect(result.generators[0].count).toBe(1);
+    });
+
+    it('手動でミニ核融合発電所を選択すると使用される', () => {
+      const result = calculatePowerGeneration(
+        15000,
+        'earlyGame',
+        'miniFusion'
+      );
+
+      expect(result.generators[0].generator.type).toBe('miniFusion');
+      expect(result.generators[0].fuel?.itemId).toBe(1802); // Deuteron fuel rod
+    });
+
+    it('手動で火力発電所を選択すると使用される', () => {
+      const result = calculatePowerGeneration(
+        5000,
+        'endGame',
+        'thermalPlant'
+      );
+
+      expect(result.generators[0].generator.type).toBe('thermalPlant');
+      // 火力発電所は複数の燃料を使用可能だが、最もエネルギー効率が良い燃料が選択される
+      expect(result.generators[0].fuel).not.toBeNull();
+    });
+  });
+
+  describe('燃料の手動選択', () => {
+    it('手動で燃料を選択すると、指定した燃料が使用される', () => {
+      // 人工恒星に反物質燃料棒を手動指定
+      const result = calculatePowerGeneration(
+        100000,
+        'endGame',
+        'artificialStar',
+        'antimatterFuelRod'
+      );
+
+      expect(result.generators[0].fuel?.itemId).toBe(1803); // Antimatter fuel rod
+      // 反物質燃料棒使用時は72MW
+      expect(result.generators[0].count).toBe(2); // Math.ceil(100000 / 72000) = 2台
+    });
+
+    it('手動で発電設備を選択し、燃料を自動にすると全燃料から選択される', () => {
+      // 序盤テンプレート + 人工恒星（手動） + 燃料自動
+      const result = calculatePowerGeneration(
+        100000,
+        'earlyGame',
+        'artificialStar',
+        null
+      );
+
+      expect(result.generators[0].generator.type).toBe('artificialStar');
+      // 全燃料から最もエネルギー効率が良い燃料（ストレンジ物質対消滅燃料棒）が選択される
+      expect(result.generators[0].fuel?.itemId).toBe(1804);
+    });
+  });
+
+  describe('自動選択（手動選択なし）', () => {
+    it('発電設備も燃料も自動の場合、テンプレートに基づいて選択される', () => {
+      const result = calculatePowerGeneration(
+        100000,
+        'earlyGame',
+        null,
+        null
+      );
+
+      // 序盤テンプレートでは地熱発電所が選択される
+      expect(result.generators[0].generator.type).toBe('geothermal');
+    });
+
+    it('発電設備が自動で燃料を手動選択しても、テンプレートの発電設備が使用される', () => {
+      // 後半テンプレート + 発電設備自動 + 重水素燃料棒（手動）
+      const result = calculatePowerGeneration(
+        15000,
+        'lateGame',
+        null,
+        'deuteronFuelRod'
+      );
+
+      // テンプレートからミニ核融合発電所が選択される
+      expect(result.generators[0].generator.type).toBe('miniFusion');
+      // 手動指定した燃料が使用される
+      expect(result.generators[0].fuel?.itemId).toBe(1802);
+    });
+  });
+
+  describe('燃料が1種類しかない場合', () => {
+    it('ミニ核融合発電所は重水素燃料棒のみ使用可能', () => {
+      const result = calculatePowerGeneration(
+        15000,
+        'lateGame',
+        'miniFusion'
+      );
+
+      expect(result.generators[0].fuel?.itemId).toBe(1802);
+      expect(result.generators[0].generator.acceptedFuelTypes).toHaveLength(1);
+    });
+  });
+});
+

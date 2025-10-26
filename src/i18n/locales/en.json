@@ -438,7 +438,17 @@
     "totalGenerators": "Total Generators",
     "totalFuelConsumption": "Total Fuel Consumption",
     "noPowerRequired": "No power required",
-    "variableOutputWarning": "{{name}} has variable output. Actual output depends on planetary conditions."
+    "variableOutputWarning": "{{name}} has variable output. Actual output depends on planetary conditions.",
+    "templateLabel": "Power Generation Template",
+    "templateDefault": "Default (End-game generators, excluding Strange Matter)",
+    "templateEarlyGame": "Early Game",
+    "templateMidGame": "Mid Game",
+    "templateLateGame": "Late Game",
+    "templateEndGame": "End Game",
+    "manualSelection": "Manual Selection (Optional)",
+    "generatorLabel": "Generator",
+    "fuelLabel": "Fuel",
+    "automatic": "Auto"
   }
 }
 

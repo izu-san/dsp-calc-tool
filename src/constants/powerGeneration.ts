@@ -185,6 +185,15 @@ export const TEMPLATE_POWER_GENERATORS: Record<
   string,
   PowerGeneratorType[]
 > = {
+  // デフォルト（初期状態）: 終盤と同じ設備
+  default: [
+    'windTurbine',
+    'thermalPlant',
+    'geothermal',
+    'solarPanel',
+    'miniFusion',
+    'artificialStar',
+  ],
   earlyGame: ['windTurbine', 'thermalPlant', 'geothermal', 'solarPanel'],
   midGame: ['windTurbine', 'thermalPlant', 'geothermal', 'solarPanel'],
   lateGame: [
@@ -208,6 +217,21 @@ export const TEMPLATE_POWER_GENERATORS: Record<
  * テンプレート別の使用可能な燃料
  */
 export const TEMPLATE_FUELS: Record<string, string[]> = {
+  // デフォルト（初期状態）: 終盤からストレンジ物質対消滅燃料棒を除外
+  default: [
+    'coal',
+    'crudeOil',
+    'refinedOil',
+    'energeticGraphite',
+    'hydrogen',
+    'combustibleUnit',
+    'explosiveUnit',
+    'hydrogenFuelRod',
+    'crystalExplosiveUnit',
+    'deuteronFuelRod',
+    'antimatterFuelRod',
+    // 'strangeAnnihilationFuelRod', // デフォルトでは除外
+  ],
   earlyGame: [
     'coal',
     'crudeOil',

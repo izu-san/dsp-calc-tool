@@ -9,6 +9,7 @@ import { DEFAULT_PHOTON_GENERATION_SETTINGS } from './photonGeneration';
  * ゲームテンプレートの種類
  */
 export type GameTemplate =
+  | 'default' // デフォルト（初期状態）
   | 'earlyGame'
   | 'midGame'
   | 'lateGame'

@@ -438,7 +438,17 @@
     "totalGenerators": "総設備台数",
     "totalFuelConsumption": "総燃料消費",
     "noPowerRequired": "消費電力がありません",
-    "variableOutputWarning": "{{name}}は出力が変動する設備です。惑星環境によって実際の出力は異なります。"
+    "variableOutputWarning": "{{name}}は出力が変動する設備です。惑星環境によって実際の出力は異なります。",
+    "templateLabel": "発電設備テンプレート",
+    "templateDefault": "デフォルト（終盤設備、ストレンジ物質除外）",
+    "templateEarlyGame": "序盤",
+    "templateMidGame": "中盤",
+    "templateLateGame": "後半",
+    "templateEndGame": "終盤",
+    "manualSelection": "手動選択（オプション）",
+    "generatorLabel": "発電設備",
+    "fuelLabel": "燃料",
+    "automatic": "自動"
   }
 }
 

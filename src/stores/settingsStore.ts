@@ -4,7 +4,9 @@ import type {
   GlobalSettings, 
   MachineRankSettings,
   PhotonGenerationSettings,
+  GameTemplate,
 } from '../types';
+import type { PowerGeneratorType } from '../types/power-generation';
 import { 
   PROLIFERATOR_DATA, 
   CONVEYOR_BELT_DATA, 
@@ -38,6 +40,10 @@ const defaultSettings: GlobalSettings = {
 
 interface SettingsStore {
   settings: GlobalSettings;
+  selectedTemplate: GameTemplate | null; // テンプレート適用状態
+  powerGenerationTemplate: GameTemplate; // 発電設備専用テンプレート
+  manualPowerGenerator: PowerGeneratorType | null; // 手動選択された発電設備
+  manualPowerFuel: string | null; // 手動選択された燃料
   setProliferator: (type: keyof typeof PROLIFERATOR_DATA, mode: 'production' | 'speed') => void;
   setMachineRank: (recipeType: keyof MachineRankSettings, rank: string) => void;
   setConveyorBelt: (tier: keyof typeof CONVEYOR_BELT_DATA, stackCount?: number) => void;
@@ -49,6 +55,10 @@ interface SettingsStore {
     key: K,
     value: PhotonGenerationSettings[K]
   ) => void;
+  setSelectedTemplate: (template: GameTemplate | null) => void;
+  setPowerGenerationTemplate: (template: GameTemplate) => void;
+  setManualPowerGenerator: (generator: PowerGeneratorType | null) => void;
+  setManualPowerFuel: (fuel: string | null) => void;
   applyTemplate: (templateId: keyof typeof SETTINGS_TEMPLATES) => void;
   updateSettings: (settings: Partial<GlobalSettings>) => void;
   resetSettings: () => void;
@@ -58,6 +68,10 @@ export const useSettingsStore = create<SettingsStore>()(
   persist(
     (set) => ({
       settings: defaultSettings,
+      selectedTemplate: null, // 初期状態ではテンプレート未選択
+      powerGenerationTemplate: 'default', // 初期状態ではデフォルトテンプレート
+      manualPowerGenerator: null, // 初期状態では手動選択なし（自動選択）
+      manualPowerFuel: null, // 初期状態では手動選択なし（自動選択）
 
       setProliferator: (type, mode) => set((state) => ({
         settings: {
@@ -143,6 +157,8 @@ export const useSettingsStore = create<SettingsStore>()(
             ...template.settings,
             alternativeRecipes: new Map(template.settings.alternativeRecipes),
           },
+          selectedTemplate: templateId as GameTemplate, // テンプレート選択状態を保存
+          powerGenerationTemplate: templateId as GameTemplate, // 発電設備テンプレートも同じに設定
         };
       }),
 
@@ -159,7 +175,21 @@ export const useSettingsStore = create<SettingsStore>()(
         return { settings: updatedSettings };
       }),
 
-      resetSettings: () => set({ settings: defaultSettings }),
+      setSelectedTemplate: (template) => set({ selectedTemplate: template }),
+      
+      setPowerGenerationTemplate: (template) => set({ powerGenerationTemplate: template }),
+
+      setManualPowerGenerator: (generator) => set({ manualPowerGenerator: generator }),
+
+      setManualPowerFuel: (fuel) => set({ manualPowerFuel: fuel }),
+
+      resetSettings: () => set({ 
+        settings: defaultSettings,
+        selectedTemplate: null,
+        powerGenerationTemplate: 'default',
+        manualPowerGenerator: null,
+        manualPowerFuel: null,
+      }),
     }),
     {
       name: 'dsp-calculator-settings',
