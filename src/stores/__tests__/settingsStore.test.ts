@@ -556,4 +556,120 @@ describe('settingsStore', () => {
       expect(powerGenerationTemplate).toBe('endGame');
     });
   });
+
+  describe('Power Fuel Proliferator', () => {
+    it('should have default power fuel proliferator as none', () => {
+      const { powerFuelProliferator } = useSettingsStore.getState();
+      
+      expect(powerFuelProliferator.type).toBe('none');
+      expect(powerFuelProliferator.mode).toBe('production');
+      expect(powerFuelProliferator.speedBonus).toBe(0);
+      expect(powerFuelProliferator.productionBonus).toBe(0);
+    });
+
+    it('should set power fuel proliferator type and mode', () => {
+      const { setPowerFuelProliferator } = useSettingsStore.getState();
+      
+      setPowerFuelProliferator('mk3', 'speed');
+      
+      const { powerFuelProliferator } = useSettingsStore.getState();
+      expect(powerFuelProliferator.type).toBe('mk3');
+      expect(powerFuelProliferator.mode).toBe('speed');
+      expect(powerFuelProliferator.speedBonus).toBe(PROLIFERATOR_DATA.mk3.speedBonus);
+      expect(powerFuelProliferator.productionBonus).toBe(PROLIFERATOR_DATA.mk3.productionBonus);
+    });
+
+    it('should update proliferator with production mode', () => {
+      const { setPowerFuelProliferator } = useSettingsStore.getState();
+      
+      setPowerFuelProliferator('mk2', 'production');
+      
+      const { powerFuelProliferator } = useSettingsStore.getState();
+      expect(powerFuelProliferator.type).toBe('mk2');
+      expect(powerFuelProliferator.mode).toBe('production');
+      expect(powerFuelProliferator.speedBonus).toBe(PROLIFERATOR_DATA.mk2.speedBonus);
+      expect(powerFuelProliferator.productionBonus).toBe(PROLIFERATOR_DATA.mk2.productionBonus);
+    });
+
+    it('should update proliferator type while maintaining bonuses', () => {
+      const { setPowerFuelProliferator } = useSettingsStore.getState();
+      
+      setPowerFuelProliferator('mk1', 'speed');
+      setPowerFuelProliferator('mk3', 'speed');
+      
+      const { powerFuelProliferator } = useSettingsStore.getState();
+      expect(powerFuelProliferator.type).toBe('mk3');
+      expect(powerFuelProliferator.mode).toBe('speed');
+      // Mk3 has higher bonuses than Mk1
+      expect(powerFuelProliferator.speedBonus).toBeGreaterThan(PROLIFERATOR_DATA.mk1.speedBonus);
+    });
+
+    it('should reset to none when setting proliferator to none', () => {
+      const { setPowerFuelProliferator } = useSettingsStore.getState();
+      
+      // First set to mk3
+      setPowerFuelProliferator('mk3', 'production');
+      
+      // Then reset to none
+      setPowerFuelProliferator('none', 'production');
+      
+      const { powerFuelProliferator } = useSettingsStore.getState();
+      expect(powerFuelProliferator.type).toBe('none');
+      expect(powerFuelProliferator.speedBonus).toBe(0);
+      expect(powerFuelProliferator.productionBonus).toBe(0);
+    });
+
+    it('should reset power fuel proliferator on resetSettings', () => {
+      const { setPowerFuelProliferator, resetSettings } = useSettingsStore.getState();
+      
+      // Set to mk3
+      setPowerFuelProliferator('mk3', 'speed');
+      
+      // Verify change
+      let { powerFuelProliferator } = useSettingsStore.getState();
+      expect(powerFuelProliferator.type).toBe('mk3');
+      
+      // Reset
+      resetSettings();
+      
+      // Should be back to none with production mode
+      powerFuelProliferator = useSettingsStore.getState().powerFuelProliferator;
+      expect(powerFuelProliferator.type).toBe('none');
+      expect(powerFuelProliferator.mode).toBe('production');
+      expect(powerFuelProliferator.speedBonus).toBe(0);
+      expect(powerFuelProliferator.productionBonus).toBe(0);
+    });
+
+    it('should handle all proliferator types correctly', () => {
+      const { setPowerFuelProliferator } = useSettingsStore.getState();
+      const types: Array<keyof typeof PROLIFERATOR_DATA> = ['none', 'mk1', 'mk2', 'mk3'];
+      
+      types.forEach(type => {
+        setPowerFuelProliferator(type, 'production');
+        
+        const { powerFuelProliferator } = useSettingsStore.getState();
+        expect(powerFuelProliferator.type).toBe(type);
+        expect(powerFuelProliferator.speedBonus).toBe(PROLIFERATOR_DATA[type].speedBonus);
+        expect(powerFuelProliferator.productionBonus).toBe(PROLIFERATOR_DATA[type].productionBonus);
+      });
+    });
+
+    it('should handle mode changes correctly', () => {
+      const { setPowerFuelProliferator } = useSettingsStore.getState();
+      
+      // Set to production mode
+      setPowerFuelProliferator('mk2', 'production');
+      let { powerFuelProliferator } = useSettingsStore.getState();
+      expect(powerFuelProliferator.mode).toBe('production');
+      
+      // Change to speed mode
+      setPowerFuelProliferator('mk2', 'speed');
+      powerFuelProliferator = useSettingsStore.getState().powerFuelProliferator;
+      expect(powerFuelProliferator.mode).toBe('speed');
+      
+      // Bonuses should remain the same (mode affects usage, not values)
+      expect(powerFuelProliferator.speedBonus).toBe(PROLIFERATOR_DATA.mk2.speedBonus);
+      expect(powerFuelProliferator.productionBonus).toBe(PROLIFERATOR_DATA.mk2.productionBonus);
+    });
+  });
 });

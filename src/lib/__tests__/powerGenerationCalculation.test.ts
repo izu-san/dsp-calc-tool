@@ -210,6 +210,185 @@ describe('getActualOutput', () => {
   });
 });
 
+describe('増産剤の適用', () => {
+  describe('人工恒星以外の発電設備', () => {
+    it('増産剤の追加生産ボーナスが燃料エネルギーに適用される', () => {
+      // ミニ核融合発電所 + Mk3増産剤（追加生産+25%）
+      const result = calculatePowerGeneration(
+        15000,
+        'lateGame',
+        'miniFusion',
+        null,
+        0, // 速度ボーナスなし
+        0.25 // 追加生産ボーナス+25%
+      );
+
+      expect(result.generators[0].generator.type).toBe('miniFusion');
+      // 燃料エネルギーが1.25倍になるため、燃料消費が減少
+      expect(result.generators[0].actualFuelEnergy).toBeCloseTo(
+        600 * 1.25,
+        1
+      );
+    });
+
+    it('増産剤の追加生産ボーナスが出力に適用される', () => {
+      // ミニ核融合発電所 + Mk3増産剤（追加生産+25%）
+      const result = calculatePowerGeneration(
+        18750, // 15MW * 1.25 = 18.75MW
+        'lateGame',
+        'miniFusion',
+        null,
+        0, // 速度ボーナスなし
+        0.25 // 追加生産ボーナス+25%
+      );
+
+      // 基本出力15MW * 追加生産倍率1.25 = 18.75MW
+      expect(result.generators[0].actualOutputPerUnit).toBeCloseTo(18750, 1);
+      // 18750kW必要 / 18750kW/台 = 1台
+      expect(result.generators[0].count).toBe(1);
+    });
+
+    it('追加生産ボーナスは出力と燃料エネルギーの両方に適用される', () => {
+      // ミニ核融合発電所 + Mk3増産剤（追加生産+25%）
+      const result = calculatePowerGeneration(
+        18750, // 15MW * 1.25 = 18.75MW → 1台必要
+        'lateGame',
+        'miniFusion',
+        null,
+        0, // 速度ボーナスは人工恒星以外には適用されない
+        0.25 // 追加生産ボーナス+25%
+      );
+
+      // 出力: 15MW * 1.25 = 18.75MW
+      expect(result.generators[0].actualOutputPerUnit).toBeCloseTo(18750, 1);
+      // 燃料エネルギー: 600MJ * 1.25 = 750MJ
+      expect(result.generators[0].actualFuelEnergy).toBeCloseTo(750, 1);
+      // 1台必要
+      expect(result.generators[0].count).toBe(1);
+    });
+
+    it('増産剤なしの場合は基本値が使われる', () => {
+      const result = calculatePowerGeneration(
+        15000,
+        'lateGame',
+        'miniFusion',
+        null,
+        0,
+        0
+      );
+
+      // 基本出力
+      expect(result.generators[0].actualOutputPerUnit).toBe(15000);
+      // 基本燃料エネルギー
+      expect(result.generators[0].actualFuelEnergy).toBe(600);
+    });
+  });
+
+  describe('人工恒星の特殊な動作', () => {
+    it('増産剤の速度ボーナスが出力に適用される', () => {
+      // 人工恒星 + Mk3増産剤（速度+100%）
+      const result = calculatePowerGeneration(
+        200000,
+        'endGame',
+        'artificialStar',
+        null,
+        1.0, // 速度ボーナス+100%
+        0 // 追加生産ボーナス（人工恒星では出力に適用されない）
+      );
+
+      // ストレンジ物質対消滅燃料棒: 基本144MW * 速度倍率2.0 = 288MW
+      expect(result.generators[0].actualOutputPerUnit).toBeCloseTo(288000, 1);
+      // 200000kW / 288000kW = 1台（切り上げ）
+      expect(result.generators[0].count).toBe(1);
+    });
+
+    it('増産剤の追加生産ボーナスは出力と燃料エネルギーに適用されない', () => {
+      // 人工恒星 + Mk3増産剤（追加生産+25%）
+      const result = calculatePowerGeneration(
+        144000,
+        'endGame',
+        'artificialStar',
+        null,
+        0, // 速度ボーナスなし
+        0.25 // 追加生産ボーナス（人工恒星では適用されない）
+      );
+
+      // 出力は変わらない
+      expect(result.generators[0].actualOutputPerUnit).toBe(144000);
+      // 燃料エネルギーは変わらない
+      expect(result.generators[0].actualFuelEnergy).toBe(72000);
+      expect(result.generators[0].count).toBe(1);
+    });
+
+    it('増産剤の速度ボーナスが1台あたりの燃料消費速度を上昇させる', () => {
+      // 人工恒星 + Mk3増産剤（速度+100%）
+      // 同じ台数で比較する必要がある
+      const resultWithProliferator = calculatePowerGeneration(
+        72000, // 反物質燃料棒の基本出力(72MW)で1台分
+        'endGame',
+        'artificialStar',
+        'antimatterFuelRod',
+        1.0, // 速度ボーナス+100%
+        0
+      );
+
+      const resultWithoutProliferator = calculatePowerGeneration(
+        72000,
+        'endGame',
+        'artificialStar',
+        'antimatterFuelRod',
+        0, // 増産剤なし
+        0
+      );
+
+      // 増産剤なしの場合: 72MW → 1台
+      expect(resultWithoutProliferator.generators[0].count).toBe(1);
+      
+      // 増産剤ありの場合: 72MW * 2 = 144MW/台 → 1台で足りる
+      expect(resultWithProliferator.generators[0].count).toBe(1);
+      
+      // 1台あたりの燃料消費速度が2倍になる
+      // useFuelPerTick = 1200000, heatValue = 7200000000
+      // 増産剤なし: (1200000 * 60) / 7200000000 = 0.01個/秒
+      // 増産剤あり: (1200000 * 60 * 2) / 7200000000 = 0.02個/秒
+      expect(resultWithProliferator.generators[0].fuelConsumptionRate).toBeCloseTo(
+        resultWithoutProliferator.generators[0].fuelConsumptionRate * 2,
+        5
+      );
+    });
+  });
+
+  describe('増産剤の結果への記録', () => {
+    it('増産剤のボーナスが結果に記録される', () => {
+      const result = calculatePowerGeneration(
+        15000,
+        'lateGame',
+        'miniFusion',
+        null,
+        1.0, // 速度ボーナス+100%
+        0.25 // 追加生産ボーナス+25%
+      );
+
+      expect(result.proliferatorSpeedBonus).toBe(1.0);
+      expect(result.proliferatorProductionBonus).toBe(0.25);
+    });
+
+    it('増産剤なしの場合は0が記録される', () => {
+      const result = calculatePowerGeneration(
+        15000,
+        'lateGame',
+        'miniFusion',
+        null,
+        0,
+        0
+      );
+
+      expect(result.proliferatorSpeedBonus).toBe(0);
+      expect(result.proliferatorProductionBonus).toBe(0);
+    });
+  });
+});
+
 describe('手動選択ロジック', () => {
   describe('発電設備の手動選択', () => {
     it('手動で人工恒星を選択すると、テンプレートに関係なく人工恒星が使用される', () => {

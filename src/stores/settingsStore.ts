@@ -5,6 +5,7 @@ import type {
   MachineRankSettings,
   PhotonGenerationSettings,
   GameTemplate,
+  ProliferatorConfig,
 } from '../types';
 import type { PowerGeneratorType } from '../types/power-generation';
 import { 
@@ -44,7 +45,9 @@ interface SettingsStore {
   powerGenerationTemplate: GameTemplate; // 発電設備専用テンプレート
   manualPowerGenerator: PowerGeneratorType | null; // 手動選択された発電設備
   manualPowerFuel: string | null; // 手動選択された燃料
+  powerFuelProliferator: ProliferatorConfig; // 燃料に適用する増産剤
   setProliferator: (type: keyof typeof PROLIFERATOR_DATA, mode: 'production' | 'speed') => void;
+  setPowerFuelProliferator: (type: keyof typeof PROLIFERATOR_DATA, mode: 'production' | 'speed') => void;
   setMachineRank: (recipeType: keyof MachineRankSettings, rank: string) => void;
   setConveyorBelt: (tier: keyof typeof CONVEYOR_BELT_DATA, stackCount?: number) => void;
   setSorter: (tier: keyof typeof SORTER_DATA) => void;
@@ -72,6 +75,7 @@ export const useSettingsStore = create<SettingsStore>()(
       powerGenerationTemplate: 'default', // 初期状態ではデフォルトテンプレート
       manualPowerGenerator: null, // 初期状態では手動選択なし（自動選択）
       manualPowerFuel: null, // 初期状態では手動選択なし（自動選択）
+      powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: 'production' as const }, // 初期状態では増産剤なし
 
       setProliferator: (type, mode) => set((state) => ({
         settings: {
@@ -183,12 +187,20 @@ export const useSettingsStore = create<SettingsStore>()(
 
       setManualPowerFuel: (fuel) => set({ manualPowerFuel: fuel }),
 
+      setPowerFuelProliferator: (type, mode) => set({
+        powerFuelProliferator: {
+          ...PROLIFERATOR_DATA[type],
+          mode,
+        },
+      }),
+
       resetSettings: () => set({ 
         settings: defaultSettings,
         selectedTemplate: null,
         powerGenerationTemplate: 'default',
         manualPowerGenerator: null,
         manualPowerFuel: null,
+        powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: 'production' as const },
       }),
     }),
     {

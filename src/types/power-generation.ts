@@ -70,6 +70,10 @@ export interface PowerGenerationResult {
   totalGenerators: number;
   /** 総燃料消費量 (itemId -> 個/秒) */
   totalFuelConsumption: Map<number, number>;
+  /** 増産剤による速度ボーナス (0-1, 人工恒星用) */
+  proliferatorSpeedBonus: number;
+  /** 増産剤による追加生産ボーナス (0-1, 人工恒星以外用) */
+  proliferatorProductionBonus: number;
 }
 
 /**
@@ -86,5 +90,9 @@ export interface GeneratorAllocation {
   totalOutput: number;
   /** 燃料消費速度 (個/秒) - 燃料不要の場合は0 */
   fuelConsumptionRate: number;
+  /** 増産剤適用後の実際の出力 (kW/台) - 増産剤速度ボーナス適用後 */
+  actualOutputPerUnit: number;
+  /** 増産剤適用後の燃料エネルギー (MJ/個) - 増産剤追加生産ボーナス適用後 */
+  actualFuelEnergy: number;
 }
 
