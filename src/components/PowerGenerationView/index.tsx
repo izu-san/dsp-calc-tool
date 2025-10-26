@@ -24,7 +24,7 @@ interface PowerGenerationViewProps {
 export function PowerGenerationView({
   calculationResult,
 }: PowerGenerationViewProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { 
     setPowerGenerationTemplate, 
     setManualPowerGenerator, 
