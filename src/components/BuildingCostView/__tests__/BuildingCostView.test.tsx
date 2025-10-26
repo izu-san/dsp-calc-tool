@@ -13,6 +13,7 @@ vi.mock('../../MiningCalculator', () => ({
 }));
 vi.mock('../../../utils/format', () => ({
   formatNumber: (val: number) => val.toLocaleString('en-US'),
+  formatBuildingCount: (val: number) => Math.ceil(val).toString(),
 }));
 
 // Mock useGameDataStore
@@ -229,7 +230,7 @@ describe('BuildingCostView', () => {
       expect(screen.getByText(/totalBuildingRequirements/i)).toBeInTheDocument();
     });
 
-    it('should format numbers correctly with formatNumber', () => {
+    it('should format numbers correctly with formatBuildingCount', () => {
       mockCalculateBuildingCost.mockReturnValue({
         machines: [{ machineId: 2303, count: 1234 }],
         sorters: 5678,
@@ -237,10 +238,10 @@ describe('BuildingCostView', () => {
       });
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
-      // formatNumber with en-US locale should add commas
-      expect(screen.getByText(/×1,234/)).toBeInTheDocument();
-      expect(screen.getByText(/×5,678/)).toBeInTheDocument();
-      expect(screen.getByText(/×9,012/)).toBeInTheDocument();
+      // formatBuildingCount should display integers without commas
+      expect(screen.getByText(/×1234/)).toBeInTheDocument();
+      expect(screen.getByText(/×5678/)).toBeInTheDocument();
+      expect(screen.getByText(/×9012/)).toBeInTheDocument();
     });
   });
 });

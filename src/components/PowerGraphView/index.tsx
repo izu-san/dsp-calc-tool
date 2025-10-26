@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import type { CalculationResult } from '../../types/calculation';
 import { calculatePowerConsumption } from '../../lib/powerCalculation';
-import { formatNumber, formatPower } from '../../utils/format';
+import { formatNumber, formatPower, formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { useGameDataStore } from '../../stores/gameDataStore';
 
@@ -163,7 +163,7 @@ export function PowerGraphView({ calculationResult }: PowerGraphViewProps) {
                     {item.machineName}
                   </div>
                   <div className="text-sm text-space-300">
-                    {formatNumber(item.machineCount)} {t('machines').toLowerCase()} × {formatPower(item.powerPerMachine)}
+                    {formatBuildingCount(item.machineCount)} {t('machines').toLowerCase()} × {formatPower(item.powerPerMachine)}
                   </div>
                 </div>
                 

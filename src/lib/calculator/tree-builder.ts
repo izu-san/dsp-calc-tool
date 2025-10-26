@@ -283,8 +283,8 @@ export function buildRecipeTree(
     settings.photonGeneration
   );
 
-  // Calculate required machines
-  const machineCount = new Decimal(targetRate).div(ratePerMachine).toDecimalPlaces(2).toNumber();
+  // Calculate required machines (ceiling to integer for realistic building count)
+  const machineCount = Math.ceil(new Decimal(targetRate).div(ratePerMachine).toDecimalPlaces(2).toNumber());
 
   // Calculate power
   const machinePowerResult = calculateMachinePower(

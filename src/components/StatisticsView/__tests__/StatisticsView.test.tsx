@@ -9,6 +9,7 @@ vi.mock('../../../lib/statistics');
 vi.mock('../../../utils/format', () => ({
   formatRate: (val: number) => `${val.toFixed(1)}/s`,
   formatPower: (val: number) => val > 1000 ? `${(val / 1000).toFixed(2)} MW` : `${val.toFixed(0)} kW`,
+  formatBuildingCount: (val: number) => Math.ceil(val).toString(),
 }));
 vi.mock('../../ItemIcon', () => ({
   ItemIcon: ({ itemId }: { itemId: number }) => <div data-testid={`item-icon-${itemId}`} />,
@@ -112,8 +113,8 @@ describe('StatisticsView', () => {
     it('should display correct overview numbers', () => {
       render(<StatisticsView calculationResult={mockCalculationResult} />);
 
-      // Total machines: 25.5
-      expect(screen.getByText('25.5')).toBeInTheDocument();
+      // Total machines: 25.5 -> 26 (ceiling)
+      expect(screen.getByText('26')).toBeInTheDocument();
       
       // Total power: 1600 kW -> 1.60 MW
       expect(screen.getByText(/1\.60 MW/i)).toBeInTheDocument();
@@ -350,8 +351,8 @@ describe('StatisticsView', () => {
 
       render(<StatisticsView calculationResult={mockCalculationResult} />);
 
-      // Large machine count
-      expect(screen.getByText('999.9')).toBeInTheDocument();
+      // Large machine count: 999.9 -> 1000 (ceiling)
+      expect(screen.getByText('1000')).toBeInTheDocument();
       
       // Large power: 5000000 kW -> 5000.00 MW
       expect(screen.getByText(/5000\.00 MW/i)).toBeInTheDocument();

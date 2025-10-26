@@ -108,7 +108,8 @@ export const setupUtilityMocks = () => {
   vi.mock('../../utils/format', () => ({
     formatPower: vi.fn((kw?: number) => kw ? `${kw.toFixed(1)} kW` : '0.0 kW'),
     formatRate: vi.fn((perSec?: number) => perSec ? `${perSec.toFixed(1)}/s` : '0.0/s'),
-    formatNumber: vi.fn((n?: number) => n ? n.toFixed(1) : '0.0')
+    formatNumber: vi.fn((n?: number) => n ? n.toFixed(1) : '0.0'),
+    formatBuildingCount: vi.fn((count?: number) => count ? Math.ceil(count).toString() : '0')
   }));
 
   // URL共有関数のモック
