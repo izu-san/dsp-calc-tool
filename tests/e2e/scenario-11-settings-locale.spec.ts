@@ -113,7 +113,20 @@ test.describe('シナリオ 11: 設定永続化とロケール反映', () => {
   // ページリロード後も状態が維持されることを確認
   await page.reload();
   await waitForLanguage(page, 'en');
-  const rootReload = (await rootNodeH4.innerText()) ?? '';
+  
+  // リロード後にレシピを再選択して計算結果を表示
+  await clickRecipeByName(page, 'Gravity Matrix');
+  const spinReload = page.getByRole('spinbutton');
+  await expect(spinReload).toBeVisible();
+  await spinReload.fill('1');
+  
+  // Production Results パネルの見出しが表示されることを待つ
+  const productionHeadingReload = getProductionHeadingLocator(page);
+  await expect(productionHeadingReload).toBeVisible();
+  
+  // ルートノードのタイトルを再取得
+  const rootNodeH4Reload = getProductionRootTitleLocator(page);
+  const rootReload = (await rootNodeH4Reload.innerText()) ?? '';
   expect(rootReload).toBe(rootAfter);
   });
 });
