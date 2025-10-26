@@ -5,7 +5,7 @@ import { cn } from '../utils/classNames';
 
 interface ItemIconProps {
   itemId: number;
-  size?: number;
+  size?: number | 'auto';
   className?: string;
   alt?: string;
   preferRecipes?: boolean; // Prefer recipes sprite over items sprite
@@ -19,15 +19,16 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
   if (spriteInfo) {
     const { coords, spriteUrl, spriteData } = spriteInfo;
     
-    // 元のアイコンサイズに対するスケール比率を計算
-    const scale = size / coords.width;
+    // レスポンシブサイズの場合は、スケール計算をスキップ
+    const isAutoSize = size === 'auto';
+    const scale = isAutoSize ? 1 : size / coords.width;
     
     return (
       <div
         className={cn('inline-block', className)}
         style={{
-          width: size,
-          height: size,
+          width: isAutoSize ? '100%' : size,
+          height: isAutoSize ? '100%' : size,
           backgroundImage: `url(${spriteUrl})`,
           backgroundPosition: `${-coords.x * scale}px ${-coords.y * scale}px`,
           backgroundSize: `${spriteData.width * scale}px ${spriteData.height * scale}px`,
@@ -60,8 +61,8 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
       <img
         src={getOptimalImagePath(itemIconPathPng)}
         alt={alt}
-        width={size}
-        height={size}
+        width={size === 'auto' ? undefined : size}
+        height={size === 'auto' ? undefined : size}
         className={cn('inline-block', className)}
         loading="lazy"
         data-testid={dataTestId}
