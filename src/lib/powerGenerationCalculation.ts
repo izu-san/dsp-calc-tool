@@ -27,13 +27,17 @@ import type { GameTemplate } from '@/types/settings/templates';
  * @param template - ゲームテンプレート
  * @param manualGenerator - 手動選択された発電設備（nullの場合は自動選択）
  * @param manualFuel - 手動選択された燃料（nullの場合は自動選択）
+ * @param proliferatorSpeedBonus - 増産剤による速度ボーナス (0-1)
+ * @param proliferatorProductionBonus - 増産剤による追加生産ボーナス (0-1)
  * @returns 発電計算結果
  */
 export function calculatePowerGeneration(
   requiredPower: number,
   template: GameTemplate,
   manualGenerator?: PowerGeneratorType | null,
-  manualFuel?: string | null
+  manualFuel?: string | null,
+  proliferatorSpeedBonus: number = 0,
+  proliferatorProductionBonus: number = 0
 ): PowerGenerationResult {
   // 必要電力が0以下の場合は空の結果を返す
   if (requiredPower <= 0) {
@@ -42,6 +46,8 @@ export function calculatePowerGeneration(
       generators: [],
       totalGenerators: 0,
       totalFuelConsumption: new Map(),
+      proliferatorSpeedBonus,
+      proliferatorProductionBonus,
     };
   }
 
@@ -64,6 +70,8 @@ export function calculatePowerGeneration(
       generators: [],
       totalGenerators: 0,
       totalFuelConsumption: new Map(),
+      proliferatorSpeedBonus,
+      proliferatorProductionBonus,
     };
   }
 
@@ -94,7 +102,7 @@ export function calculatePowerGeneration(
   }
 
   // 実際の出力を計算（稼働率を考慮）
-  let actualOutput = bestGenerator.baseOutput * bestGenerator.operatingRate;
+  let baseActualOutput = bestGenerator.baseOutput * bestGenerator.operatingRate;
 
   // Artificial Starの場合、燃料によって出力が変わる
   if (
@@ -102,18 +110,50 @@ export function calculatePowerGeneration(
     bestFuel &&
     ARTIFICIAL_STAR_OUTPUT_MAP[bestFuel.itemId]
   ) {
-    actualOutput = ARTIFICIAL_STAR_OUTPUT_MAP[bestFuel.itemId];
+    baseActualOutput = ARTIFICIAL_STAR_OUTPUT_MAP[bestFuel.itemId];
+  }
+
+  // 増産剤による出力向上を計算
+  let actualOutputPerUnit: number;
+  const speedMultiplier = 1 + proliferatorSpeedBonus;
+  const productionMultiplier = 1 + proliferatorProductionBonus;
+  
+  if (bestGenerator.type === 'artificialStar') {
+    // 人工恒星: 速度ボーナスを適用
+    actualOutputPerUnit = baseActualOutput * speedMultiplier;
+  } else {
+    // 人工恒星以外: 追加生産ボーナスを適用
+    actualOutputPerUnit = baseActualOutput * productionMultiplier;
   }
 
   // 必要台数を計算（切り上げ）
-  const count = Math.ceil(requiredPower / actualOutput);
+  const count = Math.ceil(requiredPower / actualOutputPerUnit);
 
   // 総出力を計算
-  const totalOutput = actualOutput * count;
+  const totalOutput = actualOutputPerUnit * count;
+
+  // 増産剤による燃料エネルギー向上を計算
+  let actualFuelEnergy = 0;
+  if (bestFuel) {
+    if (bestGenerator.type === 'artificialStar') {
+      // 人工恒星: 燃料エネルギーは変わらない
+      actualFuelEnergy = bestFuel.energyPerItem;
+    } else {
+      // 人工恒星以外: 追加生産ボーナスを適用
+      actualFuelEnergy = bestFuel.energyPerItem * productionMultiplier;
+    }
+  }
 
   // 燃料消費速度を計算
   const fuelConsumptionRate = bestFuel
-    ? calculateFuelConsumption(bestGenerator, bestFuel, count)
+    ? calculateFuelConsumption(
+        bestGenerator,
+        bestFuel,
+        count,
+        actualFuelEnergy,
+        speedMultiplier,
+        bestGenerator.type === 'artificialStar'
+      )
     : 0;
 
   // 発電設備の割り当て
@@ -123,6 +163,8 @@ export function calculatePowerGeneration(
     count,
     totalOutput,
     fuelConsumptionRate,
+    actualOutputPerUnit,
+    actualFuelEnergy,
   };
 
   // 総燃料消費量マップを作成
@@ -136,6 +178,8 @@ export function calculatePowerGeneration(
     generators: [allocation],
     totalGenerators: count,
     totalFuelConsumption,
+    proliferatorSpeedBonus,
+    proliferatorProductionBonus,
   };
 }
 
@@ -196,25 +240,51 @@ function selectBestFuel(
 /**
  * 燃料消費速度を計算
  *
- * 計算式: (useFuelPerTick * 60) / heatValue * count
+ * 計算式:
+ * - 人工恒星: (useFuelPerTick * 60 * speedMultiplier) / heatValue * count
+ * - 人工恒星以外: (useFuelPerTick * 60) / (heatValue * productionMultiplier) * count
+ *                ※ actualFuelEnergyには既にproductionMultiplierが適用済み
  *
  * @param generator - 発電設備
  * @param fuel - 燃料
  * @param count - 発電設備の台数
+ * @param actualFuelEnergy - 増産剤適用後の燃料エネルギー (MJ/個)
+ * @param speedMultiplier - 速度倍率 (1 + speedBonus)
+ * @param isArtificialStar - 人工恒星かどうか
  * @returns 燃料消費速度 (個/秒)
  */
 function calculateFuelConsumption(
   generator: PowerGeneratorInfo,
   fuel: FuelItem,
-  count: number
+  count: number,
+  actualFuelEnergy: number,
+  speedMultiplier: number,
+  isArtificialStar: boolean
 ): number {
   if (generator.useFuelPerTick === 0 || fuel.heatValue === 0) {
     return 0;
   }
 
+  // heatValueをMJに変換 (J -> MJ)
+  const heatValueMJ = fuel.heatValue / 1_000_000;
+
+  // 増産剤適用後のheatValueを計算
+  const actualHeatValue = heatValueMJ * (actualFuelEnergy / fuel.energyPerItem);
+
   // 1台あたりの燃料消費速度 (個/秒)
-  const consumptionPerGenerator =
-    (generator.useFuelPerTick * 60) / fuel.heatValue;
+  let consumptionPerGenerator: number;
+  
+  if (isArtificialStar) {
+    // 人工恒星: 燃料消費速度が速度ボーナス分上昇
+    consumptionPerGenerator =
+      (generator.useFuelPerTick * 60 * speedMultiplier) / (actualHeatValue * 1_000_000);
+  } else {
+    // 人工恒星以外: 
+    // 出力が追加生産分向上し、燃料エネルギーも同じ分向上するため、
+    // 燃料消費速度は変わらない
+    consumptionPerGenerator =
+      (generator.useFuelPerTick * 60) / (actualHeatValue * 1_000_000);
+  }
 
   // 総燃料消費速度
   return consumptionPerGenerator * count;

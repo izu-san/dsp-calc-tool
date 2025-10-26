@@ -448,7 +448,10 @@
     "manualSelection": "手動選択（オプション）",
     "generatorLabel": "発電設備",
     "fuelLabel": "燃料",
-    "automatic": "自動"
+    "automatic": "自動",
+    "proliferatorSettings": "増産剤設定",
+    "proliferatorEffectSpeed": "人工恒星: 出力と燃料消費速度が速度ボーナス分向上",
+    "proliferatorEffectProduction": "人工恒星以外: 出力と燃料エネルギーが追加生産ボーナス分向上（燃料消費速度は変わらない）"
   }
 }
 

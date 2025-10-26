@@ -17,9 +17,17 @@ vi.mock('@/stores/settingsStore', () => ({
       powerGenerationTemplate: 'default',
       manualPowerGenerator: null,
       manualPowerFuel: null,
+      powerFuelProliferator: {
+        type: 'none',
+        mode: 'production' as const,
+        productionBonus: 0,
+        speedBonus: 0,
+        powerIncrease: 0,
+      },
       setPowerGenerationTemplate: vi.fn(),
       setManualPowerGenerator: vi.fn(),
       setManualPowerFuel: vi.fn(),
+      setPowerFuelProliferator: vi.fn(),
     };
     return selector ? selector(store) : store;
   }),

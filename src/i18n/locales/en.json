@@ -448,7 +448,10 @@
     "manualSelection": "Manual Selection (Optional)",
     "generatorLabel": "Generator",
     "fuelLabel": "Fuel",
-    "automatic": "Auto"
+    "automatic": "Auto",
+    "proliferatorSettings": "Proliferator Settings",
+    "proliferatorEffectSpeed": "Artificial Star: Output and fuel consumption rate increased by speed bonus",
+    "proliferatorEffectProduction": "Non-Artificial Star: Output and fuel energy increased by production bonus (fuel consumption rate unchanged)"
   }
 }
 

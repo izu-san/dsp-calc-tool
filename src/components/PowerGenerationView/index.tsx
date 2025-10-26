@@ -2,7 +2,7 @@
  * 発電設備表示コンポーネント
  */
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalculationResult } from '@/types';
 import { calculatePowerGeneration } from '@/lib/powerGenerationCalculation';
@@ -13,6 +13,14 @@ import { formatNumber, formatPower, formatRate } from '@/utils/format';
 import { ItemIcon } from '@/components/ItemIcon';
 import { FUEL_ITEMS, POWER_GENERATORS, TEMPLATE_POWER_GENERATORS } from '@/constants/powerGeneration';
 import type { PowerGeneratorType } from '@/types/power-generation';
+
+// Proliferator item IDs
+const PROLIFERATOR_IDS: Record<string, number | null> = {
+  none: null,
+  mk1: 1141,
+  mk2: 1142,
+  mk3: 1143,
+};
 
 interface PowerGenerationViewProps {
   calculationResult: CalculationResult;
@@ -28,7 +36,8 @@ export function PowerGenerationView({
   const { 
     setPowerGenerationTemplate, 
     setManualPowerGenerator, 
-    setManualPowerFuel 
+    setManualPowerFuel,
+    setPowerFuelProliferator
   } = useSettingsStore();
   const data = useGameDataStore((state) => state.data);
   const machines = data?.machines;
@@ -65,6 +74,31 @@ export function PowerGenerationView({
   const template = useSettingsStore((state) => state.powerGenerationTemplate);
   const manualGenerator = useSettingsStore((state) => state.manualPowerGenerator);
   const manualFuel = useSettingsStore((state) => state.manualPowerFuel);
+  const powerFuelProliferator = useSettingsStore((state) => state.powerFuelProliferator);
+
+  // 現在選択されている発電設備が人工恒星かどうかを判定
+  const isArtificialStar = useMemo(() => {
+    if (manualGenerator) {
+      return POWER_GENERATORS[manualGenerator]?.type === 'artificialStar';
+    }
+    // テンプレートから自動選択された場合の判定
+    const templateGenerators = TEMPLATE_POWER_GENERATORS[template];
+    if (templateGenerators && templateGenerators.length > 0) {
+      const firstGenerator = POWER_GENERATORS[templateGenerators[0]];
+      return firstGenerator?.type === 'artificialStar';
+    }
+    return false;
+  }, [manualGenerator, template]);
+
+  // 発電設備が変更された時に増産剤のモードを自動更新
+  useEffect(() => {
+    if (powerFuelProliferator.type !== 'none') {
+      const correctMode = isArtificialStar ? 'speed' : 'production';
+      if (powerFuelProliferator.mode !== correctMode) {
+        setPowerFuelProliferator(powerFuelProliferator.type, correctMode);
+      }
+    }
+  }, [isArtificialStar, powerFuelProliferator.type, powerFuelProliferator.mode, setPowerFuelProliferator]);
 
   // 全発電設備リスト（テンプレート関係なく）
   const allGenerators = useMemo(() => {
@@ -101,9 +135,11 @@ export function PowerGenerationView({
       totalPowerConsumption, 
       template, 
       manualGenerator, 
-      manualFuel
+      manualFuel,
+      powerFuelProliferator.speedBonus,
+      powerFuelProliferator.productionBonus
     );
-  }, [totalPowerConsumption, template, manualGenerator, manualFuel]);
+  }, [totalPowerConsumption, template, manualGenerator, manualFuel, powerFuelProliferator]);
 
   if (totalPowerConsumption <= 0) {
     return (
@@ -135,6 +171,75 @@ export function PowerGenerationView({
           <option value="lateGame" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>{t('powerGeneration.templateLateGame')}</option>
           <option value="endGame" style={{ backgroundColor: '#1E293B', color: '#FFFFFF' }}>{t('powerGeneration.templateEndGame')}</option>
         </select>
+      </div>
+
+      {/* 燃料の増産剤設定 */}
+      <div className="hologram-card p-4 border border-neon-green/30 rounded-lg bg-dark-800/50">
+        <h3 className="text-sm font-medium text-neon-cyan mb-3">
+          {t('powerGeneration.proliferatorSettings')}
+        </h3>
+        
+        <div className="space-y-4">
+          {/* 増産剤タイプ選択 */}
+          <div>
+            <label className="block text-xs text-space-300 mb-2">
+              {t('proliferatorType')}
+            </label>
+            <div className="grid grid-cols-4 gap-3">
+              {(['none', 'mk1', 'mk2', 'mk3'] as const).map((type) => {
+                const iconId = PROLIFERATOR_IDS[type];
+                const getProliferatorLabel = (pType: string) => {
+                  if (pType === 'none') return t('none');
+                  return t(`proliferator${pType.toUpperCase()}`);
+                };
+                return (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      // 発電設備に応じて自動でモードを決定
+                      const mode = isArtificialStar ? 'speed' : 'production';
+                      setPowerFuelProliferator(type, mode);
+                    }}
+                    className={`
+                      px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
+                      ${powerFuelProliferator.type === type
+                        ? 'bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(16,185,129,0.6),inset_0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-sm font-bold scale-105'
+                        : 'bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green'
+                      }
+                    `}
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      {iconId && <ItemIcon itemId={iconId} size={24} />}
+                      <span className="text-xs leading-tight text-center">{getProliferatorLabel(type)}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+
+          {/* 増産剤の効果説明 */}
+          {powerFuelProliferator.type !== 'none' && (
+            <div className="p-3 bg-neon-green/10 border border-neon-green/30 rounded text-xs text-space-200">
+              <div className="space-y-1">
+                <div>
+                  <span className="text-neon-green font-semibold">{t('speedBonus')}:</span>
+                  <span className="ml-2">+{(powerFuelProliferator.speedBonus * 100).toFixed(0)}%</span>
+                </div>
+                <div>
+                  <span className="text-neon-green font-semibold">{t('productionBonus')}:</span>
+                  <span className="ml-2">+{(powerFuelProliferator.productionBonus * 100).toFixed(1)}%</span>
+                </div>
+                <div className="mt-2 pt-2 border-t border-neon-green/20 text-yellow-200">
+                  ℹ️ {isArtificialStar 
+                    ? t('powerGeneration.proliferatorEffectSpeed')
+                    : t('powerGeneration.proliferatorEffectProduction')}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 発電設備と燃料の手動選択 */}
