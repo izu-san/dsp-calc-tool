@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState } from 'react';
 import { useSpriteData } from '../hooks/useSpriteData';
 import { getDataPath } from '../utils/paths';
 import { getOptimalImagePath, getImageSourceSet } from '../utils/imageFormat';
@@ -14,34 +15,66 @@ interface ItemIconProps {
 
 export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRecipes = false, 'data-testid': dataTestId }: ItemIconProps) {
   const spriteInfo = useSpriteData(itemId, preferRecipes);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [actualSize, setActualSize] = useState(80);
+
+  // レスポンシブサイズの場合、親コンテナのサイズを監視
+  useEffect(() => {
+    if (size !== 'auto' || !containerRef.current) return;
+
+    const updateSize = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        const minSize = Math.min(width, height);
+        setActualSize(Math.min(Math.max(minSize, 32), 80));
+      }
+    };
+
+    updateSize();
+
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, [size]);
 
   // スプライトが使える場合
   if (spriteInfo) {
     const { coords, spriteUrl, spriteData } = spriteInfo;
     
-    // レスポンシブサイズの場合は、スケール計算をスキップ
     const isAutoSize = size === 'auto';
-    const scale = isAutoSize ? 1 : size / coords.width;
+    const effectiveSize = isAutoSize ? actualSize : size;
+    const scale = effectiveSize / coords.width;
     
     return (
       <div
-        className={cn('inline-block', className)}
+        ref={isAutoSize ? containerRef : undefined}
+        className={cn('inline-block', isAutoSize ? 'w-full h-full max-w-[80px] max-h-[80px] min-w-[32px] min-h-[32px]' : '', className)}
         style={{
-          width: isAutoSize ? '100%' : size,
-          height: isAutoSize ? '100%' : size,
-          backgroundImage: `url(${spriteUrl})`,
-          backgroundPosition: `${-coords.x * scale}px ${-coords.y * scale}px`,
-          backgroundSize: `${spriteData.width * scale}px ${spriteData.height * scale}px`,
-          backgroundRepeat: 'no-repeat',
-          imageRendering: 'auto', // 高品質なスケーリング
+          width: isAutoSize ? '100%' : effectiveSize,
+          height: isAutoSize ? '100%' : effectiveSize,
+          aspectRatio: '1 / 1',
         }}
-        role="img"
-        aria-label={alt}
-        title={alt}
-        data-testid={dataTestId}
-        data-prefer-recipes={preferRecipes ? 'true' : 'false'}
-        data-alt={alt}
-      />
+      >
+        <div
+          style={{
+            width: effectiveSize,
+            height: effectiveSize,
+            backgroundImage: `url(${spriteUrl})`,
+            backgroundPosition: `${-coords.x * scale}px ${-coords.y * scale}px`,
+            backgroundSize: `${spriteData.width * scale}px ${spriteData.height * scale}px`,
+            backgroundRepeat: 'no-repeat',
+            imageRendering: 'auto',
+          }}
+          role="img"
+          aria-label={alt}
+          title={alt}
+          data-testid={dataTestId}
+          data-prefer-recipes={preferRecipes ? 'true' : 'false'}
+          data-alt={alt}
+          data-size={size}
+        />
+      </div>
     );
   }
 
@@ -68,6 +101,7 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
         data-testid={dataTestId}
         data-prefer-recipes={preferRecipes ? 'true' : 'false'}
         data-alt={alt}
+        data-size={size}
         onError={(e) => {
           // アイテム画像が失敗したらマシン画像を試す
           const target = e.target as HTMLImageElement;
