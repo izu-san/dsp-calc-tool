@@ -24,6 +24,7 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
 
   // Map to accumulate power by machine ID
   const powerMap = new Map<number, { name: string; count: number; powerPerMachine: number }>();
+  let totalSorterPower = 0; // Track total sorter power separately
 
   // Recursive function to traverse the tree
   function traverse(node: RecipeTreeNode) {
@@ -38,16 +39,9 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
     const machineName = machine.name || 'Unknown Machine';
     const machineCount = node.machineCount;
     
-    // ダイソンスフィア電力の場合は node.power.dysonSphere を使用
-    // 通常電力の場合は workEnergyPerTick から計算
-    let powerPerMachine: number;
-    if (node.power.dysonSphere > 0) {
-      // ダイソンスフィア電力: node.power.dysonSphere / machineCount
-      powerPerMachine = machineCount > 0 ? node.power.dysonSphere / machineCount : 0;
-    } else {
-      // 通常電力: workEnergyPerTick * 60 / 1000
-      powerPerMachine = (machine.workEnergyPerTick || 0) * 60 / 1000; // Convert to kW
-    }
+    // Calculate power per machine (machines only, not sorters)
+    // Note: This includes Ray Receivers (dysonSphere nodes) - they consume power too!
+    const powerPerMachine = (machine.workEnergyPerTick || 0) * 60 / 1000; // kW
 
     // Add or update power map
     if (powerMap.has(machineId)) {
@@ -61,6 +55,9 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
       });
     }
 
+    // Track sorter power separately (all sorters consume power)
+    totalSorterPower += node.power.sorters;
+
     // Traverse children
     node.children.forEach(child => traverse(child));
   }
@@ -69,11 +66,11 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
 
   // Convert map to array and calculate totals
   const byMachine: PowerConsumption[] = [];
-  let totalPower = 0;
+  let totalMachinePower = 0;
 
   powerMap.forEach((data, machineId) => {
     const total = data.count * data.powerPerMachine;
-    totalPower += total;
+    totalMachinePower += total;
     byMachine.push({
       machineId,
       machineName: data.name,
@@ -84,7 +81,10 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
     });
   });
 
-  // Calculate percentages and sort by power consumption (descending)
+  // Total power = machines + sorters (excluding dysonSphere)
+  const totalPower = totalMachinePower + totalSorterPower;
+
+  // Calculate percentages based on total power and sort by power consumption (descending)
   byMachine.forEach(item => {
     item.percentage = totalPower > 0 ? (item.totalPower / totalPower) * 100 : 0;
   });

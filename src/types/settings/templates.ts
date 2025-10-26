@@ -5,6 +5,17 @@ import { PROLIFERATOR_DATA } from './proliferator';
 import { CONVEYOR_BELT_DATA, SORTER_DATA } from './conveyor';
 import { DEFAULT_PHOTON_GENERATION_SETTINGS } from './photonGeneration';
 
+/**
+ * ゲームテンプレートの種類
+ */
+export type GameTemplate =
+  | 'default' // デフォルト（初期状態）
+  | 'earlyGame'
+  | 'midGame'
+  | 'lateGame'
+  | 'endGame'
+  | 'powerSaver';
+
 // Default alternative recipes (marked with ★ in specs)
 export const DEFAULT_ALTERNATIVE_RECIPES: Record<number, number> = {
   1116: 1406, // Sulfuric Acid -> SID 1406

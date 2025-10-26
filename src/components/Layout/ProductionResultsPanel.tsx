@@ -6,6 +6,7 @@ import { cn } from '../../utils/classNames';
 const ProductionTree = lazy(() => import('../ResultTree').then(m => ({ default: m.ProductionTree })));
 const StatisticsView = lazy(() => import('../StatisticsView').then(m => ({ default: m.StatisticsView })));
 const BuildingCostView = lazy(() => import('../BuildingCostView').then(m => ({ default: m.BuildingCostView })));
+const PowerGenerationView = lazy(() => import('../PowerGenerationView').then(m => ({ default: m.PowerGenerationView })));
 
 interface ProductionResultsPanelProps {
   calculationResult: CalculationResult | null;
@@ -30,6 +31,7 @@ export function ProductionResultsPanel({
   const { t } = useTranslation();
   const [showStatistics, setShowStatistics] = useState(false);
   const [showBuildingCost, setShowBuildingCost] = useState(false);
+  const [showPowerGeneration, setShowPowerGeneration] = useState(false);
 
   return (
     <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
@@ -40,19 +42,19 @@ export function ProductionResultsPanel({
             {/* Tab Buttons */}
             <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">
               <button
-                onClick={() => { setShowStatistics(false); setShowBuildingCost(false); }}
+                onClick={() => { setShowStatistics(false); setShowBuildingCost(false); setShowPowerGeneration(false); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
                   {
-                    'border-neon-blue text-neon-cyan shadow-neon-blue': !showStatistics && !showBuildingCost,
-                    'border-transparent text-space-300 hover:text-neon-cyan': showStatistics || showBuildingCost,
+                    'border-neon-blue text-neon-cyan shadow-neon-blue': !showStatistics && !showBuildingCost && !showPowerGeneration,
+                    'border-transparent text-space-300 hover:text-neon-cyan': showStatistics || showBuildingCost || showPowerGeneration,
                   }
                 )}
               >
                 {t('productionTree')}
               </button>
               <button
-                onClick={() => { setShowStatistics(true); setShowBuildingCost(false); }}
+                onClick={() => { setShowStatistics(true); setShowBuildingCost(false); setShowPowerGeneration(false); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
                   {
@@ -64,7 +66,7 @@ export function ProductionResultsPanel({
                 {t('statistics')}
               </button>
               <button
-                onClick={() => { setShowStatistics(false); setShowBuildingCost(true); }}
+                onClick={() => { setShowStatistics(false); setShowBuildingCost(true); setShowPowerGeneration(false); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
                   {
@@ -75,9 +77,21 @@ export function ProductionResultsPanel({
               >
                 {t('buildingCost')}
               </button>
+              <button
+                onClick={() => { setShowStatistics(false); setShowBuildingCost(false); setShowPowerGeneration(true); }}
+                className={cn(
+                  'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
+                  {
+                    'border-neon-blue text-neon-cyan shadow-neon-blue': showPowerGeneration,
+                    'border-transparent text-space-300 hover:text-neon-cyan': !showPowerGeneration,
+                  }
+                )}
+              >
+                {t('powerGeneration.title')}
+              </button>
               
               {/* Expand/Collapse All button */}
-              {!showStatistics && !showBuildingCost && (
+              {!showStatistics && !showBuildingCost && !showPowerGeneration && (
                 <button
                   onClick={handleToggleAll}
                   className={cn(
@@ -107,6 +121,8 @@ export function ProductionResultsPanel({
                 <StatisticsView calculationResult={calculationResult} />
               ) : showBuildingCost ? (
                 <BuildingCostView calculationResult={calculationResult} />
+              ) : showPowerGeneration ? (
+                <PowerGenerationView calculationResult={calculationResult} />
               ) : (
                 <ProductionTree 
                   node={calculationResult.rootNode}

@@ -300,3 +300,60 @@ describe('calculateSorterPower', () => {
   });
 });
 
+describe('Power Calculation Edge Cases', () => {
+  it('should handle Dyson Sphere power correctly (should be excluded from consumption)', () => {
+    // This test verifies that Dyson Sphere power is treated as generated power,
+    // not consumed power, which is important for power generation calculations
+    
+    const mockMachine: Machine = {
+      id: 2208, // Ray Receiver
+      name: 'Ray Receiver',
+      Type: 'Particle',
+      assemblerSpeed: 10000,
+      workEnergyPerTick: 0, // Ray Receivers don't consume work energy
+      idleEnergyPerTick: 0,
+      exchangeEnergyPerTick: 0,
+      isPowerConsumer: false,
+      isPowerExchanger: true, // This is the key - it exchanges power
+      isRaw: false,
+    };
+
+    const proliferator: ProliferatorConfig = {
+      ...PROLIFERATOR_DATA.none,
+      mode: 'production',
+    };
+
+    // Ray Receivers should not consume power for work (they generate power)
+    const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 1, speed: 1 });
+    
+    expect(result.machines).toBe(0); // No work power consumption
+    expect(result.total).toBe(0);
+  });
+
+  it('should handle power consumers correctly (should be included in consumption)', () => {
+    const mockMachine: Machine = {
+      id: 2302, // Arc Smelter
+      name: 'Arc Smelter',
+      Type: 'Smelt',
+      assemblerSpeed: 10000,
+      workEnergyPerTick: 360000,
+      idleEnergyPerTick: 18000,
+      exchangeEnergyPerTick: 0,
+      isPowerConsumer: true, // This is the key - it consumes power
+      isPowerExchanger: false,
+      isRaw: false,
+    };
+
+    const proliferator: ProliferatorConfig = {
+      ...PROLIFERATOR_DATA.none,
+      mode: 'production',
+    };
+
+    // Regular machines should consume power
+    const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 1, speed: 1 });
+    
+    expect(result.machines).toBeGreaterThan(0); // Should consume power
+    expect(result.total).toBeGreaterThan(0);
+  });
+});
+

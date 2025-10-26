@@ -441,4 +441,119 @@ describe('settingsStore', () => {
       }
     });
   });
+
+  describe('Power Generation Settings', () => {
+    it('should have default power generation template', () => {
+      const { powerGenerationTemplate } = useSettingsStore.getState();
+      
+      expect(powerGenerationTemplate).toBe('default');
+    });
+
+    it('should have null manual power generator initially', () => {
+      const { manualPowerGenerator } = useSettingsStore.getState();
+      
+      expect(manualPowerGenerator).toBeNull();
+    });
+
+    it('should have null manual power fuel initially', () => {
+      const { manualPowerFuel } = useSettingsStore.getState();
+      
+      expect(manualPowerFuel).toBeNull();
+    });
+
+    it('should have null selectedTemplate initially', () => {
+      const { selectedTemplate } = useSettingsStore.getState();
+      
+      expect(selectedTemplate).toBeNull();
+    });
+
+    it('should set power generation template', () => {
+      const { setPowerGenerationTemplate } = useSettingsStore.getState();
+      
+      setPowerGenerationTemplate('earlyGame');
+      
+      const { powerGenerationTemplate } = useSettingsStore.getState();
+      expect(powerGenerationTemplate).toBe('earlyGame');
+    });
+
+    it('should set manual power generator', () => {
+      const { setManualPowerGenerator } = useSettingsStore.getState();
+      
+      setManualPowerGenerator('geothermal');
+      
+      const { manualPowerGenerator } = useSettingsStore.getState();
+      expect(manualPowerGenerator).toBe('geothermal');
+    });
+
+    it('should set manual power fuel', () => {
+      const { setManualPowerFuel } = useSettingsStore.getState();
+      
+      setManualPowerFuel('coal');
+      
+      const { manualPowerFuel } = useSettingsStore.getState();
+      expect(manualPowerFuel).toBe('coal');
+    });
+
+    it('should set selectedTemplate', () => {
+      const { setSelectedTemplate } = useSettingsStore.getState();
+      
+      setSelectedTemplate('earlyGame');
+      
+      const { selectedTemplate } = useSettingsStore.getState();
+      expect(selectedTemplate).toBe('earlyGame');
+    });
+
+    it('should reset power generation settings on resetSettings', () => {
+      const { 
+        setPowerGenerationTemplate, 
+        setManualPowerGenerator, 
+        setManualPowerFuel,
+        setSelectedTemplate,
+        resetSettings 
+      } = useSettingsStore.getState();
+      
+      // Set some values
+      setPowerGenerationTemplate('endGame');
+      setManualPowerGenerator('artificialStar');
+      setManualPowerFuel('antimatterFuelRod');
+      setSelectedTemplate('lateGame');
+      
+      // Reset
+      resetSettings();
+      
+      const { 
+        powerGenerationTemplate, 
+        manualPowerGenerator, 
+        manualPowerFuel,
+        selectedTemplate 
+      } = useSettingsStore.getState();
+      
+      expect(powerGenerationTemplate).toBe('default');
+      expect(manualPowerGenerator).toBeNull();
+      expect(manualPowerFuel).toBeNull();
+      expect(selectedTemplate).toBeNull();
+    });
+  });
+
+  describe('Template Application with Power Generation', () => {
+    it('should update both selectedTemplate and powerGenerationTemplate on applyTemplate', () => {
+      const { applyTemplate } = useSettingsStore.getState();
+      
+      applyTemplate('earlyGame');
+      
+      const { selectedTemplate, powerGenerationTemplate } = useSettingsStore.getState();
+      expect(selectedTemplate).toBe('earlyGame');
+      expect(powerGenerationTemplate).toBe('earlyGame');
+    });
+
+    it('should update both templates when applying endGame template', () => {
+      const { applyTemplate } = useSettingsStore.getState();
+      
+      applyTemplate('endGame');
+      
+      const { selectedTemplate, powerGenerationTemplate } = useSettingsStore.getState();
+      expect(selectedTemplate).toBe('endGame');
+      expect(powerGenerationTemplate).toBe('endGame');
+    });
+  });
 });

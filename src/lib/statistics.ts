@@ -31,9 +31,12 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode): ProductionSta
 
   // Recursive function to traverse the tree
   function traverse(node: RecipeTreeNode) {
-    // Add machine count and power
+    // Add machine count
     totalMachines += node.machineCount;
-    totalPower += node.power.total;
+    
+    // Add power consumption: machines + sorters (always consumed by power plants)
+    // Note: dysonSphere power is NOT included (it's provided by Dyson Sphere, not power plants)
+    totalPower += node.power.machines + node.power.sorters;
 
     // Process outputs (production)
     if (node.recipe?.Results) {
