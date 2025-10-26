@@ -91,7 +91,7 @@ export function PowerGenerationView({
     
     // 全燃料から選択された発電設備の燃料タイプに合うものを抽出
     return Object.entries(FUEL_ITEMS)
-      .filter(([_, fuel]) => fuel.fuelType === fuelType)
+      .filter(([, fuel]) => fuel.fuelType === fuelType)
       .map(([key, fuel]) => ({ key, ...fuel }));
   }, [template, manualGenerator]);
 
