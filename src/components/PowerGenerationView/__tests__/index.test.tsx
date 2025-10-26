@@ -283,5 +283,150 @@ describe('PowerGenerationView', () => {
       expect(screen.getByText('1.1 MW')).toBeInTheDocument(); // 1100kW = 1.1MW
     });
   });
+
+  describe('Proliferator Settings UI', () => {
+    it('should display proliferator settings section', () => {
+      const mockResult: CalculationResult = {
+        rootNode: {
+          recipe: null,
+          machine: null,
+          machineCount: 0,
+          power: { machines: 1000, sorters: 100, dysonSphere: 0 },
+          children: [],
+        },
+        statistics: {
+          totalMachines: 1,
+          totalPower: 1100,
+          itemStatistics: new Map(),
+        },
+        totalPower: {
+          machines: 1000,
+          sorters: 100,
+          dysonSphere: 0,
+        },
+      };
+
+      render(<PowerGenerationView calculationResult={mockResult} />);
+
+      // 増産剤設定セクションが表示される
+      expect(screen.getByText('powerGeneration.proliferatorSettings')).toBeInTheDocument();
+    });
+
+    it('should display proliferator type label', () => {
+      const mockResult: CalculationResult = {
+        rootNode: {
+          recipe: null,
+          machine: null,
+          machineCount: 0,
+          power: { machines: 1000, sorters: 100, dysonSphere: 0 },
+          children: [],
+        },
+        statistics: {
+          totalMachines: 1,
+          totalPower: 1100,
+          itemStatistics: new Map(),
+        },
+        totalPower: {
+          machines: 1000,
+          sorters: 100,
+          dysonSphere: 0,
+        },
+      };
+
+      render(<PowerGenerationView calculationResult={mockResult} />);
+
+      // 増産剤タイプラベルが表示される
+      expect(screen.getByText('proliferatorType')).toBeInTheDocument();
+    });
+
+    it('should display all proliferator type buttons', () => {
+      const mockResult: CalculationResult = {
+        rootNode: {
+          recipe: null,
+          machine: null,
+          machineCount: 0,
+          power: { machines: 1000, sorters: 100, dysonSphere: 0 },
+          children: [],
+        },
+        statistics: {
+          totalMachines: 1,
+          totalPower: 1100,
+          itemStatistics: new Map(),
+        },
+        totalPower: {
+          machines: 1000,
+          sorters: 100,
+          dysonSphere: 0,
+        },
+      };
+
+      render(<PowerGenerationView calculationResult={mockResult} />);
+
+      // 全ての増産剤タイプのボタンが表示される
+      expect(screen.getByText('none')).toBeInTheDocument();
+      expect(screen.getByText('proliferatorMK1')).toBeInTheDocument();
+      expect(screen.getByText('proliferatorMK2')).toBeInTheDocument();
+      expect(screen.getByText('proliferatorMK3')).toBeInTheDocument();
+    });
+
+    it('should display proliferator icons for non-none types', () => {
+      const mockResult: CalculationResult = {
+        rootNode: {
+          recipe: null,
+          machine: null,
+          machineCount: 0,
+          power: { machines: 1000, sorters: 100, dysonSphere: 0 },
+          children: [],
+        },
+        statistics: {
+          totalMachines: 1,
+          totalPower: 1100,
+          itemStatistics: new Map(),
+        },
+        totalPower: {
+          machines: 1000,
+          sorters: 100,
+          dysonSphere: 0,
+        },
+      };
+
+      render(<PowerGenerationView calculationResult={mockResult} />);
+
+      // 増産剤のアイコンが表示される（none以外）
+      expect(screen.getByTestId('item-icon-1141')).toBeInTheDocument(); // Mk.I
+      expect(screen.getByTestId('item-icon-1142')).toBeInTheDocument(); // Mk.II
+      expect(screen.getByTestId('item-icon-1143')).toBeInTheDocument(); // Mk.III
+    });
+  });
+
+  describe('Proliferator Effect Display', () => {
+    it('should not display effect description when proliferator is none', () => {
+      const mockResult: CalculationResult = {
+        rootNode: {
+          recipe: null,
+          machine: null,
+          machineCount: 0,
+          power: { machines: 1000, sorters: 100, dysonSphere: 0 },
+          children: [],
+        },
+        statistics: {
+          totalMachines: 1,
+          totalPower: 1100,
+          itemStatistics: new Map(),
+        },
+        totalPower: {
+          machines: 1000,
+          sorters: 100,
+          dysonSphere: 0,
+        },
+      };
+
+      render(<PowerGenerationView calculationResult={mockResult} />);
+
+      // 増産剤がnoneの場合は効果説明が表示されない
+      expect(screen.queryByText('speedBonus')).not.toBeInTheDocument();
+      expect(screen.queryByText('productionBonus')).not.toBeInTheDocument();
+    });
+  });
 });
 

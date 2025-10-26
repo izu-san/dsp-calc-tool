@@ -320,5 +320,152 @@ test.describe('発電設備機能（PowerGenerationView）', () => {
     await expect(page.getByText('サマリー')).toBeVisible();
     await expect(page.getByText('総設備台数')).toBeVisible();
   });
+
+  test('増産剤設定の基本表示と操作', async ({ page }) => {
+    // 初期化
+    await initializeApp(page);
+
+    // レシピを選択
+    await page.getByRole('button', { name: '電磁タービン' }).click();
+
+    // 統計タブに切り替え
+    await switchTab(page, BUTTON_LABELS.STATISTICS);
+
+    // 発電設備タブに切り替え
+    await page.getByRole('button', { name: '発電設備' }).click();
+
+    // 増産剤設定セクションが表示されることを確認
+    await expect(page.locator('h3').filter({ hasText: /増産剤設定|Proliferator Settings/ }).first()).toBeVisible();
+
+    // 増産剤タイプラベルが表示されることを確認（複数存在する場合は最初のものを確認）
+    await expect(page.getByText('増産剤タイプ').first()).toBeVisible();
+
+    // 増産剤ボタンが表示されることを確認（複数存在する場合は最初のものを確認）
+    await expect(page.getByRole('button', { name: 'なし' }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /増産剤 Mk\.I/ }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /増産剤 Mk\.II/ }).first()).toBeVisible();
+    await expect(page.getByRole('button', { name: /増産剤 Mk\.III/ }).first()).toBeVisible();
+  });
+
+  test('増産剤の選択と効果表示（人工恒星以外）', async ({ page }) => {
+    // 初期化
+    await initializeApp(page);
+
+    // レシピを選択
+    await page.getByRole('button', { name: '電磁タービン' }).click();
+
+    // 統計タブに切り替え
+    await switchTab(page, BUTTON_LABELS.STATISTICS);
+
+    // 発電設備タブに切り替え
+    await page.getByRole('button', { name: '発電設備' }).click();
+
+    // Mk.IIIを選択（最初に見つかったボタンをクリック）
+    const mk3Button = page.getByRole('button', { name: /増産剤 Mk\.III/ }).first();
+    await mk3Button.click();
+
+    // 効果説明エリアが表示されることを確認（より柔軟なアプローチ）
+    await expect(page.locator('text=/速度ボーナス|Speed Bonus/')).toBeVisible();
+    
+    // 増産剤が選択されていることを確認（選択状態のクラスで確認）
+    await expect(mk3Button).toHaveClass(/scale-105/);
+  });
+
+  test('増産剤の選択と効果表示（人工恒星）', async ({ page }) => {
+    // 初期化
+    await initializeApp(page);
+
+    // レシピを選択
+    await page.getByRole('button', { name: '電磁タービン' }).click();
+
+    // 統計タブに切り替え
+    await switchTab(page, BUTTON_LABELS.STATISTICS);
+
+    // 発電設備タブに切り替え
+    await page.getByRole('button', { name: '発電設備' }).click();
+
+    // 手動選択エリアを取得
+    const manualSelectionArea = page.locator('div:has-text("手動選択（オプション）")').first();
+
+    // 人工恒星を選択
+    const artificialStarButton = manualSelectionArea.getByRole('button', { name: /人工恒星/ });
+    await artificialStarButton.click();
+
+    // Mk.IIIを選択（最初に見つかったボタンをクリック）
+    const mk3Button = page.getByRole('button', { name: /増産剤 Mk\.III/ }).first();
+    await mk3Button.click();
+
+    // 効果説明エリアが表示されることを確認
+    await expect(page.locator('text=/速度ボーナス|Speed Bonus/')).toBeVisible();
+    
+    // 増産剤が選択されていることを確認
+    await expect(mk3Button).toHaveClass(/scale-105/);
+  });
+
+  test('増産剤の選択解除', async ({ page }) => {
+    // 初期化
+    await initializeApp(page);
+
+    // レシピを選択
+    await page.getByRole('button', { name: '電磁タービン' }).click();
+
+    // 統計タブに切り替え
+    await switchTab(page, BUTTON_LABELS.STATISTICS);
+
+    // 発電設備タブに切り替え
+    await page.getByRole('button', { name: '発電設備' }).click();
+
+    // Mk.IIを選択（最初に見つかったボタンをクリック）
+    const mk2Button = page.getByRole('button', { name: /増産剤 Mk\.II/ }).first();
+    await mk2Button.click();
+
+    // 効果説明が表示されることを確認
+    await expect(page.getByText(/速度ボーナス|Speed Bonus/)).toBeVisible();
+
+    // 「なし」を選択（最初に見つかったボタンをクリック）
+    const noneButton = page.getByRole('button', { name: 'なし' }).first();
+    await noneButton.click();
+
+    // 効果説明が非表示になることを確認
+    await expect(page.getByText(/速度ボーナス|Speed Bonus/)).not.toBeVisible();
+  });
+
+  test('発電設備変更時の増産剤モード自動切り替え', async ({ page }) => {
+    // 初期化
+    await initializeApp(page);
+
+    // レシピを選択
+    await page.getByRole('button', { name: '電磁タービン' }).click();
+
+    // 統計タブに切り替え
+    await switchTab(page, BUTTON_LABELS.STATISTICS);
+
+    // 発電設備タブに切り替え
+    await page.getByRole('button', { name: '発電設備' }).click();
+
+    // Mk.IIIを選択（最初に見つかったボタンをクリック）
+    const mk3Button = page.getByRole('button', { name: /増産剤 Mk\.III/ }).first();
+    await mk3Button.click();
+
+    // 効果説明エリアが表示されることを確認
+    await expect(page.locator('text=/速度ボーナス|Speed Bonus/')).toBeVisible();
+
+    // 手動選択エリアを取得
+    const manualSelectionArea = page.locator('div:has-text("手動選択（オプション）")').first();
+
+    // 人工恒星に変更
+    const artificialStarButton = manualSelectionArea.getByRole('button', { name: /人工恒星/ });
+    await artificialStarButton.click();
+
+    // 効果説明エリアが引き続き表示されることを確認
+    await expect(page.locator('text=/速度ボーナス|Speed Bonus/')).toBeVisible();
+
+    // 地熱発電所に戻す
+    const geothermalButton = manualSelectionArea.getByRole('button', { name: /地熱発電所/ });
+    await geothermalButton.click();
+
+    // 効果説明エリアが引き続き表示されることを確認
+    await expect(page.locator('text=/速度ボーナス|Speed Bonus/')).toBeVisible();
+  });
 });
 
