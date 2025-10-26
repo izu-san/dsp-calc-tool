@@ -111,11 +111,18 @@ export function PhotonGenerationSettings() {
           step="1"
           value={photonGeneration.rayTransmissionEfficiency}
           onChange={(e) => setPhotonGenerationSetting('rayTransmissionEfficiency', Number(e.target.value))}
-          className="w-full h-2 bg-dark-700 rounded-lg appearance-none cursor-pointer accent-neon-cyan"
+          className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-dark-600 border border-neon-cyan/40"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(photonGeneration.rayTransmissionEfficiency / maxResearchLevel) * 100}%, rgb(30, 41, 59) ${(photonGeneration.rayTransmissionEfficiency / maxResearchLevel) * 100}%, rgb(30, 41, 59) 100%)`
+          }}
         />
-        <p className="text-xs text-gray-400">
-          {t('rayTransmissionEfficiencyValue')}: {(currentEfficiency * 100).toFixed(2)}% <span className="text-gray-500">(Max Lv: {maxResearchLevel})</span>
-        </p>
+        <div className="flex justify-between text-xs text-space-300 mt-1">
+          <span>0%</span>
+          <span className="text-neon-cyan">
+            {t('rayTransmissionEfficiencyValue')}: {(currentEfficiency * 100).toFixed(2)}%
+          </span>
+          <span>100% <span className="text-gray-500">(Lv: {maxResearchLevel})</span></span>
+        </div>
       </div>
 
       {/* 注意事項 */}
