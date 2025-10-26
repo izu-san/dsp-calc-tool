@@ -38,7 +38,8 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
   const categories = useMemo(() => {
     const types = new Set<string>();
     recipes.forEach(recipe => {
-      if (recipe.Type) {
+      // PhotonGenerationは専用カテゴリーを表示しない（検索で見つけられるため）
+      if (recipe.Type && recipe.Type !== 'PhotonGeneration') {
         types.add(recipe.Type);
       }
     });

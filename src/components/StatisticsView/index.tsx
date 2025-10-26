@@ -89,6 +89,11 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
           <div className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
             <div className="text-sm text-space-300">{t('totalPower')}</div>
             <div className="text-2xl font-bold text-neon-green">{formatPower(enhancedStatistics.totalPower)}</div>
+            {calculationResult && calculationResult.totalPower.dysonSphere > 0 && (
+              <div className="text-xs text-yellow-400 mt-1">
+                ⚡ {t('dysonSpherePower')}: {formatPower(calculationResult.totalPower.dysonSphere)}
+              </div>
+            )}
           </div>
           <div className="bg-neon-yellow/20 backdrop-blur-sm border border-neon-yellow/40 rounded-lg p-4 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
             <div className="text-sm text-space-300">{t('rawMaterials')}</div>

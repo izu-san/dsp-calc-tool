@@ -1,4 +1,4 @@
-import type { Recipe, Machine, ProliferatorConfig } from '../../types';
+import type { Recipe, Machine, ProliferatorConfig, PhotonGenerationSettings } from '../../types';
 import { getEffectiveBonuses } from '../proliferator';
 
 /**
@@ -12,8 +12,29 @@ export function calculateProductionRate(
   recipe: Recipe,
   machine: Machine,
   proliferator: ProliferatorConfig,
-  proliferatorMultiplier: { production: number; speed: number }
+  proliferatorMultiplier: { production: number; speed: number },
+  photonSettings?: PhotonGenerationSettings
 ): number {
+  // PhotonGeneration の特殊処理
+  if (recipe.Type === 'PhotonGeneration' && photonSettings) {
+    const isHighReception = photonSettings.continuousReception >= 100;
+    
+    // 基礎生産速度
+    let baseProductionRate: number;
+    if (!photonSettings.useGravitonLens) {
+      baseProductionRate = isHighReception ? 0.1 : 0.04; // 個/秒
+    } else {
+      baseProductionRate = isHighReception ? 0.2 : 0.08; // 個/秒
+    }
+    
+    // 重力子レンズへの増産剤効果（速度上昇）
+    const speedBonus = photonSettings.gravitonLensProliferator.speedBonus;
+    const speedMultiplier = 1 + speedBonus;
+    
+    return baseProductionRate * speedMultiplier;
+  }
+  
+  // 通常のレシピ計算
   const baseTime = recipe.TimeSpend / 60; // Convert ticks to seconds
   
   // Some machines (like Matrix Lab) have assemblerSpeed = 0, treat as 100%

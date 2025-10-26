@@ -32,7 +32,24 @@ export function calculateProductionChain(
   settings: GlobalSettings,
   nodeOverrides: Map<string, NodeOverrideSettings> = new Map()
 ): CalculationResult {
-  const rootNode = buildRecipeTree(recipe, targetRate, gameData, settings, nodeOverrides, 0, 20, `r-${recipe.SID}`);
+  // For root node, set targetItemId to the first result (primary output)
+  if (!recipe.Results || recipe.Results.length === 0) {
+    throw new Error(`Recipe ${recipe.name} has no results`);
+  }
+  const targetItemId = recipe.Results[0].id;
+  
+  const rootNode = buildRecipeTree(
+    recipe,
+    targetRate,
+    gameData,
+    settings,
+    nodeOverrides,
+    0,
+    20,
+    `r-${recipe.SID}`,
+    new Set(),
+    targetItemId
+  );
   const totalPower = calculateTotalPower(rootNode);
   const totalMachines = calculateTotalMachines(rootNode);
   const rawMaterials = calculateRawMaterials(rootNode);

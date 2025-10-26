@@ -3,6 +3,7 @@
 import type { GlobalSettings } from './index';
 import { PROLIFERATOR_DATA } from './proliferator';
 import { CONVEYOR_BELT_DATA, SORTER_DATA } from './conveyor';
+import { DEFAULT_PHOTON_GENERATION_SETTINGS } from './photonGeneration';
 
 // Default alternative recipes (marked with ★ in specs)
 export const DEFAULT_ALTERNATIVE_RECIPES: Record<number, number> = {
@@ -48,6 +49,7 @@ export const SETTINGS_TEMPLATES: Record<string, SettingsTemplate> = {
       alternativeRecipes: new Map(Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])),
       miningSpeedResearch: 100, // +0%
       proliferatorMultiplier: { production: 1, speed: 1 },
+      photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
     },
   },
   midGame: {
@@ -72,6 +74,7 @@ export const SETTINGS_TEMPLATES: Record<string, SettingsTemplate> = {
       alternativeRecipes: new Map(Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])),
       miningSpeedResearch: 120, // +20% (Lv2)
       proliferatorMultiplier: { production: 1, speed: 1 },
+      photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
     },
   },
   lateGame: {
@@ -96,6 +99,7 @@ export const SETTINGS_TEMPLATES: Record<string, SettingsTemplate> = {
       alternativeRecipes: new Map(Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])),
       miningSpeedResearch: 150, // +50% (Lv5)
       proliferatorMultiplier: { production: 1, speed: 1 },
+      photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
     },
   },
   endGame: {
@@ -120,6 +124,7 @@ export const SETTINGS_TEMPLATES: Record<string, SettingsTemplate> = {
       alternativeRecipes: new Map(Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])),
       miningSpeedResearch: 200, // +100% (Lv10)
       proliferatorMultiplier: { production: 1, speed: 1 },
+      photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
     },
   },
   powerSaver: {
@@ -144,6 +149,7 @@ export const SETTINGS_TEMPLATES: Record<string, SettingsTemplate> = {
       alternativeRecipes: new Map(Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])),
       miningSpeedResearch: 200, // +100% (Lv10)
       proliferatorMultiplier: { production: 1, speed: 1 },
+      photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
     },
   },
 };

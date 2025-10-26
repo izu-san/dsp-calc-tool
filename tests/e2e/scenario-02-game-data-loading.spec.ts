@@ -14,7 +14,7 @@ test.describe('ゲームデータ読み込みと初期表示', () => {
     await expect(page.getByRole('heading', { name: 'レシピ選択' })).toBeVisible();
 
     // 6. RecipeSelectorに少なくとも1件のレシピが表示されることを確認する
-    await expect(page.locator('text=160 レシピ 見つかりました')).toBeVisible();
+    await expect(page.locator('text=161 レシピ 見つかりました')).toBeVisible();
     await expect(page.getByRole('button', { name: '鉄インゴット' })).toBeVisible();
 
     // エラー表示が出ないことを確認（生産チェーンエリアに初期メッセージが表示される）

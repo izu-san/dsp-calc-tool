@@ -9,31 +9,35 @@ import type { GameData, Recipe, Machine, Item } from '../../types/game-data';
 export const createMockItem = (id: number, name: string): Item => ({
   id,
   name,
-  iconPath: `/icons/item_${id}.png`,
-  stackSize: 100,
-  canBeMined: false,
-  miningSpeedBonus: 0
+  Type: 'Item',
+  isRaw: id <= 10, // 最初の10個を原材料とする
+  count: 0
 });
 
 export const createMockMachine = (id: string, name: string): Machine => ({
-  id,
+  id: parseInt(id.replace(/\D/g, '') || '1'),
   name,
-  iconPath: `/icons/machine_${id}.png`,
-  type: 'Assemble',
+  Type: 'Assemble',
+  isRaw: false,
+  count: 0,
+  assemblerSpeed: 10000,
   workEnergyPerTick: 100,
-  workSpeedMultiplier: 1,
-  powerMultiplier: 1
+  idleEnergyPerTick: 10,
+  exchangeEnergyPerTick: 0,
+  isPowerConsumer: true,
+  isPowerExchanger: false
 });
 
 export const createMockRecipe = (id: number, name: string): Recipe => ({
-  id,
+  SID: id,
   name,
-  type: 'Assemble',
-  timeSpand: 1,
-  inputs: [{ id: 1, count: 1 }],
-  results: [{ id: 2, count: 1 }],
-  explicit: false,
-  firstResultId: 2
+  Type: 'Assemble',
+  Explicit: false,
+  TimeSpend: 1,
+  Items: [{ id: 1, name: 'Iron Ore', count: 1, Type: 'Item', isRaw: true }],
+  Results: [{ id: 2, name: 'Iron Ingot', count: 1, Type: 'Item', isRaw: false }],
+  GridIndex: '1101',
+  productive: true
 });
 
 // 完全なゲームデータセット

@@ -36,10 +36,18 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
     const machine = node.machine;
     const machineId = machine.id;
     const machineName = machine.name || 'Unknown Machine';
-    
-    // Power is in workEnergyPerTick, multiply by 60 to get kW
-    const powerPerMachine = (machine.workEnergyPerTick || 0) * 60 / 1000; // Convert to kW
     const machineCount = node.machineCount;
+    
+    // ダイソンスフィア電力の場合は node.power.dysonSphere を使用
+    // 通常電力の場合は workEnergyPerTick から計算
+    let powerPerMachine: number;
+    if (node.power.dysonSphere > 0) {
+      // ダイソンスフィア電力: node.power.dysonSphere / machineCount
+      powerPerMachine = machineCount > 0 ? node.power.dysonSphere / machineCount : 0;
+    } else {
+      // 通常電力: workEnergyPerTick * 60 / 1000
+      powerPerMachine = (machine.workEnergyPerTick || 0) * 60 / 1000; // Convert to kW
+    }
 
     // Add or update power map
     if (powerMap.has(machineId)) {

@@ -118,5 +118,172 @@ describe('calculateProductionRate', () => {
     
     expect(rate).toBe(3);
   });
+
+  describe('PhotonGeneration recipes', () => {
+    const photonRecipe: Recipe = {
+      SID: -1,
+      name: 'Critical Photon (Ray Receiver)',
+      TimeSpend: 60,
+      Results: [{ id: 1208, name: 'Critical Photon', count: 1, Type: 'Material', isRaw: false }],
+      Items: [],
+      Type: 'PhotonGeneration',
+      Explicit: true,
+      GridIndex: '0000',
+      productive: false,
+    };
+
+    const rayReceiver: Machine = {
+      id: 2208,
+      name: 'Ray Receiver',
+      Type: 'PhotonGenerator',
+      assemblerSpeed: 10000,
+      workEnergyPerTick: 0,
+      idleEnergyPerTick: 0,
+      exchangeEnergyPerTick: 0,
+      isPowerConsumer: false,
+      isPowerExchanger: true,
+      isRaw: false,
+    };
+
+    it('should calculate photon generation rate without graviton lens', () => {
+      const proliferator: ProliferatorConfig = {
+        ...PROLIFERATOR_DATA.none,
+        mode: 'speed',
+      };
+
+      const photonSettings = {
+        useGravitonLens: false,
+        gravitonLensProliferator: {
+          ...PROLIFERATOR_DATA.none,
+          mode: 'speed' as const,
+        },
+        solarEnergyLossResearch: 0,
+        continuousReception: 100,
+      };
+
+      // 連続受信100%, 重力子レンズなし: 0.1個/秒
+      const rate = calculateProductionRate(
+        photonRecipe,
+        rayReceiver,
+        proliferator,
+        { production: 1, speed: 1 },
+        photonSettings
+      );
+
+      expect(rate).toBeCloseTo(0.1, 3);
+    });
+
+    it('should calculate photon generation rate with graviton lens', () => {
+      const proliferator: ProliferatorConfig = {
+        ...PROLIFERATOR_DATA.none,
+        mode: 'speed',
+      };
+
+      const photonSettings = {
+        useGravitonLens: true,
+        gravitonLensProliferator: {
+          ...PROLIFERATOR_DATA.none,
+          mode: 'speed' as const,
+        },
+        solarEnergyLossResearch: 0,
+        continuousReception: 100,
+      };
+
+      // 連続受信100%, 重力子レンズあり: 0.2個/秒
+      const rate = calculateProductionRate(
+        photonRecipe,
+        rayReceiver,
+        proliferator,
+        { production: 1, speed: 1 },
+        photonSettings
+      );
+
+      expect(rate).toBeCloseTo(0.2, 3);
+    });
+
+    it('should apply graviton lens proliferator speed bonus', () => {
+      const proliferator: ProliferatorConfig = {
+        ...PROLIFERATOR_DATA.none,
+        mode: 'speed',
+      };
+
+      const photonSettings = {
+        useGravitonLens: true,
+        gravitonLensProliferator: {
+          ...PROLIFERATOR_DATA.mk3, // +100% speed
+          mode: 'speed' as const,
+        },
+        solarEnergyLossResearch: 0,
+        continuousReception: 100,
+      };
+
+      // 連続受信100%, 重力子レンズあり, 増産剤Mk.III: 0.2 * 2.0 = 0.4個/秒
+      const rate = calculateProductionRate(
+        photonRecipe,
+        rayReceiver,
+        proliferator,
+        { production: 1, speed: 1 },
+        photonSettings
+      );
+
+      expect(rate).toBeCloseTo(0.4, 3);
+    });
+
+    it('should handle low continuous reception rate', () => {
+      const proliferator: ProliferatorConfig = {
+        ...PROLIFERATOR_DATA.none,
+        mode: 'speed',
+      };
+
+      const photonSettings = {
+        useGravitonLens: false,
+        gravitonLensProliferator: {
+          ...PROLIFERATOR_DATA.none,
+          mode: 'speed' as const,
+        },
+        solarEnergyLossResearch: 0,
+        continuousReception: 50, // 100%未満
+      };
+
+      // 連続受信100%未満: 0.04個/秒
+      const rate = calculateProductionRate(
+        photonRecipe,
+        rayReceiver,
+        proliferator,
+        { production: 1, speed: 1 },
+        photonSettings
+      );
+
+      expect(rate).toBeCloseTo(0.04, 3);
+    });
+
+    it('should combine graviton lens and proliferator correctly', () => {
+      const proliferator: ProliferatorConfig = {
+        ...PROLIFERATOR_DATA.none,
+        mode: 'speed',
+      };
+
+      const photonSettings = {
+        useGravitonLens: true,
+        gravitonLensProliferator: {
+          ...PROLIFERATOR_DATA.mk2, // +50% speed
+          mode: 'speed' as const,
+        },
+        solarEnergyLossResearch: 0,
+        continuousReception: 100,
+      };
+
+      // 連続受信100%, 重力子レンズあり, 増産剤Mk.II: 0.2 * 1.5 = 0.3個/秒
+      const rate = calculateProductionRate(
+        photonRecipe,
+        rayReceiver,
+        proliferator,
+        { production: 1, speed: 1 },
+        photonSettings
+      );
+
+      expect(rate).toBeCloseTo(0.3, 3);
+    });
+  });
 });
 

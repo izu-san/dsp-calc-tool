@@ -31,7 +31,7 @@ test.describe('データ不整合時のエラーハンドリング', () => {
     await expect(page.getByRole('heading', { name: '設定', level: 2 })).toBeVisible();
 
     // レシピが正常に読み込まれていることを確認（160件）
-    await expect(page.getByText('160 レシピ 見つかりました')).toBeVisible();
+    await expect(page.getByText('161 レシピ 見つかりました')).toBeVisible();
 
     // 少なくとも基本的なレシピが表示されていることを確認
     await expect(page.getByRole('button', { name: '鉄インゴット' })).toBeVisible();

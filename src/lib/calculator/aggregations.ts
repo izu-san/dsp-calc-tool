@@ -7,17 +7,20 @@ import { isRawMaterial } from '../../constants/rawMaterials';
 export function calculateTotalPower(node: RecipeTreeNode): PowerConsumption {
   let totalMachines = node.power.machines;
   let totalSorters = node.power.sorters;
+  let totalDysonSphere = node.power.dysonSphere || 0;
 
   for (const child of node.children) {
     const childPower = calculateTotalPower(child);
     totalMachines += childPower.machines;
     totalSorters += childPower.sorters;
+    totalDysonSphere += childPower.dysonSphere || 0;
   }
 
   return {
     machines: totalMachines,
     sorters: totalSorters,
-    total: totalMachines + totalSorters,
+    dysonSphere: totalDysonSphere,
+    total: totalMachines + totalSorters + totalDysonSphere,
   };
 }
 

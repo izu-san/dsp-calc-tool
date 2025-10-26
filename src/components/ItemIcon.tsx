@@ -9,9 +9,10 @@ interface ItemIconProps {
   className?: string;
   alt?: string;
   preferRecipes?: boolean; // Prefer recipes sprite over items sprite
+  'data-testid'?: string;
 }
 
-export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRecipes = false }: ItemIconProps) {
+export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRecipes = false, 'data-testid': dataTestId }: ItemIconProps) {
   const spriteInfo = useSpriteData(itemId, preferRecipes);
 
   // スプライトが使える場合
@@ -36,6 +37,9 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
         role="img"
         aria-label={alt}
         title={alt}
+        data-testid={dataTestId}
+        data-prefer-recipes={preferRecipes ? 'true' : 'false'}
+        data-alt={alt}
       />
     );
   }
@@ -60,6 +64,9 @@ export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRe
         height={size}
         className={cn('inline-block', className)}
         loading="lazy"
+        data-testid={dataTestId}
+        data-prefer-recipes={preferRecipes ? 'true' : 'false'}
+        data-alt={alt}
         onError={(e) => {
           // アイテム画像が失敗したらマシン画像を試す
           const target = e.target as HTMLImageElement;
