@@ -135,8 +135,8 @@ describe('parser', () => {
 
       const gameData = await loadGameData(undefined, 'ja');
 
-      // Items
-      expect(gameData.items.size).toBe(3);
+      // Items (Critical PhotonとGraviton Lensが追加されているため、3 + 2 = 5)
+      expect(gameData.items.size).toBe(5);
       expect(gameData.items.get(1101)).toEqual({
         id: 1101,
         name: '鉄鉱石',
@@ -147,8 +147,8 @@ describe('parser', () => {
         isRaw: true,
       });
 
-      // Recipes
-      expect(gameData.recipes.size).toBe(2);
+      // Recipes (Critical Photonレシピが追加されているため)
+      expect(gameData.recipes.size).toBe(3);
       const recipe1 = gameData.recipes.get(1);
       expect(recipe1).toBeDefined();
       expect(recipe1?.name).toBe('鉄インゴット');
@@ -156,8 +156,8 @@ describe('parser', () => {
       expect(recipe1?.Results).toHaveLength(1);
       expect(recipe1?.productive).toBe(true);
 
-      // Machines
-      expect(gameData.machines.size).toBe(2);
+      // Machines (Ray Receiverが追加されているため)
+      expect(gameData.machines.size).toBe(3);
       expect(gameData.machines.get(2301)).toEqual({
         id: 2301,
         name: '製錬設備',
@@ -178,8 +178,8 @@ describe('parser', () => {
       expect(gameData.recipesByItemId.get(1103)).toBeDefined();
       expect(gameData.recipesByItemId.get(1103)?.[0].SID).toBe(1);
 
-      // allItems combined map
-      expect(gameData.allItems.size).toBe(5); // 3 items + 2 machines
+      // allItems combined map (Critical PhotonとGraviton Lensが追加されているため、5 items + 3 machines = 8)
+      expect(gameData.allItems.size).toBe(8); // 5 items + 3 machines
     });
 
     it('英語ロケールでファイルパスを正しく生成', async () => {
@@ -246,9 +246,9 @@ describe('parser', () => {
       expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes.xml'));
       expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines.xml'));
 
-      expect(gameData.items.size).toBe(3);
-      expect(gameData.recipes.size).toBe(2);
-      expect(gameData.machines.size).toBe(2);
+      expect(gameData.items.size).toBe(5); // Critical PhotonとGraviton Lensが追加されているため
+      expect(gameData.recipes.size).toBe(3); // Critical Photonレシピが追加されているため
+      expect(gameData.machines.size).toBe(3); // Ray Receiverが追加されているため
 
       consoleWarnSpy.mockRestore();
     });
@@ -291,7 +291,7 @@ describe('parser', () => {
 
       const gameData = await loadGameData(customRecipesXml, 'ja');
 
-      expect(gameData.recipes.size).toBe(1);
+      expect(gameData.recipes.size).toBe(2); // Critical Photonレシピが追加されているため
       const customRecipe = gameData.recipes.get(999);
       expect(customRecipe).toBeDefined();
       expect(customRecipe?.name).toBe('カスタムレシピ');
@@ -366,9 +366,9 @@ describe('parser', () => {
 
       const gameData = await loadGameData(undefined, 'ja');
 
-      expect(gameData.items.size).toBe(1);
-      expect(gameData.recipes.size).toBe(1);
-      expect(gameData.machines.size).toBe(1);
+      expect(gameData.items.size).toBe(3); // Critical PhotonとGraviton Lensが追加されているため
+      expect(gameData.recipes.size).toBe(2); // Critical Photonレシピが追加されているため
+      expect(gameData.machines.size).toBe(2); // Ray Receiverが追加されているため
     });
 
     it('文字列のboolean値を正しく変換（isRaw, Explicit, productive）', async () => {
@@ -488,8 +488,8 @@ describe('parser', () => {
 
       const gameData = await loadGameData(undefined, 'ja');
 
-      // 3 items + 2 machines = 5 total
-      expect(gameData.allItems.size).toBe(5);
+      // 5 items (Critical PhotonとGraviton Lensが追加) + 3 machines (Ray Receiverが追加) = 8 total
+      expect(gameData.allItems.size).toBe(8);
 
       // itemsから取得
       expect(gameData.allItems.get(1101)?.name).toBe('鉄鉱石');

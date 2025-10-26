@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { 
   GlobalSettings, 
   MachineRankSettings,
+  PhotonGenerationSettings,
 } from '../types';
 import { 
   PROLIFERATOR_DATA, 
@@ -10,6 +11,7 @@ import {
   SORTER_DATA,
   DEFAULT_ALTERNATIVE_RECIPES,
   SETTINGS_TEMPLATES,
+  DEFAULT_PHOTON_GENERATION_SETTINGS,
 } from '../types/settings';
 import { serializeSettings, deserializeSettings } from '../utils/storageSerializer';
 
@@ -31,6 +33,7 @@ const defaultSettings: GlobalSettings = {
   alternativeRecipes: new Map(Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])),
   miningSpeedResearch: 100, // Default: +0% (no research bonus)
   proliferatorMultiplier: { production: 1, speed: 1 }, // Default: 1x (no multiplier)
+  photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
 };
 
 interface SettingsStore {
@@ -42,6 +45,10 @@ interface SettingsStore {
   setAlternativeRecipe: (itemId: number, recipeId: number) => void;
   setMiningSpeedResearch: (bonus: number) => void;
   setProliferatorMultiplier: (production: number, speed: number) => void;
+  setPhotonGenerationSetting: <K extends keyof PhotonGenerationSettings>(
+    key: K,
+    value: PhotonGenerationSettings[K]
+  ) => void;
   applyTemplate: (templateId: keyof typeof SETTINGS_TEMPLATES) => void;
   updateSettings: (settings: Partial<GlobalSettings>) => void;
   resetSettings: () => void;
@@ -115,6 +122,16 @@ export const useSettingsStore = create<SettingsStore>()(
         settings: {
           ...state.settings,
           proliferatorMultiplier: { production, speed },
+        },
+      })),
+
+      setPhotonGenerationSetting: (key, value) => set((state) => ({
+        settings: {
+          ...state.settings,
+          photonGeneration: {
+            ...state.settings.photonGeneration,
+            [key]: value,
+          },
         },
       })),
 

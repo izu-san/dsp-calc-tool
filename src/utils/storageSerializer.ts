@@ -5,7 +5,7 @@
  */
 
 import type { GlobalSettings } from '../types';
-import { CONVEYOR_BELT_DATA } from '../types/settings';
+import { CONVEYOR_BELT_DATA, DEFAULT_PHOTON_GENERATION_SETTINGS } from '../types/settings';
 
 /**
  * localStorage に保存される settings の中間形式
@@ -18,6 +18,7 @@ interface SerializedSettings {
   sorter: GlobalSettings['sorter'];
   alternativeRecipes: Array<[number, number]>; // Map → Array
   miningSpeedResearch: GlobalSettings['miningSpeedResearch'];
+  photonGeneration?: GlobalSettings['photonGeneration']; // オプショナル (既存データとの互換性)
   proliferatorMultiplier: GlobalSettings['proliferatorMultiplier'];
 }
 
@@ -33,6 +34,7 @@ export function serializeSettings(settings: GlobalSettings): SerializedSettings 
     alternativeRecipes: Array.from(settings.alternativeRecipes.entries()),
     miningSpeedResearch: settings.miningSpeedResearch,
     proliferatorMultiplier: settings.proliferatorMultiplier,
+    photonGeneration: settings.photonGeneration,
   };
 }
 
@@ -71,6 +73,7 @@ export function deserializeSettings(serialized: unknown): GlobalSettings | null 
     alternativeRecipes,
     miningSpeedResearch: serialized.miningSpeedResearch,
     proliferatorMultiplier: serialized.proliferatorMultiplier,
+    photonGeneration: serialized.photonGeneration || DEFAULT_PHOTON_GENERATION_SETTINGS,
   };
 }
 

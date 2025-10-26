@@ -29,7 +29,22 @@ export function SettingsPanelSection({ selectedRecipe, targetQuantity, setTarget
               {t('target')}
             </label>
             <div className="flex items-center gap-3 mb-2">
-              <ItemIcon itemId={selectedRecipe.Results?.[0]?.id || 0} size={32} />
+              <ItemIcon 
+                itemId={(() => {
+                  // 複数出力レシピの場合はレシピアイコン（SID）を使用
+                  const hasMultipleOutputs = selectedRecipe.Results && selectedRecipe.Results.length > 1;
+                  if (hasMultipleOutputs || (selectedRecipe.Explicit && selectedRecipe.SID > 0)) {
+                    return selectedRecipe.SID;
+                  }
+                  // 単一出力の場合は結果アイテムのアイコン
+                  return selectedRecipe.Results?.[0]?.id || selectedRecipe.SID;
+                })()}
+                size={32}
+                preferRecipes={(() => {
+                  const hasMultipleOutputs = selectedRecipe.Results && selectedRecipe.Results.length > 1;
+                  return hasMultipleOutputs || (selectedRecipe.Explicit && selectedRecipe.SID > 0);
+                })()}
+              />
               <span className="font-medium text-white">
                 {selectedRecipe.name}
               </span>

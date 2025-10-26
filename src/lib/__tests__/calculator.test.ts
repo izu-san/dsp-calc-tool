@@ -149,9 +149,10 @@ describe('calculateMachinePower', () => {
     
     // Base power = (360,000 * 60) / 1000 = 21,600 kW per machine
     // For 1 machine = 21,600 kW
-    const power = calculateMachinePower(mockMachine, 1, proliferator, { production: 1, speed: 1 });
+    const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 1, speed: 1 });
     
-    expect(power).toBe(21600);
+    expect(result.machines).toBe(21600);
+    expect(result.total).toBe(21600);
   });
 
   it('should scale power with machine count', () => {
@@ -161,9 +162,10 @@ describe('calculateMachinePower', () => {
     };
     
     // For 10 machines = 216,000 kW
-    const power = calculateMachinePower(mockMachine, 10, proliferator, { production: 1, speed: 1 });
+    const result = calculateMachinePower(mockMachine, 10, proliferator, { production: 1, speed: 1 });
     
-    expect(power).toBe(216000);
+    expect(result.machines).toBe(216000);
+    expect(result.total).toBe(216000);
   });
 
   it('should apply power increase for proliferator', () => {
@@ -174,9 +176,10 @@ describe('calculateMachinePower', () => {
     
     // With Mk3, power increase is 150% (1.5)
     // Power = 21,600 * (1 + 1.5) = 21,600 * 2.5 = 54,000 kW
-    const power = calculateMachinePower(mockMachine, 1, proliferator, { production: 1, speed: 1 });
+    const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 1, speed: 1 });
     
-    expect(power).toBe(54000);
+    expect(result.machines).toBe(54000);
+    expect(result.total).toBe(54000);
   });
 
   it('should apply proliferator multiplier to power increase', () => {
@@ -187,9 +190,10 @@ describe('calculateMachinePower', () => {
     
     // Power increase = 1.5 * 2 = 3.0
     // Power = 21,600 * (1 + 3.0) = 21,600 * 4 = 86,400 kW
-    const power = calculateMachinePower(mockMachine, 1, proliferator, { production: 2, speed: 2 });
+    const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 2, speed: 2 });
     
-    expect(power).toBe(86400);
+    expect(result.machines).toBe(86400);
+    expect(result.total).toBe(86400);
   });
 });
 

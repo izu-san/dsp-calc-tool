@@ -120,7 +120,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
 
         {/* Work Speed Multiplier (Advanced only) - Slider */}
         <div>
-          <label className="block text-sm font-medium text-neon-orange mb-2 flex items-center gap-2">
+          <label className="block text-sm font-medium text-neon-cyan mb-2 flex items-center gap-2">
             <span>⚡</span>
             {t('workSpeed')}: {workSpeedMultiplier}%
             {machineType === 'Mining Machine' && (
@@ -138,23 +138,23 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             className={`
               w-full h-2 rounded-lg appearance-none cursor-pointer
               ${machineType === 'Mining Machine'
-                ? 'bg-dark-600 border border-neon-orange/20 opacity-50 cursor-not-allowed'
-                : 'bg-dark-600 border border-neon-orange/40'
+                ? 'bg-dark-600 border border-neon-cyan/20 opacity-50 cursor-not-allowed'
+                : 'bg-dark-600 border border-neon-cyan/40'
               }
             `}
             style={{
               background: machineType === 'Advanced Mining Machine'
-                ? `linear-gradient(to right, rgb(255, 107, 53) 0%, rgb(255, 107, 53) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
+                ? `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
                 : undefined,
               backgroundImage: machineType === 'Advanced Mining Machine'
-                ? `linear-gradient(to right, rgb(255, 107, 53) 0%, rgb(255, 107, 53) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
+                ? `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
                 : undefined
             }}
             data-has-gradient={machineType === 'Advanced Mining Machine' ? 'true' : 'false'}
           />
           <div className="flex justify-between text-xs text-space-300 mt-1">
             <span>100%</span>
-            <span className="text-neon-orange">
+            <span className="text-neon-cyan">
               {t('power')}: {((workSpeedMultiplier / 100) ** 2 * 100).toFixed(0)}%
             </span>
             <span>300%</span>

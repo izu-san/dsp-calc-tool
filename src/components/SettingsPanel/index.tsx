@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ProliferatorSettings } from './ProliferatorSettings';
 import { MachineRankSettings } from './MachineRankSettings';
 import { ConveyorBeltSettings } from './ConveyorBeltSettings';
+import { PhotonGenerationSettings } from './PhotonGenerationSettings';
 import { TemplateSelector } from './TemplateSelector';
 import { AlternativeRecipeSelector } from '../AlternativeRecipeSelector';
 import { WhatIfSimulator } from '../WhatIfSimulator';
@@ -43,6 +44,31 @@ export function SettingsPanel() {
     return false;
   })() : false;
   
+  // Check if the production chain includes Critical Photon (id: 6003)
+  const hasCriticalPhoton = calculationResult ? (() => {
+    const CRITICAL_PHOTON_ID = 6003;
+    
+    // Collect all items from the calculation result tree
+    const hasItem = (node: RecipeTreeNode): boolean => {
+      if (node.recipe) {
+        // Check if any item in this recipe is Critical Photon
+        if (node.recipe.Items && node.recipe.Items.some((item) => item.id === CRITICAL_PHOTON_ID)) {
+          return true;
+        }
+        if (node.recipe.Results && node.recipe.Results.some((item) => item.id === CRITICAL_PHOTON_ID)) {
+          return true;
+        }
+      }
+      // Check children recursively
+      if (node.children) {
+        return node.children.some((child) => hasItem(child));
+      }
+      return false;
+    };
+    
+    return hasItem(calculationResult.rootNode);
+  })() : false;
+  
   return (
     <div className="space-y-4">
       <div>
@@ -66,6 +92,14 @@ export function SettingsPanel() {
           <h4 className="text-md font-semibold text-neon-cyan mb-2">🛤️ {t('conveyorBelt')}</h4>
           <ConveyorBeltSettings />
         </div>
+
+        {/* Photon Generation Settings - Only show when Critical Photon is in the production chain */}
+        {hasCriticalPhoton && (
+          <div className="bg-dark-700/30 rounded-lg border border-neon-yellow/30 p-3 mb-3 backdrop-blur-sm hover:border-neon-yellow/50 transition-all animate-fadeInScale hover-lift">
+            <h4 className="text-md font-semibold text-neon-yellow mb-2">⚡ {t('photonGeneration')}</h4>
+            <PhotonGenerationSettings />
+          </div>
+        )}
 
         {/* Alternative Recipe Settings - Only show when selected recipe has alternatives */}
         {hasAlternatives && (

@@ -8,6 +8,7 @@ export const MACHINE_IDS_BY_RECIPE_TYPE: Record<Recipe['Type'], number[]> = {
   Research: [2901, 2902],               // Matrix Lab, Self-evolution Lab
   Refine: [2308],                       // Oil Refinery
   Particle: [2310],                     // Miniature Particle Collider
+  PhotonGeneration: [2208],             // Ray Receiver
 };
 
 // Select a machine for a given recipe type using global settings
@@ -44,6 +45,7 @@ export function getMachineForRecipe(
     }
     case 'Refine':
     case 'Particle':
+    case 'PhotonGeneration':
     default:
       break;
   }

@@ -81,6 +81,7 @@ export const ProductionTree = memo(function ProductionTree({
                 itemId={iconId}
                 alt={displayName}
                 size={32}
+                data-testid={`item-icon-${iconId}`}
               />
             </div>
 
@@ -174,16 +175,38 @@ export const ProductionTree = memo(function ProductionTree({
           {/* Recipe Icon */}
           <div className="w-10 h-10 flex-shrink-0 border border-neon-cyan/50 rounded bg-dark-800/50 backdrop-blur-sm p-1 shadow-[0_0_10px_rgba(0,217,255,0.3)]">
             <ItemIcon
-              itemId={node.recipe!.Explicit ? node.recipe!.SID : (node.recipe!.Results[0]?.id || node.recipe!.SID)}
+              itemId={(() => {
+                // For multi-output recipes, show the target item icon
+                if (node.targetItemId) {
+                  return node.targetItemId;
+                }
+                // For explicit recipes, prefer recipe SID over first result
+                if (node.recipe!.Explicit && node.recipe!.SID > 0) {
+                  return node.recipe!.SID;
+                }
+                // Fallback to first result or recipe SID
+                return node.recipe!.Results[0]?.id || node.recipe!.SID;
+              })()}
               alt={node.recipe!.name}
               size={32}
-              preferRecipes={node.recipe!.Explicit}
+              preferRecipes={node.recipe!.Explicit && node.recipe!.SID > 0 && !node.targetItemId}
+              data-testid={`item-icon-${node.recipe!.SID}`}
             />
           </div>
 
           {/* Recipe Info */}
           <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-white truncate drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">{node.recipe!.name}</h4>
+            <h4 className="font-semibold text-white truncate drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">
+              {(() => {
+                // For multi-output recipes, show the target item name
+                if (node.targetItemId) {
+                  const targetResult = node.recipe!.Results.find(r => r.id === node.targetItemId);
+                  if (targetResult) return targetResult.name;
+                }
+                // Fallback to first result or recipe name
+                return node.recipe!.Results[0]?.name || node.recipe!.name;
+              })()}
+            </h4>
             <p className="text-sm text-space-300">
               {node.machine!.name} × {formatNumber(node.machineCount)}
             </p>
@@ -246,6 +269,12 @@ export const ProductionTree = memo(function ProductionTree({
                 <span className="text-space-200">{t('sorters')}:</span>
                 <span className="font-medium text-white">{formatPower(node.power.sorters)}</span>
               </div>
+              {node.power.dysonSphere > 0 && (
+                <div className="flex justify-between border-t border-yellow-500/20 pt-1">
+                  <span className="text-yellow-400">⚡ {t('dysonSpherePower').split(' ')[0]}:</span>
+                  <span className="font-medium text-yellow-400">{formatPower(node.power.dysonSphere)}</span>
+                </div>
+              )}
             </div>
           </div>
 

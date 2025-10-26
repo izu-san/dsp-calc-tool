@@ -21,6 +21,9 @@ export interface RecipeTreeNode {
   nodeId: string; // Unique identifier for this node
   overrideSettings?: NodeOverrideSettings; // Node-specific settings override
   
+  // For recipes with multiple outputs
+  targetItemId?: number; // Which item this node is producing (for multi-output recipes)
+  
   // For raw material leaf nodes
   isRawMaterial?: boolean;
   itemId?: number;
@@ -41,6 +44,7 @@ export interface RecipeInput {
 export interface PowerConsumption {
   machines: number; // kW from production machines
   sorters: number; // kW from sorters
+  dysonSphere: number; // kW from Dyson Sphere (for photon generation)
   total: number; // kW total
 }
 

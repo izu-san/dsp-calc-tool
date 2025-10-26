@@ -141,7 +141,7 @@ export function createRawMaterialNode(
     targetOutputRate: requiredRate,
     machineCount: 0,
     proliferator: settings.proliferator,
-    power: { machines: 0, sorters: 0, total: 0 },
+    power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
     conveyorBelts: {
       inputs: 0,
       outputs: Math.ceil(requiredRate / totalBeltSpeed),
@@ -223,7 +223,8 @@ export function buildChildNodes(
           depth + 1,
           maxDepth,
           `${nodeId}/r-${selectedRecipe.SID}`,
-          visitingItems
+          visitingItems,
+          input.itemId // Pass the target item ID
         );
         children.push(childNode);
       }
@@ -246,7 +247,8 @@ export function buildRecipeTree(
   depth: number = 0,
   maxDepth: number = 20,
   nodePath: string = `r-${recipe.SID}`,
-  visitingItems: Set<number> = new Set()
+  visitingItems: Set<number> = new Set(),
+  targetItemId?: number // Which item this recipe is producing (for multi-output recipes)
 ): RecipeTreeNode {
   if (depth > maxDepth) {
     throw new Error('Maximum recursion depth reached');
@@ -273,18 +275,32 @@ export function buildRecipeTree(
   const machine = resolveMachine(recipe, gameData, settings, override);
 
   // Calculate production rate per machine
-  const ratePerMachine = calculateProductionRate(recipe, machine, proliferator, settings.proliferatorMultiplier);
+  const ratePerMachine = calculateProductionRate(
+    recipe,
+    machine,
+    proliferator,
+    settings.proliferatorMultiplier,
+    settings.photonGeneration
+  );
 
   // Calculate required machines
   const machineCount = new Decimal(targetRate).div(ratePerMachine).toDecimalPlaces(2).toNumber();
 
   // Calculate power
-  const machinePower = calculateMachinePower(machine, machineCount, proliferator, settings.proliferatorMultiplier);
+  const machinePowerResult = calculateMachinePower(
+    machine,
+    machineCount,
+    proliferator,
+    settings.proliferatorMultiplier,
+    recipe.Type,
+    settings.photonGeneration
+  );
   const sorterPower = calculateSorterPower(recipe, machineCount, settings.sorter.powerConsumption);
   const power: PowerConsumption = {
-    machines: machinePower,
+    machines: machinePowerResult.machines,
     sorters: sorterPower,
-    total: machinePower + sorterPower,
+    dysonSphere: machinePowerResult.dysonSphere,
+    total: machinePowerResult.machines + sorterPower + machinePowerResult.dysonSphere,
   };
 
   // Build input requirements
@@ -306,6 +322,17 @@ export function buildRecipeTree(
       .mul(inputMultiplier)  // Apply production bonus to reduce input
       .toNumber(),
   }));
+
+  // PhotonGeneration: 重力子レンズを使用する場合、インプットに追加
+  if (recipe.Type === 'PhotonGeneration' && settings.photonGeneration.useGravitonLens) {
+    const gravitonLensRate = (0.1 / 60) * machineCount; // 0.1個/分 -> 個/秒
+    const gravitonLensItem = gameData.items.get(1209); // 重力子レンズ
+    inputs.push({
+      itemId: 1209,
+      itemName: gravitonLensItem?.name || 'Graviton Lens',
+      requiredRate: gravitonLensRate,
+    });
+  }
 
   // Calculate conveyor belts
   const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
@@ -345,6 +372,7 @@ export function buildRecipeTree(
     children,
     conveyorBelts,
     nodeId,
+    targetItemId, // Which item this recipe is producing (for multi-output recipes)
   };
 }
 

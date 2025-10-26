@@ -24,7 +24,7 @@ test.describe('検索とお気に入り（RecipeSelector）の検証', () => {
     await page.getByRole('button', { name: '✕' }).click();
 
     // 全レシピが再表示されることを確認（160レシピ）
-    await expect(page.getByText('160 レシピ 見つかりました')).toBeVisible();
+    await expect(page.getByText('161 レシピ 見つかりました')).toBeVisible();
 
     // 7. 「鉄インゴット」のお気に入りボタン（⭐）をクリックしてお気に入りに追加
     await page.getByText('⭐').nth(2).click();

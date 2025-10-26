@@ -2,6 +2,12 @@ import { XMLParser } from 'fast-xml-parser';
 import type { Item, Recipe, Machine, GameData } from '../types';
 import { getDataPath } from '../utils/paths';
 import { createLogger } from '../utils/logger';
+import {
+  CRITICAL_PHOTON_ITEM,
+  GRAVITON_LENS_ITEM,
+  RAY_RECEIVER_MACHINE,
+  CRITICAL_PHOTON_RECIPE,
+} from '../constants/photonGeneration';
 
 const logger = createLogger('Parser');
 const parser = new XMLParser({
@@ -68,8 +74,8 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
       Type: recipe.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
       Explicit: recipe.Explicit === 'true' || recipe.Explicit === true,
       TimeSpend: Number(recipe.TimeSpend),
-      Items: parseRecipeItems(recipe.Items?.Item),
-      Results: parseRecipeItems(recipe.Results?.Item),
+      Items: parseRecipeItems(recipe.Items?.Item, items),
+      Results: parseRecipeItems(recipe.Results?.Item, items),
       GridIndex: String(recipe.GridIndex),
       productive: recipe.productive === 'true' || recipe.productive === true,
     };
@@ -108,6 +114,46 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     });
   });
 
+  // 臨界光子関連のデータを追加
+  // XMLファイルに存在しないため、定数から登録
+  // ロケールに応じた名前を設定
+  const criticalPhotonName = locale === 'ja' ? '臨界光子' : 'Critical Photon';
+  const gravitonLensName = locale === 'ja' ? '重力子レンズ' : 'Graviton Lens';
+  const rayReceiverName = locale === 'ja' ? 'γ線レシーバー' : 'Ray Receiver';
+  
+  items.set(CRITICAL_PHOTON_ITEM.id, {
+    ...CRITICAL_PHOTON_ITEM,
+    name: criticalPhotonName,
+  });
+  items.set(GRAVITON_LENS_ITEM.id, {
+    ...GRAVITON_LENS_ITEM,
+    name: gravitonLensName,
+  });
+  machines.set(RAY_RECEIVER_MACHINE.id, {
+    ...RAY_RECEIVER_MACHINE,
+    name: rayReceiverName,
+  });
+  
+  const photonRecipe: Recipe = {
+    ...CRITICAL_PHOTON_RECIPE,
+    name: locale === 'ja' ? `臨界光子 (${rayReceiverName})` : `Critical Photon (${rayReceiverName})`,
+    Results: [
+      {
+        id: 1208,
+        name: criticalPhotonName,
+        count: 1,
+        Type: 'Material',
+        isRaw: false,
+      },
+    ],
+  };
+  recipes.set(CRITICAL_PHOTON_RECIPE.SID, photonRecipe);
+  
+  // 臨界光子レシピを recipesByItemId に登録
+  const criticalPhotonRecipes = recipesByItemId.get(CRITICAL_PHOTON_ITEM.id) || [];
+  criticalPhotonRecipes.push(photonRecipe);
+  recipesByItemId.set(CRITICAL_PHOTON_ITEM.id, criticalPhotonRecipes);
+
   // Create combined map for recipe lookups (items + machines)
   const allItems = new Map<number, Item | Machine>();
   items.forEach((item, id) => allItems.set(id, item));
@@ -122,15 +168,22 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
   };
 }
 
-function parseRecipeItems(itemData: unknown): Array<{ id: number; name: string; count: number; Type: string; isRaw: boolean }> {
+function parseRecipeItems(itemData: unknown, itemsMap: Map<number, Item>): Array<{ id: number; name: string; count: number; Type: string; isRaw: boolean }> {
   if (!itemData) return [];
-  return Array.isArray(itemData) ? itemData.map(parseItem) : [parseItem(itemData as { id: number; name: string; count: number; Type: string; isRaw?: boolean | string })];
+  return Array.isArray(itemData) 
+    ? itemData.map(item => parseItem(item, itemsMap)) 
+    : [parseItem(itemData as { id: number; name: string; count: number; Type: string; isRaw?: boolean | string }, itemsMap)];
 }
 
-function parseItem(item: { id: number; name: string; count: number; Type: string; isRaw?: boolean | string }) {
+function parseItem(item: { id: number; name: string; count: number; Type: string; isRaw?: boolean | string }, itemsMap: Map<number, Item>) {
+  const itemId = Number(item.id);
+  // アイテムマスタから正しい名前を取得（レシピ内の名前は古い可能性がある）
+  const masterItem = itemsMap.get(itemId);
+  const correctName = masterItem?.name || item.name;
+  
   return {
-    id: Number(item.id),
-    name: item.name,
+    id: itemId,
+    name: correctName,
     count: Number(item.count),
     Type: item.Type,
     isRaw: item.isRaw === 'true' || item.isRaw === true,
