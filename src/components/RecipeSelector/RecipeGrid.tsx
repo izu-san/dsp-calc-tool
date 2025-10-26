@@ -112,9 +112,8 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
           <ItemIcon
             itemId={itemId}
             alt={recipe.name}
-            className=""
             preferRecipes={recipe.Explicit}
-            size={80}
+            size="auto"
           />
         </div>
       </button>
