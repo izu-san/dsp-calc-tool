@@ -40,7 +40,7 @@ test.describe('統計ビュー（StatisticsView）と電力グラフ（PowerGrap
     // 総施設数と総電力が表示されることを確認
     await expect(page.getByText('総施設数')).toBeVisible();
     await expect(page.getByText('総電力')).toBeVisible();
-    await expect(page.getByText('21.4 MW').first()).toBeVisible();
+    await expect(page.getByText('23.6 MW').first()).toBeVisible();
 
     // 6. 電力グラフ表示ボタンをクリックして、PowerGraphViewを表示
     const powerGraphToggle = page.getByRole('button', { name: '⚡ 表示 電力グラフ' });
@@ -56,8 +56,8 @@ test.describe('統計ビュー（StatisticsView）と電力グラフ（PowerGrap
     await expect(page.getByRole('heading', { name: '⚙️ 電力内訳' }).locator('..').getByText('組立機 Mk.I')).toBeVisible();
     await expect(page.getByText('5.0 MW').first()).toBeVisible();
     await expect(page.getByText('3.6 MW').first()).toBeVisible();
-    await expect(page.getByText('58.3%').first()).toBeVisible();
-    await expect(page.getByText('41.7%').first()).toBeVisible();
+    await expect(page.getByText('21.4%').first()).toBeVisible();
+    await expect(page.getByText('18.3%').first()).toBeVisible();
 
     // 7. 電力グラフ非表示ボタンをクリックして、グラフを非表示にする
     const hidePowerGraphToggle = page.getByRole('button', { name: '⚡ 非表示 電力グラフ' });

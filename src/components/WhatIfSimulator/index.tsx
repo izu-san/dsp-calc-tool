@@ -5,7 +5,7 @@ import { useRecipeSelectionStore } from '../../stores/recipeSelectionStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useNodeOverrideStore } from '../../stores/nodeOverrideStore';
 import { calculateProductionChain } from '../../lib/calculator';
-import { formatNumber, formatPower } from '../../utils/format';
+import { formatNumber, formatPower, formatBuildingCount } from '../../utils/format';
 import type { GlobalSettings, ConveyorBeltTier, RecipeTreeNode } from '../../types';
 
 interface Scenario {
@@ -410,7 +410,7 @@ export function WhatIfSimulator() {
         </div>
         {results.baseResult && (
           <div className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-            {t('current')}: {formatPower(results.baseResult.totalPower.total)} · {formatNumber(results.baseResult.totalMachines)} {t('machines')}
+            {t('current')}: {formatPower(results.baseResult.totalPower.total)} · {formatBuildingCount(results.baseResult.totalMachines)} {t('machines')}
           </div>
         )}
       </div>
@@ -923,7 +923,7 @@ export function WhatIfSimulator() {
                 <tr className="border-b border-neon-blue/20">
                   <td className="py-2 px-3 text-white">{t('totalMachines')}</td>
                   <td className="text-right py-2 px-3 text-white">
-                    {formatNumber(results.baseResult?.totalMachines || 0)}
+                    {formatBuildingCount(results.baseResult?.totalMachines || 0)}
                   </td>
                   {activeScenarios.map(scenarioId => {
                     const result = results.scenarioResults.find(r => r.scenario.id === scenarioId);
@@ -936,7 +936,7 @@ export function WhatIfSimulator() {
                             color: hasChange ? (machinesDiff < 0 ? '#00FF88' : '#FF6B35') : '#ffffff'
                           }}
                         >
-                          {formatNumber(result?.result.totalMachines || 0)}
+                          {formatBuildingCount(result?.result.totalMachines || 0)}
                         </span>
                         {hasChange && (
                           <span 

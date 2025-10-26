@@ -128,6 +128,7 @@ vi.mock('../../../utils/format', () => ({
     formatPower: (_kw?: number) => '0.0 kW',
     formatRate: (_perSec?: number) => '0.0/s',
     formatNumber: (_n?: number) => '0.0',
+    formatBuildingCount: (_count?: number) => '0',
 }));
 
 // settingsStore モック（呼び出し検証用の関数を外側で保持）

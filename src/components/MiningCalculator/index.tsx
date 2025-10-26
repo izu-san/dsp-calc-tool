@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalculationResult } from '../../types/calculation';
 import { calculateMiningRequirements } from '../../lib/miningCalculation';
-import { formatNumber, formatBuildingCount } from '../../utils/format';
+import { formatBuildingCount, formatRate } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { cn } from '../../utils/classNames';
@@ -225,7 +225,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                     {material.itemName}
                   </div>
                   <div className="text-sm text-space-300">
-                    {t('required')}: {formatNumber(material.requiredRate)}/s
+                    {t('required')}: {formatRate(material.requiredRate)}
                   </div>
                   <div className="text-xs text-space-400">
                     {(material.miningSpeedBonus * 100).toFixed(0)}% {t('research')}
@@ -246,7 +246,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                         {formatBuildingCount(material.orbitCollectorsNeeded!)} {t('collectors')}<span data-testid="collectors-label" className="hidden">collectors</span>
                       </div>
                       <div className="text-xs text-space-300">
-                        {formatNumber(material.orbitalCollectorSpeed || 0)}/s {t('each')}
+                        {formatRate(material.orbitalCollectorSpeed || 0)} {t('each')}
                       </div>
                     </>
                   ) : (
