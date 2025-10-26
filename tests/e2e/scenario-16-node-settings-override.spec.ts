@@ -19,7 +19,7 @@ test.describe('ノード個別設定（NodeSettingsModal）のオーバーライ
     await setTargetQuantity(page, 10);
 
     // 5. Production Treeが表示されることを確認する
-    await expect(page.getByText('アーク製錬所 × 10.0')).toBeVisible();
+    await expect(page.getByText('アーク製錬所 × 10')).toBeVisible();
     await expect(
       page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('7.2 MW')
     ).toBeVisible();
@@ -47,9 +47,9 @@ test.describe('ノード個別設定（NodeSettingsModal）のオーバーライ
     await page.getByRole('combobox').nth(2).selectOption(['負エントロピー溶鉱炉']);
 
     // 11-12. 該当ノードの計算結果（マシン数・電力・出力量）が更新されることを確認
-    await expect(page.getByText('負エントロピー製錬所 × 1.7')).toBeVisible();
+    await expect(page.getByText('負エントロピー製錬所 × 2')).toBeVisible();
     await expect(
-      page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('12.6 MW')
+      page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('15.1 MW')
     ).toBeVisible();
     await expect(page.getByText('🧪 MK3 · 速度')).toBeVisible();
     await expect(
@@ -57,7 +57,7 @@ test.describe('ノード個別設定（NodeSettingsModal）のオーバーライ
     ).toBeVisible();
 
     // What-if分析の値も更新されていることを確認
-    await expect(page.getByText('現在: 12.6 MW · 1.7 施設数')).toBeVisible();
+    await expect(page.getByText('現在: 15.1 MW · 2 施設数')).toBeVisible();
 
     // 13. 他のノード（鉄鉱石）はグローバル設定のまま変化していないことを確認
     // 鉄鉱石ノードは採掘なので、設定の影響を受けない
@@ -73,7 +73,7 @@ test.describe('ノード個別設定（NodeSettingsModal）のオーバーライ
 
     // グローバル設定に戻ったことを確認
     await expect(page.getByText('グローバル設定を使用中')).toBeVisible();
-    await expect(page.getByText('アーク製錬所 × 10.0')).toBeVisible();
+    await expect(page.getByText('アーク製錬所 × 10')).toBeVisible();
     await expect(
       page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('7.2 MW')
     ).toBeVisible();

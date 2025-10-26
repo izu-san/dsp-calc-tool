@@ -80,8 +80,8 @@ test.describe('プランのエクスポートとインポート（JSONファイ�
       await expect(page.locator('button').filter({ hasText: '増産剤 Mk.III' })).toBeVisible();
       
       // 生産チェーンが再計算されている
-      await expect(page.getByText('化学プラント × 12.0')).toBeVisible();
-      await expect(page.locator('text=12.0').first()).toBeVisible(); // 施設数
+      await expect(page.getByText('化学プラント × 12')).toBeVisible();
+      await expect(page.locator('text=12').first()).toBeVisible(); // 施設数
       await expect(page.locator('text=28.1 MW').first()).toBeVisible(); // 電力
       
       // 保存ボタンが有効になっている（プランがロードされている証拠）

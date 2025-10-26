@@ -20,6 +20,14 @@ export function formatNumber(num: number): string {
 }
 
 /**
+ * Format building count as integer (ceiling)
+ * Used for displaying machine counts in game context where fractional buildings don't exist
+ */
+export function formatBuildingCount(count: number): string {
+  return Math.ceil(count).toString();
+}
+
+/**
  * Format rate (items per second)
  * If the rate rounds to 0.0/s, show as items per minute or per hour instead
  * Always shows 1 decimal place with rounding

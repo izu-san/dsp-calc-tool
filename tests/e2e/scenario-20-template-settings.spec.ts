@@ -21,7 +21,7 @@ test.describe('テンプレート設定（プリセット）の適用', () => {
 
     // 序盤テンプレート適用後の検証
     await expect(page.locator('text=6 アイテム/秒')).toBeVisible();
-    await expect(page.locator('text=3.4 MW')).toBeVisible();
+    await expect(page.locator('text=4.2 MW')).toBeVisible();
 
     // 7. テンプレート「⚙️中盤」を適用して、設定が中盤用に変更されることを確認
     await page.getByRole('button', { name: '⚙️中盤' }).click();
@@ -31,7 +31,7 @@ test.describe('テンプレート設定（プリセット）の適用', () => {
 
     // 中盤テンプレート適用後の検証
     await expect(page.locator('text=12 アイテム/秒')).toBeVisible();
-    await expect(page.locator('text=3.9 MW')).toBeVisible();
+    await expect(page.locator('text=6.5 MW')).toBeVisible();
 
     // 9. 「後半」テンプレートボタンをクリックして確認ダイアログを表示
     await page.getByRole('button', { name: '🚀後半' }).click();
@@ -41,7 +41,7 @@ test.describe('テンプレート設定（プリセット）の適用', () => {
 
     // 後半テンプレート適用後の検証
     await expect(page.locator('text=30 アイテム/秒')).toBeVisible();
-    await expect(page.locator('text=5.1 MW')).toBeVisible();
+    await expect(page.locator('text=10.2 MW')).toBeVisible();
 
     // 11. 「終盤」テンプレートボタンをクリックして確認ダイアログを表示
     await page.getByRole('button', { name: '⭐終盤' }).click();
@@ -51,7 +51,7 @@ test.describe('テンプレート設定（プリセット）の適用', () => {
 
     // 終盤テンプレート適用後の検証
     await expect(page.locator('text=120 アイテム/秒')).toBeVisible();
-    await expect(page.locator('text=19.0 MW')).toBeVisible();
+    await expect(page.locator('text=60.8 MW')).toBeVisible();
     await expect(page.locator('text=ボトルネックなし')).toBeVisible();
 
     // 13. 「省電力」テンプレートボタンをクリックして確認ダイアログを表示

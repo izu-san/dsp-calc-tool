@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RecipeTreeNode } from '../../types';
-import { formatRate, formatNumber, formatPower } from '../../utils/format';
+import { formatRate, formatPower, formatBuildingCount } from '../../utils/format';
 import { parseColorTags } from '../../utils/html';
 import { NodeSettingsModal } from '../NodeSettingsModal';
 import { CompactNodeSettings } from './CompactNodeSettings';
@@ -208,7 +208,7 @@ export const ProductionTree = memo(function ProductionTree({
               })()}
             </h4>
             <p className="text-sm text-space-300">
-              {node.machine!.name} × {formatNumber(node.machineCount)}
+              {node.machine!.name} × {formatBuildingCount(node.machineCount)}
             </p>
             {/* Badges */}
             <div className="mt-1 flex flex-wrap items-center gap-1">

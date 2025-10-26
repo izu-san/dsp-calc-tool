@@ -144,7 +144,7 @@ describe('ProductionTree', () => {
         render(<ProductionTree node={mockRecipeNode} />);
         
         expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
-        expect(screen.getByText('Arc Smelter × 1.0')).toBeInTheDocument();
+        expect(screen.getByText('Arc Smelter × 1')).toBeInTheDocument();
         expect(screen.getAllByText('60.0/s')[0]).toBeInTheDocument();
         expect(screen.getAllByText('120.0 kW')[0]).toBeInTheDocument();
     });

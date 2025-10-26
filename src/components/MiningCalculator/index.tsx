@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalculationResult } from '../../types/calculation';
 import { calculateMiningRequirements } from '../../lib/miningCalculation';
-import { formatNumber } from '../../utils/format';
+import { formatBuildingCount, formatRate } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { cn } from '../../utils/classNames';
@@ -178,7 +178,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
               {t('orbitalCollectors')}
             </div>
             <div className="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)]">
-              {formatNumber(miningCalc.totalOrbitalCollectors)}
+              {formatBuildingCount(miningCalc.totalOrbitalCollectors)}
             </div>
             <div className="text-xs text-neon-blue mt-1">
               {t('forHydrogenDeuterium')}
@@ -225,7 +225,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                     {material.itemName}
                   </div>
                   <div className="text-sm text-space-300">
-                    {t('required')}: {formatNumber(material.requiredRate)}/s
+                    {t('required')}: {formatRate(material.requiredRate)}
                   </div>
                   <div className="text-xs text-space-400">
                     {(material.miningSpeedBonus * 100).toFixed(0)}% {t('research')}
@@ -243,20 +243,20 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                     // Orbital Collectors only (Hydrogen/Deuterium)
                     <>
                       <div className="font-bold text-neon-blue text-lg drop-shadow-[0_0_4px_rgba(0,136,255,0.6)]">
-                        {formatNumber(material.orbitCollectorsNeeded!)} {t('collectors')}<span data-testid="collectors-label" className="hidden">collectors</span>
+                        {formatBuildingCount(material.orbitCollectorsNeeded!)} {t('collectors')}<span data-testid="collectors-label" className="hidden">collectors</span>
                       </div>
                       <div className="text-xs text-space-300">
-                        {formatNumber(material.orbitalCollectorSpeed || 0)}/s {t('each')}
+                        {formatRate(material.orbitalCollectorSpeed || 0)} {t('each')}
                       </div>
                     </>
                   ) : (
                     // Veins needed (other materials)
                     <>
                       <div className="font-bold text-neon-orange text-lg drop-shadow-[0_0_4px_rgba(255,107,53,0.6)]">
-                        {formatNumber(material.veinsNeeded)} {t('veins')}<span data-testid="veins-label" className="hidden">veins</span>
+                        {formatBuildingCount(material.veinsNeeded)} {t('veins')}<span data-testid="veins-label" className="hidden">veins</span>
                       </div>
                       <div className="text-xs text-space-300">
-                        ~{formatNumber(material.minersNeeded)} {t('minersNeeded')}<span data-testid="minersNeeded-label" className="hidden">minersNeeded</span>
+                        ~{formatBuildingCount(material.minersNeeded)} {t('minersNeeded')}<span data-testid="minersNeeded-label" className="hidden">minersNeeded</span>
                       </div>
                     </>
                   )}

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalculationResult } from '../../types';
 import { calculateItemStatistics, getRawMaterials, getIntermediateProducts, getFinalProducts } from '../../lib/statistics';
-import { formatRate, formatPower } from '../../utils/format';
+import { formatRate, formatPower, formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { PowerGraphView } from '../PowerGraphView';
 import { useGameDataStore } from '../../stores/gameDataStore';
@@ -84,7 +84,7 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-neon-blue/20 backdrop-blur-sm border border-neon-blue/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,136,255,0.2)]">
             <div className="text-sm text-space-300">{t('totalMachines')}</div>
-            <div className="text-2xl font-bold text-neon-blue">{enhancedStatistics.totalMachines.toFixed(1)}</div>
+            <div className="text-2xl font-bold text-neon-blue">{formatBuildingCount(enhancedStatistics.totalMachines)}</div>
           </div>
           <div className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
             <div className="text-sm text-space-300">{t('totalPower')}</div>
