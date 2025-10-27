@@ -23,6 +23,22 @@ export default defineConfig({
       'tests/fixtures/**',
       '**/*.e2e.spec.ts'
     ],
+    // ワーカープロセスのクラッシュを防ぐための設定
+    // threadsプールを使用（forksより安定）
+    pool: 'threads',
+    // @ts-expect-error - Vitestの型定義が不完全
+    poolOptions: {
+      threads: {
+        singleThread: false,
+        maxThreads: 2, // 並列実行数を大幅に制限してメモリ不足を防ぐ
+        minThreads: 1,
+      },
+    },
+    // テストタイムアウトを増やして重いテストの強制終了を防ぐ
+    testTimeout: 15000,
+    hookTimeout: 15000,
+    // ファイル並列実行数を制限
+    maxConcurrency: 3,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
