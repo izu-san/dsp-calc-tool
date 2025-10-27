@@ -49,25 +49,20 @@ export function ProductionResultsPanel({
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {calculationResult.multiOutputResults.map((result) => (
-                  <div
-                    key={result.itemId}
-                    className="flex items-center gap-3 p-3 bg-dark-700/50 rounded-lg border border-neon-green/20 hover:border-neon-green/40 transition-all"
-                  >
-                    <ItemIcon
-                      itemId={result.itemId}
-                      alt={result.itemName}
-                      size={32}
-                    />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-white">{result.itemName}</div>
-                      <div className="text-xs text-neon-green">
-                        {formatNumber(result.productionRate)} {t('itemsPerSecond')}
-                      </div>
-                    </div>
-                    <div className="text-xs text-space-300">
-                      ×{result.count}
-                    </div>
+                <div
+                  key={result.itemId}
+                  className="flex items-center gap-3 p-3 bg-dark-700/50 rounded-lg border border-neon-green/20 hover:border-neon-green/40 transition-all"
+                >
+                  <ItemIcon
+                    itemId={result.itemId}
+                    alt={result.itemName}
+                    size={32}
+                  />
+                  <div className="flex-1 text-sm font-medium text-white">{result.itemName}</div>
+                  <div className="text-lg font-bold text-neon-cyan drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">
+                    {formatNumber(result.productionRate)}/s
                   </div>
+                </div>
                 ))}
               </div>
             </div>

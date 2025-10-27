@@ -55,9 +55,9 @@ describe('statistics edge cases', () => {
     expect(raw).toBeTruthy();
     expect(raw.isRawMaterial).toBe(true);
     expect(raw.totalProduction).toBe(0);
-    // root.inputs の 60 と raw child の 60 が積み上がるため合計 120
-    expect(raw.totalConsumption).toBe(120);
-    expect(raw.netProduction).toBe(-120);
+    // root.inputs の 60 のみがカウントされる（raw child の 60 は重複カウントしない）
+    expect(raw.totalConsumption).toBe(60);
+    expect(raw.netProduction).toBe(-60);
 
     // product item is produced
     const prod = stats.items.get(1002)!;

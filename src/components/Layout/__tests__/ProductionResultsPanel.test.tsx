@@ -304,8 +304,8 @@ describe('ProductionResultsPanel', () => {
     expect(screen.getByText('Multi-Output Items')).toBeInTheDocument();
     expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
     expect(screen.getByText('Copper Ingot')).toBeInTheDocument();
-    expect(screen.getByText('10.0 items/second')).toBeInTheDocument();
-    expect(screen.getByText('5.0 items/second')).toBeInTheDocument();
+    expect(screen.getByText('10.0/s')).toBeInTheDocument();
+    expect(screen.getByText('5.0/s')).toBeInTheDocument();
   });
 
   it('単一出力レシピの場合、Multi-Output Itemsセクションを表示しない', () => {

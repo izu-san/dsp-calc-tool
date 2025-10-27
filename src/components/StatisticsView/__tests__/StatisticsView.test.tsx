@@ -360,5 +360,46 @@ describe('StatisticsView', () => {
       // Large production rate
       expect(screen.getByText('12345.0/s')).toBeInTheDocument();
     });
+
+    it('複数出力レシピの最終生産物を正しく表示する', () => {
+      const multiOutputStatistics: ProductionStatistics = {
+        items: new Map([
+          [1114, { itemId: 1114, totalProduction: 20, totalConsumption: 0, netProduction: 20, isRawMaterial: false }], // Refined Oil
+          [1120, { itemId: 1120, totalProduction: 10, totalConsumption: 0, netProduction: 10, isRawMaterial: false }], // Hydrogen
+        ]),
+        totalMachines: 10,
+        totalPower: 1000,
+      };
+
+      const multiOutputGameData = {
+        items: new Map([
+          [1114, { id: 1114, name: 'Refined Oil', description: '', gridPos: 0, iconPath: '/icons/1114.png' }],
+          [1120, { id: 1120, name: 'Hydrogen', description: '', gridPos: 0, iconPath: '/icons/1120.png' }],
+        ]),
+        recipes: new Map(),
+        machines: new Map(),
+      };
+
+      (statisticsLib.calculateItemStatistics as any).mockReturnValue(multiOutputStatistics);
+      (statisticsLib.getFinalProducts as any).mockReturnValue([
+        { itemId: 1114, itemName: 'Refined Oil', totalProduction: 20, totalConsumption: 0, netProduction: 20 },
+        { itemId: 1120, itemName: 'Hydrogen', totalProduction: 10, totalConsumption: 0, netProduction: 10 },
+      ]);
+
+      mockUseGameDataStore.mockReturnValue({
+        data: multiOutputGameData,
+        isLoading: false,
+        error: null,
+        locale: 'ja',
+      });
+
+      render(<StatisticsView calculationResult={mockCalculationResult} />);
+
+      // 両方の最終生産物が表示されるべき
+      expect(screen.getByText('Refined Oil')).toBeInTheDocument();
+      expect(screen.getByText('Hydrogen')).toBeInTheDocument();
+      expect(screen.getByText('20.0/s')).toBeInTheDocument();
+      expect(screen.getByText('10.0/s')).toBeInTheDocument();
+    });
   });
 });

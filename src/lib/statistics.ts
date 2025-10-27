@@ -95,6 +95,9 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode): ProductionSta
 
     // Process children (recursively)
     if (node.children) {
+      // Get item IDs from parent's inputs to detect double counting
+      const parentInputIds = new Set(node.inputs?.map(i => i.itemId) || []);
+      
       node.children.forEach((child) => {
         // Handle raw materials (nodes without recipe)
         if (!child.recipe && child.isRawMaterial) {
@@ -113,10 +116,15 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode): ProductionSta
             });
           }
           
-          // Mark as raw material and add consumption
+          // Mark as raw material
           const stats = itemStats.get(itemId)!;
           stats.isRawMaterial = true;
-          stats.totalConsumption += requiredRate;
+          
+          // Only add consumption if this item is NOT already counted in parent's inputs
+          // This prevents double counting for circular dependencies
+          if (!parentInputIds.has(itemId)) {
+            stats.totalConsumption += requiredRate;
+          }
         } else if (child.recipe) {
           // Regular recipe node: traverse recursively
           traverse(child);
@@ -172,10 +180,26 @@ export function getIntermediateProducts(statistics: ProductionStatistics): ItemS
 }
 
 /**
- * Get final products (produced but not consumed)
+ * Get final products (produced but not consumed, plus raw materials with net positive production)
+ * - Items produced but never consumed are always final products
+ * - Raw materials with net positive production are final products (e.g., X-ray cracking hydrogen)
+ * - Non-raw intermediate products (both produced and consumed) are excluded
  */
 export function getFinalProducts(statistics: ProductionStatistics): ItemStatistics[] {
   return Array.from(statistics.items.values())
-    .filter(item => item.totalProduction > 0 && item.totalConsumption === 0)
+    .filter(item => {
+      // Must have production
+      if (item.totalProduction === 0) return false;
+      
+      // If not consumed at all, it's definitely a final product
+      if (item.totalConsumption === 0) return true;
+      
+      // If it's a raw material with net positive production, it's a final product
+      // (e.g., hydrogen in X-ray cracking: input 1.3/s, output 2.0/s, net +0.7/s)
+      if (item.isRawMaterial && item.netProduction > 0) return true;
+      
+      // Otherwise, it's an intermediate product
+      return false;
+    })
     .sort((a, b) => b.totalProduction - a.totalProduction);
 }

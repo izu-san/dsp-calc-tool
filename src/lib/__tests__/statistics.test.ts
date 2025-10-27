@@ -158,11 +158,12 @@ describe('statistics', () => {
       const result = calculateItemStatistics(parentNode);
 
       // Iron Ore: 原材料としてマーク
-      // 消費量 = children の targetOutputRate (30) + inputs の requiredRate (30) = 60
+      // 消費量 = inputs の requiredRate (30)
+      // children の targetOutputRate は重複してカウントしない（inputs で既にカウント済み）
       const ironOre = result.items.get(1001);
       expect(ironOre?.isRawMaterial).toBe(true);
       expect(ironOre?.totalProduction).toBe(0);
-      expect(ironOre?.totalConsumption).toBe(60);
+      expect(ironOre?.totalConsumption).toBe(30);
     });
 
     it('正味生産量を計算する（production - consumption）', () => {
@@ -444,10 +445,11 @@ describe('statistics', () => {
       const result = calculateItemStatistics(parentNode);
 
       // Iron Ore: 原材料（消費のみ）
-      // 消費量 = children の targetOutputRate (30) + inputs の requiredRate (30) = 60
+      // 消費量 = inputs の requiredRate (30)
+      // children の targetOutputRate は重複してカウントしない（inputs で既にカウント済み）
       const ironOre = result.items.get(1001);
       expect(ironOre?.totalProduction).toBe(0);
-      expect(ironOre?.totalConsumption).toBe(60);
+      expect(ironOre?.totalConsumption).toBe(30);
       expect(ironOre?.isRawMaterial).toBe(true);
     });
 
@@ -596,12 +598,12 @@ describe('statistics', () => {
   });
 
   describe('getFinalProducts', () => {
-    it('生産のみで消費されないアイテムをフィルタする', () => {
+    it('生産されて消費されないアイテムを最終生産物として認識する', () => {
       const stats = {
         items: new Map([
           [1001, { itemId: 1001, totalProduction: 0, totalConsumption: 60, netProduction: -60, isRawMaterial: true }],
-          [1101, { itemId: 1101, totalProduction: 60, totalConsumption: 30, netProduction: 30, isRawMaterial: false }], // 中間製品
-          [1102, { itemId: 1102, totalProduction: 30, totalConsumption: 0, netProduction: 30, isRawMaterial: false }], // 最終製品
+          [1101, { itemId: 1101, totalProduction: 60, totalConsumption: 30, netProduction: 30, isRawMaterial: false }], // 中間生産物
+          [1102, { itemId: 1102, totalProduction: 30, totalConsumption: 0, netProduction: 30, isRawMaterial: false }], // 最終生産物
         ]),
         totalMachines: 10,
         totalPower: 1000,
@@ -609,10 +611,15 @@ describe('statistics', () => {
 
       const finalProducts = getFinalProducts(stats);
 
+      // 消費されないアイテムのみが最終生産物として認識される
       expect(finalProducts).toHaveLength(1);
       expect(finalProducts[0].itemId).toBe(1102);
-      expect(finalProducts[0].totalProduction).toBeGreaterThan(0);
-      expect(finalProducts[0].totalConsumption).toBe(0);
+      
+      // 中間生産物は含まれない
+      expect(finalProducts.find(p => p.itemId === 1101)).toBeUndefined();
+      
+      // 原材料は含まれない
+      expect(finalProducts.find(p => p.itemId === 1001)).toBeUndefined();
     });
 
     it('生産量でソート（降順）する', () => {
@@ -632,6 +639,179 @@ describe('statistics', () => {
       expect(finalProducts[0].totalProduction).toBe(60);
       expect(finalProducts[1].totalProduction).toBe(45);
       expect(finalProducts[2].totalProduction).toBe(30);
+    });
+
+    it('複数出力レシピの最終生産物を正しく識別する', () => {
+      const stats = {
+        items: new Map([
+          [1114, { itemId: 1114, totalProduction: 20, totalConsumption: 0, netProduction: 20, isRawMaterial: false }], // Refined Oil
+          [1120, { itemId: 1120, totalProduction: 10, totalConsumption: 0, netProduction: 10, isRawMaterial: false }], // Hydrogen
+        ]),
+        totalMachines: 10,
+        totalPower: 1000,
+      };
+
+      const finalProducts = getFinalProducts(stats);
+
+      // 両方とも最終生産物として認識されるべき
+      expect(finalProducts).toHaveLength(2);
+      expect(finalProducts.find(p => p.itemId === 1114)).toBeDefined();
+      expect(finalProducts.find(p => p.itemId === 1120)).toBeDefined();
+    });
+
+    it('X線クラッキングレシピの統計計算（入力と出力に同じアイテム）', () => {
+      const node: RecipeTreeNode = {
+        recipe: {
+          SID: 1207,
+          name: 'X-Ray Cracking',
+          Type: 'Refine',
+          Explicit: true,
+          TimeSpend: 240,
+          Items: [
+            { id: 1114, name: 'Refined Oil', count: 1, Type: 'Unknown', isRaw: true },
+            { id: 1120, name: 'Hydrogen', count: 2, Type: 'Unknown', isRaw: true },
+          ],
+          Results: [
+            { id: 1120, name: 'Hydrogen', count: 3, Type: 'Unknown', isRaw: true },
+            { id: 1109, name: 'High-Energy Graphite', count: 1, Type: 'Unknown', isRaw: false },
+          ],
+          GridIndex: '1207',
+          productive: false,
+        },
+        machine: mockMachine,
+        targetOutputRate: 2.0, // 2.0 Hydrogen/s (main output)
+        machineCount: 1,
+        proliferator: mockNoProliferator,
+        power: { machines: 100, sorters: 0, total: 100 },
+        inputs: [
+          { itemId: 1114, itemName: 'Refined Oil', requiredRate: 0.7 },
+          { itemId: 1120, itemName: 'Hydrogen', requiredRate: 1.3 },
+        ],
+        children: [],
+        conveyorBelts: { inputs: 2, outputs: 2, total: 4 },
+        nodeId: 'root',
+      };
+
+      const result = calculateItemStatistics(node);
+
+      // Hydrogen: 生産2.0/s - 消費1.3/s = 正味0.7/s
+      const hydrogen = result.items.get(1120);
+      expect(hydrogen?.totalProduction).toBeCloseTo(2.0);
+      expect(hydrogen?.totalConsumption).toBeCloseTo(1.3);
+      expect(hydrogen?.netProduction).toBeCloseTo(0.7);
+
+      // High-Energy Graphite: 生産0.67/s - 消費0/s = 正味0.67/s
+      const graphite = result.items.get(1109);
+      expect(graphite?.totalProduction).toBeCloseTo(0.67);
+      expect(graphite?.totalConsumption).toBeCloseTo(0);
+      expect(graphite?.netProduction).toBeCloseTo(0.67);
+
+      // Refined Oil: 生産0/s - 消費0.7/s = 正味-0.7/s
+      const refinedOil = result.items.get(1114);
+      expect(refinedOil?.totalProduction).toBeCloseTo(0);
+      expect(refinedOil?.totalConsumption).toBeCloseTo(0.7);
+      expect(refinedOil?.netProduction).toBeCloseTo(-0.7);
+
+      // 最終生産物の確認
+      const finalProducts = getFinalProducts(result);
+      // 子ノードがないこのテストケースでは、水素にisRawMaterialフラグが設定されないため、
+      // 高エネルギーグラファイトのみが最終生産物として認識される
+      expect(finalProducts).toHaveLength(1);
+      
+      // 高エネルギーグラファイトは消費されないので最終生産物
+      const graphiteFinal = finalProducts.find(p => p.itemId === 1109);
+      expect(graphiteFinal).toBeDefined();
+      expect(graphiteFinal?.totalConsumption).toBeCloseTo(0);
+      expect(graphiteFinal?.totalProduction).toBeCloseTo(0.67);
+      
+      // 水素はisRawMaterialフラグがないため、中間生産物として扱われる
+      const hydrogenFinal = finalProducts.find(p => p.itemId === 1120);
+      expect(hydrogenFinal).toBeUndefined();
+    });
+
+    it('X線クラッキングレシピの統計計算（子ノードに水素の原材料ノード）', () => {
+      const hydrogenRawNode: RecipeTreeNode = {
+        recipe: undefined,
+        machine: mockMachine,
+        targetOutputRate: 1.3, // 1.3 Hydrogen/s (raw material)
+        machineCount: 0,
+        proliferator: mockNoProliferator,
+        power: { machines: 0, sorters: 0, total: 0 },
+        inputs: [],
+        children: [],
+        conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
+        nodeId: 'root/raw-1120',
+        itemId: 1120,
+        isRawMaterial: true,
+      };
+
+      const node: RecipeTreeNode = {
+        recipe: {
+          SID: 1207,
+          name: 'X-Ray Cracking',
+          Type: 'Refine',
+          Explicit: true,
+          TimeSpend: 240,
+          Items: [
+            { id: 1114, name: 'Refined Oil', count: 1, Type: 'Unknown', isRaw: true },
+            { id: 1120, name: 'Hydrogen', count: 2, Type: 'Unknown', isRaw: true },
+          ],
+          Results: [
+            { id: 1120, name: 'Hydrogen', count: 3, Type: 'Unknown', isRaw: true },
+            { id: 1109, name: 'High-Energy Graphite', count: 1, Type: 'Unknown', isRaw: false },
+          ],
+          GridIndex: '1207',
+          productive: false,
+        },
+        machine: mockMachine,
+        targetOutputRate: 2.0, // 2.0 Hydrogen/s (main output)
+        machineCount: 1,
+        proliferator: mockNoProliferator,
+        power: { machines: 100, sorters: 0, total: 100 },
+        inputs: [
+          { itemId: 1114, itemName: 'Refined Oil', requiredRate: 0.7 },
+          { itemId: 1120, itemName: 'Hydrogen', requiredRate: 1.3 },
+        ],
+        children: [hydrogenRawNode], // 水素の原材料ノードを子ノードに追加
+        conveyorBelts: { inputs: 2, outputs: 2, total: 4 },
+        nodeId: 'root',
+      };
+
+      const result = calculateItemStatistics(node);
+
+      // Hydrogen: 生産2.0/s - 消費1.3/s = 正味0.7/s
+      const hydrogen = result.items.get(1120);
+      expect(hydrogen?.totalProduction).toBeCloseTo(2.0);
+      expect(hydrogen?.totalConsumption).toBeCloseTo(1.3);
+      expect(hydrogen?.netProduction).toBeCloseTo(0.7);
+      // 原材料としてマークされているべき
+      expect(hydrogen?.isRawMaterial).toBe(true);
+
+      // 原材料の確認
+      const rawMaterials = getRawMaterials(result);
+      // 実際には水素のみが原材料としてマークされている
+      // 精製油は原材料として定義されていないため、原材料セクションに表示されない
+      expect(rawMaterials).toHaveLength(1); // 水素のみ
+
+      const hydrogenRaw = rawMaterials.find(r => r.itemId === 1120);
+      expect(hydrogenRaw).toBeDefined();
+      expect(hydrogenRaw?.totalConsumption).toBeCloseTo(1.3); // 正しい消費量
+      
+      // 最終生産物の確認
+      const finalProducts = getFinalProducts(result);
+      expect(finalProducts).toHaveLength(2); // 水素と高エネルギーグラファイト
+      
+      // 水素は原材料フラグがあり、正味0.7/sで最終生産物
+      const hydrogenFinal = finalProducts.find(p => p.itemId === 1120);
+      expect(hydrogenFinal).toBeDefined();
+      expect(hydrogenFinal?.isRawMaterial).toBe(true);
+      expect(hydrogenFinal?.netProduction).toBeCloseTo(0.7);
+      
+      // 高エネルギーグラファイトは消費されないので最終生産物
+      const graphiteFinal = finalProducts.find(p => p.itemId === 1109);
+      expect(graphiteFinal).toBeDefined();
+      expect(graphiteFinal?.totalConsumption).toBeCloseTo(0);
+      expect(graphiteFinal?.totalProduction).toBeCloseTo(0.67);
     });
   });
 });
