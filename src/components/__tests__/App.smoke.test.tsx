@@ -37,14 +37,39 @@ vi.mock('react-i18next', () => ({
 vi.mock('../../utils/urlShare', () => ({
   getPlanFromURL: vi.fn(() => null),
 }));
-vi.mock('../../utils/planExport', () => ({
-  restorePlan: vi.fn(),
-}));
 
 vi.mock('../../stores/gameDataStore', () => {
+  // モック用のレシピデータ
+  const mockRecipes = new Map([
+    [1001, {
+      SID: 1001,
+      name: 'Test Recipe',
+      type: 'Smelt',
+      Items: [{ item: 1001, amount: 1 }],
+      Results: [{ id: 1002, amount: 1 }],
+      TimeSpend: 1,
+    }],
+  ]);
+
+  // モック用のアイテムデータ
+  const mockItems = new Map([
+    [1001, { SID: 1001, name: 'Test Item 1' }],
+    [1002, { SID: 1002, name: 'Test Item 2' }],
+  ]);
+
+  // モック用のマシンデータ
+  const mockMachines = new Map([
+    ['Smelt', { SID: 'Smelt', name: 'Smelter', powerConsumption: 100 }],
+    ['Assemble', { SID: 'Assemble', name: 'Assembler', powerConsumption: 200 }],
+  ]);
+
   return {
     useGameDataStore: () => ({
-      data: { recipes: new Map() },
+      data: {
+        recipes: mockRecipes,
+        items: mockItems,
+        machines: mockMachines,
+      },
       isLoading: false,
       error: null,
       loadData: vi.fn(),
@@ -144,13 +169,14 @@ describe('App smoke', () => {
 
   it('URLにplanがある場合に復元を試み、適用後にクエリからplanを削除する', async () => {
     vi.resetModules();
-    const { restorePlan } = await import('../../utils/planExport');
+    const planExport = await import('../../utils/planExport');
+    const spyRestorePlan = vi.spyOn(planExport, 'restorePlan');
     const { getPlanFromURL } = await import('../../utils/urlShare');
     const spyReplace = vi.spyOn(window.history, 'replaceState');
 
     // plan ありにモック
     (getPlanFromURL as any).mockReturnValueOnce({
-      name: 'P1', timestamp: Date.now(), recipeSID: 2001, targetQuantity: 1, settings: {}, alternativeRecipes: {}, nodeOverrides: {}
+      name: 'P1', timestamp: Date.now(), recipeSID: 2001, targetQuantity: 1, settings: { alternativeRecipes: {} }, alternativeRecipes: {}, nodeOverrides: {}
     });
 
     // データと各ストアを plan のレシピが存在する形に上書き
@@ -185,7 +211,7 @@ describe('App smoke', () => {
       await new Promise((r) => setTimeout(r, 0));
       await new Promise((r) => setTimeout(r, 0));
     });
-    expect(restorePlan).toHaveBeenCalled();
+    expect(spyRestorePlan).toHaveBeenCalled();
     expect(spyReplace).toHaveBeenCalled();
   });
 

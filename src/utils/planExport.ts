@@ -124,9 +124,11 @@ export function restorePlan(
   // Restore settings (convert alternativeRecipes to Map)
   const restoredSettings = {
     ...plan.settings,
-    alternativeRecipes: new Map(
-      Object.entries(plan.settings.alternativeRecipes).map(([k, v]) => [Number(k), Number(v)])
-    ),
+    alternativeRecipes: plan.settings.alternativeRecipes 
+      ? new Map(
+          Object.entries(plan.settings.alternativeRecipes).map(([k, v]) => [Number(k), Number(v)])
+        )
+      : new Map(),
   };
   updateSettings(restoredSettings);
   

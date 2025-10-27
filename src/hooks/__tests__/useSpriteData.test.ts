@@ -2,6 +2,9 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getDataPath } from '../../utils/paths';
 
+// テストセットアップでグローバルにモックされているuseSpriteDataを無効化
+vi.unmock('../useSpriteData');
+
 // グローバルfetchのモック
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
