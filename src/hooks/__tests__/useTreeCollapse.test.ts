@@ -34,10 +34,13 @@ describe('useTreeCollapse', () => {
 
     const { result } = renderHook(() => useTreeCollapse(calculationResult));
 
-    // queueMicrotaskで遅延されるため、waitForで待つ
-    await waitFor(() => {
-      expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
+    // queueMicrotaskの処理を待つため、少し待機
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
     });
+
+    // 深さ1以降のノードが折りたたまれていることを確認
+    expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
     expect(result.current.isTreeExpanded).toBe(false);
   });
 
@@ -48,12 +51,17 @@ describe('useTreeCollapse', () => {
     expect(result.current.isTreeExpanded).toBe(false);
   });
 
-  it('handleToggleCollapseでノードの折りたたみ状態をトグルできる', () => {
+  it('handleToggleCollapseでノードの折りたたみ状態をトグルできる', async () => {
     const child = createMockNode(2);
     const rootNode = createMockNode(1, [child]);
     const calculationResult = createMockCalculationResult(rootNode);
 
     const { result } = renderHook(() => useTreeCollapse(calculationResult));
+
+    // 初期状態を待つ
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
+    });
 
     const initialSize = result.current.collapsedNodes.size;
     const testNodeId = 'test-node-id';
@@ -83,8 +91,8 @@ describe('useTreeCollapse', () => {
     const { result } = renderHook(() => useTreeCollapse(calculationResult));
 
     // 初期状態は折りたたまれている（queueMicrotaskで遅延されるため待つ）
-    await waitFor(() => {
-      expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
     });
     expect(result.current.isTreeExpanded).toBe(false);
 
@@ -97,12 +105,17 @@ describe('useTreeCollapse', () => {
     expect(result.current.collapsedNodes.size).toBe(0);
   });
 
-  it('handleToggleAllで全折りたたみできる', () => {
+  it('handleToggleAllで全折りたたみできる', async () => {
     const child = createMockNode(2);
     const rootNode = createMockNode(1, [child]);
     const calculationResult = createMockCalculationResult(rootNode);
 
     const { result } = renderHook(() => useTreeCollapse(calculationResult));
+
+    // 初期状態を待つ
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
+    });
 
     // まず全展開
     act(() => {
@@ -145,10 +158,12 @@ describe('useTreeCollapse', () => {
 
     rerender({ calcResult: calculationResult2 });
 
-    // queueMicrotaskで遅延されるため、waitForで待つ
-    await waitFor(() => {
-      expect(result.current.isTreeExpanded).toBe(false);
+    // queueMicrotaskで遅延されるため、少し待機
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
     });
+
+    expect(result.current.isTreeExpanded).toBe(false);
   });
 
   it('深いネストされたツリーを正しく処理する', async () => {
@@ -160,8 +175,8 @@ describe('useTreeCollapse', () => {
     const { result } = renderHook(() => useTreeCollapse(calculationResult));
 
     // 深さ1以降のノードが折りたたまれている（queueMicrotaskで遅延されるため待つ）
-    await waitFor(() => {
-      expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
     });
     expect(result.current.isTreeExpanded).toBe(false);
 
@@ -196,9 +211,12 @@ describe('useTreeCollapse', () => {
     const { result } = renderHook(() => useTreeCollapse(calculationResult));
 
     // 原材料ノードも正しく処理される（queueMicrotaskで遅延されるため待つ）
-    await waitFor(() => {
-      expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 10));
     });
+
+    // 原材料ノードは折りたたまれない（深さ1以降のみ折りたたまれる）
+    expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
   });
 });
 

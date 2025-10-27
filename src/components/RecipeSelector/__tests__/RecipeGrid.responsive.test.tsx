@@ -6,10 +6,12 @@ import { createMockGameData } from '../../../test/factories/testDataFactory';
 
 // Mock the ItemIcon component to test responsive behavior
 vi.mock('../../ItemIcon', () => ({
-  ItemIcon: ({ size, className, ...props }: any) => (
+  ItemIcon: ({ size, className, itemId, preferRecipes, ...props }: any) => (
     <div 
       data-testid="item-icon" 
       data-size={size}
+      data-item-id={itemId}
+      data-prefer-recipes={preferRecipes}
       className={className}
       {...props}
     />

@@ -8,10 +8,34 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
+  initReactI18next: {
+    type: '3rdParty',
+    init: vi.fn(),
+  },
 }));
 
 // ストアのモック
 vi.mock('../../../stores/settingsStore');
+
+// gameDataStoreのモック
+vi.mock('../../../stores/gameDataStore', () => ({
+  getMachineById: (id: number) => {
+    const machines: Record<number, { id: number; name: string }> = {
+      2302: { id: 2302, name: 'Arc Smelter' },
+      2315: { id: 2315, name: 'Plane Smelter' },
+      2319: { id: 2319, name: 'Negentropy Smelter' },
+      2303: { id: 2303, name: 'Assembling Machine Mk.I' },
+      2304: { id: 2304, name: 'Assembling Machine Mk.II' },
+      2305: { id: 2305, name: 'Assembling Machine Mk.III' },
+      2318: { id: 2318, name: 'Re-composing Assembler' },
+      2309: { id: 2309, name: 'Chemical Plant' },
+      2317: { id: 2317, name: 'Quantum Chemical Plant' },
+      2901: { id: 2901, name: 'Matrix Lab' },
+      2902: { id: 2902, name: 'Self-evolution Lab' },
+    };
+    return machines[id] || null;
+  },
+}));
 
 // ItemIconコンポーネントのモック
 vi.mock('../../ItemIcon', () => ({
@@ -43,15 +67,15 @@ describe('MachineRankSettings', () => {
     it('すべてのSmelterオプションを表示する', () => {
       render(<MachineRankSettings />);
 
-      expect(screen.getByText('arcSmelter')).toBeInTheDocument();
-      expect(screen.getByText('planeSmelter')).toBeInTheDocument();
-      expect(screen.getByText('negentropySmelter')).toBeInTheDocument();
+      expect(screen.getByText('Arc Smelter')).toBeInTheDocument();
+      expect(screen.getByText('Plane Smelter')).toBeInTheDocument();
+      expect(screen.getByText('Negentropy Smelter')).toBeInTheDocument();
     });
 
     it('選択されたSmelter (arc) をハイライト表示する', () => {
       render(<MachineRankSettings />);
 
-      const arcButton = screen.getByText('arcSmelter').closest('button');
+      const arcButton = screen.getByText('Arc Smelter').closest('button');
       expect(arcButton).toHaveClass('bg-neon-orange/30');
       expect(arcButton).toHaveClass('border-neon-orange');
     });
@@ -59,7 +83,7 @@ describe('MachineRankSettings', () => {
     it('Plane Smelterを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const planeButton = screen.getByText('planeSmelter').closest('button');
+      const planeButton = screen.getByText('Plane Smelter').closest('button');
       fireEvent.click(planeButton!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Smelt', 'plane');
@@ -68,7 +92,7 @@ describe('MachineRankSettings', () => {
     it('Negentropy Smelterを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const negentropyButton = screen.getByText('negentropySmelter').closest('button');
+      const negentropyButton = screen.getByText('Negentropy Smelter').closest('button');
       fireEvent.click(negentropyButton!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Smelt', 'negentropy');
@@ -87,16 +111,16 @@ describe('MachineRankSettings', () => {
     it('すべてのAssemblerオプションを表示する', () => {
       render(<MachineRankSettings />);
 
-      expect(screen.getByText('assemblingMachineMk1')).toBeInTheDocument();
-      expect(screen.getByText('assemblingMachineMk2')).toBeInTheDocument();
-      expect(screen.getByText('assemblingMachineMk3')).toBeInTheDocument();
-      expect(screen.getByText('recomposingAssembler')).toBeInTheDocument();
+      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
+      expect(screen.getByText('Assembling Machine Mk.II')).toBeInTheDocument();
+      expect(screen.getByText('Assembling Machine Mk.III')).toBeInTheDocument();
+      expect(screen.getByText('Re-composing Assembler')).toBeInTheDocument();
     });
 
     it('選択されたAssembler (mk1) をハイライト表示する', () => {
       render(<MachineRankSettings />);
 
-      const mk1Button = screen.getByText('assemblingMachineMk1').closest('button');
+      const mk1Button = screen.getByText('Assembling Machine Mk.I').closest('button');
       expect(mk1Button).toHaveClass('bg-neon-blue/30');
       expect(mk1Button).toHaveClass('border-neon-blue');
     });
@@ -104,7 +128,7 @@ describe('MachineRankSettings', () => {
     it('Assembler Mk.IIを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const mk2Button = screen.getByText('assemblingMachineMk2').closest('button');
+      const mk2Button = screen.getByText('Assembling Machine Mk.II').closest('button');
       fireEvent.click(mk2Button!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Assemble', 'mk2');
@@ -113,7 +137,7 @@ describe('MachineRankSettings', () => {
     it('Assembler Mk.IIIを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const mk3Button = screen.getByText('assemblingMachineMk3').closest('button');
+      const mk3Button = screen.getByText('Assembling Machine Mk.III').closest('button');
       fireEvent.click(mk3Button!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Assemble', 'mk3');
@@ -122,7 +146,7 @@ describe('MachineRankSettings', () => {
     it('Re-composing Assemblerを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const recomposingButton = screen.getByText('recomposingAssembler').closest('button');
+      const recomposingButton = screen.getByText('Re-composing Assembler').closest('button');
       fireEvent.click(recomposingButton!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Assemble', 'recomposing');
@@ -142,14 +166,14 @@ describe('MachineRankSettings', () => {
     it('すべてのChemical Plantオプションを表示する', () => {
       render(<MachineRankSettings />);
 
-      expect(screen.getByText('chemicalPlantStandard')).toBeInTheDocument();
-      expect(screen.getByText('quantumChemicalPlant')).toBeInTheDocument();
+      expect(screen.getByText('Chemical Plant')).toBeInTheDocument();
+      expect(screen.getByText('Quantum Chemical Plant')).toBeInTheDocument();
     });
 
     it('選択されたChemical Plant (standard) をハイライト表示する', () => {
       render(<MachineRankSettings />);
 
-      const standardButton = screen.getByText('chemicalPlantStandard').closest('button');
+      const standardButton = screen.getByText('Chemical Plant').closest('button');
       expect(standardButton).toHaveClass('bg-neon-green/30');
       expect(standardButton).toHaveClass('border-neon-green');
     });
@@ -157,7 +181,7 @@ describe('MachineRankSettings', () => {
     it('Quantum Chemical Plantを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const quantumButton = screen.getByText('quantumChemicalPlant').closest('button');
+      const quantumButton = screen.getByText('Quantum Chemical Plant').closest('button');
       fireEvent.click(quantumButton!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Chemical', 'quantum');
@@ -175,14 +199,14 @@ describe('MachineRankSettings', () => {
     it('すべてのMatrix Labオプションを表示する', () => {
       render(<MachineRankSettings />);
 
-      expect(screen.getByText('matrixLabStandard')).toBeInTheDocument();
-      expect(screen.getByText('selfEvolutionLab')).toBeInTheDocument();
+      expect(screen.getByText('Matrix Lab')).toBeInTheDocument();
+      expect(screen.getByText('Self-evolution Lab')).toBeInTheDocument();
     });
 
     it('選択されたMatrix Lab (standard) をハイライト表示する', () => {
       render(<MachineRankSettings />);
 
-      const standardButton = screen.getByText('matrixLabStandard').closest('button');
+      const standardButton = screen.getByText('Matrix Lab').closest('button');
       expect(standardButton).toHaveClass('bg-neon-purple/30');
       expect(standardButton).toHaveClass('border-neon-purple');
     });
@@ -190,7 +214,7 @@ describe('MachineRankSettings', () => {
     it('Self-evolution Labを選択できる', () => {
       render(<MachineRankSettings />);
 
-      const selfEvoButton = screen.getByText('selfEvolutionLab').closest('button');
+      const selfEvoButton = screen.getByText('Self-evolution Lab').closest('button');
       fireEvent.click(selfEvoButton!);
 
       expect(mockSetMachineRank).toHaveBeenCalledWith('Research', 'self-evolution');
@@ -220,14 +244,14 @@ describe('MachineRankSettings', () => {
     it('すべてのボタンがホバー可能である', () => {
       render(<MachineRankSettings />);
 
-      const arcButton = screen.getByText('arcSmelter').closest('button');
+      const arcButton = screen.getByText('Arc Smelter').closest('button');
       expect(arcButton).toHaveClass('hover:scale-105');
     });
 
     it('選択されたボタンが視覚的に強調される（scale-105）', () => {
       render(<MachineRankSettings />);
 
-      const arcButton = screen.getByText('arcSmelter').closest('button');
+      const arcButton = screen.getByText('Arc Smelter').closest('button');
       expect(arcButton).toHaveClass('scale-105');
     });
 
@@ -235,22 +259,22 @@ describe('MachineRankSettings', () => {
       render(<MachineRankSettings />);
 
       // Smelt を plane に変更
-      const planeButton = screen.getByText('planeSmelter').closest('button');
+      const planeButton = screen.getByText('Plane Smelter').closest('button');
       fireEvent.click(planeButton!);
       expect(mockSetMachineRank).toHaveBeenCalledWith('Smelt', 'plane');
 
       // Assemble を mk3 に変更
-      const mk3Button = screen.getByText('assemblingMachineMk3').closest('button');
+      const mk3Button = screen.getByText('Assembling Machine Mk.III').closest('button');
       fireEvent.click(mk3Button!);
       expect(mockSetMachineRank).toHaveBeenCalledWith('Assemble', 'mk3');
 
       // Chemical を quantum に変更
-      const quantumButton = screen.getByText('quantumChemicalPlant').closest('button');
+      const quantumButton = screen.getByText('Quantum Chemical Plant').closest('button');
       fireEvent.click(quantumButton!);
       expect(mockSetMachineRank).toHaveBeenCalledWith('Chemical', 'quantum');
 
       // Research を self-evolution に変更
-      const selfEvoButton = screen.getByText('selfEvolutionLab').closest('button');
+      const selfEvoButton = screen.getByText('Self-evolution Lab').closest('button');
       fireEvent.click(selfEvoButton!);
       expect(mockSetMachineRank).toHaveBeenCalledWith('Research', 'self-evolution');
 
@@ -276,7 +300,7 @@ describe('MachineRankSettings', () => {
 
       render(<MachineRankSettings />);
 
-      const planeButton = screen.getByText('planeSmelter').closest('button');
+      const planeButton = screen.getByText('Plane Smelter').closest('button');
       expect(planeButton).toHaveClass('bg-neon-orange/30');
     });
 
@@ -297,10 +321,10 @@ describe('MachineRankSettings', () => {
 
       render(<MachineRankSettings />);
 
-      expect(screen.getByText('negentropySmelter').closest('button')).toHaveClass('bg-neon-orange/30');
-      expect(screen.getByText('recomposingAssembler').closest('button')).toHaveClass('bg-neon-blue/30');
-      expect(screen.getByText('quantumChemicalPlant').closest('button')).toHaveClass('bg-neon-green/30');
-      expect(screen.getByText('selfEvolutionLab').closest('button')).toHaveClass('bg-neon-purple/30');
+      expect(screen.getByText('Negentropy Smelter').closest('button')).toHaveClass('bg-neon-orange/30');
+      expect(screen.getByText('Re-composing Assembler').closest('button')).toHaveClass('bg-neon-blue/30');
+      expect(screen.getByText('Quantum Chemical Plant').closest('button')).toHaveClass('bg-neon-green/30');
+      expect(screen.getByText('Self-evolution Lab').closest('button')).toHaveClass('bg-neon-purple/30');
     });
   });
 
