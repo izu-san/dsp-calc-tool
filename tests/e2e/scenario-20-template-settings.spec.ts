@@ -55,9 +55,12 @@ test.describe('テンプレート設定（プリセット）の適用', () => {
     await expect(page.locator('text=ボトルネックなし')).toBeVisible();
 
     // 13. 「省電力」テンプレートボタンをクリックして確認ダイアログを表示
+    // webkit環境では表示が遅い場合があるため、より堅牢な待機
+    await expect(page.getByRole('button', { name: '💡省電力' })).toBeVisible({ timeout: 10000 });
     await page.getByRole('button', { name: '💡省電力' }).click();
 
     // 14. 「省電力」テンプレートの設定を適用し、追加生産モードで電力効率が良くなることを確認
+    await expect(page.getByRole('button', { name: '適用' }).nth(1)).toBeVisible({ timeout: 10000 });
     await page.getByRole('button', { name: '適用' }).nth(1).click();
 
     // 省電力テンプレート適用後の検証: 追加生産モードに変更されたことを確認

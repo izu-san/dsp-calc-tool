@@ -57,7 +57,19 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
 
   const rawMaterials = getRawMaterials(enhancedStatistics);
   const intermediateProducts = getIntermediateProducts(enhancedStatistics);
-  const finalProducts = getFinalProducts(enhancedStatistics);
+  
+  // Final products should be the outputs of the selected recipe
+  // Use multiOutputResults if available, otherwise use getFinalProducts
+  const finalProducts = calculationResult?.multiOutputResults && calculationResult.multiOutputResults.length > 0
+    ? calculationResult.multiOutputResults.map(result => ({
+        itemId: result.itemId,
+        itemName: result.itemName,
+        totalProduction: result.productionRate,
+        totalConsumption: 0,
+        netProduction: result.productionRate,
+        isRawMaterial: false,
+      }))
+    : getFinalProducts(enhancedStatistics);
 
   return (
     <div className="space-y-6">

@@ -16,6 +16,8 @@ vi.mock('react-i18next', () => ({
         calculating: 'Calculating...',
         noRecipeSelected: 'No recipe selected',
         loading: 'Loading...',
+        multiOutputResults: 'Multi-Output Items',
+        itemsPerSecond: 'items/second',
       };
       return translations[key] || key;
     },
@@ -267,6 +269,63 @@ describe('ProductionResultsPanel', () => {
     // Production Treeに戻る
     fireEvent.click(productionTreeButton);
     expect(productionTreeButton).toHaveClass('border-neon-blue');
+  });
+
+  it('複数出力レシピの場合、Multi-Output Itemsセクションを表示する', () => {
+    const multiOutputResult = {
+      ...mockCalculationResult,
+      multiOutputResults: [
+        {
+          itemId: 1101,
+          itemName: 'Iron Ingot',
+          productionRate: 10,
+          count: 1,
+        },
+        {
+          itemId: 1102,
+          itemName: 'Copper Ingot',
+          productionRate: 5,
+          count: 0.5,
+        },
+      ],
+    };
+
+    render(
+      <ProductionResultsPanel
+        calculationResult={multiOutputResult}
+        selectedRecipe={mockRecipe}
+        collapsedNodes={new Set()}
+        isTreeExpanded={false}
+        handleToggleCollapse={mockHandleToggleCollapse}
+        handleToggleAll={mockHandleToggleAll}
+      />
+    );
+
+    expect(screen.getByText('Multi-Output Items')).toBeInTheDocument();
+    expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
+    expect(screen.getByText('Copper Ingot')).toBeInTheDocument();
+    expect(screen.getByText('10.0/s')).toBeInTheDocument();
+    expect(screen.getByText('5.0/s')).toBeInTheDocument();
+  });
+
+  it('単一出力レシピの場合、Multi-Output Itemsセクションを表示しない', () => {
+    const singleOutputResult = {
+      ...mockCalculationResult,
+      multiOutputResults: undefined,
+    };
+
+    render(
+      <ProductionResultsPanel
+        calculationResult={singleOutputResult}
+        selectedRecipe={mockRecipe}
+        collapsedNodes={new Set()}
+        isTreeExpanded={false}
+        handleToggleCollapse={mockHandleToggleCollapse}
+        handleToggleAll={mockHandleToggleAll}
+      />
+    );
+
+    expect(screen.queryByText('Multi-Output Items')).not.toBeInTheDocument();
   });
 });
 

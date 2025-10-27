@@ -355,6 +355,7 @@
   "inputComplexityFewerIsBetter": "入力複雑度 (入力が少ないほど良い)",
   "totalBeltSpeed": "ベルト総速度",
   "itemsPerSecond": "アイテム/秒",
+  "multiOutputResults": "複数出力アイテム",
   "inputs": "入力",
   "outputs": "出力",
   "total": "合計",

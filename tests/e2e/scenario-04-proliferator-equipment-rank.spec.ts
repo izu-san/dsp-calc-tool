@@ -45,17 +45,17 @@ test.describe('Proliferator（増産剤）と設備ランクの反映検証', ()
     await expect(page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('10.1 MW')).toBeVisible();
     await expect(page.getByText('+100.0%').first()).toBeVisible();
     
-    // 8. 設備ランク（製錬設備）を「プレーン溶鉱炉」（2x speed）に変更する
-    await page.getByRole('button', { name: 'プレーン溶鉱炉 2x speed' }).click();
+    // 8. 設備ランク（製錬設備）を「プレーン製錬所」（2x speed）に変更する
+    await page.getByRole('button').filter({ hasText: 'プレーン製錬所' }).click();
     
-    // プレーン溶鉱炉の効果を確認（2倍速なので施設数が半分に）
+    // プレーン製錬所の効果を確認（2倍速なので施設数が半分に）
     await expect(page.getByText('プレーン製錬所 × 4')).toBeVisible();
     await expect(page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('15.8 MW')).toBeVisible();
     
-    // 9. 設備ランク（製錬設備）を「負エントロピー溶鉱炉」（3x speed）に変更する
-    await page.getByRole('button', { name: '負エントロピー溶鉱炉 3x speed' }).click();
+    // 9. 設備ランク（製錬設備）を「負エントロピー製錬所」（3x speed）に変更する
+    await page.getByRole('button').filter({ hasText: '負エントロピー製錬所' }).click();
     
-    // 負エントロピー溶鉱炉の効果を確認（3倍速なので施設数がさらに減少）
+    // 負エントロピー製錬所の効果を確認（3倍速なので施設数がさらに減少）
     await expect(page.getByText('負エントロピー製錬所 × 3')).toBeVisible();
     await expect(page.getByRole('button', { name: BUTTON_LABELS.COLLAPSE }).getByText('22.7 MW')).toBeVisible();
     
@@ -65,8 +65,8 @@ test.describe('Proliferator（増産剤）と設備ランクの反映検証', ()
     await expect(mk3Button).toBeVisible();
     // await expect(mk3Button).toHaveAttribute('active', '');
     
-    // 設備ランクの排他性を確認（負エントロピー溶鉱炉がactiveのまま）
-    const negentropyButton = page.getByRole('button', { name: '負エントロピー溶鉱炉 3x speed' });
+    // 設備ランクの排他性を確認（負エントロピー製錬所がactiveのまま）
+    const negentropyButton = page.getByRole('button', { name: '負エントロピー製錬所 3x speed' });
     await expect(negentropyButton).toBeVisible();
     // await expect(negentropyButton).toHaveAttribute('active', '');
   });

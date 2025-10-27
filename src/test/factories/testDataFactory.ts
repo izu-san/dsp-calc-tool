@@ -41,22 +41,49 @@ export const createMockRecipe = (id: number, name: string): Recipe => ({
 });
 
 // 完全なゲームデータセット
-export const createMockGameData = (): GameData => ({
-  items: new Map([
+export const createMockGameData = (): GameData => {
+  const items = new Map([
     [1, createMockItem(1, 'Iron Ore')],
     [2, createMockItem(2, 'Iron Ingot')],
     [3, createMockItem(3, 'Copper Ore')],
-    [4, createMockItem(4, 'Copper Ingot')]
-  ]),
-  recipes: new Map([
+    [4, createMockItem(4, 'Copper Ingot')],
+    [1007, createMockItem(1007, 'Crude Oil')],
+    [1120, createMockItem(1120, 'Hydrogen')],
+    [1114, createMockItem(1114, 'Refined Oil')],
+    [1109, createMockItem(1109, 'High-Energy Graphite')],
+    [1208, createMockItem(1208, 'Graphene')],
+    [1123, createMockItem(1123, 'Graphene')],
+    [1122, createMockItem(1122, 'Antimatter')],
+    [1209, createMockItem(1209, 'Graviton Lens')],
+  ]);
+  
+  const recipes = new Map([
     [1, createMockRecipe(1, 'Smelt Iron Ingot')],
     [2, createMockRecipe(2, 'Smelt Copper Ingot')]
-  ]),
-  machines: new Map([
-    ['arc', createMockMachine('arc', 'Arc Smelter')],
-    ['mk1', createMockMachine('mk1', 'Assembling Machine Mk.I')]
-  ])
-});
+  ]);
+  
+  // recipesByItemIdプロパティを追加
+  const recipesByItemId = new Map<number, Recipe[]>();
+  recipes.forEach(recipe => {
+    recipe.Results.forEach(result => {
+      if (!recipesByItemId.has(result.id)) {
+        recipesByItemId.set(result.id, []);
+      }
+      recipesByItemId.get(result.id)!.push(recipe);
+    });
+  });
+  
+  return {
+    items,
+    allItems: items,
+    recipes,
+    recipesByItemId,
+    machines: new Map([
+      ['arc', createMockMachine('arc', 'Arc Smelter')],
+      ['mk1', createMockMachine('mk1', 'Assembling Machine Mk.I')]
+    ])
+  };
+};
 
 // 計算結果用のモックデータ
 export const createMockCalculationResult = () => ({
@@ -83,7 +110,7 @@ export const createMockCalculationResult = () => ({
 // 設定用のモックデータ
 export const createMockSettings = () => ({
   proliferator: { type: 'none', mode: 'speed' },
-  conveyorBelt: { tier: 'mk1', stackCount: 1 },
+  proliferatorMultiplier: { production: 1, speed: 1 },
   machineRank: { 
     Smelt: 'arc', 
     Assemble: 'mk1', 
@@ -92,9 +119,12 @@ export const createMockSettings = () => ({
     Refine: 'standard',
     Particle: 'standard'
   },
+  conveyorBelt: { tier: 'mk1', speed: 6, stackCount: 4 },
+  sorter: { tier: 'mk1', powerConsumption: 0.27 },
+  photonGeneration: { useGravitonLens: false, energyLoss: 0 },
+  mining: { miningSpeed: 1, veinUtilization: 1 },
   alternativeRecipes: new Map<number, number>(),
-  miningSpeedResearch: 0,
-  proliferatorMultiplier: { production: 1, speed: 1 }
+  locale: 'en',
 });
 
 // ノードオーバーライド用のモックデータ
