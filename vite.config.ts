@@ -26,6 +26,7 @@ export default defineConfig({
     // ワーカープロセスのクラッシュを防ぐための設定
     // threadsプールを使用（forksより安定）
     pool: 'threads',
+    // @ts-ignore - Vitestの型定義が不完全
     poolOptions: {
       threads: {
         singleThread: false,
