@@ -2,6 +2,8 @@ import { useState, Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Recipe, CalculationResult } from '../../types';
 import { cn } from '../../utils/classNames';
+import { ItemIcon } from '../ItemIcon';
+import { formatNumber } from '../../utils/format';
 
 const ProductionTree = lazy(() => import('../ResultTree').then(m => ({ default: m.ProductionTree })));
 const StatisticsView = lazy(() => import('../StatisticsView').then(m => ({ default: m.StatisticsView })));
@@ -38,6 +40,39 @@ export function ProductionResultsPanel({
       <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t('productionTree')}</h2>
       {calculationResult ? (
         <div className="space-y-4">
+          {/* Multi-output results display */}
+          {calculationResult.multiOutputResults && calculationResult.multiOutputResults.length > 0 && (
+            <div className="bg-neon-green/10 border border-neon-green/30 rounded-lg p-4 backdrop-blur-sm">
+              <h3 className="text-sm font-semibold text-neon-green mb-3 flex items-center gap-2">
+                <span>📦</span>
+                {t('multiOutputResults')}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {calculationResult.multiOutputResults.map((result) => (
+                  <div
+                    key={result.itemId}
+                    className="flex items-center gap-3 p-3 bg-dark-700/50 rounded-lg border border-neon-green/20 hover:border-neon-green/40 transition-all"
+                  >
+                    <ItemIcon
+                      itemId={result.itemId}
+                      alt={result.itemName}
+                      size={32}
+                    />
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-white">{result.itemName}</div>
+                      <div className="text-xs text-neon-green">
+                        {formatNumber(result.productionRate)} {t('itemsPerSecond')}
+                      </div>
+                    </div>
+                    <div className="text-xs text-space-300">
+                      ×{result.count}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <div>
             {/* Tab Buttons */}
             <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">

@@ -61,6 +61,16 @@ export interface CalculationResult {
   totalPower: PowerConsumption;
   totalMachines: number; // Total machine count across all nodes
   rawMaterials: Map<number, number>; // itemId -> rate (items/s)
+  
+  // For multi-output recipes
+  multiOutputResults?: MultiOutputResult[]; // All output items for multi-output recipes
+}
+
+export interface MultiOutputResult {
+  itemId: number;
+  itemName: string;
+  productionRate: number; // items per second
+  count: number; // count per craft
 }
 
 export interface GridPosition {

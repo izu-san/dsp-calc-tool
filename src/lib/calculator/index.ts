@@ -4,6 +4,7 @@ import type {
   GlobalSettings,
   CalculationResult,
   NodeOverrideSettings,
+  MultiOutputResult,
 } from '../../types';
 import { buildRecipeTree } from './tree-builder';
 import { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from './aggregations';
@@ -54,11 +55,40 @@ export function calculateProductionChain(
   const totalMachines = calculateTotalMachines(rootNode);
   const rawMaterials = calculateRawMaterials(rootNode);
 
+  // Calculate multi-output results if recipe has multiple outputs
+  const multiOutputResults = recipe.Results.length > 1 
+    ? calculateMultiOutputResults(recipe, targetRate)
+    : undefined;
+
   return {
     rootNode,
     totalPower,
     totalMachines,
     rawMaterials,
+    multiOutputResults,
   };
+}
+
+/**
+ * Calculate production rates for all output items in multi-output recipes
+ */
+function calculateMultiOutputResults(
+  recipe: Recipe,
+  targetRate: number
+): MultiOutputResult[] {
+  const mainOutput = recipe.Results[0];
+  const mainOutputRate = targetRate; // Target rate is for the main output
+  
+  return recipe.Results.map(result => {
+    const ratio = result.count / mainOutput.count;
+    const productionRate = mainOutputRate * ratio;
+    
+    return {
+      itemId: result.id,
+      itemName: result.name,
+      productionRate,
+      count: result.count,
+    };
+  });
 }
 

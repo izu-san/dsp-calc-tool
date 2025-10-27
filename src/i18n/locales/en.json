@@ -355,6 +355,7 @@
   "inputComplexityFewerIsBetter": "Input complexity (fewer inputs is better)",
   "totalBeltSpeed": "Total Belt Speed",
   "itemsPerSecond": "items/second",
+  "multiOutputResults": "Multi-Output Items",
   "inputs": "Inputs",
   "outputs": "Outputs",
   "total": "Total",
