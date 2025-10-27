@@ -4,7 +4,7 @@
 
 import type { Page, Locator } from '@playwright/test';
 import { expect } from '@playwright/test';
-import { TIMEOUTS, BUTTON_LABELS, HEADINGS } from './constants';
+import { TIMEOUTS, BUTTON_LABELS, HEADINGS, RECIPES, RECIPES_EN } from './constants';
 
 /**
  * アプリの初期読み込みを待機する
@@ -77,11 +77,63 @@ export async function initializeApp(page: Page): Promise<void> {
  * @param recipeName - レシピ名（例: '鉄インゴット'）
  */
 export async function selectRecipe(page: Page, recipeName: string): Promise<void> {
-  const recipeButton = page.getByRole('button', { name: recipeName });
-  await expect(recipeButton).toBeVisible();
-  await recipeButton.click();
-  // UI更新を待つ
-  await page.waitForTimeout(TIMEOUTS.UI_UPDATE);
+  // Build candidate names to try (support both Japanese and English labels)
+  const candidates: string[] = [recipeName];
+
+  // If recipeName matches a value in RECIPES_EN, add the corresponding Japanese name
+  for (const key of Object.keys(RECIPES_EN) as Array<keyof typeof RECIPES_EN>) {
+    if (RECIPES_EN[key] === recipeName && RECIPES[key]) {
+      candidates.push(RECIPES[key]);
+      break;
+    }
+  }
+
+  // If recipeName matches a value in RECIPES (Japanese), try English counterpart too
+  for (const key of Object.keys(RECIPES) as Array<keyof typeof RECIPES>) {
+    if (RECIPES[key] === recipeName && RECIPES_EN[key]) {
+      candidates.push(RECIPES_EN[key]);
+      break;
+    }
+  }
+
+  let found = false;
+  let lastError: unknown = null;
+
+  for (const name of candidates) {
+    try {
+      // Try exact role name first
+      let recipeButton = page.getByRole('button', { name, exact: true });
+      if ((await recipeButton.count()) === 0) {
+        // Try partial match
+        recipeButton = page.getByRole('button', { name });
+      }
+
+      // Fallback: title attribute
+      if ((await recipeButton.count()) === 0) {
+        recipeButton = page.locator(`button[title*="${name}"]`);
+      }
+
+      // If multiple matched, pick the first visible one
+      if ((await recipeButton.count()) > 1) {
+        recipeButton = recipeButton.first();
+      }
+
+      await expect(recipeButton).toBeVisible();
+      await recipeButton.click();
+      await page.waitForTimeout(TIMEOUTS.UI_UPDATE);
+      found = true;
+      break;
+    } catch (e) {
+      lastError = e;
+      // try next candidate
+    }
+  }
+
+  if (!found) {
+    // If nothing matched, throw the last error to show helpful context
+    if (lastError) throw lastError;
+    throw new Error(`Recipe button not found: ${recipeName}`);
+  }
 }
 
 /**

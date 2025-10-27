@@ -26,6 +26,23 @@ export interface SavedPlan {
   /** Node-specific override settings (nodeId -> settings) */
   nodeOverrides: Record<string, NodeOverrideSettings>;
   
+  /** Power generation settings (optional) */
+  powerGenerationSettings?: {
+    /** Template name */
+    template: string;
+    /** Manually selected generator (optional) */
+    manualGenerator?: string;
+    /** Manually selected fuel (optional) */
+    manualFuel?: string;
+    /** Proliferator settings (optional) */
+    proliferator?: {
+      type: string;
+      mode: string;
+      speedBonus: number;
+      productionBonus: number;
+    };
+  };
+  
   /** Optional description */
   description?: string;
 }

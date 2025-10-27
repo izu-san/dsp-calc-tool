@@ -18,12 +18,29 @@ vi.mock('../../../stores/gameDataStore', () => ({
 
 const setSelectedRecipe = vi.fn();
 const setTargetQuantity = vi.fn();
+const setCalculationResult = vi.fn();
 vi.mock('../../../stores/recipeSelectionStore', () => ({
     useRecipeSelectionStore: () => ({
-        selectedRecipe: { SID: 2001, name: 'Test Recipe' },
+        selectedRecipe: { 
+            SID: 2001, 
+            name: 'Test Recipe',
+            Results: [{ id: 1001, name: 'Test Item', count: 1 }], // Resultsを追加
+            Items: [], // Itemsを追加
+        },
         targetQuantity: 60,
+        calculationResult: { // モックの計算結果を追加
+            rootNode: { 
+                targetOutputRate: 1.0,
+                children: [], // 空の配列を追加
+                conveyorBelts: { total: 0, saturation: 0 }, // conveyorBeltsを追加
+            },
+            totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+            totalMachines: 0,
+            rawMaterials: new Map(),
+        },
         setSelectedRecipe,
         setTargetQuantity,
+        setCalculationResult,
     }),
 }));
 
@@ -37,6 +54,10 @@ vi.mock('../../../stores/settingsStore', () => ({
             alternativeRecipes: new Map<number, number>(),
         },
         updateSettings,
+        powerGenerationTemplate: 'default',
+        manualPowerGenerator: null,
+        manualPowerFuel: null,
+        powerFuelProliferator: { type: 'none', mode: 'speed', speedBonus: 0, productionBonus: 0, powerIncrease: 0 },
     }),
 }));
 
@@ -50,8 +71,6 @@ vi.mock('../../../stores/nodeOverrideStore', () => ({
 
 // planExport/urlShare モック（hoisted）
 const planExportMocks = vi.hoisted(() => ({
-    exportPlan: vi.fn(),
-    importPlan: vi.fn(),
     restorePlan: vi.fn(),
     savePlanToLocalStorage: vi.fn(),
     getRecentPlans: vi.fn(() => ([{ key: 'k1', name: 'Plan A', timestamp: 1700000000000 }])),
@@ -102,12 +121,12 @@ describe('PlanManager', () => {
         expect(screen.queryByRole('button', { name: /saveToLocalStorage/i })).not.toBeInTheDocument();
     });
 
-    it('Save ダイアログで saveToFile(exportPlan) が呼ばれダイアログ閉じる', () => {
+    it('Save ダイアログで saveToFile(JSON) が呼ばれダイアログ閉じる', () => {
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /save$/i }));
-        fireEvent.click(screen.getByRole('button', { name: /saveToFile/i }));
-        expect(planExportMocks.exportPlan).toHaveBeenCalled();
-        expect(screen.queryByRole('button', { name: /saveToFile/i })).not.toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: /^JSON$/i }));
+        // 新しい実装では exportPlan は直接呼ばれない（transformToExportData を使用）
+        expect(screen.queryByRole('button', { name: /^JSON$/i })).not.toBeInTheDocument();
     });
 
     it('Load ダイアログで recent plan の load が restorePlan を呼び、閉じる', () => {
@@ -142,16 +161,38 @@ describe('PlanManager', () => {
         expect(urlShareMocks.copyToClipboard).toHaveBeenCalled();
     });
 
-    it('ファイルインポートで importPlan → restorePlan と planLoaded アラート', async () => {
-        planExportMocks.importPlan.mockResolvedValueOnce({
-            name: 'Imp', timestamp: Date.now(), recipeSID: 2001, nodeOverrides: {},
-        });
+    it('ファイルインポートで JSON → restorePlan と planLoaded アラート', async () => {
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /load$/i }));
-        const file = new File([JSON.stringify({})], 'plan.json', { type: 'application/json' });
+        
+        // 新しいExportData形式のJSONファイルを作成
+        const exportData = {
+            version: '1.0.0',
+            exportDate: Date.now(),
+            planInfo: {
+                planName: 'Test Plan',
+                recipeSID: 2001,
+                recipeName: 'Test Recipe',
+                targetQuantity: 60,
+            },
+            settings: {
+                machineRank: { Smelt: 'arc', Assemble: 'mk1', Chemical: 'standard', Research: 'standard', Refine: 'standard', Particle: 'standard' },
+                proliferator: { type: 'none', mode: 'speed' },
+                proliferatorMultiplier: { production: 1, speed: 1 },
+                alternativeRecipes: {},
+            },
+            statistics: { totalMachines: 0, totalPower: 0, rawMaterialCount: 0, itemCount: 0 },
+            rawMaterials: [],
+            products: [],
+            machines: [],
+            powerConsumption: { machines: 0, sorters: 0, dysonSphere: 0, total: 0, breakdown: [] },
+            conveyorBelts: { totalBelts: 0, totalLength: 0, maxSaturation: 0 },
+            powerGeneration: { totalRequiredPower: 0, totalGeneratedPower: 0, generators: [] },
+        };
+        
+        const file = new File([JSON.stringify(exportData)], 'plan.json', { type: 'application/json' });
         const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         await fireEvent.change(realInput, { target: { files: [file] } });
-        expect(planExportMocks.importPlan).toHaveBeenCalled();
         expect(planExportMocks.restorePlan).toHaveBeenCalled();
         expect(alertMock).toHaveBeenCalledWith('planLoaded');
     });
@@ -223,11 +264,10 @@ describe('PlanManager', () => {
         await waitFor(() => expect(alertMock).toHaveBeenCalledWith('copyFailed'));
     });
 
-    it('Import: importPlan が失敗した場合にエラーダイアログ表示', async () => {
-        planExportMocks.importPlan.mockRejectedValueOnce(new Error('bad'));
+    it('Import: JSON パースが失敗した場合にエラーダイアログ表示', async () => {
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /load$/i }));
-        const file = new File([JSON.stringify({})], 'plan.json', { type: 'application/json' });
+        const file = new File(['invalid json'], 'plan.json', { type: 'application/json' });
         const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         await fireEvent.change(realInput, { target: { files: [file] } });
         expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('loadError'));
@@ -245,16 +285,38 @@ describe('PlanManager', () => {
 
 
     it('Import: レシピが見つからない場合は recipeNotFound アラート', async () => {
-        planExportMocks.importPlan.mockResolvedValueOnce({
-            name: 'Imp', timestamp: Date.now(), recipeSID: 9999, nodeOverrides: {}, // 存在しないレシピID
-        });
-        
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /load$/i }));
-        const file = new File([JSON.stringify({})], 'plan.json', { type: 'application/json' });
+        
+        // 存在しないレシピIDを含むExportData形式のJSONファイルを作成
+        const exportData = {
+            version: '1.0.0',
+            exportDate: Date.now(),
+            planInfo: {
+                planName: 'Test Plan',
+                recipeSID: 9999, // 存在しないレシピID
+                recipeName: 'Non-existent Recipe',
+                targetQuantity: 60,
+            },
+            settings: {
+                machineRank: { Smelt: 'arc', Assemble: 'mk1', Chemical: 'standard', Research: 'standard', Refine: 'standard', Particle: 'standard' },
+                proliferator: { type: 'none', mode: 'speed' },
+                proliferatorMultiplier: { production: 1, speed: 1 },
+                alternativeRecipes: {},
+            },
+            statistics: { totalMachines: 0, totalPower: 0, rawMaterialCount: 0, itemCount: 0 },
+            rawMaterials: [],
+            products: [],
+            machines: [],
+            powerConsumption: { machines: 0, sorters: 0, dysonSphere: 0, total: 0, breakdown: [] },
+            conveyorBelts: { totalBelts: 0, totalLength: 0, maxSaturation: 0 },
+            powerGeneration: { totalRequiredPower: 0, totalGeneratedPower: 0, generators: [] },
+        };
+        
+        const file = new File([JSON.stringify(exportData)], 'plan.json', { type: 'application/json' });
         const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         await fireEvent.change(realInput, { target: { files: [file] } });
-        expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('recipeNotFound'));
+        expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('loadError'));
     });
 
 

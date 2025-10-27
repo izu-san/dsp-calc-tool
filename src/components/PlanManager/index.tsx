@@ -7,8 +7,6 @@ import { useSettingsStore } from '../../stores/settingsStore';
 import { useNodeOverrideStore } from '../../stores/nodeOverrideStore';
 import type { SavedPlan } from '../../types';
 import {
-  exportPlan,
-  importPlan,
   restorePlan,
   savePlanToLocalStorage,
   getRecentPlans,
@@ -16,12 +14,19 @@ import {
   deletePlanFromLocalStorage,
 } from '../../utils/planExport';
 import { generateShareURL, copyToClipboard } from '../../utils/urlShare';
+import { transformToExportData } from '../../lib/export/dataTransformer';
+import { exportToMarkdown } from '../../lib/export/markdownExporter';
+import { generateExportFilename } from '../../lib/export/filenameGenerator';
+import { importFromMarkdown } from '../../lib/import/markdownImporter';
+import { validatePlanInfo } from '../../lib/import/validation';
+import { buildPlanFromImport } from '../../lib/import/planBuilder';
+import { parseExportDataFromJSON, buildSavedPlanFromExportData } from '../../lib/import/jsonImporter';
 
 export function PlanManager() {
   const { t } = useTranslation();
   const { data } = useGameDataStore();
-  const { selectedRecipe, targetQuantity, setSelectedRecipe, setTargetQuantity } = useRecipeSelectionStore();
-  const { settings, updateSettings } = useSettingsStore();
+  const { selectedRecipe, targetQuantity, calculationResult, setSelectedRecipe, setTargetQuantity } = useRecipeSelectionStore();
+  const { settings, updateSettings, powerGenerationTemplate, manualPowerGenerator, manualPowerFuel, powerFuelProliferator } = useSettingsStore();
   const { nodeOverrides, setAllOverrides } = useNodeOverrideStore();
   
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -48,24 +53,93 @@ export function PlanManager() {
     return `Plan_${year}-${month}-${day}_${hours}-${minutes}`;
   };
 
-  const handleExport = () => {
+  const handleExport = async (format: 'json' | 'markdown', name: string) => {
     if (!selectedRecipe) {
       alert(t('pleaseSelectRecipe'));
       return;
     }
 
-    const name = planName || getDefaultPlanName();
-    exportPlan(
-      selectedRecipe.SID,
-      targetQuantity,
-      settings,
-      settings.alternativeRecipes,
-      includeOverridesOnSave ? nodeOverrides : new Map(),
-      name
-    );
-    
-    setShowSaveDialog(false);
-    setPlanName('');
+    try {
+      if (format === 'json') {
+        // JSON エクスポート（Markdownと同じExportData形式）
+        if (!calculationResult) {
+          alert(t('pleaseCalculateFirst'));
+          return;
+        }
+
+        const exportData = transformToExportData(
+          calculationResult,
+          selectedRecipe,
+          targetQuantity,
+          settings,
+          name,
+          Date.now(),
+          {
+            template: powerGenerationTemplate,
+            manualGenerator: manualPowerGenerator,
+            manualFuel: manualPowerFuel,
+            powerFuelProliferator: powerFuelProliferator,
+          },
+          { items: data?.items || new Map() }
+        );
+
+        const filename = generateExportFilename(name, 'json');
+
+        // ダウンロード
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else if (format === 'markdown') {
+        // Markdown エクスポート
+        if (!calculationResult) {
+          alert(t('pleaseCalculateFirst'));
+          return;
+        }
+
+        const exportData = transformToExportData(
+          calculationResult,
+          selectedRecipe,
+          targetQuantity,
+          settings,
+          name,
+          Date.now(),
+          {
+            template: powerGenerationTemplate,
+            manualGenerator: manualPowerGenerator,
+            manualFuel: manualPowerFuel,
+            powerFuelProliferator: powerFuelProliferator,
+          },
+          { items: data?.items || new Map() }
+        );
+
+        const markdown = exportToMarkdown(exportData);
+        const filename = generateExportFilename(name, 'md');
+
+        // ダウンロード
+        const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      setShowSaveDialog(false);
+      setPlanName('');
+      alert(t('exported'));
+    } catch (error) {
+      console.error('Export error:', error);
+      alert(`${t('exportError')}: ${error}`);
+    }
   };
 
   const handleSaveToLocalStorage = () => {
@@ -93,13 +167,78 @@ export function PlanManager() {
     alert(t('saved'));
   };
 
-  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleImportFile = async (file: File) => {
     if (!file) return;
 
     try {
-      const plan = await importPlan(file);
-      
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      let plan: SavedPlan | null = null;
+
+      if (fileExtension === 'json') {
+        // JSON インポート（新しいExportData形式）
+        if (!data) {
+          alert(t('gameDataNotLoaded'));
+          return;
+        }
+
+        const text = await file.text();
+        const exportData = parseExportDataFromJSON(text);
+        plan = buildSavedPlanFromExportData(exportData, data, settings);
+      } else if (fileExtension === 'md' || fileExtension === 'markdown') {
+        // Markdown インポート
+        if (!data) {
+          alert(t('gameDataNotLoaded'));
+          return;
+        }
+
+        const text = await file.text();
+        const importResult = importFromMarkdown(text);
+
+        if (!importResult.success) {
+          const errors = importResult.errors.map(e => e.message).join('\n');
+          alert(`${t('importError')}:\n${errors}`);
+          return;
+        }
+
+        // 部分的なデータから SavedPlan を構築
+        const planInfo = {
+          name: importResult.extractedData.planName || file.name.replace(/\.(md|markdown)$/i, ''),
+          timestamp: importResult.extractedData.timestamp || Date.now(),
+          recipeSID: importResult.extractedData.recipeSID || 0,
+          recipeName: importResult.extractedData.recipeName || '',
+          targetQuantity: importResult.extractedData.targetQuantity || 1,
+        };
+
+        // 検証
+        const validation = validatePlanInfo(planInfo, data);
+        if (!validation.isValid) {
+          const errors = validation.errors.map(e => e.message).join('\n');
+          alert(`${t('validationError')}:\n${errors}`);
+          return;
+        }
+
+        // SavedPlan を構築（現在の設定をフォールバックとして渡す）
+        plan = buildPlanFromImport(planInfo, data, settings);
+        if (!plan) {
+          alert(t('planBuildError'));
+          return;
+        }
+
+        // 警告があれば表示
+        if (validation.warnings.length > 0) {
+          const warnings = validation.warnings.map(w => w.message).join('\n');
+          console.warn(`Import warnings:\n${warnings}`);
+        }
+      } else {
+        alert(t('unsupportedFileFormat'));
+        return;
+      }
+
+      if (!plan) {
+        alert(t('importError'));
+        return;
+      }
+
       // Validate recipe exists
       if (!data) {
         alert(t('gameDataNotLoaded'));
@@ -138,12 +277,8 @@ export function PlanManager() {
 
       alert(`${t('planLoaded', { name: plan.name })}`);
     } catch (error) {
+      console.error('Import error:', error);
       alert(`${t('loadError')}: ${error}`);
-    }
-
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
     }
   };
 
@@ -265,7 +400,7 @@ export function PlanManager() {
         </button>
       </div>
 
-      {/* Save Dialog */}
+      {/* Save/Export Dialog */}
       {showSaveDialog && createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
@@ -284,23 +419,35 @@ export function PlanManager() {
               />
             </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={handleSaveToLocalStorage}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
-              >
-                {t('saveToLocalStorage')}
-              </button>
-              <button
-                onClick={handleExport}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
-              >
-                {t('saveToFile')}
-              </button>
+            {/* Save to LocalStorage */}
+            <button
+              onClick={handleSaveToLocalStorage}
+              className="w-full mb-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+            >
+              💾 {t('saveToLocalStorage')}
+            </button>
+
+            {/* Export Buttons */}
+            <div className="mb-4">
+              <p className="text-sm font-medium mb-2 dark:text-gray-300">{t('exportToFile')}</p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleExport('json', planName || getDefaultPlanName())}
+                  className="flex-1 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-sm"
+                >
+                  JSON
+                </button>
+                <button
+                  onClick={() => handleExport('markdown', planName || getDefaultPlanName())}
+                  className="flex-1 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-sm"
+                >
+                  Markdown
+                </button>
+              </div>
             </div>
 
             {/* Include overrides option */}
-            <div className="mt-4 flex items-center gap-2">
+            <div className="mb-4 flex items-center gap-2">
               <input
                 id="includeOverridesOnSave"
                 type="checkbox"
@@ -318,7 +465,7 @@ export function PlanManager() {
                 setShowSaveDialog(false);
                 setPlanName('');
               }}
-              className="w-full mt-2 px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
+              className="w-full px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
             >
               {t('cancel')}
             </button>
@@ -327,7 +474,7 @@ export function PlanManager() {
         document.body
       )}
 
-      {/* Load Dialog */}
+      {/* Load/Import Dialog */}
       {showLoadDialog && createPortal(
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
@@ -341,10 +488,22 @@ export function PlanManager() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".json"
-                onChange={handleImportFile}
+                accept=".json,.md,.markdown"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleImportFile(file);
+                    // Reset file input
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = '';
+                    }
+                  }
+                }}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                {t('supportedFormats')}: JSON (.json), Markdown (.md)
+              </p>
             </div>
 
             {/* Recent Plans */}

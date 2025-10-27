@@ -37,9 +37,25 @@ Dyson Sphere Program 生産チェーン計算機のインポート機能を強�
 export interface ImportResult {
   success: boolean;
   plan?: SavedPlan;
-  extractedData?: any;
+  extractedData?: {
+    version?: string;  // エクスポート形式のバージョン
+    exportDate?: number;  // エクスポート日時
+    planInfo: PlanInfo;
+    statistics: ExportStatistics;
+    rawMaterials: ExportRawMaterial[];
+    products: ExportProduct[];
+    machines: ExportMachine[];
+    powerConsumption: ExportPowerConsumption;
+    conveyorBelts: ExportConveyorBelts;
+    powerGeneration?: ExportPowerGeneration;
+  };
   errors: ImportError[];
   warnings: ImportWarning[];
+  versionInfo?: {
+    imported: string;
+    current: string;
+    compatible: boolean;
+  };
 }
 
 export interface ImportError {
@@ -60,14 +76,27 @@ export interface ImportOptions {
   strictMode: boolean;
   allowPartialImport: boolean;
   autoFixErrors: boolean;
+  checkVersion: boolean;  // バージョン検証を行うか
 }
 
 export interface PlanInfo {
   name: string;
   timestamp: number;
-  recipeName: string;
+  recipeSID?: number;  // レシピのシステムID（優先使用）
+  recipeName: string;  // レシピ名（SID見つからない場合のフォールバック）
   targetQuantity: number;
   settings?: GlobalSettings;
+  powerGenerationSettings?: {
+    template: string;
+    manualGenerator?: string;
+    manualFuel?: string;
+    proliferator?: {
+      type: string;
+      mode: string;
+      speedBonus: number;
+      productionBonus: number;
+    };
+  };
 }
 ```
 
@@ -99,6 +128,7 @@ export interface MarkdownImportResult {
       itemName: string;
       productionRate: number;
     }>;
+    powerGeneration?: ExportPowerGeneration;
   };
   errors: ImportError[];
   warnings: ImportWarning[];
@@ -135,12 +165,16 @@ export async function importFromMarkdown(
     // 最終製品情報の抽出
     const finalProducts = extractFinalProducts(markdown);
     
+    // 発電設備情報の抽出
+    const powerGeneration = extractPowerGeneration(markdown);
+    
     // データ検証
     const validation = validateMarkdownData({
       basicInfo,
       statistics,
       rawMaterials,
-      finalProducts
+      finalProducts,
+      powerGeneration
     });
     
     if (!validation.isValid) {
@@ -153,7 +187,8 @@ export async function importFromMarkdown(
           timestamp: basicInfo.timestamp,
           statistics,
           rawMaterials,
-          finalProducts
+          finalProducts,
+          powerGeneration
         },
         errors: validation.errors,
         warnings: validation.warnings
@@ -165,7 +200,8 @@ export async function importFromMarkdown(
       basicInfo,
       statistics,
       rawMaterials,
-      finalProducts
+      finalProducts,
+      powerGeneration
     });
     
     return {
@@ -178,7 +214,8 @@ export async function importFromMarkdown(
         timestamp: basicInfo.timestamp,
         statistics,
         rawMaterials,
-        finalProducts
+        finalProducts,
+        powerGeneration
       },
       errors: [],
       warnings: validation.warnings
@@ -307,6 +344,113 @@ function extractRawMaterials(markdown: string): Array<{
   
   return result;
 }
+
+function extractPowerGeneration(markdown: string): ExportPowerGeneration | undefined {
+  const result: Partial<ExportPowerGeneration> = {};
+  
+  // 発電設備セクションの抽出
+  const powerGenerationMatch = markdown.match(/## ⚡ 発電設備\s*\n((?:.*\n)*?)(?=##|$)/);
+  if (!powerGenerationMatch) {
+    return undefined;
+  }
+  
+  const sectionContent = powerGenerationMatch[1];
+  
+  // テンプレートの抽出
+  const templateMatch = sectionContent.match(/\*\*📋 テンプレート:\*\* (.+)/);
+  if (templateMatch) {
+    result.template = templateMatch[1].trim();
+  }
+  
+  // 発電設備の抽出
+  const generatorMatch = sectionContent.match(/\*\*🔧 発電設備:\*\* (.+?) \(手動選択: (.+?)\)/);
+  if (generatorMatch) {
+    result.manualGenerator = generatorMatch[2].trim() === 'Yes' ? generatorMatch[1].trim() : undefined;
+  }
+  
+  // 燃料の抽出
+  const fuelMatch = sectionContent.match(/\*\*⛽ 燃料:\*\* (.+?) \(手動選択: (.+?)\)/);
+  if (fuelMatch) {
+    result.manualFuel = fuelMatch[2].trim() === 'Yes' ? fuelMatch[1].trim() : undefined;
+  }
+  
+  // 増産剤の抽出
+  const proliferatorMatch = sectionContent.match(/\*\*💊 増産剤:\*\* (.+?) \((.+?)モード\)/);
+  if (proliferatorMatch) {
+    result.proliferatorSettings = {
+      type: proliferatorMatch[1].trim(),
+      mode: proliferatorMatch[2].trim(),
+      speedBonus: 0, // デフォルト値
+      productionBonus: 0 // デフォルト値
+    };
+  }
+  
+  // 発電設備テーブルの抽出
+  const tableMatch = sectionContent.match(/\| 発電設備 \| 必要台数 \| 単体出力 \| 総出力 \| 燃料 \| 燃料消費量\/秒 \|\s*\n\|.*\n((?:\|.*\n)*)/);
+  if (tableMatch) {
+    const tableContent = tableMatch[1];
+    const rows = tableContent.split('\n').filter(row => row.trim() && row.includes('|'));
+    
+    result.generators = [];
+    rows.forEach(row => {
+      const columns = row.split('|').map(col => col.trim()).filter(col => col);
+      if (columns.length >= 6) {
+        const generatorName = columns[1];
+        const count = parseFloat(columns[2]);
+        const baseOutput = parseFloat(columns[3]);
+        const totalOutput = parseFloat(columns[4]);
+        const fuelName = columns[5] || undefined;
+        const fuelConsumptionRate = parseFloat(columns[6]) || undefined;
+        
+        if (generatorName && !isNaN(count) && !isNaN(baseOutput) && !isNaN(totalOutput)) {
+          result.generators!.push({
+            generatorId: 0, // デフォルト値
+            generatorName,
+            generatorType: '', // デフォルト値
+            count,
+            baseOutput,
+            actualOutputPerUnit: baseOutput,
+            totalOutput,
+            fuelName,
+            fuelConsumptionRate
+          });
+        }
+      }
+    });
+  }
+  
+  // 総発電設備数の抽出
+  const totalGeneratorsMatch = sectionContent.match(/\*\*⚡ 総発電設備:\*\* (\d+) 台/);
+  if (totalGeneratorsMatch) {
+    result.totalGenerators = parseInt(totalGeneratorsMatch[1]);
+  }
+  
+  // 総燃料消費の抽出
+  const fuelConsumptionMatch = sectionContent.match(/\*\*⛽ 総燃料消費:\*\*\s*\n((?:.*\n)*?)(?=\*\*|$)/);
+  if (fuelConsumptionMatch) {
+    const fuelContent = fuelConsumptionMatch[1];
+    result.totalFuelConsumption = [];
+    
+    const fuelLines = fuelContent.split('\n').filter(line => line.trim());
+    fuelLines.forEach(line => {
+      const fuelMatch = line.match(/(.+?):\s*(.+)/);
+      if (fuelMatch) {
+        const fuelName = fuelMatch[1].trim();
+        const consumptionRate = parseFloat(fuelMatch[2].trim());
+        
+        if (!isNaN(consumptionRate)) {
+          result.totalFuelConsumption!.push({
+            fuelId: 0, // デフォルト値
+            fuelName,
+            consumptionRate
+          });
+        }
+      }
+    });
+  }
+  
+  return result as ExportPowerGeneration;
+}
 ```
 
 ## CSV形式インポート
@@ -373,7 +517,8 @@ export async function importFromCSV(
       products: extractProductsFromSheets(sheets),
       machines: extractMachinesFromSheets(sheets),
       powerConsumption: extractPowerConsumptionFromSheets(sheets),
-      conveyorBelts: extractConveyorBeltsFromSheets(sheets)
+      conveyorBelts: extractConveyorBeltsFromSheets(sheets),
+      powerGeneration: extractPowerGenerationFromSheets(sheets)
     };
     
     // データ検証
@@ -414,44 +559,49 @@ export async function importFromCSV(
 
 ### CSV内容のパース
 
+**CSV形式は単一ファイル構造**: コメント行（`#`で始まる）でセクションを区切る
+
 ```typescript
 function parseCSVContent(content: string): Record<string, string[][]> {
-  const sheets: Record<string, string[][]> = {};
+  const sections: Record<string, string[][]> = {};
   const lines = content.split('\n');
-  let currentSheet = '';
-  let currentSheetData: string[][] = [];
+  let currentSection = '';
+  let currentSectionData: string[][] = [];
   
   for (const line of lines) {
     const trimmedLine = line.trim();
     
-    // シートヘッダーの検出
+    // 空行やコメントをスキップ
+    if (!trimmedLine || trimmedLine.startsWith('//')) {
+      continue;
+    }
+    
+    // セクションヘッダーの検出 (# SectionName)
     if (trimmedLine.startsWith('# ')) {
-      // 前のシートを保存
-      if (currentSheet && currentSheetData.length > 0) {
-        sheets[currentSheet] = currentSheetData;
+      // 前のセクションを保存
+      if (currentSection && currentSectionData.length > 0) {
+        sections[currentSection] = currentSectionData;
       }
       
-      // 新しいシートの開始
-      currentSheet = trimmedLine.substring(2).trim();
-      currentSheetData = [];
+      // 新しいセクションの開始
+      currentSection = trimmedLine.substring(2).trim();
+      currentSectionData = [];
       continue;
     }
     
     // データ行の処理
-    if (trimmedLine && !trimmedLine.startsWith('#')) {
-      const row = parseCSVRow(trimmedLine);
-      if (row.length > 0) {
-        currentSheetData.push(row);
-      }
+    const row = parseCSVRow(trimmedLine);
+    if (row.length > 0) {
+      currentSectionData.push(row);
     }
   }
   
-  // 最後のシートを保存
-  if (currentSheet && currentSheetData.length > 0) {
-    sheets[currentSheet] = currentSheetData;
+  // 最後のセクションを保存
+  if (currentSection && currentSectionData.length > 0) {
+    sections[currentSection] = currentSectionData;
   }
   
-  return sheets;
+  return sections;
 }
 
 function parseCSVRow(line: string): string[] {
@@ -635,6 +785,153 @@ function extractMachinesFromSheets(sheets: Record<string, string[][]>): ExportMa
   }
   
   return machines;
+}
+
+function extractPowerGenerationFromSheets(sheets: Record<string, string[][]>): ExportPowerGeneration | undefined {
+  if (!sheets.PowerGeneration || !sheets.PowerGenerators) {
+    return undefined;
+  }
+  
+  const powerGenerationSheet = sheets.PowerGeneration;
+  const powerGeneratorsSheet = sheets.PowerGenerators;
+  
+  if (powerGenerationSheet.length < 2) {
+    return undefined;
+  }
+  
+  const result: Partial<ExportPowerGeneration> = {};
+  
+  // PowerGeneration シートから基本情報を抽出
+  const headerRow = powerGenerationSheet[0];
+  const dataRow = powerGenerationSheet[1];
+  
+  for (let i = 0; i < headerRow.length && i < dataRow.length; i++) {
+    const header = headerRow[i];
+    const value = dataRow[i];
+    
+    switch (header) {
+      case 'RequiredPower':
+        result.requiredPower = parseFloat(value);
+        break;
+      case 'Template':
+        result.template = value;
+        break;
+      case 'ManualGenerator':
+        result.manualGenerator = value || undefined;
+        break;
+      case 'ManualFuel':
+        result.manualFuel = value || undefined;
+        break;
+      case 'ProliferatorType':
+        if (value && !result.proliferatorSettings) {
+          result.proliferatorSettings = {
+            type: value,
+            mode: '',
+            speedBonus: 0,
+            productionBonus: 0
+          };
+        }
+        break;
+      case 'ProliferatorMode':
+        if (result.proliferatorSettings) {
+          result.proliferatorSettings.mode = value;
+        }
+        break;
+      case 'ProliferatorSpeedBonus':
+        if (result.proliferatorSettings) {
+          result.proliferatorSettings.speedBonus = parseFloat(value) || 0;
+        }
+        break;
+      case 'ProliferatorProductionBonus':
+        if (result.proliferatorSettings) {
+          result.proliferatorSettings.productionBonus = parseFloat(value) || 0;
+        }
+        break;
+    }
+  }
+  
+  // PowerGenerators シートから発電設備情報を抽出
+  if (powerGeneratorsSheet.length > 1) {
+    const generatorsHeader = powerGeneratorsSheet[0];
+    result.generators = [];
+    
+    for (let i = 1; i < powerGeneratorsSheet.length; i++) {
+      const row = powerGeneratorsSheet[i];
+      if (row.length < generatorsHeader.length) continue;
+      
+      const generator: any = {};
+      
+      for (let j = 0; j < generatorsHeader.length && j < row.length; j++) {
+        const header = generatorsHeader[j];
+        const value = row[j];
+        
+        switch (header) {
+          case 'GeneratorID':
+            generator.generatorId = parseInt(value) || 0;
+            break;
+          case 'GeneratorName':
+            generator.generatorName = value;
+            break;
+          case 'GeneratorType':
+            generator.generatorType = value;
+            break;
+          case 'Count':
+            generator.count = parseFloat(value) || 0;
+            break;
+          case 'BaseOutput':
+            generator.baseOutput = parseFloat(value) || 0;
+            break;
+          case 'ActualOutputPerUnit':
+            generator.actualOutputPerUnit = parseFloat(value) || 0;
+            break;
+          case 'TotalOutput':
+            generator.totalOutput = parseFloat(value) || 0;
+            break;
+          case 'FuelID':
+            generator.fuelId = parseInt(value) || undefined;
+            break;
+          case 'FuelName':
+            generator.fuelName = value || undefined;
+            break;
+          case 'FuelConsumptionRate':
+            generator.fuelConsumptionRate = parseFloat(value) || undefined;
+            break;
+          case 'ActualFuelEnergy':
+            generator.actualFuelEnergy = parseFloat(value) || undefined;
+            break;
+        }
+      }
+      
+      if (generator.generatorName && generator.count > 0) {
+        result.generators.push(generator);
+      }
+    }
+  }
+  
+  // 総発電設備数を計算
+  if (result.generators) {
+    result.totalGenerators = result.generators.reduce((sum, gen) => sum + gen.count, 0);
+  }
+  
+  // 総燃料消費を計算
+  if (result.generators) {
+    const fuelConsumptionMap = new Map<number, number>();
+    
+    result.generators.forEach(gen => {
+      if (gen.fuelId && gen.fuelConsumptionRate) {
+        const current = fuelConsumptionMap.get(gen.fuelId) || 0;
+        fuelConsumptionMap.set(gen.fuelId, current + gen.fuelConsumptionRate);
+      }
+    });
+    
+    result.totalFuelConsumption = Array.from(fuelConsumptionMap.entries()).map(([fuelId, rate]) => ({
+      fuelId,
+      fuelName: '', // デフォルト値
+      consumptionRate: rate
+    }));
+  }
+  
+  return result as ExportPowerGeneration;
 }
 ```
 
@@ -853,7 +1150,13 @@ export function buildPlanFromExtractedData(data: any): SavedPlan {
     targetQuantity: data.planInfo.targetQuantity,
     settings: buildSettingsFromData(data),
     alternativeRecipes: {},
-    nodeOverrides: {}
+    nodeOverrides: {},
+    powerGenerationSettings: data.powerGeneration ? {
+      template: data.powerGeneration.template,
+      manualGenerator: data.powerGeneration.manualGenerator,
+      manualFuel: data.powerGeneration.manualFuel,
+      proliferator: data.powerGeneration.proliferatorSettings
+    } : undefined
   };
   
   // レシピ名からSIDを逆引き
@@ -918,15 +1221,27 @@ function buildSettingsFromData(data: any): GlobalSettings {
   return settings;
 }
 
-function findRecipeSIDByName(recipeName: string): number | null {
-  // ゲームデータストアからレシピを検索
+function findRecipeSID(recipeSID?: number, recipeName?: string): number | null {
   const gameData = useGameDataStore.getState().data;
   if (!gameData) return null;
   
-  for (const [sid, recipe] of gameData.recipes) {
-    if (recipe.name === recipeName) {
-      return sid;
+  // 1. SIDが指定されていれば優先使用
+  if (recipeSID !== undefined) {
+    if (gameData.recipes.has(recipeSID)) {
+      return recipeSID;
     }
+    console.warn(`Recipe SID ${recipeSID} not found, falling back to name search`);
+  }
+  
+  // 2. SIDが見つからない場合は名前で検索
+  if (recipeName) {
+    for (const [sid, recipe] of gameData.recipes) {
+      if (recipe.name === recipeName) {
+        console.info(`Recipe found by name: "${recipeName}" -> SID ${sid}`);
+        return sid;
+      }
+    }
+    console.warn(`Recipe not found by name: "${recipeName}"`);
   }
   
   return null;
@@ -1296,273 +1611,50 @@ export async function importPlan(
 - ファイルアップロードのテスト
 - エラー表示のテスト
 
-## 画像形式インポート（実験的機能）
+## 将来の拡張性
 
-### 技術的可能性の検討
+### 画像形式インポート（実験的機能）
 
-#### **OCR（光学文字認識）技術**
+**現在のステータス**: 今回の実装には含めず、将来の拡張として残す
 
-**実現可能性: 中程度**
-- 統計データの数値は比較的読み取りやすい
-- テーブル構造の認識が課題
-- 日本語対応のOCRエンジンが必要
+**技術的可能性**: 中程度
+- OCR（Tesseract.js）による文字認識
+- 統計サマリーの数値抽出
+- 基本的なアイテム名の抽出
 
-**技術スタック:**
+**主な課題**:
+- 認識精度の問題（特に日本語テキスト）
+- 処理時間の長さ
+- テーブル構造の自動認識
+- ユーザビリティの課題
+
+**推奨実装方針**（将来実装する場合）:
+1. プロトタイプ実装（統計サマリーのみ）
+2. ユーザーテスト
+3. フィードバックに基づく段階的拡張
+
+詳細は別途検討。
+
+### バージョン互換性の将来対応
+
+**現在のバージョン**: 1.0.0
+
+**将来のバージョンアップ時の対応**:
+- マイナーバージョンアップ: 後方互換性あり
+- メジャーバージョンアップ: マイグレーション処理が必要
+- バージョン情報はエクスポートデータに含める
+
+**マイグレーション処理の方針**:
 ```typescript
-// 候補ライブラリ
-import Tesseract from 'tesseract.js'; // JavaScript OCR
-import { createWorker } from 'tesseract.js';
-
-// 実装例
-async function extractTextFromImage(imageFile: File): Promise<string> {
-  const worker = await createWorker('jpn'); // 日本語対応
-  const { data: { text } } = await worker.recognize(imageFile);
-  await worker.terminate();
-  return text;
+export function migrateData(
+  data: ExportData,
+  fromVersion: string,
+  toVersion: string
+): ExportData {
+  // バージョン間のデータ変換処理
+  // 例: 1.0.0 → 2.0.0 の変換
 }
 ```
-
-#### **画像解析の課題**
-
-**技術的制約:**
-- **フォント認識**: ゲーム内フォントの認識精度
-- **レイアウト解析**: テーブル構造の自動認識
-- **数値抽出**: 小数点、単位の正確な認識
-- **日本語処理**: アイテム名の正確な抽出
-
-**実装の複雑さ:**
-```typescript
-// 理想的な処理フロー
-1. 画像前処理（ノイズ除去、コントラスト調整）
-2. テーブル領域の検出
-3. セル単位での文字認識
-4. データ構造の復元
-5. 検証とエラーハンドリング
-```
-
-#### **実現可能な範囲**
-
-**比較的容易:**
-- 統計サマリーの数値（総機械数、電力消費など）
-- 基本的なアイテム名
-- 単純な数値データ
-
-**困難:**
-- 複雑なテーブル構造
-- 小さなフォントサイズ
-- 背景色とのコントラストが低い場合
-- 特殊な記号や単位
-
-### 実装アプローチ
-
-#### **段階的実装**
-
-```typescript
-// src/lib/import/imageImporter.ts
-
-export interface ImageImportResult {
-  success: boolean;
-  extractedData: {
-    statistics?: {
-      totalMachines?: number;
-      totalPower?: number;
-      rawMaterialCount?: number;
-    };
-    rawMaterials?: Array<{
-      itemName: string;
-      consumptionRate: number;
-    }>;
-    // その他の抽出可能なデータ
-  };
-  confidence: number; // 認識精度（0-100）
-  errors: ImportError[];
-  warnings: ImportWarning[];
-}
-
-export async function importFromImage(
-  file: File,
-  options: ImageImportOptions
-): Promise<ImageImportResult> {
-  try {
-    // 1. 画像前処理
-    const processedImage = await preprocessImage(file, options);
-    
-    // 2. OCR実行
-    const extractedText = await extractTextFromImage(processedImage);
-    
-    // 3. データ構造の解析
-    const parsedData = await parseExtractedText(extractedText);
-    
-    // 4. データ検証
-    const validation = validateImageData(parsedData);
-    
-    return {
-      success: validation.isValid,
-      extractedData: parsedData,
-      confidence: calculateConfidence(parsedData),
-      errors: validation.errors,
-      warnings: validation.warnings
-    };
-    
-  } catch (error) {
-    return {
-      success: false,
-      extractedData: {},
-      confidence: 0,
-      errors: [{
-        code: 'IMAGE_PARSE_ERROR',
-        message: `画像解析エラー: ${error.message}`
-      }],
-      warnings: []
-    };
-  }
-}
-```
-
-#### **画像前処理**
-
-```typescript
-async function preprocessImage(
-  file: File,
-  options: ImageImportOptions
-): Promise<HTMLCanvasElement> {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
-  const img = new Image();
-  
-  return new Promise((resolve) => {
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      
-      // 画像を描画
-      ctx.drawImage(img, 0, 0);
-      
-      // 前処理の適用
-      if (options.enhanceContrast) {
-        enhanceContrast(ctx, canvas.width, canvas.height);
-      }
-      
-      if (options.removeNoise) {
-        removeNoise(ctx, canvas.width, canvas.height);
-      }
-      
-      resolve(canvas);
-    };
-    
-    img.src = URL.createObjectURL(file);
-  });
-}
-
-function enhanceContrast(
-  ctx: CanvasRenderingContext2D,
-  width: number,
-  height: number
-): void {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  
-  // コントラスト調整
-  for (let i = 0; i < data.length; i += 4) {
-    data[i] = Math.min(255, data[i] * 1.2);     // R
-    data[i + 1] = Math.min(255, data[i + 1] * 1.2); // G
-    data[i + 2] = Math.min(255, data[i + 2] * 1.2); // B
-  }
-  
-  ctx.putImageData(imageData, 0, 0);
-}
-```
-
-### 実用性の評価
-
-#### **メリット**
-- スクリーンショットからの直接インポート
-- 手動入力の手間を削減
-- 既存の画像データの活用
-
-#### **デメリット**
-- **認識精度の問題**: 特に日本語テキスト
-- **処理時間**: OCR処理に時間がかかる
-- **メンテナンス**: フォント変更への対応
-- **ユーザビリティ**: エラーが多発する可能性
-
-### 現実的な実装方針
-
-#### **Phase 1: プロトタイプ実装**
-```typescript
-// 基本的なOCR機能のみ
-export async function importBasicStatsFromImage(
-  file: File
-): Promise<{
-  totalMachines?: number;
-  totalPower?: number;
-  confidence: number;
-}> {
-  // 統計サマリーの数値のみを抽出
-  // 高精度な認識を目指す
-}
-```
-
-#### **Phase 2: 段階的拡張**
-- 原材料データの抽出
-- 機械データの抽出
-- エラーハンドリングの強化
-
-#### **Phase 3: 完全実装**
-- 全データの抽出
-- 高精度な認識
-- ユーザビリティの向上
-
-### 技術的制約と対策
-
-#### **制約**
-- **ブラウザ制約**: 大きな画像ファイルの処理
-- **精度問題**: 日本語OCRの限界
-- **パフォーマンス**: 処理時間の長さ
-
-#### **対策**
-```typescript
-// Web Workersを使用した非同期処理
-export class ImageImportWorker {
-  private worker: Worker;
-  
-  constructor() {
-    this.worker = new Worker('/workers/imageImport.worker.js');
-  }
-  
-  async processImage(file: File): Promise<ImageImportResult> {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error('Image processing timeout'));
-      }, 30000);
-      
-      this.worker.onmessage = (event) => {
-        clearTimeout(timeout);
-        resolve(event.data);
-      };
-      
-      this.worker.postMessage({ file });
-    });
-  }
-}
-```
-
-### 結論
-
-**技術的可能性: 中程度**
-- 基本的な数値データの抽出は可能
-- 完全なプラン復元は困難
-- ユーザビリティの課題が大きい
-
-**推奨実装方針:**
-1. **プロトタイプ実装**: 統計サマリーのみ
-2. **ユーザーテスト**: 実際の使用感を確認
-3. **段階的拡張**: 成功した場合のみ本格実装
-
-**現実的な判断:**
-- CSV/Excel形式のインポートを優先
-- 画像インポートは実験的機能として位置づけ
-- ユーザーフィードバックに基づく判断
 
 ---
 

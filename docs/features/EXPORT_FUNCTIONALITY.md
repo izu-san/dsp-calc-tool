@@ -40,6 +40,8 @@ Dyson Sphere Program 生産チェーン計算機のエクスポート機能を�
 // src/types/export.ts
 
 export interface ExportData {
+  version: string;  // エクスポート形式のバージョン (例: "1.0.0")
+  exportDate: number;  // エクスポート日時 (Unix timestamp)
   planInfo: PlanInfo;
   statistics: ExportStatistics;
   rawMaterials: ExportRawMaterial[];
@@ -48,11 +50,13 @@ export interface ExportData {
   machines: ExportMachine[];
   powerConsumption: ExportPowerConsumption;
   conveyorBelts: ExportConveyorBelts;
+  powerGeneration?: ExportPowerGeneration;
 }
 
 export interface PlanInfo {
   name: string;
   timestamp: number;
+  recipeSID: number;  // レシピのシステムID（インポート時の逆引き用）
   recipeName: string;
   targetQuantity: number;
   settings: GlobalSettings;
@@ -102,6 +106,38 @@ export interface ExportConveyorBelts {
   total: number;
   saturation: number;
 }
+
+export interface ExportPowerGeneration {
+  requiredPower: number;
+  template: string;
+  manualGenerator?: string;
+  manualFuel?: string;
+  proliferatorSettings?: {
+    type: string;
+    mode: string;
+    speedBonus: number;
+    productionBonus: number;
+  };
+  generators: Array<{
+    generatorId: number;
+    generatorName: string;
+    generatorType: string;
+    count: number;
+    baseOutput: number;
+    actualOutputPerUnit: number;
+    totalOutput: number;
+    fuelId?: number;
+    fuelName?: string;
+    fuelConsumptionRate?: number;
+    actualFuelEnergy?: number;
+  }>;
+  totalGenerators: number;
+  totalFuelConsumption: Array<{
+    fuelId: number;
+    fuelName: string;
+    consumptionRate: number;
+  }>;
+}
 ```
 
 ## Markdown形式エクスポート
@@ -111,7 +147,8 @@ export interface ExportConveyorBelts {
 ```markdown
 # 🏭 生産プラン: {planName}
 **📅 作成日時:** {timestamp}  
-**🎯 目標レシピ:** {recipeName} - {targetQuantity}/秒  
+**📦 エクスポートバージョン:** {version}  
+**🎯 目標レシピ:** {recipeName} (SID: {recipeSID}) - {targetQuantity}/秒  
 **⚙️ 設定:** {settings}
 
 ## 📊 統計サマリー
@@ -150,6 +187,20 @@ export interface ExportConveyorBelts {
 | 📊 総ベルト数 | {totalBelts} |
 | 📈 飽和率 | {saturation}% |
 
+## ⚡ 発電設備
+**📋 テンプレート:** {template}
+**🔧 発電設備:** {generatorName} (手動選択: {manual})
+**⛽ 燃料:** {fuelName} (手動選択: {manual})
+**💊 増産剤:** {proliferatorType} ({proliferatorMode}モード)
+
+| 発電設備 | 必要台数 | 単体出力 | 総出力 | 燃料 | 燃料消費量/秒 |
+|---------|---------|---------|--------|------|-------------|
+{powerGenerationTable}
+
+**⚡ 総発電設備:** {totalGenerators} 台
+**⛽ 総燃料消費:**
+{totalFuelConsumption}
+
 ---
 *このプランは [DSP Calculator](https://github.com/izu-san/dsp-calc-tool) で生成されました*
 ```
@@ -179,62 +230,126 @@ export function exportToMarkdown(
 
 ## CSV/Excel形式エクスポート
 
-### シート構造
+### CSV形式の構造
+
+**注意**: CSV形式は単一シートのみサポート。複数シート構造が必要な場合はExcel形式を使用してください。
+
+**CSV形式 (単一ファイル)**:
+```csv
+# Metadata
+Version,1.0.0
+ExportDate,2025-10-27T12:00:00Z
+
+# Plan Info
+PlanName,高級プロセッサー生産
+RecipeSID,123
+RecipeName,高級プロセッサー
+TargetQuantity,10.0
+
+# Statistics
+TotalMachines,45
+TotalPower,12.5
+RawMaterialCount,3
+ItemCount,15
+
+# RawMaterials
+ItemID,ItemName,ConsumptionRate,Unit
+1001,鉄鉱石,15.5,items/sec
+1002,銅鉱石,10.0,items/sec
+
+# Products
+ItemID,ItemName,ProductionRate,ConsumptionRate,NetProduction,Unit
+2001,鉄インゴット,15.5,10.0,5.5,items/sec
+
+# Machines
+MachineID,MachineName,Count,PowerPerMachine,TotalPower
+3001,製錬設備 Mk.II,10,360,3600
+
+# PowerConsumption
+Category,Power,Percentage
+Machines,10500,85.5
+Sorters,1780,14.5
+Total,12280,100
+
+# ConveyorBelts
+Type,Count,Saturation
+InputBelts,15,75.5
+OutputBelts,10,60.0
+TotalBelts,25,67.8
+
+# PowerGeneration (optional)
+RequiredPower,Template,ManualGenerator,ManualFuel,ProliferatorType,ProliferatorMode
+12.28,Thermal,火力発電所,石炭,Mk.III,production
+
+# PowerGenerators (optional)
+GeneratorID,GeneratorName,GeneratorType,Count,BaseOutput,TotalOutput,FuelID,FuelName,FuelConsumptionRate
+4001,火力発電所,Thermal,3,2.16,6.48,1003,石炭,0.5
+```
+
+### Excel形式の構造
+
+**Excel形式では複数シートをサポート:**
 
 **1. Overview シート**
-```csv
+```
 Metric,Value,Unit,Description
-Plan Name,{planName},,プラン名
-Created,{timestamp},timestamp,作成日時
-Target Recipe,{recipeName},,目標レシピ
-Target Quantity,{targetQuantity},items/sec,目標生産量
-Total Machines,{totalMachines},units,総機械数
-Total Power,{totalPower},MW,総電力消費
-Raw Materials,{rawMaterialCount},types,原材料種類数
-Items,{itemCount},types,アイテム種類数
-Power Efficiency,{powerEfficiency},MW/unit,電力効率
+Version,1.0.0,,エクスポートバージョン
+Export Date,2025-10-27T12:00:00Z,timestamp,エクスポート日時
+Plan Name,高級プロセッサー生産,,プラン名
+Recipe SID,123,,レシピシステムID
+Recipe Name,高級プロセッサー,,レシピ名
+Target Quantity,10.0,items/sec,目標生産量
+Total Machines,45,units,総機械数
+Total Power,12.5,MW,総電力消費
+Raw Materials,3,types,原材料種類数
+Items,15,types,アイテム種類数
 ```
 
 **2. RawMaterials シート**
-```csv
-ItemID,ItemName,ConsumptionRate,Unit,Percentage,Source,Notes
-{itemId},{itemName},{consumptionRate},items/sec,{percentage}%,{source},{notes}
+```
+ItemID,ItemName,ConsumptionRate,Unit
+1001,鉄鉱石,15.5,items/sec
+1002,銅鉱石,10.0,items/sec
 ```
 
 **3. Products シート**
-```csv
-ItemID,ItemName,ProductionRate,ConsumptionRate,NetProduction,Unit,Type,Percentage
-{itemId},{itemName},{productionRate},{consumptionRate},{netProduction},items/sec,{type},{percentage}%
+```
+ItemID,ItemName,ProductionRate,ConsumptionRate,NetProduction,Unit
+2001,鉄インゴット,15.5,10.0,5.5,items/sec
 ```
 
 **4. Machines シート**
-```csv
-MachineID,MachineName,Count,PowerPerMachine,TotalPower,Percentage,Category,Notes
-{machineId},{machineName},{count},{powerPerMachine},{totalPower},{percentage}%,{category},{notes}
+```
+MachineID,MachineName,Count,PowerPerMachine,TotalPower
+3001,製錬設備 Mk.II,10,360,3600
 ```
 
-**5. Power シート**
-```csv
-Category,Power,Percentage,Description
-Machines,{machinePower},{machinePercentage}%,機械の電力消費
-Sorters,{sorterPower},{sorterPercentage}%,ソーターの電力消費
-Total,{totalPower},100%,総電力消費
+**5. PowerConsumption シート**
+```
+Category,Power,Percentage
+Machines,10500,85.5
+Sorters,1780,14.5
+Total,12280,100
 ```
 
-**6. Belts シート**
-```csv
-Type,Count,Saturation,Description
-Input Belts,{inputBelts},{inputSaturation}%,入力ベルト
-Output Belts,{outputBelts},{outputSaturation}%,出力ベルト
-Total Belts,{totalBelts},{totalSaturation}%,総ベルト数
+**6. ConveyorBelts シート**
+```
+Type,Count,Saturation
+InputBelts,15,75.5
+OutputBelts,10,60.0
+TotalBelts,25,67.8
 ```
 
-**7. Logistics シート**
-```csv
-Type,Count,PowerPerUnit,TotalPower,Description
-Sorters,{sorterCount},{sorterPowerPerUnit},{sorterTotalPower},ソーター
-Conveyor Belts,{beltCount},0,0,ベルト
-Total Logistics,{totalLogistics},{logisticsPowerPerUnit},{logisticsTotalPower},総物流
+**7. PowerGeneration シート** (発電設備がある場合)
+```
+RequiredPower,Template,ManualGenerator,ManualFuel,ProliferatorType,ProliferatorMode,SpeedBonus,ProductionBonus
+12.28,Thermal,火力発電所,石炭,Mk.III,production,25,0
+```
+
+**8. PowerGenerators シート** (発電設備がある場合)
+```
+GeneratorID,GeneratorName,GeneratorType,Count,BaseOutput,ActualOutputPerUnit,TotalOutput,FuelID,FuelName,FuelConsumptionRate,ActualFuelEnergy
+4001,火力発電所,Thermal,3,2.16,2.16,6.48,1003,石炭,0.5,2700
 ```
 
 ### 実装仕様
@@ -243,36 +358,59 @@ Total Logistics,{totalLogistics},{logisticsPowerPerUnit},{logisticsTotalPower},�
 // src/lib/export/csvExporter.ts
 
 export interface CSVExportOptions {
-  includeOverview: boolean;
   includeRawMaterials: boolean;
   includeProducts: boolean;
   includeMachines: boolean;
-  includePower: boolean;
-  includeBelts: boolean;
-  includeLogistics: boolean;
+  includePowerConsumption: boolean;
+  includeConveyorBelts: boolean;
+  includePowerGeneration: boolean;
   decimalPlaces: number;
   separator: ',' | ';' | '\t';
   encoding: 'utf-8' | 'utf-8-bom';
 }
 
 export function exportToCSV(
-  calculationResult: CalculationResult,
-  statistics: ProductionStatistics,
-  powerBreakdown: PowerBreakdown,
+  exportData: ExportData,
   options: CSVExportOptions
 ): string {
-  // 実装詳細
+  // CSV形式（単一シート）の実装
+  // コメント区切りで各セクションを表現
 }
 
 // src/lib/export/excelExporter.ts
 
-export function exportToExcel(
-  calculationResult: CalculationResult,
-  statistics: ProductionStatistics,
-  powerBreakdown: PowerBreakdown,
-  options: CSVExportOptions
-): Blob {
-  // xlsx ライブラリを使用した実装
+export interface ExcelExportOptions extends CSVExportOptions {
+  sheetNames?: {
+    overview?: string;
+    rawMaterials?: string;
+    products?: string;
+    machines?: string;
+    powerConsumption?: string;
+    conveyorBelts?: string;
+    powerGeneration?: string;
+    powerGenerators?: string;
+  };
+}
+
+export async function exportToExcel(
+  exportData: ExportData,
+  options: ExcelExportOptions
+): Promise<Blob> {
+  // ❌ 静的インポート（避ける）
+  // import * as XLSX from 'xlsx';
+  
+  // ✅ 動的インポート（推奨）
+  const XLSX = await import('xlsx');
+  
+  // Excel形式（複数シート）の実装
+  const workbook = XLSX.utils.book_new();
+  
+  // 各シートを追加
+  // ...
+  
+  // Blobとして返す
+  const wbout = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+  return new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 }
 ```
 
@@ -296,7 +434,12 @@ export function exportToExcel(
 - ベルト・ソーターリスト
 - 採掘計算機
 
-**4. カスタムレイアウト**
+**4. 発電設備ビューのスクリーンショット**
+- 発電設備リスト
+- 燃料消費量
+- 発電設備設定
+
+**5. カスタムレイアウト**
 - 複数ビューの結合
 - カスタムCSSスタイリング
 - 高解像度対応
@@ -314,6 +457,7 @@ export interface ImageExportOptions {
     statistics: boolean;
     powerGraph: boolean;
     buildingCost: boolean;
+    powerGeneration: boolean;
   };
   customLayout: boolean;
   backgroundColor: string;
@@ -321,10 +465,32 @@ export interface ImageExportOptions {
 }
 
 export async function exportToImage(
-  calculationResult: CalculationResult,
+  exportData: ExportData,
   options: ImageExportOptions
 ): Promise<Blob> {
+  // ❌ 静的インポート（避ける）
+  // import html2canvas from 'html2canvas';
+  
+  // ✅ 動的インポート（推奨）
+  const html2canvas = (await import('html2canvas')).default;
+  
   // html2canvasを使用した実装
+  // 必要なコンポーネントを一時的にDOMに追加してキャプチャ
+  const element = document.createElement('div');
+  // ...レンダリング処理...
+  
+  const canvas = await html2canvas(element, {
+    scale: options.resolution === '4x' ? 4 : options.resolution === '2x' ? 2 : 1,
+    backgroundColor: options.backgroundColor,
+  });
+  
+  return new Promise((resolve) => {
+    canvas.toBlob(
+      (blob) => resolve(blob!),
+      `image/${options.format}`,
+      options.quality / 100
+    );
+  });
 }
 ```
 
@@ -338,7 +504,32 @@ export async function exportToImage(
 }
 ```
 
+**重要**: 両ライブラリは動的インポートで使用し、bundle sizeを最適化する。
+
 ## ユーザーインターフェース設計
+
+### UI統合方針
+
+**既存のヘッダー「保存/読み込み」機能に統合:**
+
+```typescript
+// src/components/Layout/Header.tsx の拡張
+
+// 既存:
+// - 「保存」ボタン → LocalStorage
+// - 「読み込み」ボタン → LocalStorage
+
+// 変更後:
+// - 「保存」ボタン → ドロップダウンメニュー
+//   - LocalStorage (既存) ✓
+//   - Markdown形式
+//   - CSV形式
+//   - Excel形式
+//   - 画像形式
+// - 「読み込み」ボタン → ファイル選択ダイアログ
+//   - LocalStorage (既存) ✓
+//   - ファイルからインポート（Markdown/CSV/Excel）
+```
 
 ### エクスポートダイアログの構成
 
@@ -346,17 +537,15 @@ export async function exportToImage(
 // src/components/ExportDialog/index.tsx
 
 export interface ExportDialogProps {
-  calculationResult: CalculationResult;
-  statistics: ProductionStatistics;
-  powerBreakdown: PowerBreakdown;
+  exportData: ExportData;
   isOpen: boolean;
   onClose: () => void;
 }
 
 // ダイアログの構成:
-// 1. 形式選択タブ (Markdown/CSV/画像)
+// 1. 形式選択タブ (Markdown/CSV/Excel/画像)
 // 2. オプション設定パネル
-// 3. プレビューエリア
+// 3. プレビューエリア（Phase 2以降）
 // 4. アクションボタン (エクスポート/キャンセル)
 ```
 
@@ -370,15 +559,20 @@ export interface ExportDialogProps {
 - テーブル形式: [Simple] [Grid]
 
 **CSV形式:**
-- ✅ Overview シート
-- ✅ RawMaterials シート
-- ✅ Products シート
-- ✅ Machines シート
-- ✅ Power シート
-- ✅ Belts シート
-- ✅ Logistics シート
+- ✅ 原材料を含める
+- ✅ 製品を含める
+- ✅ 機械を含める
+- ✅ 電力消費を含める
+- ✅ ベルト要件を含める
+- ✅ 発電設備を含める
 - 小数点以下: [2] [4] [6] 桁
 - 区切り文字: [,] [;] [Tab]
+- エンコーディング: [UTF-8] [UTF-8 BOM]
+
+**Excel形式:**
+- CSV形式と同じオプション
+- 複数シートで構造化
+- シート名のカスタマイズ可能
 
 **画像形式:**
 - 解像度: [1x] [2x] [4x]
@@ -388,6 +582,7 @@ export interface ExportDialogProps {
   - ✅ 統計ビュー
   - ✅ 電力グラフ
   - ✅ 建設コスト
+  - ✅ 発電設備
 - カスタムレイアウト: [チェックボックス]
 
 ## 実装アーキテクチャ
@@ -432,17 +627,18 @@ export async function exportPlan(
   calculationResult: CalculationResult,
   statistics: ProductionStatistics,
   powerBreakdown: PowerBreakdown,
+  powerGeneration: PowerGenerationResult,
   options: ExportOptions
 ): Promise<Blob> {
   switch (options.format) {
     case 'markdown':
-      return exportToMarkdown(calculationResult, statistics, powerBreakdown, options.markdown!);
+      return exportToMarkdown(calculationResult, statistics, powerBreakdown, powerGeneration, options.markdown!);
     case 'csv':
-      return exportToCSV(calculationResult, statistics, powerBreakdown, options.csv!);
+      return exportToCSV(calculationResult, statistics, powerBreakdown, powerGeneration, options.csv!);
     case 'excel':
-      return exportToExcel(calculationResult, statistics, powerBreakdown, options.csv!);
+      return exportToExcel(calculationResult, statistics, powerBreakdown, powerGeneration, options.csv!);
     case 'image':
-      return exportToImage(calculationResult, options.image!);
+      return exportToImage(calculationResult, powerGeneration, options.image!);
     default:
       throw new Error(`Unsupported export format: ${options.format}`);
   }
@@ -531,35 +727,65 @@ export function generateFilename(
 
 ## 実装の優先順位
 
-### Phase 1: 基盤実装
-1. データ構造の定義
-2. 基本的なエクスポート関数
-3. エラーハンドリング
-4. ファイル名生成
+### Phase 1: 基盤とMarkdown（ライブラリ不要）
+1. **データ構造の定義**
+   - `src/types/export.ts` を作成
+   - バージョン管理定数の定義
+   - エラーハンドリングの実装
+2. **Markdown形式の実装**
+   - `src/lib/export/markdownExporter.ts` を実装
+   - データ変換ロジックを実装
+   - ファイル名生成を実装
+3. **UI基盤の実装**
+   - Header に保存ドロップダウンメニューを追加
+   - ExportDialog の基本構造を実装
+   - Markdownオプション設定パネルを実装
 
-### Phase 2: Markdown形式
-1. Markdown形式の実装
-2. 基本的なUI
-3. プレビュー機能
-4. ユーザーテスト
+### Phase 2: CSV形式（ライブラリ不要）
+1. **CSV形式の実装**
+   - `src/lib/export/csvExporter.ts` を実装（単一シート構造）
+   - コメント区切りのセクション生成
+2. **プレビュー機能の追加**
+   - Markdownプレビュー
+   - CSVテーブルプレビュー
+3. **統合テスト**
+   - Markdown/CSV形式のテスト
+   - ユーザーフィードバック収集
 
-### Phase 3: CSV形式
-1. CSV形式の実装
-2. Excel形式の実装
-3. オプション設定UI
-4. データ検証
+### Phase 3: Excelエクスポート（`xlsx` 動的ロード）
+1. **Excel形式の実装**
+   - `npm install xlsx` を実行
+   - `src/lib/export/excelExporter.ts` を実装（複数シート対応）
+   - 動的インポートで実装
+2. **Excelオプション設定UI**
+   - シート名カスタマイズ
+3. **バージョン検証ロジックの強化**
+   - `src/constants/exportVersion.ts` を実装
+   - バージョン互換性チェック
 
-### Phase 4: 画像形式
-1. html2canvas統合
-2. 画像生成ロジック
-3. 品質最適化
-4. 非同期処理
+### Phase 4: 画像エクスポート（`html2canvas` 動的ロード）
+1. **画像形式の実装**
+   - `npm install html2canvas` を実行
+   - `src/lib/export/imageExporter.ts` を実装
+   - 動的インポートで実装
+2. **カスタムレイアウト機能**
+   - 複数ビューの結合
+   - 高解像度対応
+3. **品質最適化**
+   - 画像圧縮
+   - メモリ使用量の最適化
 
-### Phase 5: UI完成
-1. エクスポートダイアログ
-2. オプション設定パネル
-3. プレビュー機能
-4. エラーハンドリング
+### Phase 5: UI完成と最適化
+1. **エクスポートダイアログの完成**
+   - 全形式のオプション設定UI
+   - プレビュー機能の完成
+   - エラーハンドリングの強化
+2. **パフォーマンス最適化**
+   - 非同期処理の最適化
+   - プログレス表示
+3. **E2Eテストの追加**
+   - 全形式のエクスポートテスト
+   - カバレッジ目標: 85%以上
 
 ## テスト戦略
 
@@ -597,20 +823,48 @@ export function generateFilename(
 
 ## 将来の拡張性
 
+### 既存機能との統合
+- **既存の `planExport.ts` (JSON形式) の統合**
+  - 現在: LocalStorageに保存
+  - 統合後: 保存ドロップダウンの「LocalStorage」オプションとして統合
+  - 互換性: 既存のJSONデータ構造を維持
+- **既存の `urlShare.ts` (URL共有) の保持**
+  - 現在: URLパラメータでプラン共有
+  - 今後: エクスポート機能とは独立して保持
+  - 用途: 簡易的な共有（軽量データのみ）
+
 ### 追加形式の検討
-- PDF形式のエクスポート
-- JSON形式のエクスポート
-- カスタムテンプレート形式
+- **PDF形式のエクスポート**
+  - 印刷用の高品質レポート
+  - jsPDFライブラリの使用を検討
+- **JSONエクスポート/インポート**
+  - 完全なプラン復元（APIバックアップ用）
+  - 既存の`planExport.ts`との統合
+- **カスタムテンプレート形式**
+  - ユーザー定義のMarkdownテンプレート
+  - コミュニティでの共有
 
 ### 機能拡張
-- バッチエクスポート
-- スケジュールエクスポート
-- クラウドストレージ連携
+- **バッチエクスポート**
+  - 複数のプランを一度にエクスポート
+  - ZIP形式でまとめてダウンロード
+- **自動バックアップ**
+  - 定期的な自動保存
+  - バージョン履歴管理
+- **クラウドストレージ連携**
+  - Google Drive / Dropbox連携
+  - プランの同期機能
 
 ### パフォーマンス向上
-- キャッシュ機能
-- 並列処理
-- ストリーミング処理
+- **キャッシュ機能**
+  - エクスポートデータのメモ化
+  - 頻繁なエクスポート時の高速化
+- **並列処理**
+  - Web Workersでの非同期エクスポート
+  - UIのブロッキング回避
+- **ストリーミング処理**
+  - 大規模プランの段階的エクスポート
+  - メモリ使用量の最適化
 
 ---
 
