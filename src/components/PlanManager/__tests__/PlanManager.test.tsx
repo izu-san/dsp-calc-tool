@@ -69,13 +69,23 @@ const urlShareMocks = vi.hoisted(() => ({
 vi.mock('../../../utils/urlShare', () => urlShareMocks);
 
 describe('PlanManager', () => {
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
-    const confirmSpy = vi.spyOn(window, 'confirm').mockImplementation(() => true);
+    let alertMock: ReturnType<typeof vi.fn>;
+    let confirmMock: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         vi.clearAllMocks();
-        alertSpy.mockClear();
-        confirmSpy.mockClear();
+        // vitest 4.0 での window.alert/confirm モック
+        alertMock = vi.fn();
+        confirmMock = vi.fn(() => true);
+        
+        Object.defineProperty(window, 'alert', {
+            value: alertMock,
+            writable: true,
+        });
+        Object.defineProperty(window, 'confirm', {
+            value: confirmMock,
+            writable: true,
+        });
     });
 
     afterEach(() => {
@@ -88,7 +98,7 @@ describe('PlanManager', () => {
         fireEvent.change(screen.getByPlaceholderText(/Plan_/), { target: { value: 'MyPlan' } });
         fireEvent.click(screen.getByRole('button', { name: /saveToLocalStorage/i }));
         expect(planExportMocks.savePlanToLocalStorage).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('saved');
+        expect(alertMock).toHaveBeenCalledWith('saved');
         expect(screen.queryByRole('button', { name: /saveToLocalStorage/i })).not.toBeInTheDocument();
     });
 
@@ -109,7 +119,7 @@ describe('PlanManager', () => {
         fireEvent.click(recentLoad);
         expect(planExportMocks.loadPlanFromLocalStorage).toHaveBeenCalledWith('k1');
         expect(planExportMocks.restorePlan).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('planLoaded');
+        expect(alertMock).toHaveBeenCalledWith('planLoaded');
         expect(screen.queryByText('recentPlans')).not.toBeInTheDocument();
     });
 
@@ -118,7 +128,7 @@ describe('PlanManager', () => {
         fireEvent.click(screen.getByRole('button', { name: /load$/i }));
         const del = screen.getByText('delete');
         fireEvent.click(del);
-        expect(confirmSpy).toHaveBeenCalled();
+        expect(confirmMock).toHaveBeenCalled();
         expect(planExportMocks.deletePlanFromLocalStorage).toHaveBeenCalledWith('k1');
     });
 
@@ -143,7 +153,7 @@ describe('PlanManager', () => {
         await fireEvent.change(realInput, { target: { files: [file] } });
         expect(planExportMocks.importPlan).toHaveBeenCalled();
         expect(planExportMocks.restorePlan).toHaveBeenCalled();
-        expect(alertSpy).toHaveBeenCalledWith('planLoaded');
+        expect(alertMock).toHaveBeenCalledWith('planLoaded');
     });
 
     it('Save: includeOverridesOnSave=false で nodeOverrides が空で保存される', () => {
@@ -202,7 +212,7 @@ describe('PlanManager', () => {
         urlShareMocks.generateShareURL.mockImplementationOnce(() => { throw new Error('boom'); });
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /shareURL$/i }));
-        expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('urlGenerationError'));
+        expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('urlGenerationError'));
     });
 
     it('Share Dialog: copyToClipboard=false でコピー失敗アラート', async () => {
@@ -210,7 +220,7 @@ describe('PlanManager', () => {
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /shareURL$/i }));
         fireEvent.click(screen.getByRole('button', { name: /copy|copied/i }));
-        await waitFor(() => expect(alertSpy).toHaveBeenCalledWith('copyFailed'));
+        await waitFor(() => expect(alertMock).toHaveBeenCalledWith('copyFailed'));
     });
 
     it('Import: importPlan が失敗した場合にエラーダイアログ表示', async () => {
@@ -220,7 +230,7 @@ describe('PlanManager', () => {
         const file = new File([JSON.stringify({})], 'plan.json', { type: 'application/json' });
         const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         await fireEvent.change(realInput, { target: { files: [file] } });
-        expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('loadError'));
+        expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('loadError'));
     });
 
     it('Load: 保存データが見つからない場合は planNotFound をアラート', () => {
@@ -230,7 +240,7 @@ describe('PlanManager', () => {
         const buttons = screen.getAllByRole('button', { name: /^load$/i });
         const recentLoad = buttons.find((b) => b.className.includes('bg-blue-600'))!;
         fireEvent.click(recentLoad);
-        expect(alertSpy).toHaveBeenCalledWith('planNotFound');
+        expect(alertMock).toHaveBeenCalledWith('planNotFound');
     });
 
 
@@ -244,7 +254,7 @@ describe('PlanManager', () => {
         const file = new File([JSON.stringify({})], 'plan.json', { type: 'application/json' });
         const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
         await fireEvent.change(realInput, { target: { files: [file] } });
-        expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('recipeNotFound'));
+        expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('recipeNotFound'));
     });
 
 
@@ -259,16 +269,16 @@ describe('PlanManager', () => {
         const buttons = screen.getAllByRole('button', { name: /^load$/i });
         const recentLoad = buttons.find((b) => b.className.includes('bg-blue-600'))!;
         fireEvent.click(recentLoad);
-        expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('recipeNotFound'));
+        expect(alertMock).toHaveBeenCalledWith(expect.stringContaining('recipeNotFound'));
     });
 
     it('Delete: confirm がキャンセルされた場合は削除されない', () => {
-        confirmSpy.mockReturnValueOnce(false);
+        confirmMock.mockReturnValueOnce(false);
         render(<PlanManager />);
         fireEvent.click(screen.getByRole('button', { name: /load$/i }));
         const del = screen.getByText('delete');
         fireEvent.click(del);
-        expect(confirmSpy).toHaveBeenCalled();
+        expect(confirmMock).toHaveBeenCalled();
         expect(planExportMocks.deletePlanFromLocalStorage).not.toHaveBeenCalled();
     });
 

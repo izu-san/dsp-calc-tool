@@ -36,11 +36,20 @@ vi.mock('../../../stores/settingsStore', () => ({
 }));
 
 describe('ModSettings', () => {
+    let confirmMock: ReturnType<typeof vi.fn>;
+
     beforeEach(() => {
         vi.clearAllMocks();
         updateData.mockReset();
         setProliferatorMultiplier.mockReset();
         loadGameData.mockReset();
+        
+        // vitest 4.0 での window.confirm モック
+        confirmMock = vi.fn(() => true);
+        Object.defineProperty(window, 'confirm', {
+            value: confirmMock,
+            writable: true,
+        });
     });
     afterEach(() => {
         cleanup();
@@ -115,7 +124,7 @@ describe('ModSettings', () => {
 
         it('resetToDefault で loadGameData() -> updateData が呼ばれる（confirm OK）', async () => {
             openModal();
-            vi.spyOn(window, 'confirm').mockReturnValue(true);
+            confirmMock.mockReturnValueOnce(true);
             loadGameData.mockResolvedValueOnce({ base: 'data' });
             
             await actAsync(() => {
@@ -131,7 +140,7 @@ describe('ModSettings', () => {
 
     it('resetToDefault で confirm がキャンセルされた場合は何もしない', () => {
         openModal();
-        vi.spyOn(window, 'confirm').mockReturnValue(false);
+        confirmMock.mockReturnValueOnce(false);
         fireEvent.click(screen.getByText('resetToDefault'));
         expect(loadGameData).not.toHaveBeenCalled();
         expect(updateData).not.toHaveBeenCalled();
@@ -223,7 +232,7 @@ describe('ModSettings', () => {
 
         it('resetToDefault で loadGameData エラーが発生した場合はエラー表示', async () => {
             openModal();
-            vi.spyOn(window, 'confirm').mockReturnValue(true);
+            confirmMock.mockReturnValueOnce(true);
             loadGameData.mockRejectedValueOnce(new Error('Load error'));
             
             await actAsync(() => {
