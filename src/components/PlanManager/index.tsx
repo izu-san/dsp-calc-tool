@@ -16,6 +16,8 @@ import {
 import { generateShareURL, copyToClipboard } from '../../utils/urlShare';
 import { transformToExportData } from '../../lib/export/dataTransformer';
 import { exportToMarkdown } from '../../lib/export/markdownExporter';
+import { exportToCSV } from '../../lib/export/csvExporter';
+import { exportToExcel } from '../../lib/export/excelExporter';
 import { generateExportFilename } from '../../lib/export/filenameGenerator';
 import { importFromMarkdown } from '../../lib/import/markdownImporter';
 import { validatePlanInfo } from '../../lib/import/validation';
@@ -53,85 +55,73 @@ export function PlanManager() {
     return `Plan_${year}-${month}-${day}_${hours}-${minutes}`;
   };
 
-  const handleExport = async (format: 'json' | 'markdown', name: string) => {
+  const handleExport = async (format: 'json' | 'markdown' | 'csv' | 'excel', name: string) => {
     if (!selectedRecipe) {
       alert(t('pleaseSelectRecipe'));
       return;
     }
 
     try {
+      if (!calculationResult) {
+        alert(t('pleaseCalculateFirst'));
+        return;
+      }
+
+      const exportData = transformToExportData(
+        calculationResult,
+        selectedRecipe,
+        targetQuantity,
+        settings,
+        name,
+        Date.now(),
+        {
+          template: powerGenerationTemplate,
+          manualGenerator: manualPowerGenerator,
+          manualFuel: manualPowerFuel,
+          powerFuelProliferator: powerFuelProliferator,
+        },
+        { items: data?.items || new Map() }
+      );
+
+      let blob: Blob;
+      let filename: string;
+      let mimeType: string;
+
       if (format === 'json') {
-        // JSON エクスポート（Markdownと同じExportData形式）
-        if (!calculationResult) {
-          alert(t('pleaseCalculateFirst'));
-          return;
-        }
-
-        const exportData = transformToExportData(
-          calculationResult,
-          selectedRecipe,
-          targetQuantity,
-          settings,
-          name,
-          Date.now(),
-          {
-            template: powerGenerationTemplate,
-            manualGenerator: manualPowerGenerator,
-            manualFuel: manualPowerFuel,
-            powerFuelProliferator: powerFuelProliferator,
-          },
-          { items: data?.items || new Map() }
-        );
-
-        const filename = generateExportFilename(name, 'json');
-
-        // ダウンロード
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        // JSON エクスポート
+        filename = generateExportFilename(name, 'json');
+        mimeType = 'application/json;charset=utf-8';
+        blob = new Blob([JSON.stringify(exportData, null, 2)], { type: mimeType });
       } else if (format === 'markdown') {
         // Markdown エクスポート
-        if (!calculationResult) {
-          alert(t('pleaseCalculateFirst'));
-          return;
-        }
-
-        const exportData = transformToExportData(
-          calculationResult,
-          selectedRecipe,
-          targetQuantity,
-          settings,
-          name,
-          Date.now(),
-          {
-            template: powerGenerationTemplate,
-            manualGenerator: manualPowerGenerator,
-            manualFuel: manualPowerFuel,
-            powerFuelProliferator: powerFuelProliferator,
-          },
-          { items: data?.items || new Map() }
-        );
-
         const markdown = exportToMarkdown(exportData);
-        const filename = generateExportFilename(name, 'md');
-
-        // ダウンロード
-        const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        filename = generateExportFilename(name, 'md');
+        mimeType = 'text/markdown;charset=utf-8';
+        blob = new Blob([markdown], { type: mimeType });
+      } else if (format === 'csv') {
+        // CSV エクスポート
+        const csv = exportToCSV(exportData);
+        filename = generateExportFilename(name, 'csv');
+        mimeType = 'text/csv;charset=utf-8';
+        blob = new Blob([csv], { type: mimeType });
+      } else if (format === 'excel') {
+        // Excel エクスポート
+        filename = generateExportFilename(name, 'xlsx');
+        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        blob = await exportToExcel(exportData);
+      } else {
+        throw new Error(`Unsupported format: ${format}`);
       }
+
+      // ダウンロード
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
 
       setShowSaveDialog(false);
       setPlanName('');
@@ -430,18 +420,30 @@ export function PlanManager() {
             {/* Export Buttons */}
             <div className="mb-4">
               <p className="text-sm font-medium mb-2 dark:text-gray-300">{t('exportToFile')}</p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => handleExport('json', planName || getDefaultPlanName())}
-                  className="flex-1 px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-sm"
+                  className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-sm"
                 >
                   JSON
                 </button>
                 <button
                   onClick={() => handleExport('markdown', planName || getDefaultPlanName())}
-                  className="flex-1 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-sm"
+                  className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-sm"
                 >
                   Markdown
+                </button>
+                <button
+                  onClick={() => handleExport('csv', planName || getDefaultPlanName())}
+                  className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-sm"
+                >
+                  CSV
+                </button>
+                <button
+                  onClick={() => handleExport('excel', planName || getDefaultPlanName())}
+                  className="px-3 py-2 bg-green-700 text-white rounded hover:bg-green-800 dark:bg-green-800 dark:hover:bg-green-700 text-sm"
+                >
+                  Excel
                 </button>
               </div>
             </div>

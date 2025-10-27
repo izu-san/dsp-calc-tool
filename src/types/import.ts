@@ -48,7 +48,7 @@ export interface ImportError {
   /** エラーメッセージ */
   message: string;
   /** 詳細情報 (optional) */
-  details?: any;
+  details?: unknown;
 }
 
 /**
@@ -60,7 +60,7 @@ export interface ImportWarning {
   /** 警告メッセージ */
   message: string;
   /** 詳細情報 (optional) */
-  details?: any;
+  details?: unknown;
 }
 
 /**
@@ -96,9 +96,9 @@ export interface ExtractedPlanInfo {
   /** グローバル設定 */
   settings?: Partial<GlobalSettings>;
   /** ノードオーバーライド設定 */
-  nodeOverrides?: Record<string, any>;
+  nodeOverrides?: Record<string, unknown>;
   /** 発電設備設定 */
-  powerGenerationSettings?: any;
+  powerGenerationSettings?: unknown;
 }
 
 /**

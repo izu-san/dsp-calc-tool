@@ -310,4 +310,120 @@ No recipe information here.
 
     if (downloadPath && fs.existsSync(downloadPath)) fs.unlinkSync(downloadPath);
   });
+
+  test('CSVエクスポート: レシピ選択→計算→エクスポート', async ({ page }) => {
+    await selectRecipe(page, 'Iron Ingot');
+    await page.waitForTimeout(1000);
+    await waitForCalculation(page);
+
+    // 保存ダイアログ→CSVエクスポート
+    const saveBtn = getSaveButton(page);
+    await expect(saveBtn).toBeVisible();
+    await saveBtn.click();
+    await page.waitForTimeout(500);
+
+    const csvBtn = page.getByRole('button', { name: /CSV/ });
+    await expect(csvBtn).toBeVisible({ timeout: 5000 });
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 30000 }),
+      csvBtn.click(),
+    ]);
+    expect(download.suggestedFilename()).toMatch(/\.csv$/);
+
+    const downloadPath = await download.path();
+    expect(downloadPath).toBeTruthy();
+
+    const content = fs.readFileSync(downloadPath!, 'utf-8');
+    expect(content).toContain('# Metadata');
+    expect(content).toContain('Version,1.0.0');
+    expect(content).toContain('# Plan Info');
+    expect(content).toContain('RecipeSID');
+    expect(content).toContain('# Statistics');
+    expect(content).toContain('TotalMachines');
+    expect(content).toContain('# RawMaterials');
+    expect(content).toContain('# Products');
+    expect(content).toContain('# Machines');
+
+    // cleanup
+    if (downloadPath && fs.existsSync(downloadPath)) fs.unlinkSync(downloadPath);
+  });
+
+  test('Excelエクスポート: レシピ選択→計算→エクスポート', async ({ page }) => {
+    await selectRecipe(page, 'Iron Ingot');
+    await page.waitForTimeout(1000);
+    await waitForCalculation(page);
+
+    // 保存ダイアログ→Excelエクスポート
+    const saveBtn = getSaveButton(page);
+    await expect(saveBtn).toBeVisible();
+    await saveBtn.click();
+    await page.waitForTimeout(500);
+
+    const excelBtn = page.getByRole('button', { name: /Excel/ });
+    await expect(excelBtn).toBeVisible({ timeout: 5000 });
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 30000 }),
+      excelBtn.click(),
+    ]);
+    expect(download.suggestedFilename()).toMatch(/\.xlsx$/);
+
+    const downloadPath = await download.path();
+    expect(downloadPath).toBeTruthy();
+
+    // Excelファイルが存在し、サイズが0より大きいことを確認
+    expect(fs.statSync(downloadPath!).size).toBeGreaterThan(0);
+
+    // cleanup
+    if (downloadPath && fs.existsSync(downloadPath)) fs.unlinkSync(downloadPath);
+  });
+
+  test('複数形式のエクスポート往復テスト: JSON→Markdown→CSV', async ({ page }) => {
+    await selectRecipe(page, 'Circuit Board');
+    await page.waitForTimeout(1000);
+    await waitForCalculation(page);
+
+    const saveBtn = getSaveButton(page);
+    await expect(saveBtn).toBeVisible();
+    await saveBtn.click();
+    await page.waitForTimeout(500);
+
+    const planName = 'MultiFormat Test';
+    await page.fill('input[placeholder*="Plan"]', planName);
+
+    // CSVエクスポート
+    const csvBtn = page.getByRole('button', { name: /CSV/ });
+    await expect(csvBtn).toBeVisible({ timeout: 5000 });
+    const [csvDownload] = await Promise.all([
+      page.waitForEvent('download', { timeout: 30000 }),
+      csvBtn.click(),
+    ]);
+
+    const csvPath = await csvDownload.path();
+    expect(csvPath).toBeTruthy();
+    const csvContent = fs.readFileSync(csvPath!, 'utf-8');
+    expect(csvContent).toContain('# Metadata');
+    expect(csvContent).toMatch(/Circuit Board|回路基板/);
+
+    // Markdownエクスポート
+    await saveBtn.click();
+    await page.waitForTimeout(500);
+    await page.fill('input[placeholder*="Plan"]', planName);
+
+    const mdBtn = page.getByRole('button', { name: /Markdown/ });
+    await expect(mdBtn).toBeVisible({ timeout: 5000 });
+    const [mdDownload] = await Promise.all([
+      page.waitForEvent('download', { timeout: 30000 }),
+      mdBtn.click(),
+    ]);
+
+    const mdPath = await mdDownload.path();
+    expect(mdPath).toBeTruthy();
+    const mdContent = fs.readFileSync(mdPath!, 'utf-8');
+    expect(mdContent).toContain('# ');
+    expect(mdContent).toMatch(/Circuit Board|回路基板/);
+
+    // cleanup
+    if (csvPath && fs.existsSync(csvPath)) fs.unlinkSync(csvPath);
+    if (mdPath && fs.existsSync(mdPath)) fs.unlinkSync(mdPath);
+  });
 });
