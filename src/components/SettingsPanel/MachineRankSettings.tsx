@@ -8,33 +8,33 @@ import type {
 } from '../../types/settings';
 import { ItemIcon } from '../ItemIcon';
 import { cn } from '../../utils/classNames';
+import { getMachineById } from '../../stores/gameDataStore';
 
 interface MachineOption {
   value: string;
-  label: string;
   description?: string;
   iconId: number;
 }
 
 const MACHINE_OPTIONS: Record<string, MachineOption[]> = {
   Smelt: [
-    { value: 'arc', label: 'Arc Smelter', description: '1x speed', iconId: 2302 },
-    { value: 'plane', label: 'Plane Smelter', description: '2x speed', iconId: 2315 },
-    { value: 'negentropy', label: 'Negentropy Smelter', description: '3x speed', iconId: 2319 },
+    { value: 'arc', description: '1x speed', iconId: 2302 },
+    { value: 'plane', description: '2x speed', iconId: 2315 },
+    { value: 'negentropy', description: '3x speed', iconId: 2319 },
   ],
   Assemble: [
-    { value: 'mk1', label: 'Assembling Machine Mk.I', description: '0.75x speed', iconId: 2303 },
-    { value: 'mk2', label: 'Assembling Machine Mk.II', description: '1x speed', iconId: 2304 },
-    { value: 'mk3', label: 'Assembling Machine Mk.III', description: '1.5x speed', iconId: 2305 },
-    { value: 'recomposing', label: 'Re-composing Assembler', description: '3x speed', iconId: 2318 },
+    { value: 'mk1', description: '0.75x speed', iconId: 2303 },
+    { value: 'mk2', description: '1x speed', iconId: 2304 },
+    { value: 'mk3', description: '1.5x speed', iconId: 2305 },
+    { value: 'recomposing', description: '3x speed', iconId: 2318 },
   ],
   Chemical: [
-    { value: 'standard', label: 'Chemical Plant', description: '1x speed', iconId: 2309 },
-    { value: 'quantum', label: 'Quantum Chemical Plant', description: '2x speed', iconId: 2317 },
+    { value: 'standard', description: '1x speed', iconId: 2309 },
+    { value: 'quantum', description: '2x speed', iconId: 2317 },
   ],
   Research: [
-    { value: 'standard', label: 'Matrix Lab', description: '1x speed', iconId: 2901 },
-    { value: 'self-evolution', label: 'Self-evolution Lab', description: '3x speed', iconId: 2902 },
+    { value: 'standard', description: '1x speed', iconId: 2901 },
+    { value: 'self-evolution', description: '3x speed', iconId: 2902 },
   ],
 };
 
@@ -61,22 +61,9 @@ export function MachineRankSettings() {
     Particle: t('particleCollider'),
   };
 
-  const getMachineName = (originalLabel: string): string => {
-    const keyMap: Record<string, string> = {
-      'Arc Smelter': 'arcSmelter',
-      'Plane Smelter': 'planeSmelter',
-      'Negentropy Smelter': 'negentropySmelter',
-      'Assembling Machine Mk.I': 'assemblingMachineMk1',
-      'Assembling Machine Mk.II': 'assemblingMachineMk2',
-      'Assembling Machine Mk.III': 'assemblingMachineMk3',
-      'Re-composing Assembler': 'recomposingAssembler',
-      'Chemical Plant': 'chemicalPlantStandard',
-      'Quantum Chemical Plant': 'quantumChemicalPlant',
-      'Matrix Lab': 'matrixLabStandard',
-      'Self-evolution Lab': 'selfEvolutionLab',
-    };
-    const key = keyMap[originalLabel];
-    return key ? t(key) : originalLabel;
+  const getMachineName = (iconId: number): string => {
+    const machine = getMachineById(iconId);
+    return machine?.name || `Unknown Machine (${iconId})`;
   };
 
   const handleRankChange = (
@@ -115,7 +102,7 @@ export function MachineRankSettings() {
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
-                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
+                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.iconId)}</span>
                   {option.description && (
                     <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
@@ -147,7 +134,7 @@ export function MachineRankSettings() {
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
-                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
+                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.iconId)}</span>
                   {option.description && (
                     <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
@@ -179,7 +166,7 @@ export function MachineRankSettings() {
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
-                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
+                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.iconId)}</span>
                   {option.description && (
                     <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
@@ -211,7 +198,7 @@ export function MachineRankSettings() {
               >
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
-                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.label)}</span>
+                  <span className="font-semibold text-[10px] leading-tight text-center">{getMachineName(option.iconId)}</span>
                   {option.description && (
                     <span className="text-[10px] font-medium opacity-90">{option.description}</span>
                   )}
