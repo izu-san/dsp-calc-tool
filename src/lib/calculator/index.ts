@@ -31,7 +31,8 @@ export function calculateProductionChain(
   targetRate: number,
   gameData: GameData,
   settings: GlobalSettings,
-  nodeOverrides: Map<string, NodeOverrideSettings> = new Map()
+  nodeOverrides: Map<string, NodeOverrideSettings> = new Map(),
+  miningSettings: { machineType: 'Mining Machine' | 'Advanced Mining Machine'; workSpeedMultiplier: number }
 ): CalculationResult {
   // For root node, set targetItemId to the first result (primary output)
   if (!recipe.Results || recipe.Results.length === 0) {
@@ -49,6 +50,7 @@ export function calculateProductionChain(
     20,
     `r-${recipe.SID}`,
     new Set(),
+    miningSettings,
     targetItemId
   );
   const totalPower = calculateTotalPower(rootNode);

@@ -460,4 +460,79 @@ describe('MiningCalculator', () => {
       expect(screen.getByText('Copper Ore')).toBeInTheDocument();
     });
   });
+
+  // ===========================
+  // 6. Liquid Mining Equipment (3)
+  // ===========================
+
+  describe('Liquid Mining Equipment', () => {
+    it('should display water pumps for water', () => {
+      vi.mocked(calculateMiningRequirements).mockReturnValue(
+        createMiningCalculation({
+          rawMaterials: [
+            createMiningRequirement({
+              itemId: 1000,
+              itemName: 'Water',
+              machineType: 'Water Pump',
+              minersNeeded: 3,
+              veinsNeeded: 3,
+              outputPerSecond: 0.833333,
+            }),
+          ],
+        })
+      );
+
+      render(<MiningCalculator calculationResult={mockCalculationResult} />);
+
+      expect(screen.getByText('Water')).toBeInTheDocument();
+      expect(screen.getByText('3 waterPumps')).toBeInTheDocument(); // Number of pumps
+      expect(screen.getByText('0.8/s each')).toBeInTheDocument(); // Output per pump
+    });
+
+    it('should display oil extractors for crude oil', () => {
+      vi.mocked(calculateMiningRequirements).mockReturnValue(
+        createMiningCalculation({
+          rawMaterials: [
+            createMiningRequirement({
+              itemId: 1007,
+              itemName: 'Crude Oil',
+              machineType: 'Oil Extractor',
+              minersNeeded: 2,
+              veinsNeeded: 2,
+              outputPerSecond: 4.0,
+            }),
+          ],
+        })
+      );
+
+      render(<MiningCalculator calculationResult={mockCalculationResult} />);
+
+      expect(screen.getByText('Crude Oil')).toBeInTheDocument();
+      expect(screen.getByText('2 oilExtractors')).toBeInTheDocument(); // Number of extractors
+      expect(screen.getByText('4.0/s each')).toBeInTheDocument(); // Output per extractor
+    });
+
+    it('should display water pumps for sulfuric acid', () => {
+      vi.mocked(calculateMiningRequirements).mockReturnValue(
+        createMiningCalculation({
+          rawMaterials: [
+            createMiningRequirement({
+              itemId: 1116,
+              itemName: 'Sulfuric Acid',
+              machineType: 'Water Pump',
+              minersNeeded: 4,
+              veinsNeeded: 4,
+              outputPerSecond: 0.833333,
+            }),
+          ],
+        })
+      );
+
+      render(<MiningCalculator calculationResult={mockCalculationResult} />);
+
+      expect(screen.getByText('Sulfuric Acid')).toBeInTheDocument();
+      expect(screen.getByText('4 waterPumps')).toBeInTheDocument(); // Number of pumps
+      expect(screen.getByText('0.8/s each')).toBeInTheDocument(); // Output per pump
+    });
+  });
 });

@@ -9,6 +9,9 @@ const mockGameData = {
     [1001, { id: 1001, name: 'Iron Ore', Type: 'Resource', isRaw: true }],
     [1002, { id: 1002, name: 'Copper Ore', Type: 'Resource', isRaw: true }],
     [1003, { id: 1003, name: 'Stone', Type: 'Resource', isRaw: true }],
+    [1000, { id: 1000, name: 'Water', Type: 'Resource', isRaw: true }],
+    [1007, { id: 1007, name: 'Crude Oil', Type: 'Resource', isRaw: true }],
+    [1116, { id: 1116, name: 'Sulfuric Acid', Type: 'Resource', isRaw: true }],
     [1120, { id: 1120, name: 'Hydrogen', Type: 'Material', isRaw: false }],
     [1121, { id: 1121, name: 'Deuterium', Type: 'Material', isRaw: false }],
   ]),
@@ -251,6 +254,166 @@ describe('miningCalculation', () => {
         expect(iron.workSpeedMultiplier).toBe(300);
         expect(iron.veinsNeeded).toBe(60);
         expect(iron.powerMultiplier).toBe(9.0);
+      });
+    });
+
+    describe('液体採掘設備', () => {
+      it('Water（水）のウォーターポンプを計算する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1000, 1.0]]), // 1.0 Water/s
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // Water: 50/min = 0.833.../s per pump, 研究ボーナスなし (1.0)
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
+
+        const water = result.rawMaterials[0];
+
+        // baseSpeedPerSecond = 50/60 = 0.833.../s per pump
+        // outputPerSecond = 0.833... * 1.0 = 0.833.../s per pump
+        // machinesNeeded = ceil(1.0 / 0.833...) = 2 pumps
+        expect(water.itemId).toBe(1000);
+        expect(water.machineType).toBe('Water Pump');
+        expect(water.outputPerSecond).toBeCloseTo(0.833333, 5);
+        expect(water.minersNeeded).toBe(2);
+        expect(water.veinsNeeded).toBe(2); // For liquid equipment, machines = "veins"
+        expect(water.workSpeedMultiplier).toBe(100); // Fixed speed
+        expect(water.powerMultiplier).toBe(1.0); // Fixed power
+        expect(water.orbitCollectorsNeeded).toBeUndefined();
+      });
+
+      it('Crude Oil（原油）のオイル抽出器を計算する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1007, 8.0]]), // 8.0 Crude Oil/s
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // Crude Oil: 240/min = 4.0/s per extractor, 研究ボーナスなし (1.0)
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
+
+        const oil = result.rawMaterials[0];
+
+        // baseSpeedPerSecond = 240/60 = 4.0/s per extractor
+        // outputPerSecond = 4.0 * 1.0 = 4.0/s per extractor
+        // machinesNeeded = ceil(8.0 / 4.0) = 2 extractors
+        expect(oil.itemId).toBe(1007);
+        expect(oil.machineType).toBe('Oil Extractor');
+        expect(oil.outputPerSecond).toBe(4.0);
+        expect(oil.minersNeeded).toBe(2);
+        expect(oil.veinsNeeded).toBe(2); // For liquid equipment, machines = "veins"
+        expect(oil.workSpeedMultiplier).toBe(100); // Fixed speed
+        expect(oil.powerMultiplier).toBe(1.0); // Fixed power
+        expect(oil.orbitCollectorsNeeded).toBeUndefined();
+      });
+
+      it('Sulfuric Acid（硫酸）のウォーターポンプを計算する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1116, 2.5]]), // 2.5 Sulfuric Acid/s
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // Sulfuric Acid: 50/min = 0.833.../s per pump, 研究ボーナスなし (1.0)
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
+
+        const sulfuric = result.rawMaterials[0];
+
+        // baseSpeedPerSecond = 50/60 = 0.833.../s per pump
+        // outputPerSecond = 0.833... * 1.0 = 0.833.../s per pump
+        // machinesNeeded = ceil(2.5 / 0.833...) = 3 pumps
+        expect(sulfuric.itemId).toBe(1116);
+        expect(sulfuric.machineType).toBe('Water Pump');
+        expect(sulfuric.outputPerSecond).toBeCloseTo(0.833333, 5);
+        expect(sulfuric.minersNeeded).toBe(3);
+        expect(sulfuric.veinsNeeded).toBe(3); // For liquid equipment, machines = "veins"
+        expect(sulfuric.workSpeedMultiplier).toBe(100); // Fixed speed
+        expect(sulfuric.powerMultiplier).toBe(1.0); // Fixed power
+        expect(sulfuric.orbitCollectorsNeeded).toBeUndefined();
+      });
+
+      it('液体採掘設備に研究ボーナスを適用する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1000, 1.67]]), // 1.67 Water/s
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // Water: 50/min = 0.833.../s per pump, 研究ボーナス+100% (2.0)
+        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 100, mockGameData);
+
+        const water = result.rawMaterials[0];
+
+        // baseSpeedPerSecond = 50/60 = 0.833.../s per pump
+        // outputPerSecond = 0.833... * 2.0 = 1.666.../s per pump
+        // machinesNeeded = ceil(1.67 / 1.666...) = 2 pumps
+        expect(water.miningSpeedBonus).toBe(2.0);
+        expect(water.outputPerSecond).toBeCloseTo(1.666667, 5);
+        expect(water.minersNeeded).toBe(2);
+        expect(water.machineType).toBe('Water Pump');
+      });
+
+      it('液体採掘設備は速度設定の影響を受けない', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1007, 4.0]]), // 4.0 Crude Oil/s
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // Crude Oil: 240/min = 4.0/s per extractor, 速度設定300%でも影響なし
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 300, mockGameData);
+
+        const oil = result.rawMaterials[0];
+
+        // 速度設定300%でも液体採掘設備は影響を受けない
+        expect(oil.outputPerSecond).toBe(4.0); // 4.0/s per extractor (unchanged)
+        expect(oil.minersNeeded).toBe(1); // ceil(4.0 / 4.0) = 1
+        expect(oil.workSpeedMultiplier).toBe(100); // Always 100% for liquid equipment
+        expect(oil.powerMultiplier).toBe(1.0); // Always 1.0x for liquid equipment
+        expect(oil.machineType).toBe('Oil Extractor');
+      });
+
+      it('液体採掘設備と通常の鉱脈採掘を混在させる', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([
+            [1001, 6.0], // Iron Ore (regular mining)
+            [1000, 1.0], // Water (liquid mining)
+            [1007, 4.0], // Crude Oil (liquid mining)
+          ]),
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
+
+        expect(result.rawMaterials).toHaveLength(3);
+
+        // ソート順: Iron (6.0), Crude Oil (4.0), Water (1.0)
+        expect(result.rawMaterials[0].itemId).toBe(1001); // Iron: 6.0/s
+        expect(result.rawMaterials[1].itemId).toBe(1007); // Crude Oil: 4.0/s
+        expect(result.rawMaterials[2].itemId).toBe(1000); // Water: 1.0/s
+
+        // Iron: ceil(ceil(6.0/1.0) / 6) = ceil(6/6) = 1 miner
+        expect(result.rawMaterials[0].minersNeeded).toBe(1);
+        expect(result.rawMaterials[0].machineType).toBe('Advanced Mining Machine');
+
+        // Crude Oil: ceil(4.0 / 4.0) = 1 extractor
+        expect(result.rawMaterials[1].minersNeeded).toBe(1);
+        expect(result.rawMaterials[1].machineType).toBe('Oil Extractor');
+
+        // Water: ceil(1.0 / 0.833...) = 2 pumps
+        expect(result.rawMaterials[2].minersNeeded).toBe(2);
+        expect(result.rawMaterials[2].machineType).toBe('Water Pump');
+
+        // 総採掘機: 1 + 1 + 2 = 4
+        expect(result.totalMiners).toBe(4);
       });
     });
 

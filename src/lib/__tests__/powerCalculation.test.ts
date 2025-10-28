@@ -78,6 +78,8 @@ const mockGameData: GameData = {
   ]),
   machines: new Map([
     [2301, { id: 2301, name: '採掘機', Type: 'Production', assemblerSpeed: 0, workEnergyPerTick: 420, idleEnergyPerTick: 0, exchangeEnergyPerTick: 0, isPowerConsumer: true, isPowerExchanger: false, isRaw: false }],
+    [2306, { id: 2306, name: 'ウォーターポンプ', Type: 'Production', assemblerSpeed: 0, workEnergyPerTick: 5000, idleEnergyPerTick: 200, exchangeEnergyPerTick: 0, isPowerConsumer: true, isPowerExchanger: false, isRaw: false }],
+    [2307, { id: 2307, name: 'オイル抽出器', Type: 'Production', assemblerSpeed: 0, workEnergyPerTick: 14000, idleEnergyPerTick: 400, exchangeEnergyPerTick: 0, isPowerConsumer: true, isPowerExchanger: false, isRaw: false }],
     [2316, { id: 2316, name: '高度採掘機', Type: 'Production', assemblerSpeed: 0, workEnergyPerTick: 630, idleEnergyPerTick: 0, exchangeEnergyPerTick: 0, isPowerConsumer: true, isPowerExchanger: false, isRaw: false }],
   ]),
   recipes: new Map(),
@@ -1110,6 +1112,157 @@ describe('calculatePowerConsumption', () => {
       // 電力消費量の降順でソートされる
       expect(result.byMachine[0].machineId).toBe(2316); // 高度採掘機（高い電力）
       expect(result.byMachine[1].machineId).toBe(2302); // Arc Smelter（低い電力）
+    });
+
+    describe('液体採掘設備の電力計算', () => {
+      it('ウォーターポンプの電力消費を計算する', () => {
+        const miningCalculation: MiningCalculation = {
+          rawMaterials: [
+            {
+              itemId: 1000,
+              itemName: 'Water',
+              requiredRate: 1.0,
+              miningSpeedBonus: 1.0,
+              workSpeedMultiplier: 100,
+              powerMultiplier: 1.0,
+              outputPerSecond: 0.833333,
+              minersNeeded: 2,
+              veinsNeeded: 2,
+              machineType: 'Water Pump',
+            },
+          ],
+          totalMiners: 2,
+          totalOrbitalCollectors: 0,
+        };
+
+        const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+        expect(result.total).toBeCloseTo(600, 2); // 300 kW * 2機 = 600 kW
+        expect(result.byMachine).toHaveLength(1);
+        
+        const waterPump = result.byMachine[0];
+        expect(waterPump.machineId).toBe(2306); // Water Pump ID
+        expect(waterPump.machineName).toBe('ウォーターポンプ');
+        expect(waterPump.machineCount).toBe(2);
+        expect(waterPump.powerPerMachine).toBeCloseTo(300, 2);
+        expect(waterPump.totalPower).toBeCloseTo(600, 2);
+        expect(waterPump.percentage).toBeCloseTo(100, 2);
+      });
+
+      it('オイル抽出器の電力消費を計算する', () => {
+        const miningCalculation: MiningCalculation = {
+          rawMaterials: [
+            {
+              itemId: 1007,
+              itemName: 'Crude Oil',
+              requiredRate: 4.0,
+              miningSpeedBonus: 1.0,
+              workSpeedMultiplier: 100,
+              powerMultiplier: 1.0,
+              outputPerSecond: 4.0,
+              minersNeeded: 1,
+              veinsNeeded: 1,
+              machineType: 'Oil Extractor',
+            },
+          ],
+          totalMiners: 1,
+          totalOrbitalCollectors: 0,
+        };
+
+        const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+        expect(result.total).toBeCloseTo(840, 2); // 840 kW * 1機 = 840 kW
+        expect(result.byMachine).toHaveLength(1);
+        
+        const oilExtractor = result.byMachine[0];
+        expect(oilExtractor.machineId).toBe(2307); // Oil Extractor ID
+        expect(oilExtractor.machineName).toBe('オイル抽出器');
+        expect(oilExtractor.machineCount).toBe(1);
+        expect(oilExtractor.powerPerMachine).toBeCloseTo(840, 2);
+        expect(oilExtractor.totalPower).toBeCloseTo(840, 2);
+        expect(oilExtractor.percentage).toBeCloseTo(100, 2);
+      });
+
+      it('硫酸のウォーターポンプの電力消費を計算する', () => {
+        const miningCalculation: MiningCalculation = {
+          rawMaterials: [
+            {
+              itemId: 1116,
+              itemName: 'Sulfuric Acid',
+              requiredRate: 2.5,
+              miningSpeedBonus: 1.0,
+              workSpeedMultiplier: 100,
+              powerMultiplier: 1.0,
+              outputPerSecond: 0.833333,
+              minersNeeded: 3,
+              veinsNeeded: 3,
+              machineType: 'Water Pump',
+            },
+          ],
+          totalMiners: 3,
+          totalOrbitalCollectors: 0,
+        };
+
+        const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+        expect(result.total).toBeCloseTo(900, 2); // 300 kW * 3機 = 900 kW
+        expect(result.byMachine).toHaveLength(1);
+        
+        const sulfuricPump = result.byMachine[0];
+        expect(sulfuricPump.machineId).toBe(2306); // Water Pump ID
+        expect(sulfuricPump.machineName).toBe('ウォーターポンプ');
+        expect(sulfuricPump.machineCount).toBe(3);
+        expect(sulfuricPump.powerPerMachine).toBeCloseTo(300, 2);
+        expect(sulfuricPump.totalPower).toBeCloseTo(900, 2);
+      });
+
+      it('液体採掘設備と通常の採掘機を混在させる', () => {
+        const miningCalculation: MiningCalculation = {
+          rawMaterials: [
+            {
+              itemId: 1000,
+              itemName: 'Water',
+              requiredRate: 1.0,
+              miningSpeedBonus: 1.0,
+              workSpeedMultiplier: 100,
+              powerMultiplier: 1.0,
+              outputPerSecond: 0.833333,
+              minersNeeded: 2,
+              veinsNeeded: 2,
+              machineType: 'Water Pump',
+            },
+            {
+              itemId: 1001,
+              itemName: 'Iron Ore',
+              requiredRate: 6.0,
+              miningSpeedBonus: 1.0,
+              workSpeedMultiplier: 100,
+              powerMultiplier: 1.0,
+              outputPerSecond: 6.0,
+              minersNeeded: 1,
+              veinsNeeded: 6,
+              machineType: 'Advanced Mining Machine',
+            },
+          ],
+          totalMiners: 3,
+          totalOrbitalCollectors: 0,
+        };
+
+        const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+        // Water Pump: 300 kW * 2機 = 600 kW
+        // Advanced Mining Machine: 630 kW * 1機 = 630 kW
+        // Total: 1230 kW
+        expect(result.total).toBeCloseTo(1230, 2);
+        expect(result.byMachine).toHaveLength(2);
+        
+        // 電力消費量の降順でソートされる
+        expect(result.byMachine[0].machineId).toBe(2316); // Advanced Mining Machine（630 kW）
+        expect(result.byMachine[1].machineId).toBe(2306); // Water Pump（600 kW）
+        
+        expect(result.byMachine[0].totalPower).toBeCloseTo(630, 2);
+        expect(result.byMachine[1].totalPower).toBeCloseTo(600, 2);
+      });
     });
   });
 });

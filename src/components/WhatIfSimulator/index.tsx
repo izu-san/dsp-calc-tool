@@ -4,6 +4,7 @@ import { useGameDataStore } from '../../stores/gameDataStore';
 import { useRecipeSelectionStore } from '../../stores/recipeSelectionStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useNodeOverrideStore } from '../../stores/nodeOverrideStore';
+import { useMiningSettingsStore } from '../../stores/miningSettingsStore';
 import { calculateProductionChain } from '../../lib/calculator';
 import { formatNumber, formatPower, formatBuildingCount } from '../../utils/format';
 import type { GlobalSettings, ConveyorBeltTier, RecipeTreeNode } from '../../types';
@@ -32,6 +33,7 @@ export function WhatIfSimulator() {
   const { selectedRecipe, targetQuantity } = useRecipeSelectionStore();
   const { settings, setProliferator, setConveyorBelt, setMachineRank } = useSettingsStore();
   const { nodeOverrides } = useNodeOverrideStore();
+  const { settings: miningSettings } = useMiningSettingsStore();
   const [activeScenarios, setActiveScenarios] = useState<string[]>([]);
   const [appliedScenario, setAppliedScenario] = useState<string | null>(null);
   const [optimizationGoal, setOptimizationGoal] = useState<OptimizationGoal>(null);
@@ -235,7 +237,8 @@ export function WhatIfSimulator() {
       targetQuantity,
       data,
       settings,
-      nodeOverrides
+      nodeOverrides,
+      miningSettings
     );
 
     const scenarioResults = scenarios.map(scenario => {
@@ -245,7 +248,8 @@ export function WhatIfSimulator() {
         targetQuantity,
         data,
         modifiedSettings,
-        nodeOverrides
+        nodeOverrides,
+        miningSettings
       );
 
       // Calculate differences

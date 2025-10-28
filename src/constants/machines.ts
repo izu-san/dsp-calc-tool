@@ -11,6 +11,12 @@ export const MACHINE_IDS_BY_RECIPE_TYPE: Record<Recipe['Type'], number[]> = {
   PhotonGeneration: [2208],             // Ray Receiver
 };
 
+// Special mining equipment IDs
+export const MINING_EQUIPMENT_IDS = {
+  WATER_PUMP: 2306,      // Water Pump - for Water and Sulfuric Acid
+  OIL_EXTRACTOR: 2307,   // Oil Extractor - for Crude Oil
+} as const;
+
 // Select a machine for a given recipe type using global settings
 export function getMachineForRecipe(
   recipeType: Recipe['Type'],

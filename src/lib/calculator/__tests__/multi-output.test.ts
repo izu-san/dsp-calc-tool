@@ -6,6 +6,7 @@ import type { Recipe } from '../../../types';
 describe('Multi-output recipes', () => {
   const gameData = createMockGameData();
   const settings = createMockSettings();
+  const miningSettings = { machineType: 'Advanced Mining Machine' as const, workSpeedMultiplier: 100 };
 
   it('should calculate multi-output results for recipes with multiple outputs', () => {
     // プラズマ精製レシピ（水素×1 + 精製油×2）
@@ -26,7 +27,7 @@ describe('Multi-output recipes', () => {
       productive: true,
     };
 
-    const result = calculateProductionChain(plasmaRefiningRecipe, 1, gameData, settings);
+    const result = calculateProductionChain(plasmaRefiningRecipe, 1, gameData, settings, new Map(), miningSettings);
 
     // 複数出力結果が計算されていることを確認
     expect(result.multiOutputResults).toBeDefined();
@@ -63,7 +64,7 @@ describe('Multi-output recipes', () => {
       productive: false,
     };
 
-    const result = calculateProductionChain(singleOutputRecipe, 1, gameData, settings);
+    const result = calculateProductionChain(singleOutputRecipe, 1, gameData, settings, new Map(), miningSettings);
 
     // 単一出力レシピでは multiOutputResults が undefined であることを確認
     expect(result.multiOutputResults).toBeUndefined();
@@ -89,7 +90,7 @@ describe('Multi-output recipes', () => {
       productive: false,
     };
 
-    const result = calculateProductionChain(xrayCrackingRecipe, 3, gameData, settings);
+    const result = calculateProductionChain(xrayCrackingRecipe, 3, gameData, settings, new Map(), miningSettings);
 
     expect(result.multiOutputResults).toBeDefined();
     expect(result.multiOutputResults).toHaveLength(2);
@@ -148,7 +149,7 @@ describe('Multi-output recipes', () => {
       productive: true,
     };
 
-    const result = calculateProductionChain(grapheneRecipe, 4, gameData, settings);
+    const result = calculateProductionChain(grapheneRecipe, 4, gameData, settings, new Map(), miningSettings);
 
     expect(result.multiOutputResults).toBeDefined();
     expect(result.multiOutputResults).toHaveLength(2);

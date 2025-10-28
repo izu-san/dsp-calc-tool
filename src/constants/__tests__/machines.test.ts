@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MACHINE_IDS_BY_RECIPE_TYPE, getMachineForRecipe } from '../machines';
+import { MACHINE_IDS_BY_RECIPE_TYPE, MINING_EQUIPMENT_IDS, getMachineForRecipe } from '../machines';
 import type { Machine, GlobalSettings } from '../../types';
 
 describe('machines', () => {
@@ -78,6 +78,13 @@ describe('machines', () => {
 
     it('Particle機械のIDリストが正しい', () => {
       expect(MACHINE_IDS_BY_RECIPE_TYPE.Particle).toEqual([2310]);
+    });
+  });
+
+  describe('MINING_EQUIPMENT_IDS', () => {
+    it('採掘設備のIDが正しい', () => {
+      expect(MINING_EQUIPMENT_IDS.WATER_PUMP).toBe(2306);
+      expect(MINING_EQUIPMENT_IDS.OIL_EXTRACTOR).toBe(2307);
     });
   });
 

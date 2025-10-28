@@ -108,6 +108,43 @@ export function calculateMiningRequirements(
     const item = gameData.items.get(itemId);
     if (!item) return;
 
+    // Check if this is a liquid mining item (Water, Crude Oil, Sulfuric Acid)
+    if (LIQUID_MINING_ITEMS.has(itemId)) {
+      const liquidEquipment = LIQUID_MINING_EQUIPMENT[itemId];
+      if (!liquidEquipment) return;
+
+      // Convert base speed from per minute to per second
+      const baseSpeedPerSecond = liquidEquipment.baseSpeedPerMinute / 60;
+      
+      // Apply mining speed research bonus
+      const outputPerSecond = baseSpeedPerSecond * miningSpeedBonus;
+      
+      // Calculate machines needed
+      const machinesNeeded = Math.ceil(rate / outputPerSecond);
+
+      // Determine machine type for display
+      const displayMachineType = liquidEquipment.machineId === 2306 ? 'Water Pump' : 'Oil Extractor';
+
+      rawMaterials.push({
+        itemId,
+        itemName: item.name,
+        requiredRate: rate,
+        miningSpeedBonus,
+        workSpeedMultiplier: 100, // Liquid equipment has fixed speed
+        powerMultiplier: 1.0, // Fixed power consumption
+        outputPerSecond,
+        minersNeeded: machinesNeeded,
+        veinsNeeded: machinesNeeded, // For liquid equipment, machines = "veins"
+        orbitCollectorsNeeded: undefined,
+        orbitalCollectorSpeed: undefined,
+        machineType: displayMachineType,
+      });
+
+      totalMiners += machinesNeeded;
+      return;
+    }
+
+    // Regular ore vein mining calculation
     // Calculate output per vein
     // Formula: baseMiningSpeedPerVein × miningSpeedBonus × (workSpeedMultiplier / 100)
     let outputPerVeinPerSecond = baseMiningSpeedPerVein * miningSpeedBonus;

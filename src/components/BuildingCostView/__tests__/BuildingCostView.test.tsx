@@ -17,9 +17,6 @@ vi.mock('../../../stores/settingsStore', () => ({
     },
   }),
 }));
-vi.mock('../../MiningCalculator', () => ({
-  MiningCalculator: () => <div data-testid="mining-calculator">Mocked MiningCalculator</div>,
-}));
 vi.mock('../../../utils/format', () => ({
   formatNumber: (val: number) => val.toLocaleString('en-US'),
   formatBuildingCount: (val: number) => Math.ceil(val).toString(),
@@ -128,12 +125,6 @@ describe('BuildingCostView', () => {
       
       const conveyorBeltsElements = screen.getAllByText(/conveyorBelts/i);
       expect(conveyorBeltsElements.length).toBeGreaterThan(0);
-    });
-
-    it('should render MiningCalculator child component', () => {
-      render(<BuildingCostView calculationResult={mockCalculationResult} />);
-
-      expect(screen.getByTestId('mining-calculator')).toBeInTheDocument();
     });
   });
 

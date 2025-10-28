@@ -245,7 +245,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                   </div>
                 </div>
 
-                {/* Veins or Collectors */}
+                {/* Veins, Collectors, or Liquid Equipment */}
                 <div className="text-right flex-shrink-0">
                   {isOrbitalOnly ? (
                     // Orbital Collectors only (Hydrogen/Deuterium)
@@ -255,6 +255,16 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                       </div>
                       <div className="text-xs text-space-300">
                         {formatRate(material.orbitalCollectorSpeed || 0)} {t('each')}
+                      </div>
+                    </>
+                  ) : material.machineType === 'Water Pump' || material.machineType === 'Oil Extractor' ? (
+                    // Liquid mining equipment (Water, Crude Oil, Sulfuric Acid)
+                    <>
+                      <div className="font-bold text-neon-cyan text-lg drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">
+                        {formatBuildingCount(material.minersNeeded)} {material.machineType === 'Water Pump' ? t('waterPumps') : t('oilExtractors')}<span data-testid="liquid-equipment-label" className="hidden">liquid-equipment</span>
+                      </div>
+                      <div className="text-xs text-space-300">
+                        {formatRate(material.outputPerSecond)} {t('each')}
                       </div>
                     </>
                   ) : (

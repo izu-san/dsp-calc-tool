@@ -13,12 +13,13 @@ export function useProductionCalculation(
   settings: GlobalSettings,
   nodeOverrides: Map<string, NodeOverrideSettings>,
   nodeOverridesVersion: number,
+  miningSettings: { machineType: 'Mining Machine' | 'Advanced Mining Machine'; workSpeedMultiplier: number },
   setCalculationResult: (result: CalculationResult | null) => void
 ) {
   useEffect(() => {
     if (selectedRecipe && data && targetQuantity > 0) {
       try {
-        const result = calculateProductionChain(selectedRecipe, targetQuantity, data, settings, nodeOverrides);
+        const result = calculateProductionChain(selectedRecipe, targetQuantity, data, settings, nodeOverrides, miningSettings);
         setCalculationResult(result);
       } catch (error) {
         handleError(error, 'Calculation error');
@@ -33,7 +34,8 @@ export function useProductionCalculation(
     data, 
     settings,
     nodeOverrides, 
-    nodeOverridesVersion, 
+    nodeOverridesVersion,
+    miningSettings,
     setCalculationResult
   ]);
 }

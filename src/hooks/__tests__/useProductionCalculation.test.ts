@@ -46,6 +46,7 @@ describe('useProductionCalculation', () => {
   };
 
   const mockNodeOverrides = new Map<string, NodeOverrideSettings>();
+  const mockMiningSettings = { machineType: 'Advanced Mining Machine' as const, workSpeedMultiplier: 100 };
   const mockSetCalculationResult = vi.fn();
 
   beforeEach(() => {
@@ -70,6 +71,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -79,7 +81,8 @@ describe('useProductionCalculation', () => {
       10,
       mockGameData,
       mockSettings,
-      mockNodeOverrides
+      mockNodeOverrides,
+      mockMiningSettings
     );
     expect(mockSetCalculationResult).toHaveBeenCalledWith(mockResult);
   });
@@ -93,6 +96,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -110,6 +114,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -127,6 +132,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -151,6 +157,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -181,6 +188,7 @@ describe('useProductionCalculation', () => {
           mockSettings,
           mockNodeOverrides,
           1,
+          mockMiningSettings,
           mockSetCalculationResult
         ),
       { initialProps: { quantity: 10 } }
@@ -197,7 +205,8 @@ describe('useProductionCalculation', () => {
       20,
       mockGameData,
       mockSettings,
-      mockNodeOverrides
+      mockNodeOverrides,
+      mockMiningSettings
     );
   });
 
@@ -220,6 +229,7 @@ describe('useProductionCalculation', () => {
           mockSettings,
           mockNodeOverrides,
           version,
+          mockMiningSettings,
           mockSetCalculationResult
         ),
       { initialProps: { version: 1 } }

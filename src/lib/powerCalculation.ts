@@ -150,7 +150,7 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
   // Add mining machines to power breakdown
   if (miningCalculation && miningCalculation.totalMiners > 0) {
     // Group mining machines by type and work speed
-    const miningMachineGroups = new Map<string, { count: number; powerPerMachine: number; machineName: string }>();
+    const miningMachineGroups = new Map<string, { count: number; powerPerMachine: number; machineName: string; machineId: number }>();
     
     miningCalculation.rawMaterials.forEach(material => {
       if (material.orbitCollectorsNeeded) {
@@ -158,7 +158,24 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
         return;
       }
       
-      const basePowerPerMiner = material.machineType === 'Advanced Mining Machine' ? 630 : 420;
+      let basePowerPerMiner: number;
+      let machineId: number;
+      
+      // Handle different mining equipment types
+      if (material.machineType === 'Water Pump') {
+        basePowerPerMiner = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
+        machineId = 2306; // Water Pump ID
+      } else if (material.machineType === 'Oil Extractor') {
+        basePowerPerMiner = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
+        machineId = 2307; // Oil Extractor ID
+      } else if (material.machineType === 'Advanced Mining Machine') {
+        basePowerPerMiner = 630; // Advanced Mining Machine base power
+        machineId = 2316; // Advanced Mining Machine ID
+      } else {
+        basePowerPerMiner = 420; // Regular Mining Machine base power
+        machineId = 2301; // Mining Machine ID
+      }
+      
       const powerPerMiner = basePowerPerMiner * material.powerMultiplier;
       const key = `${material.machineType}-${material.workSpeedMultiplier}%`;
       
@@ -170,6 +187,7 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
           count: material.minersNeeded,
           powerPerMachine: powerPerMiner,
           machineName: `${material.machineType} (${material.workSpeedMultiplier}%)`,
+          machineId,
         });
       }
     });
@@ -179,8 +197,7 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
       const totalPower = data.count * data.powerPerMachine;
       
       // Get proper Japanese machine name from game data
-      const machineId = data.machineName.includes('Advanced') ? 2316 : 2301; // 高度採掘機 or 採掘機 ID
-      const baseMachineName = gameData?.machines.get(machineId)?.name || data.machineName;
+      const baseMachineName = gameData?.machines.get(data.machineId)?.name || data.machineName;
       
       // Only show work speed for Advanced Mining Machine (and not for 100%)
       let displayMachineName = baseMachineName;
@@ -189,10 +206,13 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
         if (workSpeedMatch && workSpeedMatch[1] !== '100') {
           displayMachineName = `${baseMachineName} (${workSpeedMatch[1]}%)`;
         }
+      } else if (data.machineName.includes('Water Pump') || data.machineName.includes('Oil Extractor')) {
+        // Liquid mining equipment doesn't show work speed (always 100%)
+        displayMachineName = baseMachineName;
       }
       
       byMachine.push({
-        machineId,
+        machineId: data.machineId,
         machineName: displayMachineName,
         machineCount: data.count,
         powerPerMachine: data.powerPerMachine,
@@ -207,7 +227,18 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
   if (miningCalculation && miningCalculation.totalMiners > 0) {
     totalMiningPower = miningCalculation.rawMaterials.reduce((sum, material) => {
       if (material.orbitCollectorsNeeded) return sum;
-      const basePowerPerMiner = material.machineType === 'Advanced Mining Machine' ? 630 : 420;
+      
+      let basePowerPerMiner: number;
+      if (material.machineType === 'Water Pump') {
+        basePowerPerMiner = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
+      } else if (material.machineType === 'Oil Extractor') {
+        basePowerPerMiner = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
+      } else if (material.machineType === 'Advanced Mining Machine') {
+        basePowerPerMiner = 630; // Advanced Mining Machine base power
+      } else {
+        basePowerPerMiner = 420; // Regular Mining Machine base power
+      }
+      
       return sum + (material.minersNeeded * basePowerPerMiner * material.powerMultiplier);
     }, 0);
   }

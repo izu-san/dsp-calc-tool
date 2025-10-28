@@ -4,7 +4,6 @@ import type { CalculationResult } from '../../types/calculation';
 import { calculateBuildingCost } from '../../lib/buildingCost';
 import { formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
-import { MiningCalculator } from '../MiningCalculator';
 import { useGameDataStore } from '../../stores/gameDataStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { ICONS } from '../../constants/icons';
@@ -115,11 +114,6 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Mining Calculator */}
-      <div className="pt-6">
-        <MiningCalculator calculationResult={calculationResult} />
       </div>
     </div>
   );

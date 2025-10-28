@@ -135,9 +135,11 @@ describe('ProductionTree', () => {
         render(<ProductionTree node={mockRawMaterialNode} />);
         
         expect(screen.getByText('Iron Ore')).toBeInTheDocument();
-        expect(screen.getByText('⛏️ Iron Vein')).toBeInTheDocument();
+        expect(screen.getAllByText('⛏️ Iron Vein')[0]).toBeInTheDocument();
         expect(screen.getByText('60.0/s')).toBeInTheDocument();
-        expect(screen.getByText('🛤️ 1 belt')).toBeInTheDocument();
+        // 新しいデザインではベルト情報は詳細グリッドに表示される
+        expect(screen.getByText('outputs:')).toBeInTheDocument();
+        expect(screen.getByText('total:')).toBeInTheDocument();
     });
 
     it('レシピノードの場合、レシピ情報と機械情報が表示される', () => {
@@ -316,16 +318,16 @@ describe('ProductionTree', () => {
         expect(screen.getAllByText('120.0 kW')[0]).toBeInTheDocument(); // Use getAllByText to avoid ambiguity
         
         // ベルト情報
-        expect(screen.getByText('inputs:')).toBeInTheDocument();
-        expect(screen.getByText('outputs:')).toBeInTheDocument();
-        expect(screen.getByText('total:')).toBeInTheDocument();
+        expect(screen.getAllByText('inputs:')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('outputs:')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('total:')[0]).toBeInTheDocument();
     });
 
     it('CompactNodeSettings が表示される', () => {
         render(<ProductionTree node={mockRecipeNode} />);
         
-        expect(screen.getByTestId('compact-node-settings')).toBeInTheDocument();
-        expect(screen.getByText('Compact Settings')).toBeInTheDocument();
+        expect(screen.getAllByTestId('compact-node-settings')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('Compact Settings')[0]).toBeInTheDocument();
     });
 
     it('キーボードで展開・折りたたみができる', () => {
@@ -448,7 +450,7 @@ describe('ProductionTree', () => {
         expect(screen.getByText('Refined Oil')).toBeInTheDocument();
         
         // 循環依存の説明が表示される
-        expect(screen.getByText('🔄 externalSupplyCircular')).toBeInTheDocument();
+        expect(screen.getAllByText('🔄 externalSupplyCircular')[0]).toBeInTheDocument();
         
         // 生産速度が表示される
         expect(screen.getByText('2.0/s')).toBeInTheDocument();

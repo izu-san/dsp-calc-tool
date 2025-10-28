@@ -11,6 +11,8 @@ vi.mock('react-i18next', () => ({
         productionTree: 'Production Tree',
         statistics: 'Statistics',
         buildingCost: 'Building Cost',
+        'powerGeneration.title': 'Power Generation',
+        miningCalculator: 'Mining Calculator',
         expandAll: 'Expand All',
         collapseAll: 'Collapse All',
         calculating: 'Calculating...',
@@ -110,6 +112,8 @@ describe('ProductionResultsPanel', () => {
     expect(screen.getByRole('button', { name: 'Production Tree' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Statistics' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Building Cost' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Power Generation' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Mining Calculator' })).toBeInTheDocument();
   });
 
   it('統計タブをクリックすると表示が切り替わる', () => {
@@ -149,6 +153,24 @@ describe('ProductionResultsPanel', () => {
     expect(buildingCostButton).toHaveClass('border-neon-blue');
   });
 
+  it('採掘計算機タブをクリックすると表示が切り替わる', () => {
+    render(
+      <ProductionResultsPanel
+        calculationResult={mockCalculationResult}
+        selectedRecipe={mockRecipe}
+        collapsedNodes={new Set()}
+        isTreeExpanded={false}
+        handleToggleCollapse={mockHandleToggleCollapse}
+        handleToggleAll={mockHandleToggleAll}
+      />
+    );
+
+    const miningCalculatorButton = screen.getByRole('button', { name: 'Mining Calculator' });
+    fireEvent.click(miningCalculatorButton);
+
+    expect(miningCalculatorButton).toHaveClass('border-neon-blue');
+  });
+
   it('生産ツリータブでは展開/折りたたみボタンが表示される', () => {
     render(
       <ProductionResultsPanel
@@ -178,6 +200,25 @@ describe('ProductionResultsPanel', () => {
 
     const statisticsButton = screen.getByText('Statistics');
     fireEvent.click(statisticsButton);
+
+    expect(screen.queryByText('Expand All')).not.toBeInTheDocument();
+    expect(screen.queryByText('Collapse All')).not.toBeInTheDocument();
+  });
+
+  it('採掘計算機タブでは展開/折りたたみボタンが表示されない', () => {
+    render(
+      <ProductionResultsPanel
+        calculationResult={mockCalculationResult}
+        selectedRecipe={mockRecipe}
+        collapsedNodes={new Set()}
+        isTreeExpanded={false}
+        handleToggleCollapse={mockHandleToggleCollapse}
+        handleToggleAll={mockHandleToggleAll}
+      />
+    );
+
+    const miningCalculatorButton = screen.getByText('Mining Calculator');
+    fireEvent.click(miningCalculatorButton);
 
     expect(screen.queryByText('Expand All')).not.toBeInTheDocument();
     expect(screen.queryByText('Collapse All')).not.toBeInTheDocument();

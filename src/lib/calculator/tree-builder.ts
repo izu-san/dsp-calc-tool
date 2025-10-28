@@ -9,6 +9,7 @@ import type {
   ProliferatorConfig,
   NodeOverrideSettings,
 } from '../../types';
+import { calculateMiningRequirements } from '../miningCalculation';
 import { isRawMaterial } from '../../constants/rawMaterials';
 import { MACHINE_IDS_BY_RECIPE_TYPE, getMachineForRecipe as getMachineForRecipeFromConstants } from '../../constants/machines';
 import { calculateProductionRate } from './production-rate';
@@ -122,11 +123,56 @@ export function createRawMaterialNode(
   itemName: string,
   requiredRate: number,
   settings: GlobalSettings,
+  gameData: GameData,
   nodeId: string,
   isCircular: boolean,
+  miningSettings: { machineType: 'Mining Machine' | 'Advanced Mining Machine'; workSpeedMultiplier: number },
   sourceRecipe?: Recipe
 ): RecipeTreeNode {
   const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
+  
+  // Calculate mining equipment details for non-circular raw materials
+  let miningEquipment;
+  if (!isCircular) {
+    try {
+      const miningCalc = calculateMiningRequirements(
+        { rawMaterials: new Map([[itemId, requiredRate]]) } as any,
+        settings.miningSpeedResearch / 100, // Convert percentage to multiplier
+        miningSettings.machineType,
+        miningSettings.workSpeedMultiplier,
+        gameData
+      );
+      
+      const material = miningCalc.rawMaterials.find(m => m.itemId === itemId);
+      if (material && material.machineType) {
+        // Calculate power consumption
+        let powerPerMachine: number;
+        if (material.machineType === 'Water Pump') {
+          powerPerMachine = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
+        } else if (material.machineType === 'Oil Extractor') {
+          powerPerMachine = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
+        } else if (material.machineType === 'Advanced Mining Machine') {
+          powerPerMachine = 630 * material.powerMultiplier;
+        } else {
+          powerPerMachine = 420 * material.powerMultiplier;
+        }
+        
+        miningEquipment = {
+          machineName: material.machineType === 'Water Pump' ? 'ウォーターポンプ' :
+                      material.machineType === 'Oil Extractor' ? 'オイル抽出器' :
+                      material.machineType === 'Advanced Mining Machine' ? '高度採掘機' : '採掘機',
+          machineCount: material.minersNeeded,
+          powerConsumption: material.minersNeeded * powerPerMachine,
+          beltOutputs: Math.ceil(requiredRate / totalBeltSpeed),
+        };
+      }
+    } catch (error) {
+      // If mining calculation fails, just skip the mining equipment details
+      console.warn(`Failed to calculate mining equipment for item ${itemId}:`, error);
+      console.warn('Settings:', settings);
+      console.warn('GameData:', gameData);
+    }
+  }
   
   return {
     isRawMaterial: true,
@@ -147,6 +193,7 @@ export function createRawMaterialNode(
     nodeId,
     isCircularDependency: isCircular,
     sourceRecipe,
+    miningEquipment,
   };
 }
 
@@ -163,7 +210,8 @@ export function buildChildNodes(
   maxDepth: number,
   nodeId: string,
   visitingItems: Set<number>,
-  currentRecipe: Recipe
+  currentRecipe: Recipe,
+  miningSettings: { machineType: 'Mining Machine' | 'Advanced Mining Machine'; workSpeedMultiplier: number }
 ): RecipeTreeNode[] {
   const children: RecipeTreeNode[] = [];
   
@@ -179,7 +227,15 @@ export function buildChildNodes(
     // Check for circular dependency: if input item is currently being visited, treat as raw material
     const isCircular = visitingItems.has(input.itemId);
     
-    if ((isRawMaterial(input.itemId) && !forceRecipe) || forceMining || isCircular) {
+    // Check if this item can be produced by recipes
+    const producerRecipes = gameData.recipesByItemId.get(input.itemId);
+    const canBeProduced = producerRecipes && producerRecipes.length > 0;
+    
+    // Only treat as raw material if:
+    // 1. It's a raw material AND (forced to mine OR no recipes available OR circular dependency)
+    // 2. Explicitly forced to mine
+    // 3. Circular dependency
+    if ((isRawMaterial(input.itemId) && (forceMining || !canBeProduced || isCircular)) || forceMining || isCircular) {
       // Create a leaf node for raw material or circular dependency
       const rawNodeId = `${nodeId}/raw-${input.itemId}`;
       
@@ -189,8 +245,10 @@ export function buildChildNodes(
         input.itemName,
         input.requiredRate,
         settings,
+        gameData,
         rawNodeId,
         isCircular,
+        miningSettings,
         isCircular ? currentRecipe : undefined
       );
       
@@ -219,6 +277,7 @@ export function buildChildNodes(
           maxDepth,
           `${nodeId}/r-${selectedRecipe.SID}`,
           visitingItems,
+          miningSettings,
           input.itemId // Pass the target item ID
         );
         children.push(childNode);
@@ -243,6 +302,7 @@ export function buildRecipeTree(
   maxDepth: number = 20,
   nodePath: string = `r-${recipe.SID}`,
   visitingItems: Set<number> = new Set(),
+  miningSettings: { machineType: 'Mining Machine' | 'Advanced Mining Machine'; workSpeedMultiplier: number },
   targetItemId?: number // Which item this recipe is producing (for multi-output recipes)
 ): RecipeTreeNode {
   if (depth > maxDepth) {
@@ -354,7 +414,8 @@ export function buildRecipeTree(
     maxDepth,
     nodeId,
     newVisitingItems,
-    recipe
+    recipe,
+    miningSettings
   );
 
   return {

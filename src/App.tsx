@@ -4,6 +4,7 @@ import { useGameDataStore } from './stores/gameDataStore';
 import { useRecipeSelectionStore } from './stores/recipeSelectionStore';
 import { useSettingsStore } from './stores/settingsStore';
 import { useNodeOverrideStore } from './stores/nodeOverrideStore';
+import { useMiningSettingsStore } from './stores/miningSettingsStore';
 import i18n from './i18n';
 import { BackgroundEffects } from './components/Layout/BackgroundEffects';
 import { Header } from './components/Layout/Header';
@@ -24,9 +25,10 @@ function App() {
   const { selectedRecipe, targetQuantity, calculationResult, setSelectedRecipe, setTargetQuantity, setCalculationResult } = useRecipeSelectionStore();
   const { settings, updateSettings } = useSettingsStore();
   const { nodeOverrides, version: nodeOverridesVersion, setAllOverrides } = useNodeOverrideStore();
+  const { settings: miningSettings } = useMiningSettingsStore();
   
   const { collapsedNodes, isTreeExpanded, handleToggleCollapse, handleToggleAll } = useTreeCollapse(calculationResult);
-  useProductionCalculation(selectedRecipe, targetQuantity, data, settings, nodeOverrides, nodeOverridesVersion, setCalculationResult);
+  useProductionCalculation(selectedRecipe, targetQuantity, data, settings, nodeOverrides, nodeOverridesVersion, miningSettings, setCalculationResult);
   
   // 言語設定の同期とHTML lang属性の更新
   useEffect(() => {

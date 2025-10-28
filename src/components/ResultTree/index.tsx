@@ -59,7 +59,7 @@ export const ProductionTree = memo(function ProductionTree({
     return (
       <div className={cn({ 'ml-6 mt-2': depth > 0 })}>
         <div className={cn(
-          'border rounded-lg p-3 backdrop-blur-sm relative overflow-hidden animate-fadeIn',
+          'border rounded-lg p-3 backdrop-blur-sm relative overflow-hidden animate-fadeIn hover:shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all',
           {
             'bg-neon-purple/20 border-neon-purple/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]': isCircular,
             'bg-neon-green/20 border-neon-green/50 shadow-[0_0_20px_rgba(0,255,136,0.3)]': !isCircular,
@@ -67,9 +67,10 @@ export const ProductionTree = memo(function ProductionTree({
         )}>
           {/* Data stream effect */}
           <div className="absolute inset-0 data-stream opacity-20 pointer-events-none"></div>
-          <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            {/* Icon (Recipe or Item) */}
+
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-2 relative z-10">
+            {/* Raw Material Icon */}
             <div className={cn(
               'w-10 h-10 flex-shrink-0 border rounded bg-dark-800/50 backdrop-blur-sm p-1',
               {
@@ -85,7 +86,7 @@ export const ProductionTree = memo(function ProductionTree({
               />
             </div>
 
-            {/* Raw Material / Circular Dependency Info */}
+            {/* Raw Material Info */}
             <div className="flex-1 min-w-0">
               <h4 className={cn(
                 'font-semibold text-white truncate',
@@ -96,19 +97,29 @@ export const ProductionTree = memo(function ProductionTree({
               )}>
                 {displayName}
               </h4>
-              <p className="text-xs text-space-200">
-                {isCircular ? '🔄 ' : '⛏️ '}
-                {node.miningFrom === 'externalSupplyCircular' 
-                  ? t('externalSupplyCircular')
-                  : parseColorTags(node.miningFrom || '')
-                }
-              </p>
+              {/* Machine and count - same as recipe nodes */}
+              {!isCircular && node.miningEquipment && (
+                <p className="text-sm text-space-300">
+                  {node.miningEquipment.machineName} × {formatBuildingCount(node.miningEquipment.machineCount)}
+                </p>
+              )}
+              {/* Badges */}
+              <div className="mt-1 flex flex-wrap items-center gap-1">
+                {!isCircular && node.miningEquipment && (
+                  <span
+                    className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/30 shadow-[0_0_5px_rgba(0,217,255,0.3)]"
+                    title={t('miningEquipment')}
+                  >
+                    🏭 {node.miningEquipment.machineName}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* Required Rate */}
-            <div className="text-right">
+            {/* Output Rate */}
+            <div className="text-right pr-8">
               <div className={cn(
-                'text-sm font-bold',
+                'text-lg font-bold',
                 {
                   'text-neon-purple drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]': isCircular,
                   'text-neon-green drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]': !isCircular,
@@ -116,12 +127,80 @@ export const ProductionTree = memo(function ProductionTree({
               )}>
                 {formatRate(node.targetOutputRate)}
               </div>
-              <div className="text-xs text-space-200">
-                🛤️ {node.conveyorBelts.outputs} {node.conveyorBelts.outputs !== 1 ? t('belts') : t('belt')}
+              <div className="text-xs text-space-300">
+                {!isCircular && node.miningEquipment ? formatPower(node.miningEquipment.powerConsumption) : '0 kW'}
               </div>
             </div>
           </div>
+
+          {/* Details Grid - Same as recipe nodes */}
+          <div className="grid grid-cols-3 gap-2 text-sm border-t border-neon-cyan/20 pt-2 mt-2 relative z-10">
+            {/* Mining Source */}
+            <div>
+              <div className="text-xs font-medium text-neon-green mb-1">{t('source')}</div>
+              <div className="space-y-1">
+                <div className="text-xs text-space-200">
+                  {isCircular ? '🔄 ' : '⛏️ '}
+                  {node.miningFrom === 'externalSupplyCircular' 
+                    ? t('externalSupplyCircular')
+                    : parseColorTags(node.miningFrom || '')
+                  }
+                </div>
+              </div>
+            </div>
+
+            {/* Power Breakdown */}
+            <div>
+              <div className="text-xs font-medium text-neon-yellow mb-1">{t('power')}</div>
+              <div className="space-y-1 text-xs">
+                {!isCircular && node.miningEquipment ? (
+                  <div className="flex justify-between">
+                    <span className="text-space-200">{t('mining')}:</span>
+                    <span className="font-medium text-white">{formatPower(node.miningEquipment.powerConsumption)}</span>
+                  </div>
+                ) : (
+                  <div className="flex justify-between">
+                    <span className="text-space-200">{t('external')}:</span>
+                    <span className="font-medium text-white">0 kW</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Conveyor Belts */}
+            <div>
+              <div className="text-xs font-medium text-neon-cyan mb-1">
+                🛤️ {t('belts')}
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-space-200">{t('outputs')}:</span>
+                  <span className="font-medium text-neon-blue">
+                    {node.conveyorBelts.outputs}
+                  </span>
+                </div>
+                <div className="flex justify-between border-t border-neon-cyan/20 pt-1">
+                  <span className="text-space-200 font-medium">{t('total')}:</span>
+                  <span className="font-bold text-white">{node.conveyorBelts.total}</span>
+                </div>
+                {node.conveyorBelts.saturation && (
+                  <div className="flex justify-between pt-1 border-t border-neon-cyan/20">
+                    <span className="text-space-200">{t('saturation')}:</span>
+                    <span className={`font-medium`}
+                          style={{
+                            color: node.conveyorBelts.saturation > 90 ? '#FF6B35' :
+                                   node.conveyorBelts.saturation > 80 ? '#FFD700' :
+                                   '#00FF88'
+                          }}>
+                      {node.conveyorBelts.saturation.toFixed(1)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+
+          {/* No custom settings for raw material nodes */}
         </div>
       </div>
     );
