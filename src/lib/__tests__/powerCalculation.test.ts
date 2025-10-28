@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { calculatePowerConsumption } from '../powerCalculation';
 import type { RecipeTreeNode } from '../../types/calculation';
 import type { Machine, Recipe } from '../../types/game-data';
+import type { GlobalSettings } from '../../types/settings';
+import { SORTER_DATA } from '../../types/settings';
 
 // Mock machine data
 const mockArcSmelter: Machine = {
@@ -69,6 +71,16 @@ const mockRecipe: Recipe = {
 };
 
 describe('calculatePowerConsumption', () => {
+  const mockSettings: GlobalSettings = {
+    proliferator: { type: 'none', mode: 'production', productionBonus: 0, speedBonus: 0, powerIncrease: 0 },
+    machineRank: { Smelt: 'arc', Assemble: 'mk1', Chemical: 'standard', Research: 'standard', Refine: 'standard', Particle: 'standard' },
+    conveyorBelt: { tier: 'mk1', speed: 6, stackCount: 1 },
+    sorter: SORTER_DATA.mk1,
+    alternativeRecipes: new Map(),
+    miningSpeedResearch: 100,
+    proliferatorMultiplier: { production: 1, speed: 1 },
+    photonGeneration: { useGravitonLens: false, continuousReception: false, rayTransmissionEfficiency: 100, gravitonLensProliferator: { type: 'none', mode: 'production', productionBonus: 0, speedBonus: 0, powerIncrease: 0 } },
+  };
   // 基本機能テスト
   describe('基本機能', () => {
     it('単一機械の電力を計算する（workEnergyPerTick × 60 / 1000 kW）', () => {
@@ -85,7 +97,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(node);
+      const result = calculatePowerConsumption(node, mockSettings);
 
       // 1機あたり: 12 * 60 / 1000 = 0.72 kW
       // 10機: 0.72 * 10 = 7.2 kW
@@ -125,7 +137,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       // Arc Smelter: 0.72 * 5 = 3.6 kW
       // Assembler: 0.54 * 8 = 4.32 kW
@@ -174,7 +186,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       // Total: 7.2 + 3.6 + 2.7 = 13.5 kW
       expect(result.total).toBeCloseTo(13.5, 2);
@@ -232,7 +244,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       // Arc Smelterは統合されるべき
       expect(result.byMachine).toHaveLength(2);
@@ -282,7 +294,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       // 降順: Chemical Plant (9.0) > Arc Smelter (3.6) > Assembler (1.62)
       expect(result.byMachine[0].machineId).toBe(2309); // Chemical Plant
@@ -294,7 +306,7 @@ describe('calculatePowerConsumption', () => {
   // エッジケーステスト
   describe('エッジケース', () => {
     it('nullノードの処理（total: 0, byMachine: []）', () => {
-      const result = calculatePowerConsumption(null);
+      const result = calculatePowerConsumption(null, mockSettings);
 
       expect(result.total).toBe(0);
       expect(result.byMachine).toEqual([]);
@@ -328,7 +340,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       // 原材料ノードは無視され、Arc Smelterのみ
       expect(result.byMachine).toHaveLength(1);
@@ -349,7 +361,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(node);
+      const result = calculatePowerConsumption(node, mockSettings);
 
       expect(result.total).toBe(0);
       expect(result.byMachine).toHaveLength(1);
@@ -400,7 +412,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       const totalPercentage = result.byMachine.reduce(
         (sum, item) => sum + item.percentage,
@@ -477,7 +489,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(rootNode);
+      const result = calculatePowerConsumption(rootNode, mockSettings);
 
       // Arc Smelter: 2 + 5 = 7機, 0.72 * 7 = 5.04 kW
       // Assembler: 3 + 6 = 9機, 0.54 * 9 = 4.86 kW
@@ -515,7 +527,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(rayReceiverNode);
+      const result = calculatePowerConsumption(rayReceiverNode, mockSettings);
 
       // γ線レシーバーは電力配分から除外される
       expect(result.total).toBeCloseTo(10.0, 2); // ソーターの電力のみ
@@ -525,8 +537,8 @@ describe('calculatePowerConsumption', () => {
       const rayReceiverEntry = result.byMachine.find(m => m.machineId === 2208);
       expect(rayReceiverEntry).toBeUndefined();
       
-      // ソーターが含まれているかチェック
-      const sorterEntry = result.byMachine.find(m => m.machineId === -1);
+      // ソーターが含まれているかチェック（設定に基づくアイコンID）
+      const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
       expect(sorterEntry).toBeDefined();
       expect(sorterEntry?.totalPower).toBeCloseTo(10.0, 2);
     });
@@ -569,7 +581,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(rayReceiverNode);
+      const result = calculatePowerConsumption(rayReceiverNode, mockSettings);
 
       // Arc Smelter: 0.72 * 3 = 2.16 kW
       // Sorters: 5.0 + 8.0 = 13.0 kW
@@ -599,7 +611,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(node);
+      const result = calculatePowerConsumption(node, mockSettings);
 
       // Arc Smelter: 0.72 * 10 = 7.2 kW
       // Sorters: 5.0 kW
@@ -607,8 +619,8 @@ describe('calculatePowerConsumption', () => {
       expect(result.total).toBeCloseTo(12.2, 2);
       expect(result.byMachine).toHaveLength(2);
       
-      // ソーターが含まれているかチェック
-      const sorterEntry = result.byMachine.find(m => m.machineId === -1);
+      // ソーターが含まれているかチェック（設定に基づくアイコンID）
+      const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
       expect(sorterEntry).toBeDefined();
       expect(sorterEntry?.machineName).toBe('ソーター');
       expect(sorterEntry?.totalPower).toBeCloseTo(5.0, 2);
@@ -636,7 +648,7 @@ describe('calculatePowerConsumption', () => {
         },
       };
 
-      const result = calculatePowerConsumption(node);
+      const result = calculatePowerConsumption(node, mockSettings);
 
       // 基本電力: 0.72 kW/機
       // 増産剤効果: 0.72 * (1 + 0.30) = 0.936 kW/機
@@ -701,7 +713,7 @@ describe('calculatePowerConsumption', () => {
         isRawMaterial: false,
       };
 
-      const result = calculatePowerConsumption(parentNode);
+      const result = calculatePowerConsumption(parentNode, mockSettings);
 
       // Arc Smelterは統合されるが、高い電力増加率（50%）が採用される
       expect(result.byMachine).toHaveLength(2);
@@ -734,7 +746,7 @@ describe('calculatePowerConsumption', () => {
         },
       };
 
-      const result = calculatePowerConsumption(node);
+      const result = calculatePowerConsumption(node, mockSettings);
 
       // Arc Smelter: 0.72 * (1 + 0.30) * 10 = 9.36 kW
       // Sorters: 3.0 kW
@@ -747,9 +759,78 @@ describe('calculatePowerConsumption', () => {
       expect(arcSmelter?.powerPerMachine).toBeCloseTo(0.936, 3); // 0.72 * 1.30
       expect(arcSmelter?.totalPower).toBeCloseTo(9.36, 2);
       
-      // ソーターも含まれている
-      const sorterEntry = result.byMachine.find(m => m.machineId === -1);
+      // ソーターも含まれている（設定に基づくアイコンID）
+      const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
       expect(sorterEntry?.totalPower).toBeCloseTo(3.0, 2);
+      expect(sorterEntry?.machineId).toBe(2011); // Mk.I sorter icon ID
+    });
+  });
+
+  describe('ソーター設定によるアイコン変更', () => {
+    it('Mk.II ソーター設定でアイコンIDが2012になる', () => {
+      const mk2Settings = { ...mockSettings, sorter: SORTER_DATA.mk2 };
+      
+      const node: RecipeTreeNode = {
+        recipe: mockRecipe,
+        machine: mockArcSmelter,
+        targetOutputRate: 30,
+        machineCount: 10,
+        inputs: [],
+        children: [],
+        power: { machines: 7.2, sorters: 3.0, total: 10.2 },
+        conveyorBelts: { inputs: 0, outputs: 0, total: 2 },
+        depth: 0,
+        isRawMaterial: false,
+      };
+
+      const result = calculatePowerConsumption(node, mk2Settings);
+      
+      const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
+      expect(sorterEntry?.machineId).toBe(2012); // Mk.II sorter icon ID
+    });
+
+    it('Mk.III ソーター設定でアイコンIDが2013になる', () => {
+      const mk3Settings = { ...mockSettings, sorter: SORTER_DATA.mk3 };
+      
+      const node: RecipeTreeNode = {
+        recipe: mockRecipe,
+        machine: mockArcSmelter,
+        targetOutputRate: 30,
+        machineCount: 10,
+        inputs: [],
+        children: [],
+        power: { machines: 7.2, sorters: 3.0, total: 10.2 },
+        conveyorBelts: { inputs: 0, outputs: 0, total: 2 },
+        depth: 0,
+        isRawMaterial: false,
+      };
+
+      const result = calculatePowerConsumption(node, mk3Settings);
+      
+      const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
+      expect(sorterEntry?.machineId).toBe(2013); // Mk.III sorter icon ID
+    });
+
+    it('集積ソーター設定でアイコンIDが2014になる', () => {
+      const pileSettings = { ...mockSettings, sorter: SORTER_DATA.pile };
+      
+      const node: RecipeTreeNode = {
+        recipe: mockRecipe,
+        machine: mockArcSmelter,
+        targetOutputRate: 30,
+        machineCount: 10,
+        inputs: [],
+        children: [],
+        power: { machines: 7.2, sorters: 2.4, total: 9.6 }, // 144kW per sorter
+        conveyorBelts: { inputs: 0, outputs: 0, total: 2 },
+        depth: 0,
+        isRawMaterial: false,
+      };
+
+      const result = calculatePowerConsumption(node, pileSettings);
+      
+      const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
+      expect(sorterEntry?.machineId).toBe(2014); // Pile sorter icon ID
     });
   });
 });

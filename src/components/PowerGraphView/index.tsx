@@ -7,6 +7,7 @@ import { calculatePowerConsumption } from '../../lib/powerCalculation';
 import { formatNumber, formatPower, formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { useGameDataStore } from '../../stores/gameDataStore';
+import { useSettingsStore } from '../../stores/settingsStore';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -32,10 +33,11 @@ const CHART_COLORS = [
 export function PowerGraphView({ calculationResult }: PowerGraphViewProps) {
   const { t } = useTranslation();
   const { data: gameData } = useGameDataStore();
+  const { settings } = useSettingsStore();
 
   const powerBreakdown = useMemo(() => {
-    return calculatePowerConsumption(calculationResult.rootNode);
-  }, [calculationResult]);
+    return calculatePowerConsumption(calculationResult.rootNode, settings);
+  }, [calculationResult, settings]);
 
   const chartData = useMemo(() => {
     return {

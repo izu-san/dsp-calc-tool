@@ -6,6 +6,8 @@ import { formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { MiningCalculator } from '../MiningCalculator';
 import { useGameDataStore } from '../../stores/gameDataStore';
+import { useSettingsStore } from '../../stores/settingsStore';
+import { ICONS } from '../../constants/icons';
 
 interface BuildingCostViewProps {
   calculationResult: CalculationResult;
@@ -14,17 +16,21 @@ interface BuildingCostViewProps {
 export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
   const { t } = useTranslation();
   const { data } = useGameDataStore();
+  const { settings } = useSettingsStore();
 
   const buildingCost = useMemo(() => {
     if (!calculationResult) return null;
     return calculateBuildingCost(calculationResult.rootNode);
   }, [calculationResult]);
 
+  // Get sorter icon based on settings
+  const getSorterIcon = () => {
+    return ICONS.sorter[settings.sorter.tier];
+  };
+
   // Enhanced building cost with resolved machine names (language-dependent)
   const enhancedBuildingCost = useMemo(() => {
     if (!buildingCost) return null;
-    
-    // Helper function to get machine name by ID
     const getMachineName = (machineId: number): string => {
       if (!data) return `Machine ${machineId}`;
       const machine = data.machines.get(machineId);
@@ -90,7 +96,7 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40 shadow-[0_0_15px_rgba(233,53,255,0.2)]">
               <div className="flex items-center gap-2 mb-2">
-                <ItemIcon itemId={2011} size={24} />
+                <ItemIcon itemId={getSorterIcon()} size={24} />
                 <span className="text-xs font-medium text-neon-magenta">{t('sorters')}</span>
               </div>
               <div className="text-2xl font-bold text-white">

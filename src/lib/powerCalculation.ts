@@ -1,4 +1,6 @@
 import type { RecipeTreeNode } from '../types/calculation';
+import type { GlobalSettings } from '../types/settings';
+import { ICONS } from '../constants/icons';
 
 export interface PowerConsumption {
   machineId: number;
@@ -17,7 +19,7 @@ export interface PowerBreakdown {
 /**
  * Calculate power consumption breakdown from production tree
  */
-export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): PowerBreakdown {
+export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, settings?: GlobalSettings): PowerBreakdown {
   if (!rootNode) {
     return { total: 0, byMachine: [] };
   }
@@ -117,8 +119,11 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null): Powe
   // Add sorters as a separate entry in the breakdown
   if (totalSorterPower > 0) {
     const powerPerSorter = totalSorterCount > 0 ? totalSorterPower / totalSorterCount : 0;
+    const sorterTier = settings?.sorter.tier || 'mk1';
+    const sorterIconId = ICONS.sorter[sorterTier];
+    
     byMachine.push({
-      machineId: -1, // Special ID for sorters
+      machineId: sorterIconId, // Use actual sorter icon ID instead of -1
       machineName: 'ソーター',
       machineCount: totalSorterCount,
       powerPerMachine: powerPerSorter,

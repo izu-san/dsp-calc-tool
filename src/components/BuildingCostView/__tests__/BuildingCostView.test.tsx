@@ -7,7 +7,16 @@ import type { BuildingCost } from '../../../lib/buildingCost';
 
 // Mock dependencies
 vi.mock('../../../lib/miningCalculation');
-vi.mock('../../../stores/settingsStore');
+vi.mock('../../../stores/settingsStore', () => ({
+  useSettingsStore: () => ({
+    settings: {
+      sorter: {
+        tier: 'mk1',
+        powerConsumption: 18,
+      },
+    },
+  }),
+}));
 vi.mock('../../MiningCalculator', () => ({
   MiningCalculator: () => <div data-testid="mining-calculator">Mocked MiningCalculator</div>,
 }));

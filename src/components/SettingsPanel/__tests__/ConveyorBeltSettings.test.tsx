@@ -20,6 +20,7 @@ vi.mock('../../ItemIcon', () => ({
 
 describe('ConveyorBeltSettings', () => {
   const mockSetConveyorBelt = vi.fn();
+  const mockSetSorter = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -31,8 +32,13 @@ describe('ConveyorBeltSettings', () => {
           speed: 6,
           stackCount: 1,
         },
+        sorter: {
+          tier: 'mk1',
+          powerConsumption: 18,
+        },
       },
       setConveyorBelt: mockSetConveyorBelt,
+      setSorter: mockSetSorter,
     });
   });
 
@@ -82,8 +88,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 6,
             stackCount: 3,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -147,8 +158,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 6,
             stackCount: 2,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -165,8 +181,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 12,
             stackCount: 3,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -183,8 +204,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 30,
             stackCount: 4,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -209,8 +235,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 6,
             stackCount: 0,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -226,8 +257,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 6,
             stackCount: 5,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -243,8 +279,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 6,
             stackCount: 'invalid' as any,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -262,8 +303,13 @@ describe('ConveyorBeltSettings', () => {
             speed: 'invalid' as any,
             stackCount: 2,
           },
+          sorter: {
+            tier: 'mk1',
+            powerConsumption: 18,
+          },
         },
         setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
       });
 
       render(<ConveyorBeltSettings />);
@@ -320,6 +366,80 @@ describe('ConveyorBeltSettings', () => {
 
       const stack1Button = screen.getByText('×1').closest('button');
       expect(stack1Button).toHaveClass('scale-110');
+    });
+  });
+
+  describe('Sorter Rank Selection', () => {
+    it('すべてのソーターランクオプションを表示する', () => {
+      render(<ConveyorBeltSettings />);
+
+      expect(screen.getByText('Mk.I')).toBeInTheDocument();
+      expect(screen.getByText('Mk.II')).toBeInTheDocument();
+      expect(screen.getByText('Mk.III')).toBeInTheDocument();
+      expect(screen.getByText('pilingSorter')).toBeInTheDocument(); // i18n key
+      expect(screen.getByText('18kW')).toBeInTheDocument();
+      expect(screen.getByText('36kW')).toBeInTheDocument();
+      expect(screen.getByText('72kW')).toBeInTheDocument();
+      expect(screen.getByText('144kW')).toBeInTheDocument();
+    });
+
+    it('選択されたソーターランクをハイライト表示する', () => {
+      render(<ConveyorBeltSettings />);
+
+      const mk1Button = screen.getByTestId('sorter-button-mk1');
+      expect(mk1Button).toHaveClass('bg-neon-yellow/30');
+      expect(mk1Button).toHaveClass('border-neon-yellow');
+    });
+
+    it('Mk.II ソーターランクを選択できる', () => {
+      render(<ConveyorBeltSettings />);
+
+      const mk2Button = screen.getByTestId('sorter-button-mk2');
+      fireEvent.click(mk2Button);
+
+      expect(mockSetSorter).toHaveBeenCalledWith('mk2');
+    });
+
+    it('Mk.III ソーターランクを選択できる', () => {
+      render(<ConveyorBeltSettings />);
+
+      const mk3Button = screen.getByTestId('sorter-button-mk3');
+      fireEvent.click(mk3Button);
+
+      expect(mockSetSorter).toHaveBeenCalledWith('mk3');
+    });
+
+    it('集積ソーターランクを選択できる', () => {
+      render(<ConveyorBeltSettings />);
+
+      const pileButton = screen.getByTestId('sorter-button-pile');
+      fireEvent.click(pileButton);
+
+      expect(mockSetSorter).toHaveBeenCalledWith('pile');
+    });
+
+    it('異なるソーターランクが選択されている場合の表示', () => {
+      (useSettingsStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+        settings: {
+          conveyorBelt: {
+            tier: 'mk1',
+            speed: 6,
+            stackCount: 1,
+          },
+          sorter: {
+            tier: 'mk3',
+            powerConsumption: 72,
+          },
+        },
+        setConveyorBelt: mockSetConveyorBelt,
+        setSorter: mockSetSorter,
+      });
+
+      render(<ConveyorBeltSettings />);
+
+      const mk3Button = screen.getByTestId('sorter-button-mk3');
+      expect(mk3Button).toHaveClass('bg-neon-purple/30');
+      expect(mk3Button).toHaveClass('border-neon-purple');
     });
   });
 });
