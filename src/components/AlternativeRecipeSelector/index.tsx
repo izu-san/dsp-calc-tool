@@ -133,7 +133,9 @@ export function AlternativeRecipeSelector() {
                   <ItemIcon itemId={itemId} size={32} />
                   <div className="text-left">
                     <div className="font-medium text-white">{itemName}</div>
-                    <div className="text-xs text-space-300">
+                    <div 
+                      data-testid={`recipe-count-${itemId}`}
+                      className="text-xs text-space-300">
                       {canBeMined && recipes.length > 0
                         ? `${recipes.length} ${t('recipes')} + ${t('mining')}`
                         : canBeMined

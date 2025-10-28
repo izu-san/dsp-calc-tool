@@ -226,13 +226,17 @@ export function ModSettings() {
                   </div>
 
                   {uploadError && (
-                    <div className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded text-sm text-red-200">
+                    <div 
+                      data-testid="modsettings-load-error"
+                      className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded text-sm text-red-200">
                       ❌ {uploadError}
                     </div>
                   )}
 
                   {uploadSuccess && (
-                    <div className="mt-3 p-3 bg-green-900/30 border border-green-500/50 rounded text-sm text-green-200">
+                    <div 
+                      data-testid="modsettings-load-success"
+                      className="mt-3 p-3 bg-green-900/30 border border-green-500/50 rounded text-sm text-green-200">
                       ✅ {t('recipesUpdatedSuccessfully')}
                     </div>
                   )}

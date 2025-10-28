@@ -127,6 +127,7 @@ export function WelcomeModal() {
             {steps.map((_, index) => (
               <div
                 key={index}
+                data-testid={`welcome-step-indicator-${index + 1}`}
                 className={`h-1 flex-1 rounded-full transition-colors ${
                   index <= currentStep ? 'bg-blue-500' : 'bg-gray-600'
                 }`}
@@ -143,7 +144,9 @@ export function WelcomeModal() {
         {/* Footer */}
         <div className="sticky bottom-0 bg-gray-800 border-t border-gray-700 p-6 pt-4">
           <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-400">
+            <div 
+              data-testid="welcome-step-progress"
+              className="text-sm text-gray-400">
               {t('stepProgress', { current: currentStep + 1, total: steps.length })}
             </div>
             

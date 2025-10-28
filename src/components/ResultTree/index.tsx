@@ -58,7 +58,9 @@ export const ProductionTree = memo(function ProductionTree({
     
     return (
       <div className={cn({ 'ml-6 mt-2': depth > 0 })}>
-        <div className={cn(
+        <div 
+          data-testid={`raw-material-node-${iconId}`}
+          className={cn(
           'border rounded-lg p-3 backdrop-blur-sm relative overflow-hidden animate-fadeIn hover:shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all',
           {
             'bg-neon-purple/20 border-neon-purple/50 shadow-[0_0_20px_rgba(168,85,247,0.3)]': isCircular,
@@ -118,7 +120,9 @@ export const ProductionTree = memo(function ProductionTree({
 
             {/* Output Rate */}
             <div className="text-right pr-8">
-              <div className={cn(
+              <div 
+                data-testid={`raw-material-output-rate-${iconId}`}
+                className={cn(
                 'text-lg font-bold',
                 {
                   'text-neon-purple drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]': isCircular,
@@ -127,7 +131,9 @@ export const ProductionTree = memo(function ProductionTree({
               )}>
                 {formatRate(node.targetOutputRate)}
               </div>
-              <div className="text-xs text-space-300">
+              <div 
+                data-testid={`raw-material-power-${iconId}`}
+                className="text-xs text-space-300">
                 {!isCircular && node.miningEquipment ? formatPower(node.miningEquipment.powerConsumption) : '0 kW'}
               </div>
             </div>
@@ -175,18 +181,24 @@ export const ProductionTree = memo(function ProductionTree({
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-space-200">{t('outputs')}:</span>
-                  <span className="font-medium text-neon-blue">
+                  <span 
+                    data-testid={`raw-material-belts-outputs-${iconId}`}
+                    className="font-medium text-neon-blue">
                     {node.conveyorBelts.outputs}
                   </span>
                 </div>
                 <div className="flex justify-between border-t border-neon-cyan/20 pt-1">
                   <span className="text-space-200 font-medium">{t('total')}:</span>
-                  <span className="font-bold text-white">{node.conveyorBelts.total}</span>
+                  <span 
+                    data-testid={`raw-material-belts-total-${iconId}`}
+                    className="font-bold text-white">{node.conveyorBelts.total}</span>
                 </div>
                 {node.conveyorBelts.saturation && (
                   <div className="flex justify-between pt-1 border-t border-neon-cyan/20">
                     <span className="text-space-200">{t('saturation')}:</span>
-                    <span className={`font-medium`}
+                    <span 
+                      data-testid={`raw-material-belts-saturation-${iconId}`}
+                      className={`font-medium`}
                           style={{
                             color: node.conveyorBelts.saturation > 90 ? '#FF6B35' :
                                    node.conveyorBelts.saturation > 80 ? '#FFD700' :
@@ -213,6 +225,7 @@ export const ProductionTree = memo(function ProductionTree({
     <div className={cn({ 'ml-6 mt-2': depth > 0 })}>
       {/* Tree Node */}
       <div 
+        data-testid={`recipe-node-${node.recipe!.SID}`}
         className={cn(
           'border rounded-lg p-3 bg-dark-700/50 backdrop-blur-sm relative overflow-hidden animate-fadeIn hover:shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all',
           {
@@ -310,10 +323,14 @@ export const ProductionTree = memo(function ProductionTree({
 
           {/* Output Rate */}
           <div className="text-right pr-8">
-            <div className="text-lg font-bold text-neon-cyan drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">
+            <div 
+              data-testid={`recipe-output-rate-${node.recipe!.SID}`}
+              className="text-lg font-bold text-neon-cyan drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">
               {formatRate(node.targetOutputRate)}
             </div>
-            <div className="text-xs text-space-300">
+            <div 
+              data-testid={`recipe-power-${node.recipe!.SID}`}
+              className="text-xs text-space-300">
               {formatPower(node.power.total)}
             </div>
           </div>
@@ -328,7 +345,9 @@ export const ProductionTree = memo(function ProductionTree({
               {node.inputs.map((input) => (
                 <div key={input.itemId} className="flex justify-between text-xs">
                   <span className="text-space-200 truncate">{input.itemName}</span>
-                  <span className="font-medium text-neon-orange ml-2 flex-shrink-0">
+                  <span 
+                    data-testid={`recipe-input-rate-${node.recipe!.SID}-${input.itemId}`}
+                    className="font-medium text-neon-orange ml-2 flex-shrink-0">
                     {formatRate(input.requiredRate)}
                   </span>
                 </div>
@@ -342,16 +361,22 @@ export const ProductionTree = memo(function ProductionTree({
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
                 <span className="text-space-200">{t('machines')}:</span>
-                <span className="font-medium text-white">{formatPower(node.power.machines)}</span>
+                <span 
+                  data-testid={`recipe-power-machines-${node.recipe!.SID}`}
+                  className="font-medium text-white">{formatPower(node.power.machines)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-space-200">{t('sorters')}:</span>
-                <span className="font-medium text-white">{formatPower(node.power.sorters)}</span>
+                <span 
+                  data-testid={`recipe-power-sorters-${node.recipe!.SID}`}
+                  className="font-medium text-white">{formatPower(node.power.sorters)}</span>
               </div>
               {node.power.dysonSphere > 0 && (
                 <div className="flex justify-between border-t border-yellow-500/20 pt-1">
                   <span className="text-yellow-400">⚡ {t('dysonSpherePower').split(' ')[0]}:</span>
-                  <span className="font-medium text-yellow-400">{formatPower(node.power.dysonSphere)}</span>
+                  <span 
+                    data-testid={`recipe-power-dyson-${node.recipe!.SID}`}
+                    className="font-medium text-yellow-400">{formatPower(node.power.dysonSphere)}</span>
                 </div>
               )}
             </div>
@@ -365,7 +390,9 @@ export const ProductionTree = memo(function ProductionTree({
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
                 <span className="text-space-200">{t('inputs')}:</span>
-                <span className={cn('font-medium', {
+                <span 
+                  data-testid={`recipe-belts-inputs-${node.recipe!.SID}`}
+                  className={cn('font-medium', {
                   'text-neon-orange': node.conveyorBelts.bottleneckType === 'input',
                   'text-neon-yellow': node.conveyorBelts.bottleneckType !== 'input',
                 })}>
@@ -374,7 +401,9 @@ export const ProductionTree = memo(function ProductionTree({
               </div>
               <div className="flex justify-between">
                 <span className="text-space-200">{t('outputs')}:</span>
-                <span className={cn('font-medium', {
+                <span 
+                  data-testid={`recipe-belts-outputs-${node.recipe!.SID}`}
+                  className={cn('font-medium', {
                   'text-neon-orange': node.conveyorBelts.bottleneckType === 'output',
                   'text-neon-blue': node.conveyorBelts.bottleneckType !== 'output',
                 })}>
@@ -383,12 +412,16 @@ export const ProductionTree = memo(function ProductionTree({
               </div>
               <div className="flex justify-between border-t border-neon-cyan/20 pt-1">
                 <span className="text-space-200 font-medium">{t('total')}:</span>
-                <span className="font-bold text-white">{node.conveyorBelts.total}</span>
+                <span 
+                  data-testid={`recipe-belts-total-${node.recipe!.SID}`}
+                  className="font-bold text-white">{node.conveyorBelts.total}</span>
               </div>
               {node.conveyorBelts.saturation && (
                 <div className="flex justify-between pt-1 border-t border-neon-cyan/20">
                   <span className="text-space-200">{t('saturation')}:</span>
-                  <span className={`font-medium`}
+                  <span 
+                    data-testid={`recipe-belts-saturation-${node.recipe!.SID}`}
+                    className={`font-medium`}
                         style={{
                           color: node.conveyorBelts.saturation > 90 ? '#FF6B35' :
                                  node.conveyorBelts.saturation > 80 ? '#FFD700' :

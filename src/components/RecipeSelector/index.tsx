@@ -240,7 +240,9 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
             }
           )}
         >
-          ⭐ {t('favorites')} {favoriteRecipes.size > 0 && `(${favoriteRecipes.size})`}
+          ⭐ {t('favorites')} {favoriteRecipes.size > 0 && (
+            <span data-testid="favorites-count">({favoriteRecipes.size})</span>
+          )}
         </button>
         
         {/* Category Buttons */}
@@ -279,7 +281,9 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       </div>
 
       {/* Results Count */}
-      <div className="text-sm text-space-200">
+      <div 
+        data-testid="recipe-search-results-count"
+        className="text-sm text-space-200">
         <span className="text-neon-cyan font-semibold">{filteredRecipes.length}</span> {filteredRecipes.length !== 1 ? t('recipes') : t('recipe')} {t('found')}
         {debouncedSearchQuery && (
           <span>

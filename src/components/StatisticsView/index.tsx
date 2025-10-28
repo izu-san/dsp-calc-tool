@@ -97,7 +97,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
           </button>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-neon-blue/20 backdrop-blur-sm border border-neon-blue/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,136,255,0.2)]">
+          <div 
+            data-testid="statistics-total-machines"
+            className="bg-neon-blue/20 backdrop-blur-sm border border-neon-blue/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,136,255,0.2)]">
             <div className="text-sm text-space-300">{t('totalMachines')}</div>
             <div className="text-2xl font-bold text-neon-blue">{formatBuildingCount(enhancedStatistics.totalMachines)}</div>
             {enhancedStatistics.totalMiningMachines > 0 && (
@@ -106,7 +108,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
               </div>
             )}
           </div>
-          <div className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
+          <div 
+            data-testid="statistics-total-power"
+            className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
             <div className="text-sm text-space-300">{t('totalPower')}</div>
             <div className="text-2xl font-bold text-neon-green">{formatPower(enhancedStatistics.totalPower + enhancedStatistics.totalMiningPower)}</div>
             {enhancedStatistics.totalMiningPower > 0 && (
@@ -120,7 +124,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
               </div>
             )}
           </div>
-          <div className="bg-neon-yellow/20 backdrop-blur-sm border border-neon-yellow/40 rounded-lg p-4 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
+          <div 
+            data-testid="statistics-raw-materials"
+            className="bg-neon-yellow/20 backdrop-blur-sm border border-neon-yellow/40 rounded-lg p-4 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
             <div className="text-sm text-space-300">{t('rawMaterials')}</div>
             <div className="text-2xl font-bold text-neon-yellow">{rawMaterials.length}</div>
             {enhancedStatistics.totalOrbitalCollectors > 0 && (
@@ -129,7 +135,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
               </div>
             )}
           </div>
-          <div className="bg-neon-purple/20 backdrop-blur-sm border border-neon-purple/40 rounded-lg p-4 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+          <div 
+            data-testid="statistics-items-produced"
+            className="bg-neon-purple/20 backdrop-blur-sm border border-neon-purple/40 rounded-lg p-4 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
             <div className="text-sm text-space-300">{t('itemsProduced')}</div>
             <div className="text-2xl font-bold text-neon-purple">{enhancedStatistics.items.size}</div>
           </div>
@@ -143,7 +151,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
 
       {/* Raw Materials */}
       {rawMaterials.length > 0 && (
-        <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-green/30 rounded-lg shadow-panel p-6">
+        <div 
+          data-testid="statistics-raw-materials-table"
+          className="bg-dark-700/50 backdrop-blur-sm border border-neon-green/30 rounded-lg shadow-panel p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <span>🔨</span>
             {t('rawMaterials')}
@@ -178,7 +188,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
 
       {/* Intermediate Products */}
       {intermediateProducts.length > 0 && (
-        <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-cyan/30 rounded-lg shadow-panel p-6">
+        <div 
+          data-testid="statistics-intermediate-products-table"
+          className="bg-dark-700/50 backdrop-blur-sm border border-neon-cyan/30 rounded-lg shadow-panel p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <span>⚙️</span>
             {t('intermediateProducts')}
@@ -228,7 +240,9 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
 
       {/* Final Products */}
       {finalProducts.length > 0 && (
-        <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-purple/30 rounded-lg shadow-panel p-6">
+        <div 
+          data-testid="statistics-final-products-table"
+          className="bg-dark-700/50 backdrop-blur-sm border border-neon-purple/30 rounded-lg shadow-panel p-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <span>📦</span>
             {t('finalProducts')}

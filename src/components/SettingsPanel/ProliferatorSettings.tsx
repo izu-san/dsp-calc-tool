@@ -87,7 +87,9 @@ export function ProliferatorSettings() {
               {t('proliferatorMode')} <span className="text-xs text-space-300">({t('exclusive')})</span>
             </label>
             {!isProductionAllowed && (
-              <div className="mb-3 p-2 bg-neon-orange/10 border border-neon-orange/30 rounded-lg" role="alert">
+              <div 
+                data-testid="overclock-not-available-message"
+                className="mb-3 p-2 bg-neon-orange/10 border border-neon-orange/30 rounded-lg" role="alert">
                 <div className="flex items-center gap-2 text-sm text-neon-orange font-medium">
                   <span className="text-lg">⚠️</span>
                   <span>{t('productionModeDisabled')}</span>

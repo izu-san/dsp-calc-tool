@@ -66,12 +66,14 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
       <div className="space-y-6">
         {/* Machines */}
         {enhancedBuildingCost.machines.length > 0 && (
-          <div>
+          <div 
+            data-testid="building-cost-production-machines">
             <h3 className="text-sm font-semibold text-neon-cyan mb-3">{t('productionMachines')}</h3>
             <div className="space-y-2">
               {enhancedBuildingCost.machines.map((machine, index) => (
                 <div
                   key={`${machine.machineId}-${index}`}
+                  data-testid={`building-cost-machine-${machine.machineId}`}
                   className="flex items-center justify-between p-3 bg-dark-800/50 border border-neon-blue/20 rounded-lg hover:bg-neon-blue/10 hover:border-neon-blue/40 transition-all"
                 >
                   <div className="flex items-center gap-3">
@@ -90,10 +92,13 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
         )}
 
         {/* Logistics */}
-        <div>
+        <div 
+          data-testid="building-cost-logistics">
           <h3 className="text-sm font-semibold text-neon-cyan mb-3">{t('logistics')}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40 shadow-[0_0_15px_rgba(233,53,255,0.2)]">
+            <div 
+              data-testid="building-cost-sorters"
+              className="p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40 shadow-[0_0_15px_rgba(233,53,255,0.2)]">
               <div className="flex items-center gap-2 mb-2">
                 <ItemIcon itemId={getSorterIcon()} size={24} />
                 <span className="text-xs font-medium text-neon-magenta">{t('sorters')}</span>
@@ -103,7 +108,9 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
               </div>
             </div>
 
-            <div className="p-4 bg-neon-cyan/20 backdrop-blur-sm rounded-lg border border-neon-cyan/40 shadow-[0_0_15px_rgba(0,217,255,0.2)]">
+            <div 
+              data-testid="building-cost-belts"
+              className="p-4 bg-neon-cyan/20 backdrop-blur-sm rounded-lg border border-neon-cyan/40 shadow-[0_0_15px_rgba(0,217,255,0.2)]">
               <div className="flex items-center gap-2 mb-2">
                 <ItemIcon itemId={2001} size={24} />
                 <span className="text-xs font-medium text-neon-cyan">{t('conveyorBelts')}</span>

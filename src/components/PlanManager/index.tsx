@@ -37,6 +37,8 @@ export function PlanManager() {
   const [shareURL, setShareURL] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
   const [planName, setPlanName] = useState('');
+  const [importSuccessMessage, setImportSuccessMessage] = useState<string>('');
+  const [importErrorMessage, setImportErrorMessage] = useState<string>('');
   const [recentPlans, setRecentPlans] = useState(getRecentPlans());
   const fileInputRef = useRef<HTMLInputElement>(null);
   // New options for overrides handling
@@ -265,10 +267,14 @@ export function PlanManager() {
         );
       }
 
-      alert(`${t('planLoaded', { name: plan.name })}`);
+      setImportSuccessMessage(`${t('planLoaded', { name: plan.name })}`);
+      setImportErrorMessage('');
+      setTimeout(() => setImportSuccessMessage(''), 3000);
     } catch (error) {
       console.error('Import error:', error);
-      alert(`${t('loadError')}: ${error}`);
+      setImportErrorMessage(`${t('loadError')}: ${error}`);
+      setImportSuccessMessage('');
+      setTimeout(() => setImportErrorMessage(''), 5000);
     }
   };
 
@@ -655,6 +661,23 @@ export function PlanManager() {
           </div>
         </div>,
         document.body
+      )}
+
+      {/* Import Success/Error Messages */}
+      {importSuccessMessage && (
+        <div 
+          data-testid="import-success-message"
+          className="fixed top-4 right-4 bg-green-900/30 border border-green-500/50 rounded-lg p-3 text-sm text-green-200 z-[10001]">
+          ✅ {importSuccessMessage}
+        </div>
+      )}
+
+      {importErrorMessage && (
+        <div 
+          data-testid="import-error-message"
+          className="fixed top-4 right-4 bg-red-900/30 border border-red-500/50 rounded-lg p-3 text-sm text-red-200 z-[10001]">
+          ❌ {importErrorMessage}
+        </div>
       )}
     </>
   );

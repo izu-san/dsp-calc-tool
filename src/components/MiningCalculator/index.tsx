@@ -180,7 +180,9 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
       )}>
         {/* Only show Orbital Collectors if Hydrogen or Deuterium is needed */}
         {miningCalc.totalOrbitalCollectors > 0 && (
-          <div className="bg-gradient-to-br from-neon-blue/20 to-neon-cyan/20 backdrop-blur-sm rounded-xl p-4 border border-neon-blue/40 shadow-[0_0_20px_rgba(0,136,255,0.3)]">
+          <div 
+            data-testid="mining-calculator-orbital-collectors"
+            className="bg-gradient-to-br from-neon-blue/20 to-neon-cyan/20 backdrop-blur-sm rounded-xl p-4 border border-neon-blue/40 shadow-[0_0_20px_rgba(0,136,255,0.3)]">
             <div className="text-sm text-space-300 mb-1 flex items-center gap-2" data-testid="orbitalCollectors">
               <span>🚀</span>
               {t('orbitalCollectors')}
@@ -194,7 +196,9 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
           </div>
         )}
         
-        <div className="bg-gradient-to-br from-neon-purple/20 to-neon-magenta/20 backdrop-blur-sm rounded-xl p-4 border border-neon-purple/40 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+        <div 
+          data-testid="mining-calculator-power-multiplier"
+          className="bg-gradient-to-br from-neon-purple/20 to-neon-magenta/20 backdrop-blur-sm rounded-xl p-4 border border-neon-purple/40 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
           <div className="text-sm text-space-300 mb-1 flex items-center gap-2">
             <span>⚡</span>
             {t('powerMultiplier')}
@@ -209,7 +213,8 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
       </div>
 
       {/* Detailed Breakdown */}
-      <div>
+      <div 
+        data-testid="mining-calculator-material-breakdown">
         <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
           <span>📋</span>
           {t('materialBreakdown')}
@@ -222,6 +227,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             return (
               <div
                 key={material.itemId}
+                data-testid={`mining-calculator-material-${material.itemId}`}
                 className="flex items-center gap-3 p-3 rounded-lg bg-dark-800/50 border border-neon-yellow/20 hover:border-neon-yellow/40 transition-all"
               >
                 {/* Item Icon */}

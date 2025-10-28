@@ -112,7 +112,9 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
   return (
     <div className="space-y-6">
       {/* Summary Card */}
-      <div className="bg-gradient-to-br from-neon-purple/20 to-neon-blue/20 backdrop-blur-sm rounded-xl p-6 border border-neon-purple/40 shadow-[0_0_25px_rgba(168,85,247,0.3)]">
+      <div 
+        data-testid="power-graph-total-consumption"
+        className="bg-gradient-to-br from-neon-purple/20 to-neon-blue/20 backdrop-blur-sm rounded-xl p-6 border border-neon-purple/40 shadow-[0_0_25px_rgba(168,85,247,0.3)]">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white flex items-center gap-2">
             <span>⚡</span>

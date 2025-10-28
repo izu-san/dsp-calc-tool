@@ -371,7 +371,9 @@ export function PowerGenerationView({
       </div>
 
       {/* 必要電力 */}
-      <div className="hologram-card p-4 border border-neon-blue/30 rounded-lg bg-dark-800/50">
+      <div 
+        data-testid="power-generation-required-power"
+        className="hologram-card p-4 border border-neon-blue/30 rounded-lg bg-dark-800/50">
         <h3 className="text-sm font-medium text-neon-cyan mb-2">
           {t('powerGeneration.requiredPower')}
         </h3>
@@ -381,7 +383,9 @@ export function PowerGenerationView({
       </div>
 
       {/* 発電設備リスト */}
-      <div className="space-y-3">
+      <div 
+        data-testid="power-generation-generators"
+        className="space-y-3">
         <h3 className="text-sm font-medium text-neon-cyan">
           {t('powerGeneration.generatorAllocation')}
         </h3>
@@ -389,6 +393,7 @@ export function PowerGenerationView({
         {powerGeneration.generators.map((allocation, index) => (
           <div
             key={index}
+            data-testid={`power-generation-generator-${allocation.generator.machineId}`}
             className="hologram-card p-4 border border-neon-blue/30 rounded-lg bg-dark-800/50 hover:bg-dark-700/50 transition-colors"
           >
             {/* 発電設備名 */}
@@ -488,7 +493,9 @@ export function PowerGenerationView({
       </div>
 
       {/* サマリー */}
-      <div className="hologram-card p-4 border border-neon-cyan/50 rounded-lg bg-dark-800/50">
+      <div 
+        data-testid="power-generation-summary"
+        className="hologram-card p-4 border border-neon-cyan/50 rounded-lg bg-dark-800/50">
         <h3 className="text-sm font-medium text-neon-cyan mb-3">
           {t('powerGeneration.summary')}
         </h3>
