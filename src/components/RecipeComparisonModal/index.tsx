@@ -1,13 +1,13 @@
-import { useMemo, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { useGameDataStore } from "../../stores/gameDataStore";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { ItemIcon } from "../ItemIcon";
-import { formatNumber, formatPower } from "../../utils/format";
-import type { Recipe } from "../../types";
 import { getMachineForRecipe } from "../../constants/machines";
 import { getEffectiveBonuses } from "../../lib/proliferator";
+import { useGameDataStore } from "../../stores/gameDataStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { Recipe } from "../../types";
+import { formatNumber, formatPower } from "../../utils/format";
+import { ItemIcon } from "../ItemIcon";
 
 interface RecipeComparisonModalProps {
   itemId: number;
@@ -363,6 +363,7 @@ export function RecipeComparisonModal({
                       {/* Action */}
                       <td className="p-3 text-center border border-neon-blue/20">
                         <button
+                          data-testid={`recipe-comparison-select-button-${recipeId}`}
                           onClick={() => {
                             onSelectRecipe(recipeId);
                             onClose();

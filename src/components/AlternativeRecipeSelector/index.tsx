@@ -1,15 +1,15 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { isRawMaterial } from "../../constants/rawMaterials";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import { ItemIcon } from "../ItemIcon";
+import type { Recipe, RecipeTreeNode } from "../../types";
+import { cn } from "../../utils/classNames";
 import { formatNumber } from "../../utils/format";
 import { parseColorTags } from "../../utils/html";
-import { isRawMaterial } from "../../constants/rawMaterials";
+import { ItemIcon } from "../ItemIcon";
 import { RecipeComparisonModal } from "../RecipeComparisonModal";
-import { cn } from "../../utils/classNames";
-import type { Recipe, RecipeTreeNode } from "../../types";
 
 export function AlternativeRecipeSelector() {
   const { t } = useTranslation();
@@ -116,7 +116,7 @@ export function AlternativeRecipeSelector() {
   }
 
   return (
-    <div className="space-y-2">
+    <div data-testid="alternative-recipe-selector" className="space-y-2">
       <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
         {t("selectPreferredRecipesDesc")}
       </div>

@@ -284,10 +284,24 @@
 | `machine-rank-button-smelt-{value}`    | 製錬機械ランクボタン | 製錬機械ランクのボタン |
 | `machine-rank-button-assemble-{value}` | 組立機械ランクボタン | 組立機械ランクのボタン |
 
+## レシピ比較モーダル (RecipeComparisonModal)
+
+| data-testid                                  | 説明             | 対象要素               |
+| -------------------------------------------- | ---------------- | ---------------------- |
+| `recipe-comparison-select-button-{recipeId}` | レシピ選択ボタン | レシピ比較の選択ボタン |
+
+## 電力グラフビュー (PowerGraphView)
+
+| data-testid                     | 説明             | 対象要素               |
+| ------------------------------- | ---------------- | ---------------------- |
+| `power-graph-total-consumption` | 総消費電力カード | 総消費電力の表示カード |
+| `power-distribution-chart`      | 電力配分グラフ   | 電力配分の円グラフ     |
+
 ## 代替レシピ選択 (AlternativeRecipeSelector)
 
 | data-testid                                      | 説明                 | 対象要素               |
 | ------------------------------------------------ | -------------------- | ---------------------- |
+| `alternative-recipe-selector`                    | 代替レシピ設定エリア | 代替レシピ設定の全体   |
 | `alternative-recipe-compare-button-{itemId}`     | 代替レシピ比較ボタン | 代替レシピ比較のボタン |
 | `alternative-recipe-mining-button-{itemId}`      | 代替レシピ採掘ボタン | 代替レシピ採掘のボタン |
 | `alternative-recipe-button-{itemId}-{recipeSID}` | 代替レシピボタン     | 代替レシピのボタン     |
