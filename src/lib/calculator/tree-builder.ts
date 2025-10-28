@@ -42,13 +42,8 @@ export function resolveProliferatorMode(
         mode: 'speed'
       };
     }
-    // If global setting is speed mode but this recipe supports production, use production mode
-    else if (settings.proliferator.mode === 'speed' && supportsProduction) {
-      proliferator = {
-        ...proliferator,
-        mode: 'production'
-      };
-    }
+    // Note: Removed automatic switching to production mode to respect user's choice
+    // Users can manually select production mode if they want it
   }
   
   return proliferator;

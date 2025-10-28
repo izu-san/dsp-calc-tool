@@ -519,13 +519,10 @@ describe('buildRecipeTree', () => {
 
     const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
 
-    // Recipe is productive, so mode switches to production (smart mode selection)
-    // With 25% production bonus, same machines produce 25% more
-    // But it's actually switched to production mode, so we get same rate with fewer machines
-    // Actually: recipe.productive = true, so speed mode switches to production mode
-    // Production mode: +25% output, needs 8 machines (10 / 1.25)
-    expect(tree.machineCount).toBe(8);
-    expect(tree.proliferator.mode).toBe('production'); // Auto-switched
+    // Recipe is productive, but we respect user's choice of speed mode
+    // Speed mode: +25% speed bonus, needs 5 machines (10 / 2.0)
+    expect(tree.machineCount).toBe(5);
+    expect(tree.proliferator.mode).toBe('speed'); // User's choice is respected
   });
 
   it('should apply proliferator production bonus and reduce inputs', () => {
@@ -725,8 +722,8 @@ describe('buildRecipeTree', () => {
 
     const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
 
-    // Should automatically switch to production mode
-    expect(tree.proliferator.mode).toBe('production');
+    // User's choice of speed mode is respected (no auto-switching)
+    expect(tree.proliferator.mode).toBe('speed');
   });
 
   it('should apply machineRank override for Smelt type (arc)', () => {

@@ -45,9 +45,9 @@ export function calculateProductionRate(
     machineSpeedMultiplier = 1.0; // Default to 100% for special machines (like turrets)
   }
   
-  // Speed mode: reduces time per craft (apply effective speed bonus)
-  const { effectiveProductionBonus, effectiveSpeedBonus } = getEffectiveBonuses(proliferator, proliferatorMultiplier);
-  const speedBonus = proliferator.mode === 'speed' ? 1 + effectiveSpeedBonus : 1;
+        // Speed mode: reduces time per craft (apply effective speed bonus)
+        const { effectiveProductionBonus, effectiveSpeedBonus } = getEffectiveBonuses(proliferator, proliferatorMultiplier);
+        const speedBonus = proliferator.mode === 'speed' ? 1 + effectiveSpeedBonus : 1;
   
   // Time per craft in seconds
   const timePerCraft = baseTime / machineSpeedMultiplier / speedBonus;

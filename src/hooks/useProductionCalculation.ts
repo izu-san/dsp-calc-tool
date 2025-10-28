@@ -27,6 +27,14 @@ export function useProductionCalculation(
     } else {
       setCalculationResult(null);
     }
-  }, [selectedRecipe, targetQuantity, data, settings, nodeOverrides, nodeOverridesVersion, setCalculationResult]);
+  }, [
+    selectedRecipe, 
+    targetQuantity, 
+    data, 
+    settings,
+    nodeOverrides, 
+    nodeOverridesVersion, 
+    setCalculationResult
+  ]);
 }
 
