@@ -365,6 +365,7 @@ export function PlanManager() {
       <div className="flex gap-2">
         {/* Save Button */}
         <button
+          data-testid="save-button"
           onClick={() => setShowSaveDialog(true)}
           disabled={!selectedRecipe}
           className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
@@ -374,6 +375,7 @@ export function PlanManager() {
 
         {/* Load Button */}
         <button
+          data-testid="load-button"
           onClick={() => setShowLoadDialog(true)}
           className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)] transition-all ripple-effect"
         >
@@ -382,6 +384,7 @@ export function PlanManager() {
 
         {/* Share URL Button */}
         <button
+          data-testid="url-share-button"
           onClick={handleShareURL}
           disabled={!selectedRecipe}
           className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
@@ -401,6 +404,7 @@ export function PlanManager() {
                 {t('planName')}
               </label>
               <input
+                data-testid="plan-name-input"
                 type="text"
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
@@ -411,6 +415,7 @@ export function PlanManager() {
 
             {/* Save to LocalStorage */}
             <button
+              data-testid="save-to-localstorage-button"
               onClick={handleSaveToLocalStorage}
               className="w-full mb-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
             >
@@ -422,24 +427,28 @@ export function PlanManager() {
               <p className="text-sm font-medium mb-2 dark:text-gray-300">{t('exportToFile')}</p>
               <div className="grid grid-cols-2 gap-2">
                 <button
+                  data-testid="export-json-button"
                   onClick={() => handleExport('json', planName || getDefaultPlanName())}
                   className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-sm"
                 >
                   JSON
                 </button>
                 <button
+                  data-testid="export-markdown-button"
                   onClick={() => handleExport('markdown', planName || getDefaultPlanName())}
                   className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-sm"
                 >
                   Markdown
                 </button>
                 <button
+                  data-testid="export-csv-button"
                   onClick={() => handleExport('csv', planName || getDefaultPlanName())}
                   className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-sm"
                 >
                   CSV
                 </button>
                 <button
+                  data-testid="export-excel-button"
                   onClick={() => handleExport('excel', planName || getDefaultPlanName())}
                   className="px-3 py-2 bg-green-700 text-white rounded hover:bg-green-800 dark:bg-green-800 dark:hover:bg-green-700 text-sm"
                 >
@@ -451,6 +460,7 @@ export function PlanManager() {
             {/* Include overrides option */}
             <div className="mb-4 flex items-center gap-2">
               <input
+                data-testid="include-overrides-on-save-checkbox"
                 id="includeOverridesOnSave"
                 type="checkbox"
                 checked={includeOverridesOnSave}
@@ -463,6 +473,7 @@ export function PlanManager() {
             </div>
 
             <button
+              data-testid="save-dialog-cancel-button"
               onClick={() => {
                 setShowSaveDialog(false);
                 setPlanName('');
@@ -488,6 +499,7 @@ export function PlanManager() {
                 {t('loadFromFile')}
               </label>
               <input
+                data-testid="file-import-input"
                 ref={fileInputRef}
                 type="file"
                 accept=".json,.md,.markdown"
@@ -514,6 +526,7 @@ export function PlanManager() {
               {/* Merge overrides option */}
               <div className="mb-3 flex items-center gap-2">
                 <input
+                  data-testid="merge-overrides-on-load-checkbox"
                   id="mergeOverridesOnLoad"
                   type="checkbox"
                   checked={mergeOverridesOnLoad}
@@ -531,6 +544,7 @@ export function PlanManager() {
                   {recentPlans.map((plan) => (
                     <div
                       key={plan.key}
+                      data-testid={`plan-item-${plan.key}`}
                       className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded hover:bg-gray-100 dark:hover:bg-gray-650"
                     >
                       <div className="flex-1">
@@ -541,12 +555,14 @@ export function PlanManager() {
                       </div>
                       <div className="flex gap-2">
                         <button
+                          data-testid={`load-plan-button-${plan.key}`}
                           onClick={() => handleLoadFromLocalStorage(plan.key)}
                           className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-sm"
                         >
                           {t('load')}
                         </button>
                         <button
+                          data-testid={`delete-plan-button-${plan.key}`}
                           onClick={() => handleDeletePlan(plan.key)}
                           className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-sm"
                         >
@@ -560,6 +576,7 @@ export function PlanManager() {
             </div>
 
             <button
+              data-testid="load-dialog-close-button"
               onClick={() => setShowLoadDialog(false)}
               className="w-full mt-4 px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
             >
@@ -586,6 +603,7 @@ export function PlanManager() {
               </label>
               <div className="flex gap-2">
                 <input
+                  data-testid="share-url-input"
                   type="text"
                   value={shareURL}
                   readOnly
@@ -593,6 +611,7 @@ export function PlanManager() {
                   onClick={(e) => e.currentTarget.select()}
                 />
                 <button
+                  data-testid="copy-url-button"
                   onClick={handleCopyURL}
                   className={`px-4 py-2 rounded text-white font-medium transition-colors ${
                     copySuccess 
@@ -608,6 +627,7 @@ export function PlanManager() {
             {/* Include overrides in URL */}
             <div className="mb-4 flex items-center gap-2">
               <input
+                data-testid="include-overrides-on-share-checkbox"
                 id="includeOverridesOnShare"
                 type="checkbox"
                 checked={includeOverridesOnShare}
@@ -626,6 +646,7 @@ export function PlanManager() {
             </div>
 
             <button
+              data-testid="share-dialog-close-button"
               onClick={() => setShowShareDialog(false)}
               className="w-full px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
             >

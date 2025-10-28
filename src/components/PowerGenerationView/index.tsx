@@ -157,6 +157,7 @@ export function PowerGenerationView({
           {t('powerGeneration.templateLabel')}
         </h3>
         <select 
+          data-testid="power-generation-template-select"
           value={template}
           onChange={(e) => setPowerGenerationTemplate(e.target.value as GameTemplate)}
           className="w-full px-3 py-2 border border-neon-blue/40 rounded-lg bg-dark-700/50 text-white text-sm focus:border-neon-blue focus:shadow-[0_0_10px_rgba(0,136,255,0.3)] transition-all"
@@ -195,6 +196,7 @@ export function PowerGenerationView({
                 return (
                   <button
                     key={type}
+                    data-testid={`power-generation-proliferator-button-${type}`}
                     onClick={() => {
                       // 発電設備に応じて自動でモードを決定
                       const mode = isArtificialStar ? 'speed' : 'production';
@@ -258,6 +260,7 @@ export function PowerGenerationView({
             <div className="grid grid-cols-7 gap-2">
               {/* 自動選択ボタン */}
               <button
+                data-testid="power-generation-generator-auto-button"
                 onClick={() => {
                   setManualPowerGenerator(null);
                   setManualPowerFuel(null);
@@ -284,6 +287,7 @@ export function PowerGenerationView({
                 return (
                   <button
                     key={generatorType}
+                    data-testid={`power-generation-generator-button-${generatorType}`}
                     onClick={() => {
                       setManualPowerGenerator(generatorType);
                       setManualPowerFuel(null);
@@ -318,6 +322,7 @@ export function PowerGenerationView({
               <div className="grid grid-cols-8 gap-2">
                 {/* 自動選択ボタン */}
                 <button
+                  data-testid="power-generation-fuel-auto-button"
                   onClick={() => setManualPowerFuel(null)}
                   className={`
                     px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
@@ -340,6 +345,7 @@ export function PowerGenerationView({
                   return (
                     <button
                       key={fuel.key}
+                      data-testid={`power-generation-fuel-button-${fuel.key}`}
                       onClick={() => setManualPowerFuel(fuel.key)}
                       className={`
                         px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105

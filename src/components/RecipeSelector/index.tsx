@@ -136,6 +136,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       {/* Search Box with Autocomplete */}
       <div className="relative">
         <input
+          data-testid="recipe-search-input"
           type="text"
           placeholder={t('searchRecipesItemsMaterials')}
           value={searchQuery}
@@ -159,6 +160,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         </svg>
         {searchQuery && (
           <button
+            data-testid="clear-search-button"
             onClick={() => setSearchQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
           >
@@ -228,6 +230,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       <div className="flex flex-wrap gap-2">
         {/* Favorites Toggle */}
         <button
+          data-testid="favorites-toggle-button"
           onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
           className={cn(
             'px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect',
@@ -246,6 +249,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           return (
             <button
               key={category}
+              data-testid={`category-button-${category}`}
               onClick={() => {
                 setSelectedCategory(category);
                 // カテゴリー変更時にお気に入りフィルターを解除
@@ -292,6 +296,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         <Tabs.List className="flex gap-1 border-b border-neon-blue/20 mb-4">
           <Tabs.Trigger
             value="1"
+            data-testid="items-tab"
             className="px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect
                        data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]
                        data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
@@ -300,6 +305,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           </Tabs.Trigger>
           <Tabs.Trigger
             value="2"
+            data-testid="buildings-tab"
             className="px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect
                        data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]
                        data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"

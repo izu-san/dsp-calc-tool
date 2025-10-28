@@ -72,6 +72,7 @@ export function ProductionResultsPanel({
             {/* Tab Buttons */}
             <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">
               <button
+                data-testid="production-chain-tab"
                 onClick={() => { setShowStatistics(false); setShowBuildingCost(false); setShowPowerGeneration(false); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
@@ -84,6 +85,7 @@ export function ProductionResultsPanel({
                 {t('productionTree')}
               </button>
               <button
+                data-testid="statistics-tab"
                 onClick={() => { setShowStatistics(true); setShowBuildingCost(false); setShowPowerGeneration(false); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
@@ -96,6 +98,7 @@ export function ProductionResultsPanel({
                 {t('statistics')}
               </button>
               <button
+                data-testid="building-cost-tab"
                 onClick={() => { setShowStatistics(false); setShowBuildingCost(true); setShowPowerGeneration(false); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
@@ -108,6 +111,7 @@ export function ProductionResultsPanel({
                 {t('buildingCost')}
               </button>
               <button
+                data-testid="power-generation-tab"
                 onClick={() => { setShowStatistics(false); setShowBuildingCost(false); setShowPowerGeneration(true); }}
                 className={cn(
                   'px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect',
@@ -123,6 +127,7 @@ export function ProductionResultsPanel({
               {/* Expand/Collapse All button */}
               {!showStatistics && !showBuildingCost && !showPowerGeneration && (
                 <button
+                  data-testid="expand-collapse-all-button"
                   onClick={handleToggleAll}
                   className={cn(
                     'ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect',

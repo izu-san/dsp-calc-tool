@@ -143,6 +143,7 @@ export function AlternativeRecipeSelector() {
                   {/* Compare Button */}
                   {(canBeMined || recipes.length > 1) && (
                     <button
+                      data-testid={`alternative-recipe-compare-button-${itemId}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         setComparisonModal({ itemId, itemName, recipes, canBeMined, miningFrom });
@@ -179,6 +180,7 @@ export function AlternativeRecipeSelector() {
                   {/* Mining option */}
                   {canBeMined && (
                     <button
+                      data-testid={`alternative-recipe-mining-button-${itemId}`}
                       onClick={() => handleRecipeSelect(itemId, -1)}
                       className={`
                         w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
@@ -223,6 +225,7 @@ export function AlternativeRecipeSelector() {
                     return (
                       <button
                         key={recipe.SID}
+                        data-testid={`alternative-recipe-button-${itemId}-${recipe.SID}`}
                         onClick={() => handleRecipeSelect(itemId, recipe.SID)}
                         className={`
                           w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect

@@ -116,7 +116,7 @@ export function WelcomeModal() {
   if (!isOpen) return null;
 
   const modal = (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[10000] p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[10000] p-4" data-testid="welcome-modal">
       <div className="bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-6 pb-4">
@@ -150,6 +150,7 @@ export function WelcomeModal() {
             <div className="flex gap-2">
               {currentStep === 0 && (
                 <button
+                  data-testid="welcome-skip-button"
                   onClick={handleSkip}
                   className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
                 >
@@ -159,6 +160,7 @@ export function WelcomeModal() {
               
               {currentStep > 0 && (
                 <button
+                  data-testid="welcome-back-button"
                   onClick={() => setCurrentStep(currentStep - 1)}
                   className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
                 >
@@ -168,6 +170,7 @@ export function WelcomeModal() {
               
               {currentStep < steps.length - 1 ? (
                 <button
+                  data-testid="welcome-next-button"
                   onClick={() => setCurrentStep(currentStep + 1)}
                   className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
                 >
@@ -175,6 +178,7 @@ export function WelcomeModal() {
                 </button>
               ) : (
                 <button
+                  data-testid="welcome-start-button"
                   onClick={handleClose}
                   className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
                 >

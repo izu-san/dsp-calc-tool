@@ -446,6 +446,7 @@ export function WhatIfSimulator() {
               </div>
             </div>
             <button
+              data-testid="whatif-fix-all-bottlenecks-button"
               onClick={() => {
                 // Get unique scenario IDs from suggestions
                 const uniqueScenarioIds = [...new Set(bottleneckSuggestions.map(s => s.scenarioId))];
@@ -543,6 +544,7 @@ export function WhatIfSimulator() {
         
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <button
+            data-testid="whatif-optimization-goal-power"
             onClick={() => setOptimizationGoal(optimizationGoal === 'power' ? null : 'power')}
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
@@ -559,6 +561,7 @@ export function WhatIfSimulator() {
           </button>
           
           <button
+            data-testid="whatif-optimization-goal-machines"
             onClick={() => setOptimizationGoal(optimizationGoal === 'machines' ? null : 'machines')}
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
@@ -575,6 +578,7 @@ export function WhatIfSimulator() {
           </button>
           
           <button
+            data-testid="whatif-optimization-goal-efficiency"
             onClick={() => setOptimizationGoal(optimizationGoal === 'efficiency' ? null : 'efficiency')}
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
@@ -591,6 +595,7 @@ export function WhatIfSimulator() {
           </button>
           
           <button
+            data-testid="whatif-optimization-goal-balanced"
             onClick={() => setOptimizationGoal(optimizationGoal === 'balanced' ? null : 'balanced')}
             className={`
               px-3 py-2 rounded-lg text-xs font-medium transition-all border-2
@@ -625,6 +630,7 @@ export function WhatIfSimulator() {
                   {optimizationGoal === 'balanced' && `💡 ${t('showingScenariosBalanced')}`}
                 </div>
                 <button
+                  data-testid="whatif-apply-best-button"
                   onClick={() => {
                     const topScenario = rankedScenarios[0];
                     if (topScenario) applyScenario(topScenario.scenario);
@@ -658,6 +664,7 @@ export function WhatIfSimulator() {
             </div>
             <div className="grid grid-cols-3 gap-2">
               <button
+                data-testid="whatif-quick-action-max-proliferator"
                 onClick={() => {
                   const scenario = scenarios.find(s => s.id === 'proliferator_mk3');
                   if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
@@ -669,6 +676,7 @@ export function WhatIfSimulator() {
                 <span className="text-xs leading-tight text-center">{t('maxProliferator')}</span>
               </button>
               <button
+                data-testid="whatif-quick-action-max-belts"
                 onClick={() => {
                   const scenario = scenarios.find(s => s.id === 'belt_mk3');
                   if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
@@ -680,6 +688,7 @@ export function WhatIfSimulator() {
                 <span className="text-xs leading-tight text-center">{t('maxBelts')}</span>
               </button>
               <button
+                data-testid="whatif-quick-action-max-stack"
                 onClick={() => {
                   const scenario = scenarios.find(s => s.id === 'stack_4');
                   if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);

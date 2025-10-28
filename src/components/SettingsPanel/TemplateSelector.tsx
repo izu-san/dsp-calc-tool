@@ -52,6 +52,7 @@ export function TemplateSelector() {
           return (
             <button
               key={templateId}
+              data-testid={`template-button-${templateId}`}
               onClick={() => handleTemplateClick(templateId)}
               className={cn(
                 'px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-neon-blue/20 backdrop-blur-sm text-white',
@@ -69,6 +70,7 @@ export function TemplateSelector() {
 
       {/* Power Saver Template */}
       <button
+        data-testid="template-button-powerSaver"
         onClick={() => handleTemplateClick('powerSaver')}
         className={cn(
           'w-full px-3 py-2 text-sm font-medium rounded-lg border-2 border-neon-green/40 bg-neon-green/20 backdrop-blur-sm text-white',
@@ -132,6 +134,7 @@ export function TemplateSelector() {
 
             <div className="flex gap-3">
               <button
+                data-testid="template-confirm-cancel-button"
                 onClick={handleCancel}
                 className={cn(
                   'flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-blue/40 bg-dark-700/50 text-space-200',
@@ -141,6 +144,7 @@ export function TemplateSelector() {
                 {t('cancel')}
               </button>
               <button
+                data-testid="template-confirm-apply-button"
                 onClick={handleConfirm}
                 className={cn(
                   'flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white',

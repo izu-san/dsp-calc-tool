@@ -79,6 +79,7 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
     <div className="relative aspect-square group">
       {/* Favorite Star Button */}
       <div
+        data-testid={`favorite-button-${recipe.SID}`}
         onClick={handleFavoriteClick}
         className={`
           absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10
@@ -96,6 +97,7 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
 
       {/* Recipe Button */}
       <button
+        data-testid={`recipe-button-${recipe.SID}`}
         onClick={onClick}
         className={`
           w-full h-full rounded border-2 transition-all ripple-effect

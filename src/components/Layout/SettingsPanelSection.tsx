@@ -51,6 +51,7 @@ export function SettingsPanelSection({ selectedRecipe, targetQuantity, setTarget
             </div>
             <input
               type="number"
+              data-testid="target-quantity-input"
               min="0.1"
               step="0.1"
               value={targetQuantity}

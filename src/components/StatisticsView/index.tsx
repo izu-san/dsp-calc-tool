@@ -81,6 +81,7 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
             {t('productionOverview')}
           </h2>
           <button
+            data-testid="statistics-show-power-graph-button"
             onClick={() => setShowPowerGraph(!showPowerGraph)}
             className={`
               px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all ripple-effect

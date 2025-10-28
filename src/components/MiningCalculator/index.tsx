@@ -69,6 +69,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
           </label>
           <div className="flex gap-2">
             <button
+              data-testid="mining-speed-bonus-decrease-button"
               onClick={() => setMiningSpeedBonus(Math.max(100, miningSpeedBonus - 10))}
               className="px-3 py-2 bg-dark-700/50 border border-neon-blue/40 text-neon-blue rounded-lg hover:border-neon-blue hover:bg-neon-blue/10 hover:text-white transition-all ripple-effect"
             >
@@ -76,6 +77,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             </button>
             <input
               type="number"
+              data-testid="mining-speed-bonus-input"
               value={miningSpeedBonus}
               onChange={(e) => {
                 const value = parseInt(e.target.value) || 100;
@@ -87,6 +89,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
               className="flex-1 px-3 py-2 bg-dark-700/50 border border-neon-blue/40 rounded-lg text-white text-center focus:border-neon-blue focus:shadow-[0_0_10px_rgba(0,136,255,0.3)] transition-all"
             />
             <button
+              data-testid="mining-speed-bonus-increase-button"
               onClick={() => setMiningSpeedBonus(Math.min(100000, miningSpeedBonus + 10))}
               className="px-3 py-2 bg-dark-700/50 border border-neon-blue/40 text-neon-blue rounded-lg hover:border-neon-blue hover:bg-neon-blue/10 hover:text-white transition-all ripple-effect"
             >
@@ -105,6 +108,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             {t('machineType')}
           </label>
           <select
+            data-testid="mining-machine-type-select"
             value={machineType}
             onChange={(e) => setMachineType(e.target.value as typeof machineType)}
             className="w-full px-3 py-2 bg-dark-700/50 border border-neon-green/40 rounded-lg text-white focus:border-neon-green focus:shadow-[0_0_10px_rgba(0,255,136,0.3)] transition-all"
@@ -129,6 +133,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
           </label>
           <input
             type="range"
+            data-testid="mining-work-speed-slider"
             min="100"
             max="300"
             step="1"

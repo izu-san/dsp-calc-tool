@@ -58,6 +58,7 @@ export function ConveyorBeltSettings() {
           {CONVEYOR_BELT_OPTIONS.map((option) => (
             <button
               key={option.tier}
+              data-testid={`conveyor-belt-button-${option.tier}`}
               onClick={() => setConveyorBelt(option.tier, conveyorBelt.stackCount)}
               className={cn(
                 'px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
@@ -92,6 +93,7 @@ export function ConveyorBeltSettings() {
           {[1, 2, 3, 4].map((count) => (
             <button
               key={count}
+              data-testid={`conveyor-belt-stack-button-${count}`}
               onClick={() => handleStackCountChange(count)}
               className={cn(
                 'px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-110',

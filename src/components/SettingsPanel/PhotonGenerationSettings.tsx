@@ -38,6 +38,7 @@ export function PhotonGenerationSettings() {
       <label className="flex items-center gap-2 cursor-pointer">
         <input
           type="checkbox"
+          data-testid="photon-generation-graviton-lens-checkbox"
           checked={photonGeneration.useGravitonLens}
           onChange={(e) => setPhotonGenerationSetting('useGravitonLens', e.target.checked)}
           className="w-4 h-4 rounded border-neon-magenta/30 bg-dark-800 text-neon-magenta focus:ring-2 focus:ring-neon-magenta/50"
@@ -62,6 +63,7 @@ export function PhotonGenerationSettings() {
               return (
                 <button
                   key={type}
+                  data-testid={`photon-generation-proliferator-button-${type}`}
                   onClick={() => handleProliferatorChange(type)}
                   className={`
                     px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
@@ -106,6 +108,7 @@ export function PhotonGenerationSettings() {
         </label>
         <input
           type="range"
+          data-testid="photon-generation-ray-transmission-efficiency-slider"
           min="0"
           max={maxResearchLevel}
           step="1"

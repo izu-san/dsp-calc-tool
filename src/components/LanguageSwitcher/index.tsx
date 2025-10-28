@@ -11,6 +11,7 @@ export function LanguageSwitcher() {
   return (
     <div className="flex items-center gap-2">
       <select
+        data-testid="language-switcher-select"
         value={locale}
         onChange={(e) => setLocale(e.target.value)}
         disabled={isLoading}

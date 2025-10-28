@@ -60,6 +60,7 @@ export function ProliferatorSettings() {
             return (
               <button
                 key={type}
+                data-testid={`proliferator-type-button-${type}`}
                 onClick={() => handleTypeChange(type)}
                 className={`
                   px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
@@ -96,6 +97,7 @@ export function ProliferatorSettings() {
                 return (
                   <button
                     key={mode}
+                    data-testid={`proliferator-mode-button-${mode}`}
                     onClick={() => !isDisabled && handleModeChange(mode)}
                     disabled={isDisabled}
                     className={`

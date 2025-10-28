@@ -89,6 +89,7 @@ export function MachineRankSettings() {
             {MACHINE_OPTIONS.Smelt.map((option) => (
               <button
                 key={option.value}
+                data-testid={`machine-rank-button-smelt-${option.value}`}
                 onClick={() => handleRankChange('Smelt', option.value as SmelterRank)}
                 className={cn(
                   'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
@@ -121,6 +122,7 @@ export function MachineRankSettings() {
             {MACHINE_OPTIONS.Assemble.map((option) => (
               <button
                 key={option.value}
+                data-testid={`machine-rank-button-assemble-${option.value}`}
                 onClick={() => handleRankChange('Assemble', option.value as AssemblerRank)}
                 className={cn(
                   'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
@@ -153,6 +155,7 @@ export function MachineRankSettings() {
             {MACHINE_OPTIONS.Chemical.map((option) => (
               <button
                 key={option.value}
+                data-testid={`machine-rank-button-chemical-${option.value}`}
                 onClick={() => handleRankChange('Chemical', option.value as ChemicalPlantRank)}
                 className={cn(
                   'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',
@@ -185,6 +188,7 @@ export function MachineRankSettings() {
             {MACHINE_OPTIONS.Research.map((option) => (
               <button
                 key={option.value}
+                data-testid={`machine-rank-button-research-${option.value}`}
                 onClick={() => handleRankChange('Research', option.value as MatrixLabRank)}
                 className={cn(
                   'px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105',

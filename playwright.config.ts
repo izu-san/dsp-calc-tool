@@ -1,4 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+// Resolve __dirname in ESM environment so testDir is an absolute path.
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Read environment variables from file.
@@ -10,7 +15,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: join(__dirname, 'tests/e2e'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
