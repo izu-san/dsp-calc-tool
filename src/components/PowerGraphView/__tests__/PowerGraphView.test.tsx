@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { PowerGraphView } from "../index";
-import type {
-  CalculationResult,
-  RecipeTreeNode,
-  PowerConsumption,
-} from "../../../types/calculation";
-import { calculatePowerConsumption } from "../../../lib/powerCalculation";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  calculateUnifiedPower,
+  type UnifiedPowerResult,
+} from "../../../lib/unifiedPowerCalculation";
+import type { CalculationResult, RecipeTreeNode } from "../../../types/calculation";
 import { formatNumber, formatPower } from "../../../utils/format";
+import { PowerGraphView } from "../index";
 
 // Mock dependencies
-vi.mock("../../../lib/powerCalculation");
+vi.mock("../../../lib/unifiedPowerCalculation");
 vi.mock("../../../stores/gameDataStore");
+vi.mock("../../../stores/settingsStore");
 vi.mock("react-chartjs-2", () => ({
   Pie: vi.fn(() => <div data-testid="pie-chart">Mocked Pie Chart</div>),
 }));
@@ -30,11 +30,29 @@ vi.mock("../../../stores/gameDataStore", () => ({
   useGameDataStore: () => mockUseGameDataStore(),
 }));
 
+// Mock useSettingsStore
+const mockUseSettingsStore = vi.fn();
+vi.mock("../../../stores/settingsStore", () => ({
+  useSettingsStore: () => mockUseSettingsStore(),
+}));
+
 describe("PowerGraphView", () => {
-  const mockPower: PowerConsumption = {
-    machines: 1000,
-    sorters: 100,
-    total: 1100,
+  const mockPowerResult: UnifiedPowerResult = {
+    totalConsumption: 1100,
+    machinesPower: 1000,
+    sortersPower: 100,
+    miningPower: 0,
+    dysonSpherePower: 0,
+    breakdown: [
+      {
+        machineId: 1,
+        machineName: "Test Machine",
+        machineCount: 10,
+        powerPerMachine: 100,
+        totalPower: 1000,
+        percentage: 90.9,
+      },
+    ],
   };
 
   const mockRootNode: RecipeTreeNode = {
@@ -47,17 +65,20 @@ describe("PowerGraphView", () => {
       speedBonus: 0,
       powerIncrease: 0,
     },
-    power: mockPower,
+    power: {
+      machines: 1000,
+      sorters: 100,
+      total: 1100,
+    },
     inputs: [],
     children: [],
-    conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
+    conveyorBelts: { inputs: 0, outputs: 0, totalConsumption: 0 },
     nodeId: "test-node-1",
   };
 
   const mockCalculationResult: CalculationResult = {
     rootNode: mockRootNode,
-    totalPower: mockPower,
-    totalMachines: 10,
+    totalPower: 1100,
     rawMaterials: new Map(),
   };
 
@@ -71,7 +92,35 @@ describe("PowerGraphView", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Mock calculateUnifiedPower
+    vi.mocked(calculateUnifiedPower).mockReturnValue(mockPowerResult);
+
     mockUseGameDataStore.mockReturnValue({ data: mockGameData });
+    mockUseSettingsStore.mockReturnValue({
+      settings: {
+        proliferator: {
+          type: "none",
+          productionBonus: 0,
+          speedBonus: 0,
+          powerIncrease: 0,
+          mode: "speed",
+        },
+        machineRank: {
+          Smelt: "arc",
+          Assemble: "mk1",
+          Chemical: "standard",
+          Research: "standard",
+          Refine: "standard",
+          Particle: "standard",
+        },
+        conveyorBelt: { tier: "mk1", speed: 6, stackCount: 1 },
+        sorter: { tier: "mk1", powerConsumption: 18 },
+        alternativeRecipes: new Map(),
+        miningSpeedResearch: 100,
+        proliferatorMultiplier: { production: 1, speed: 1 },
+      },
+    });
   });
 
   // ===========================
@@ -79,10 +128,14 @@ describe("PowerGraphView", () => {
   // ===========================
 
   describe("Rendering - Empty States", () => {
-    it("should render empty state when power total is 0", () => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 0,
-        byMachine: [],
+    it("should render empty state when power totalConsumption is 0", () => {
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 0,
+        machinesPower: 0,
+        sortersPower: 0,
+        miningPower: 0,
+        dysonSpherePower: 0,
+        breakdown: [],
       });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
@@ -94,9 +147,13 @@ describe("PowerGraphView", () => {
 
   describe("Rendering - Valid Data", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 1500,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 1500,
+        machinesPower: 1200,
+        sortersPower: 300,
+        miningPower: 0,
+        dysonSpherePower: 0,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Assembling Machine Mk.I",
@@ -117,14 +174,14 @@ describe("PowerGraphView", () => {
       });
     });
 
-    it("should render summary card with total power consumption", () => {
+    it("should render summary card with totalConsumption power consumption", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       expect(screen.getByText(/totalPowerConsumption/i)).toBeInTheDocument();
       expect(screen.getByText(formatPower(1500))).toBeInTheDocument();
     });
 
-    it("should render total power in MW and GW", () => {
+    it("should render totalConsumption power in MW and GW", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       const mwText = formatNumber(1500 / 1000);
@@ -157,8 +214,8 @@ describe("PowerGraphView", () => {
 
   describe("Data Transformation", () => {
     const mockPowerBreakdown = {
-      total: 2000,
-      byMachine: [
+      totalConsumption: 2000,
+      breakdown: [
         {
           machineId: 2303,
           machineName: "Assembling Machine Mk.I",
@@ -179,7 +236,14 @@ describe("PowerGraphView", () => {
     };
 
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue(mockPowerBreakdown);
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 2000,
+        machinesPower: 2000,
+        sortersPower: 0,
+        miningPower: 0,
+        dysonSpherePower: 0,
+        breakdown: mockPowerBreakdown.breakdown,
+      });
     });
 
     it("should generate chart data with correct labels (machine names)", () => {
@@ -221,9 +285,13 @@ describe("PowerGraphView", () => {
 
   describe("Machine Icon Logic", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 1000,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 1000,
+        machinesPower: 1000,
+        sortersPower: 0,
+        miningPower: 0,
+        dysonSpherePower: 0,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Assembling Machine Mk.I",
@@ -272,9 +340,13 @@ describe("PowerGraphView", () => {
 
   describe("Layout & Styling", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 5000000,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 5000000,
+        machinesPower: 5000000,
+        sortersPower: 0,
+        miningPower: 0,
+        dysonSpherePower: 0,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Assembling Machine Mk.I",
@@ -314,9 +386,13 @@ describe("PowerGraphView", () => {
 
   describe("Edge Cases", () => {
     it("should handle single machine in breakdown", () => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 100,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 100,
+        machinesPower: 100,
+        sortersPower: 0,
+        miningPower: 0,
+        dysonSpherePower: 0,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Assembling Machine Mk.I",
@@ -344,9 +420,9 @@ describe("PowerGraphView", () => {
         percentage: 100 / 15,
       }));
 
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 15000,
-        byMachine: manyMachines,
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 15000,
+        breakdown: manyMachines,
       });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
@@ -363,9 +439,9 @@ describe("PowerGraphView", () => {
 
   describe("Chart Options & Configuration", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 1000,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 1000,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Test Machine",
@@ -406,9 +482,9 @@ describe("PowerGraphView", () => {
 
   describe("Chart Data Generation", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 3000,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 3000,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Machine A",
@@ -454,9 +530,9 @@ describe("PowerGraphView", () => {
     });
 
     it("should handle empty machine list in chart data", () => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 0,
-        byMachine: [],
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 0,
+        breakdown: [],
       });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
@@ -473,9 +549,9 @@ describe("PowerGraphView", () => {
 
   describe("getMachineIcon Function", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 1000,
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 1000,
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Test Machine",
@@ -523,9 +599,9 @@ describe("PowerGraphView", () => {
 
   describe("Power Formatting & Display", () => {
     beforeEach(() => {
-      vi.mocked(calculatePowerConsumption).mockReturnValue({
-        total: 1500000, // 1.5 MW
-        byMachine: [
+      vi.mocked(calculateUnifiedPower).mockReturnValue({
+        totalConsumption: 1500000, // 1.5 MW
+        breakdown: [
           {
             machineId: 2303,
             machineName: "Test Machine",
@@ -538,7 +614,7 @@ describe("PowerGraphView", () => {
       });
     });
 
-    it("should display total power with correct formatting", () => {
+    it("should display totalConsumption power with correct formatting", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       const powerElements = screen.getAllByText(formatPower(1500000));
@@ -583,8 +659,8 @@ describe("PowerGraphView", () => {
 
       rerender(<PowerGraphView calculationResult={newCalculationResult} />);
 
-      // calculatePowerConsumption should be called again
-      expect(calculatePowerConsumption).toHaveBeenCalledTimes(2);
+      // calculateUnifiedPower should be called again
+      expect(calculateUnifiedPower).toHaveBeenCalledTimes(2);
     });
 
     it("should recalculate chartData when powerBreakdown or t changes", () => {

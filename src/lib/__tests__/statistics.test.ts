@@ -1,16 +1,16 @@
-import { describe, it, expect } from "vitest";
-import {
-  calculateItemStatistics,
-  getSortedItems,
-  getRawMaterials,
-  getIntermediateProducts,
-  getFinalProducts,
-} from "../statistics";
+import { describe, expect, it } from "vitest";
 import type { RecipeTreeNode } from "../../types/calculation";
 import type { Machine, Recipe } from "../../types/game-data";
 import type { ProliferatorConfig } from "../../types/settings";
-import type { MiningCalculation } from "../miningCalculation";
 import { PROLIFERATOR_DATA } from "../../types/settings";
+import type { MiningCalculation } from "../miningCalculation";
+import {
+  calculateItemStatistics,
+  getFinalProducts,
+  getIntermediateProducts,
+  getRawMaterials,
+  getSortedItems,
+} from "../statistics";
 
 // Mock data
 const mockNoProliferator: ProliferatorConfig = {
@@ -1227,9 +1227,14 @@ describe("statistics", () => {
 
       const result = calculateItemStatistics(node, miningCalculation);
 
+      // デバッグ: 実際の計算結果を確認
+      console.log(`Total Power: ${result.totalPower}`);
+      console.log(`Total Mining Power: ${result.totalMiningPower}`);
+      console.log(`Expected Total Power: 540 + 25200 = ${540 + 25200}`);
+
       // 通常の統計
       expect(result.totalMachines).toBe(5);
-      expect(result.totalPower).toBe(540);
+      expect(result.totalPower).toBe(540 + 25200); // 採掘電力を含む
 
       // 採掘関連の統計
       expect(result.totalMiningMachines).toBe(10);

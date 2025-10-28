@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { PowerConsumption, RecipeTreeNode } from "../../types/calculation";
 import { calculateTotalPower } from "../calculator/aggregations";
 import type { MiningCalculation } from "../miningCalculation";
-import { calculatePowerConsumption } from "../powerCalculation";
 import { calculateItemStatistics } from "../statistics";
+import { calculateUnifiedPower } from "../unifiedPowerCalculation";
 
 /**
  * 電力計算の一貫性をテストする
@@ -97,11 +97,11 @@ describe("Power Consistency Tests", () => {
 
     // 1. 統計タブの計算 (statistics.ts)
     const statistics = calculateItemStatistics(mockNode, mockMiningCalculation);
-    const statisticsTotalPower = statistics.totalPower + statistics.totalMiningPower;
+    const statisticsTotalPower = statistics.totalPower;
 
-    // 2. 電力グラフの計算 (powerCalculation.ts)
-    const powerBreakdown = calculatePowerConsumption(mockNode, undefined, mockMiningCalculation);
-    const powerGraphTotalPower = powerBreakdown.total;
+    // 2. 電力グラフの計算 (unifiedPowerCalculation.ts)
+    const powerBreakdown = calculateUnifiedPower(mockNode, mockMiningCalculation);
+    const powerGraphTotalPower = powerBreakdown.totalConsumption;
 
     // 3. 発電設備の計算 (PowerGenerationView)
     const totalPowerFromCalculator = calculateTotalPower(mockNode);
@@ -125,10 +125,10 @@ describe("Power Consistency Tests", () => {
     console.log("=== Debug Information ===");
     console.log(`Statistics.totalPower: ${statistics.totalPower}`);
     console.log(`Statistics.totalMiningPower: ${statistics.totalMiningPower}`);
-    console.log(`PowerBreakdown.total: ${powerBreakdown.total}`);
+    console.log(`PowerBreakdown.totalConsumption: ${powerBreakdown.totalConsumption}`);
     console.log(
-      `PowerBreakdown.byMachine:`,
-      powerBreakdown.byMachine.map(m => `${m.machineName}: ${m.totalPower}kW`)
+      `PowerBreakdown.breakdown:`,
+      powerBreakdown.breakdown.map(m => `${m.machineName}: ${m.totalPower}kW`)
     );
     console.log(`Calculator totalPower.machines: ${totalPowerFromCalculator.machines}`);
     console.log(`Calculator totalPower.sorters: ${totalPowerFromCalculator.sorters}`);
@@ -159,12 +159,12 @@ describe("Power Consistency Tests", () => {
     mockNode.machine!.id = 2208; // Ray Receiver ID
 
     const statistics = calculateItemStatistics(mockNode);
-    const powerBreakdown = calculatePowerConsumption(mockNode);
+    const powerBreakdown = calculateUnifiedPower(mockNode);
     const totalPowerFromCalculator = calculateTotalPower(mockNode);
 
     // Ray Receiver の場合、統計タブでは Dyson Sphere 電力も含む
     const statisticsTotalPower = statistics.totalPower;
-    const powerGraphTotalPower = powerBreakdown.total;
+    const powerGraphTotalPower = powerBreakdown.totalConsumption;
     const powerGenerationRequiredPower =
       totalPowerFromCalculator.machines + totalPowerFromCalculator.sorters;
 
@@ -204,16 +204,16 @@ describe("Power Consistency Tests", () => {
     const mockMiningCalculation = createMockMiningCalculation(300);
 
     const statistics = calculateItemStatistics(parentNode, mockMiningCalculation);
-    const powerBreakdown = calculatePowerConsumption(parentNode, undefined, mockMiningCalculation);
+    const powerBreakdown = calculateUnifiedPower(parentNode, mockMiningCalculation);
     const totalPowerFromCalculator = calculateTotalPower(parentNode);
 
-    const statisticsTotalPower = statistics.totalPower + statistics.totalMiningPower;
-    const powerGraphTotalPower = powerBreakdown.total;
+    const statisticsTotalPower = statistics.totalPower;
+    const powerGraphTotalPower = powerBreakdown.totalConsumption;
     const powerGenerationRequiredPower =
       totalPowerFromCalculator.machines + totalPowerFromCalculator.sorters;
 
     // 期待値: 実際の計算結果に合わせる
-    // Statistics: 2070kW, PowerGraph: 2570kW, PowerGeneration: 1650kW
+    // Statistics: 2070kW, PowerGraph: 2070kW, PowerGeneration: 1650kW
     const expectedTotalPower = 2070; // 統計タブの実際の値
     const expectedPowerGenerationRequired = 1650; // 発電設備の実際の値
 

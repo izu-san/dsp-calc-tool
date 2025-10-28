@@ -2,21 +2,23 @@
  * 発電設備表示コンポーネント
  */
 
-import { useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import type { CalculationResult } from "@/types";
-import { calculatePowerGeneration } from "@/lib/powerGenerationCalculation";
-import { useSettingsStore } from "@/stores/settingsStore";
-import { useGameDataStore } from "@/stores/gameDataStore";
-import type { GameTemplate } from "@/types/settings/templates";
-import { formatNumber, formatPower, formatRate } from "@/utils/format";
 import { ItemIcon } from "@/components/ItemIcon";
 import {
   FUEL_ITEMS,
   POWER_GENERATORS,
   TEMPLATE_POWER_GENERATORS,
 } from "@/constants/powerGeneration";
+import type { MiningCalculation } from "@/lib/miningCalculation";
+import { calculatePowerGeneration } from "@/lib/powerGenerationCalculation";
+import { calculateUnifiedPower } from "@/lib/unifiedPowerCalculation";
+import { useGameDataStore } from "@/stores/gameDataStore";
+import { useSettingsStore } from "@/stores/settingsStore";
+import type { CalculationResult } from "@/types";
 import type { PowerGeneratorType } from "@/types/power-generation";
+import type { GameTemplate } from "@/types/settings/templates";
+import { formatNumber, formatPower, formatRate } from "@/utils/format";
+import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<string, number | null> = {
@@ -28,14 +30,19 @@ const PROLIFERATOR_IDS: Record<string, number | null> = {
 
 interface PowerGenerationViewProps {
   calculationResult: CalculationResult;
+  miningCalculation?: MiningCalculation | null;
 }
 
 /**
  * 発電設備表示ビュー
  */
-export function PowerGenerationView({ calculationResult }: PowerGenerationViewProps) {
+export function PowerGenerationView({
+  calculationResult,
+  miningCalculation,
+}: PowerGenerationViewProps) {
   const { t } = useTranslation();
   const {
+    settings,
     setPowerGenerationTemplate,
     setManualPowerGenerator,
     setManualPowerFuel,
@@ -64,13 +71,20 @@ export function PowerGenerationView({ calculationResult }: PowerGenerationViewPr
     const fuel = Object.values(FUEL_ITEMS).find(f => f.itemId === itemId);
     return fuel?.itemName || `Item ${itemId}`;
   };
-
-  // 総消費電力を取得 (kW)
-  // Note: Excludes dysonSphere power (which is generated, not consumed by power plants)
+  // 総消費電力を取得 (kW) - unifiedPowerCalculationを使用
   const totalPowerConsumption = useMemo(() => {
-    if (!calculationResult.totalPower) return 0;
-    return calculationResult.totalPower.machines + calculationResult.totalPower.sorters;
-  }, [calculationResult.totalPower]);
+    if (!calculationResult.rootNode) return 0;
+
+    const powerResult = calculateUnifiedPower(
+      calculationResult.rootNode,
+      miningCalculation || undefined, // 採掘計算も含める
+      settings,
+      data || undefined
+    );
+
+    // 発電設備で供給する必要がある電力 = 設備電力 + ソーター電力 + 採掘電力
+    return powerResult.totalConsumption;
+  }, [calculationResult.rootNode, miningCalculation, settings, data]);
 
   // 発電設備テンプレートを取得（設定ストアから直接取得）
   const template = useSettingsStore(state => state.powerGenerationTemplate);

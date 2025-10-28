@@ -1,13 +1,13 @@
-import { useState, Suspense, lazy, useMemo } from "react";
+import { Suspense, lazy, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { Recipe, CalculationResult } from "../../types";
 import { calculateMiningRequirements } from "../../lib/miningCalculation";
-import { cn } from "../../utils/classNames";
-import { ItemIcon } from "../ItemIcon";
-import { formatNumber } from "../../utils/format";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
 import { useGameDataStore } from "../../stores/gameDataStore";
+import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { CalculationResult, Recipe } from "../../types";
+import { cn } from "../../utils/classNames";
+import { formatNumber } from "../../utils/format";
+import { ItemIcon } from "../ItemIcon";
 
 const ProductionTree = lazy(() =>
   import("../ResultTree").then(m => ({ default: m.ProductionTree }))
@@ -73,10 +73,7 @@ export function ProductionResultsPanel({
   ]);
 
   return (
-    <div
-      data-testid="production-tree"
-      className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift"
-    >
+    <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
       <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t("productionTree")}</h2>
       {calculationResult ? (
         <div className="space-y-4">
@@ -250,16 +247,21 @@ export function ProductionResultsPanel({
               ) : showBuildingCost ? (
                 <BuildingCostView calculationResult={calculationResult} />
               ) : showPowerGeneration ? (
-                <PowerGenerationView calculationResult={calculationResult} />
+                <PowerGenerationView
+                  calculationResult={calculationResult}
+                  miningCalculation={miningCalculation}
+                />
               ) : showMiningCalculator ? (
                 <MiningCalculator calculationResult={calculationResult} />
               ) : (
-                <ProductionTree
-                  node={calculationResult.rootNode}
-                  collapsedNodes={collapsedNodes}
-                  onToggleCollapse={handleToggleCollapse}
-                  nodeId="root"
-                />
+                <div data-testid="production-tree-content">
+                  <ProductionTree
+                    node={calculationResult.rootNode}
+                    collapsedNodes={collapsedNodes}
+                    onToggleCollapse={handleToggleCollapse}
+                    nodeId="root"
+                  />
+                </div>
               )}
             </Suspense>
           </div>

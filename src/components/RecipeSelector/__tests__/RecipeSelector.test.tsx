@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { RecipeSelector } from "../index";
-import type { Recipe } from "../../../types";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useFavoritesStore } from "../../../stores/favoritesStore";
+import type { Recipe } from "../../../types";
+import { RecipeSelector } from "../index";
 
 // i18nextのモック
 vi.mock("react-i18next", () => ({
@@ -416,7 +416,7 @@ describe("RecipeSelector", () => {
     render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // お気に入りボタンにお気に入り数が表示されることを確認
-    expect(screen.getByText(/favorites.*2/)).toBeInTheDocument();
+    expect(screen.getByTestId("favorites-count")).toHaveTextContent("(2)");
   });
 
   it("お気に入りが0の場合は数が表示されない", () => {

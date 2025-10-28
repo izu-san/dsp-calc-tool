@@ -1,23 +1,24 @@
 import Decimal from "decimal.js";
-import type {
-  Recipe,
-  Machine,
-  GameData,
-  GlobalSettings,
-  RecipeTreeNode,
-  PowerConsumption,
-  ProliferatorConfig,
-  NodeOverrideSettings,
-} from "../../types";
-import { calculateMiningRequirements } from "../miningCalculation";
-import { isRawMaterial } from "../../constants/rawMaterials";
 import {
   MACHINE_IDS_BY_RECIPE_TYPE,
   getMachineForRecipe as getMachineForRecipeFromConstants,
 } from "../../constants/machines";
-import { calculateProductionRate } from "./production-rate";
-import { calculateMachinePower, calculateSorterPower } from "./power-calculation";
+import { isRawMaterial } from "../../constants/rawMaterials";
+import type {
+  CalculationResult,
+  GameData,
+  GlobalSettings,
+  Machine,
+  NodeOverrideSettings,
+  PowerConsumption,
+  ProliferatorConfig,
+  Recipe,
+  RecipeTreeNode,
+} from "../../types";
+import { calculateMiningRequirements } from "../miningCalculation";
 import { calculateConveyorBelts } from "./belt-calculation";
+import { calculateMachinePower, calculateSorterPower } from "./power-calculation";
+import { calculateProductionRate } from "./production-rate";
 
 /**
  * Find the appropriate machine for a recipe type
@@ -143,7 +144,7 @@ export function createRawMaterialNode(
   if (!isCircular) {
     try {
       const miningCalc = calculateMiningRequirements(
-        { rawMaterials: new Map([[itemId, requiredRate]]) } as any,
+        { rawMaterials: new Map([[itemId, requiredRate]]) } as CalculationResult,
         settings.miningSpeedResearch / 100, // Convert percentage to multiplier
         miningSettings.machineType,
         miningSettings.workSpeedMultiplier,

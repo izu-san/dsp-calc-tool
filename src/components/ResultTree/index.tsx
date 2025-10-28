@@ -1,12 +1,12 @@
-import { useState, memo } from "react";
+import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { RecipeTreeNode } from "../../types";
-import { formatRate, formatPower, formatBuildingCount } from "../../utils/format";
+import { cn } from "../../utils/classNames";
+import { formatBuildingCount, formatPower, formatRate } from "../../utils/format";
 import { parseColorTags } from "../../utils/html";
+import { ItemIcon } from "../ItemIcon";
 import { NodeSettingsModal } from "../NodeSettingsModal";
 import { CompactNodeSettings } from "./CompactNodeSettings";
-import { ItemIcon } from "../ItemIcon";
-import { cn } from "../../utils/classNames";
 
 interface ProductionTreeProps {
   node: RecipeTreeNode;
@@ -55,7 +55,7 @@ export const ProductionTree = memo(function ProductionTree({
     const displayName = node.itemName;
 
     return (
-      <div className={cn({ "ml-6 mt-2": depth > 0 })}>
+      <div className={cn({ "ml-6 mt-2": depth > 0 })} data-testid="production-tree">
         <div
           data-testid={`raw-material-node-${iconId}`}
           className={cn(
@@ -230,7 +230,7 @@ export const ProductionTree = memo(function ProductionTree({
   const isBottleneck = node.conveyorBelts.saturation && node.conveyorBelts.saturation > 80;
 
   return (
-    <div className={cn({ "ml-6 mt-2": depth > 0 })}>
+    <div className={cn({ "ml-6 mt-2": depth > 0 })} data-testid="production-tree">
       {/* Tree Node */}
       <div
         data-testid={`recipe-node-${node.recipe!.SID}`}

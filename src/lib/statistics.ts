@@ -1,5 +1,8 @@
 import type { RecipeTreeNode } from "../types";
+import type { GameData } from "../types/game-data";
+import type { GlobalSettings } from "../types/settings";
 import type { MiningCalculation } from "./miningCalculation";
+import { calculateUnifiedPower } from "./unifiedPowerCalculation";
 
 /**
  * Item statistics for production chain
@@ -31,54 +34,27 @@ export interface ProductionStatistics {
  */
 export function calculateItemStatistics(
   rootNode: RecipeTreeNode,
-  miningCalculation?: MiningCalculation
+  miningCalculation?: MiningCalculation,
+  settings?: GlobalSettings,
+  gameData?: GameData
 ): ProductionStatistics {
   const itemStats = new Map<number, ItemStatistics>();
   let totalMachines = 0;
-  let totalPower = 0;
 
   // Mining-related totals
   let totalMiningMachines = 0;
-  let totalMiningPower = 0;
   let totalOrbitalCollectors = 0;
 
   // Add mining statistics if provided
   if (miningCalculation) {
     totalMiningMachines = miningCalculation.totalMiners;
     totalOrbitalCollectors = miningCalculation.totalOrbitalCollectors;
-
-    // Calculate mining power consumption
-    // Mining Machine: 420 kW base
-    // Advanced Mining Machine: 630 kW base
-    // Power multiplier applies to Advanced Mining Machine based on work speed
-    miningCalculation.rawMaterials.forEach(material => {
-      if (material.orbitCollectorsNeeded) {
-        // Orbital collectors don't consume power (they're passive)
-        return;
-      }
-
-      // Calculate power per miner based on machine type and work speed
-      const basePowerPerMiner = material.machineType === "Advanced Mining Machine" ? 630 : 420;
-      const powerPerMiner = basePowerPerMiner * material.powerMultiplier;
-      const minersPower = material.minersNeeded * powerPerMiner;
-      totalMiningPower += minersPower;
-    });
   }
 
   // Recursive function to traverse the tree
   function traverse(node: RecipeTreeNode) {
     // Add machine count
     totalMachines += node.machineCount;
-
-    // Add power consumption: machines + sorters (always consumed by power plants)
-    // Note: dysonSphere power is NOT included (it's provided by Dyson Sphere, not power plants)
-    // Skip Ray Receivers (γ線レシーバー) - they use Dyson Sphere power, not regular power plants
-    if (node.machine?.id !== 2208) {
-      totalPower += node.power.machines + node.power.sorters;
-    } else {
-      // For Ray Receivers, only count sorter power (machines use Dyson Sphere power)
-      totalPower += node.power.sorters;
-    }
 
     // Process outputs (production)
     if (node.recipe?.Results) {
@@ -182,12 +158,16 @@ export function calculateItemStatistics(
     stats.netProduction = stats.totalProduction - stats.totalConsumption;
   });
 
+  // Calculate total power using unified power calculation
+  const powerResult = calculateUnifiedPower(rootNode, miningCalculation, settings, gameData);
+  const totalPower = powerResult.totalConsumption;
+
   return {
     items: itemStats,
     totalMachines,
     totalPower,
     totalMiningMachines,
-    totalMiningPower,
+    totalMiningPower: powerResult.miningPower,
     totalOrbitalCollectors,
   };
 }

@@ -1,11 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { StatisticsView } from "../index";
-import type { CalculationResult } from "../../../types/calculation";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ProductionStatistics } from "../../../lib/statistics";
+import type { CalculationResult } from "../../../types/calculation";
+import { StatisticsView } from "../index";
 
 // Mock dependencies
 vi.mock("../../../lib/statistics");
+vi.mock("../../../lib/unifiedPowerCalculation", () => ({
+  calculateUnifiedPower: vi.fn(),
+}));
 vi.mock("../../../utils/format", () => ({
   formatRate: (val: number) => `${val.toFixed(1)}/s`,
   formatPower: (val: number) =>
@@ -27,6 +30,7 @@ vi.mock("../../../stores/gameDataStore", () => ({
 
 // Import mocked functions
 import * as statisticsLib from "../../../lib/statistics";
+import * as unifiedPowerLib from "../../../lib/unifiedPowerCalculation";
 
 describe("StatisticsView", () => {
   const mockCalculationResult: CalculationResult = {
@@ -151,6 +155,11 @@ describe("StatisticsView", () => {
     (statisticsLib.getRawMaterials as any).mockReturnValue(mockRawMaterials);
     (statisticsLib.getIntermediateProducts as any).mockReturnValue(mockIntermediateProducts);
     (statisticsLib.getFinalProducts as any).mockReturnValue(mockFinalProducts);
+    (unifiedPowerLib.calculateUnifiedPower as any).mockImplementation(() => ({
+      totalConsumption: 1600, // 1.60 MW
+      miningPower: 0,
+      dysonSpherePower: 0,
+    }));
   });
 
   describe("Rendering - Empty State", () => {
@@ -473,6 +482,11 @@ describe("StatisticsView", () => {
           netProduction: 12345,
         },
       ]);
+      (unifiedPowerLib.calculateUnifiedPower as any).mockImplementation(() => ({
+        totalConsumption: 5000000, // 5000.00 MW
+        miningPower: 0,
+        dysonSpherePower: 0,
+      }));
 
       render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 

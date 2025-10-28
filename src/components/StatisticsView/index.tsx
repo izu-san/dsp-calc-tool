@@ -1,17 +1,19 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { CalculationResult } from "../../types";
 import type { MiningCalculation } from "../../lib/miningCalculation";
 import {
   calculateItemStatistics,
-  getRawMaterials,
-  getIntermediateProducts,
   getFinalProducts,
+  getIntermediateProducts,
+  getRawMaterials,
 } from "../../lib/statistics";
-import { formatRate, formatPower, formatBuildingCount } from "../../utils/format";
+import { calculateUnifiedPower } from "../../lib/unifiedPowerCalculation";
+import { useGameDataStore } from "../../stores/gameDataStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { CalculationResult } from "../../types";
+import { formatBuildingCount, formatPower, formatRate } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
 import { PowerGraphView } from "../PowerGraphView";
-import { useGameDataStore } from "../../stores/gameDataStore";
 
 interface StatisticsViewProps {
   calculationResult: CalculationResult | null;
@@ -22,11 +24,28 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
   const { t } = useTranslation();
   const [showPowerGraph, setShowPowerGraph] = useState(false);
   const { data } = useGameDataStore();
+  const { settings } = useSettingsStore();
 
   const statistics = useMemo(() => {
     if (!calculationResult) return null;
-    return calculateItemStatistics(calculationResult.rootNode, miningCalculation || undefined);
-  }, [calculationResult, miningCalculation]);
+    return calculateItemStatistics(
+      calculationResult.rootNode,
+      miningCalculation || undefined,
+      settings,
+      data || undefined
+    );
+  }, [calculationResult, miningCalculation, settings, data]);
+
+  // 統一された電力計算結果を取得
+  const unifiedPowerResult = useMemo(() => {
+    if (!calculationResult) return null;
+    return calculateUnifiedPower(
+      calculationResult.rootNode,
+      miningCalculation || undefined,
+      settings,
+      data || undefined
+    );
+  }, [calculationResult, miningCalculation, settings, data]);
 
   // Enhanced statistics with resolved item names (language-dependent)
   const enhancedStatistics = useMemo(() => {
@@ -127,16 +146,16 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
           >
             <div className="text-sm text-space-300">{t("totalPower")}</div>
             <div className="text-2xl font-bold text-neon-green">
-              {formatPower(enhancedStatistics.totalPower + enhancedStatistics.totalMiningPower)}
+              {formatPower(unifiedPowerResult?.totalConsumption || 0)}
             </div>
-            {enhancedStatistics.totalMiningPower > 0 && (
+            {unifiedPowerResult && unifiedPowerResult.miningPower > 0 && (
               <div className="text-xs text-neon-green mt-1">
-                ⛏️ {t("miningPower")}: {formatPower(enhancedStatistics.totalMiningPower)}
+                ⛏️ {t("miningPower")}: {formatPower(unifiedPowerResult.miningPower)}
               </div>
             )}
-            {calculationResult && calculationResult.totalPower.dysonSphere > 0 && (
+            {unifiedPowerResult && unifiedPowerResult.dysonSpherePower > 0 && (
               <div className="text-xs text-yellow-400 mt-1">
-                ⚡ {t("dysonSpherePower")}: {formatPower(calculationResult.totalPower.dysonSphere)}
+                ⚡ {t("dysonSpherePower")}: {formatPower(unifiedPowerResult.dysonSpherePower)}
               </div>
             )}
           </div>

@@ -1,14 +1,14 @@
 import { useTranslation } from "react-i18next";
-import { ProliferatorSettings } from "./ProliferatorSettings";
-import { MachineRankSettings } from "./MachineRankSettings";
-import { ConveyorBeltSettings } from "./ConveyorBeltSettings";
-import { PhotonGenerationSettings } from "./PhotonGenerationSettings";
-import { TemplateSelector } from "./TemplateSelector";
+import { useGameDataStore } from "../../stores/gameDataStore";
+import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
+import type { RecipeTreeNode } from "../../types";
 import { AlternativeRecipeSelector } from "../AlternativeRecipeSelector";
 import { WhatIfSimulator } from "../WhatIfSimulator";
-import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
-import { useGameDataStore } from "../../stores/gameDataStore";
-import type { RecipeTreeNode } from "../../types";
+import { ConveyorBeltSettings } from "./ConveyorBeltSettings";
+import { MachineRankSettings } from "./MachineRankSettings";
+import { PhotonGenerationSettings } from "./PhotonGenerationSettings";
+import { ProliferatorSettings } from "./ProliferatorSettings";
+import { TemplateSelector } from "./TemplateSelector";
 
 export function SettingsPanel() {
   const { t } = useTranslation();
@@ -44,7 +44,7 @@ export function SettingsPanel() {
           for (const itemId of itemsInChain) {
             const recipes = data.recipesByItemId.get(itemId) || [];
             const hasMultipleRecipes = recipes.length > 1;
-            const canBeMined = data.allItems.get(itemId)?.miningFrom !== undefined;
+            const canBeMined = data.allItems?.get(itemId)?.miningFrom !== undefined;
             const hasRecipes = recipes.length > 0;
 
             // Show if: has multiple recipes, OR can be mined and has at least one recipe

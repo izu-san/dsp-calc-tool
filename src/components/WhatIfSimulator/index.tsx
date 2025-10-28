@@ -1,13 +1,13 @@
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { calculateProductionChain } from "../../lib/calculator";
 import { useGameDataStore } from "../../stores/gameDataStore";
+import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
-import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
-import { calculateProductionChain } from "../../lib/calculator";
-import { formatNumber, formatPower, formatBuildingCount } from "../../utils/format";
-import type { GlobalSettings, ConveyorBeltTier, RecipeTreeNode } from "../../types";
+import type { ConveyorBeltTier, GlobalSettings, RecipeTreeNode } from "../../types";
+import { formatBuildingCount, formatNumber, formatPower } from "../../utils/format";
 
 interface Scenario {
   id: string;
@@ -280,7 +280,16 @@ export function WhatIfSimulator() {
     });
 
     return { baseResult, scenarioResults };
-  }, [data, selectedRecipe, targetQuantity, settings, nodeOverrides, scenarios, countTotalBelts]);
+  }, [
+    data,
+    selectedRecipe,
+    targetQuantity,
+    settings,
+    nodeOverrides,
+    scenarios,
+    countTotalBelts,
+    miningSettings,
+  ]);
 
   // Optimization ranking based on selected goal
   const rankedScenarios = useMemo(() => {

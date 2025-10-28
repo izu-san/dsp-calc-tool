@@ -1,14 +1,14 @@
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from "chart.js";
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import type { CalculationResult } from "../../types/calculation";
+import { useTranslation } from "react-i18next";
 import type { MiningCalculation } from "../../lib/miningCalculation";
-import { calculatePowerConsumption } from "../../lib/powerCalculation";
-import { formatNumber, formatPower, formatBuildingCount } from "../../utils/format";
-import { ItemIcon } from "../ItemIcon";
+import { calculateUnifiedPower } from "../../lib/unifiedPowerCalculation";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useSettingsStore } from "../../stores/settingsStore";
+import type { CalculationResult } from "../../types/calculation";
+import { formatBuildingCount, formatNumber, formatPower } from "../../utils/format";
+import { ItemIcon } from "../ItemIcon";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -38,22 +38,22 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
   const { settings } = useSettingsStore();
 
   const powerBreakdown = useMemo(() => {
-    return calculatePowerConsumption(
+    return calculateUnifiedPower(
       calculationResult.rootNode,
-      settings,
       miningCalculation || undefined,
+      settings,
       gameData || undefined
     );
   }, [calculationResult, settings, miningCalculation, gameData]);
 
   const chartData = useMemo(() => {
     return {
-      labels: powerBreakdown.byMachine.map(item => item.machineName),
+      labels: powerBreakdown.breakdown.map(item => item.machineName),
       datasets: [
         {
           label: t("powerConsumptionKW"),
-          data: powerBreakdown.byMachine.map(item => item.totalPower),
-          backgroundColor: CHART_COLORS.slice(0, powerBreakdown.byMachine.length),
+          data: powerBreakdown.breakdown.map(item => item.totalPower),
+          backgroundColor: CHART_COLORS.slice(0, powerBreakdown.breakdown.length),
           borderColor: "rgba(255, 255, 255, 0.2)",
           borderWidth: 2,
           hoverBorderColor: "rgba(255, 255, 255, 0.5)",
@@ -92,7 +92,7 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
         callbacks: {
           label: function (context: { parsed: number; dataIndex: number }) {
             const value = context.parsed;
-            const percentage = powerBreakdown.byMachine[context.dataIndex].percentage;
+            const percentage = powerBreakdown.breakdown[context.dataIndex].percentage;
             return `${formatPower(value)} (${percentage.toFixed(1)}%)`;
           },
         },
@@ -106,7 +106,7 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
     return machine?.id || machineId;
   };
 
-  if (powerBreakdown.total === 0) {
+  if (powerBreakdown.totalConsumption === 0) {
     return (
       <div className="flex items-center justify-center h-64 text-space-300 bg-dark-700/50 backdrop-blur-sm border border-neon-purple/30 rounded-lg">
         {t("noPowerConsumptionData")}
@@ -127,12 +127,12 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
             {t("totalPowerConsumption")}
           </h3>
           <div className="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]">
-            {formatPower(powerBreakdown.total)}
+            {formatPower(powerBreakdown.totalConsumption)}
           </div>
         </div>
         <div className="mt-2 text-sm text-space-200">
-          {formatNumber(powerBreakdown.total / 1000)} MW •{" "}
-          {formatNumber(powerBreakdown.total / 1000000)} GW
+          {formatNumber(powerBreakdown.totalConsumption / 1000)} MW •{" "}
+          {formatNumber(powerBreakdown.totalConsumption / 1000000)} GW
         </div>
       </div>
 
@@ -156,7 +156,7 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
             {t("powerBreakdown")}
           </h3>
           <div className="space-y-3 overflow-y-auto max-h-80">
-            {powerBreakdown.byMachine.map((item, index) => (
+            {powerBreakdown.breakdown.map((item, index) => (
               <div
                 key={item.machineId}
                 className="flex items-center gap-3 p-3 rounded-lg bg-dark-800/50 border border-neon-blue/20 hover:border-neon-blue/40 transition-all"

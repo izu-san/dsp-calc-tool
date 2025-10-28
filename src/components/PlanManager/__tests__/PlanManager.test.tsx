@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PlanManager } from "../index";
 
 // i18n モック（キーを返す）
@@ -219,7 +219,11 @@ describe("PlanManager", () => {
     const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     await fireEvent.change(realInput, { target: { files: [file] } });
     expect(planExportMocks.restorePlan).toHaveBeenCalled();
-    expect(alertMock).toHaveBeenCalledWith("planLoaded");
+    // handleImportFile では alert() を使用せず、setImportSuccessMessage() を使用する
+    // 成功メッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByTestId("import-success-message")).toBeInTheDocument();
+    });
   });
 
   it("Save: includeOverridesOnSave=false で nodeOverrides が空で保存される", () => {
@@ -304,7 +308,11 @@ describe("PlanManager", () => {
     const file = new File(["invalid json"], "plan.json", { type: "application/json" });
     const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     await fireEvent.change(realInput, { target: { files: [file] } });
-    expect(alertMock).toHaveBeenCalledWith(expect.stringContaining("loadError"));
+    // handleImportFile では alert() を使用せず、setImportErrorMessage() を使用する
+    // エラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByTestId("import-error-message")).toBeInTheDocument();
+    });
   });
 
   it("Load: 保存データが見つからない場合は planNotFound をアラート", () => {
@@ -356,7 +364,11 @@ describe("PlanManager", () => {
     const file = new File([JSON.stringify(exportData)], "plan.json", { type: "application/json" });
     const realInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     await fireEvent.change(realInput, { target: { files: [file] } });
-    expect(alertMock).toHaveBeenCalledWith(expect.stringContaining("loadError"));
+    // handleImportFile では alert() を使用せず、setImportErrorMessage() を使用する
+    // エラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByTestId("import-error-message")).toBeInTheDocument();
+    });
   });
 
   it("Load: レシピが見つからない場合は recipeNotFound アラート", () => {
