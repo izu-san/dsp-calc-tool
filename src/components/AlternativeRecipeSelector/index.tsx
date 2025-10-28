@@ -32,6 +32,10 @@ export function AlternativeRecipeSelector() {
           relevantItemIds.add(item.id);
         });
       }
+      // Also collect item IDs from raw material nodes
+      if (node.isRawMaterial && node.itemId) {
+        relevantItemIds.add(node.itemId);
+      }
       if (node.children) {
         node.children.forEach((child) => collectItemIds(child));
       }

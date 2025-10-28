@@ -26,6 +26,10 @@ export function SettingsPanel() {
           itemsInChain.add(item.id);
         });
       }
+      // Also collect item IDs from raw material nodes
+      if (node.isRawMaterial && node.itemId) {
+        itemsInChain.add(node.itemId);
+      }
       if (node.children) {
         node.children.forEach((child) => collectItems(child));
       }
@@ -34,10 +38,15 @@ export function SettingsPanel() {
     // Start from rootNode
     collectItems(calculationResult.rootNode);
     
-    // Check if any of these items have multiple recipes
+    // Check if any of these items have multiple recipes OR can be mined AND have recipes
     for (const itemId of itemsInChain) {
       const recipes = data.recipesByItemId.get(itemId) || [];
-      if (recipes.length > 1) {
+      const hasMultipleRecipes = recipes.length > 1;
+      const canBeMined = data.allItems.get(itemId)?.miningFrom !== undefined;
+      const hasRecipes = recipes.length > 0;
+      
+      // Show if: has multiple recipes, OR can be mined and has at least one recipe
+      if (hasMultipleRecipes || (canBeMined && hasRecipes)) {
         return true;
       }
     }

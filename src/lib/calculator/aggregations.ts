@@ -1,5 +1,4 @@
 import type { RecipeTreeNode, PowerConsumption } from '../../types';
-import { isRawMaterial } from '../../constants/rawMaterials';
 
 /**
  * Calculate total power consumption recursively
