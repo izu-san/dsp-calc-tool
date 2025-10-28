@@ -85,12 +85,18 @@ export function ProliferatorSettings() {
           <div>
             <label className="block text-sm font-medium text-neon-cyan mb-2">
               {t('proliferatorMode')} <span className="text-xs text-space-300">({t('exclusive')})</span>
-              {!isProductionAllowed && (
-                <span className="ml-2 text-xs text-neon-orange font-medium">
-                  ⚠️ {t('productionModeDisabled')}
-                </span>
-              )}
             </label>
+            {!isProductionAllowed && (
+              <div className="mb-3 p-2 bg-neon-orange/10 border border-neon-orange/30 rounded-lg" role="alert">
+                <div className="flex items-center gap-2 text-sm text-neon-orange font-medium">
+                  <span className="text-lg">⚠️</span>
+                  <span>{t('productionModeDisabled')}</span>
+                </div>
+                <div className="text-xs text-neon-orange/80 mt-1 ml-6">
+                  {t('productionModeDisabledDescription')}
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-2 gap-2">
               {(['production', 'speed'] as ProliferatorMode[]).map((mode) => {
                 const isDisabled = mode === 'production' && !isProductionAllowed;
@@ -101,12 +107,12 @@ export function ProliferatorSettings() {
                     onClick={() => !isDisabled && handleModeChange(mode)}
                     disabled={isDisabled}
                     className={`
-                      px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
+                      px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all duration-200
                       ${isDisabled
-                        ? 'bg-dark-800/50 text-space-400 border-dark-600 cursor-not-allowed opacity-40'
+                        ? 'bg-dark-800/30 text-space-500 border-dark-700 cursor-not-allowed opacity-50 hover:scale-100 hover:bg-dark-800/30'
                         : proliferator.mode === mode
-                          ? 'bg-neon-cyan/30 text-white border-neon-cyan shadow-[0_0_20px_rgba(0,217,255,0.6),inset_0_0_20px_rgba(0,217,255,0.2)] backdrop-blur-sm font-bold scale-105'
-                          : 'bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan'
+                          ? 'bg-neon-cyan/30 text-white border-neon-cyan shadow-[0_0_20px_rgba(0,217,255,0.6),inset_0_0_20px_rgba(0,217,255,0.2)] backdrop-blur-sm font-bold scale-105 hover:scale-105'
+                          : 'bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan hover:scale-105'
                       }
                     `}
                   >

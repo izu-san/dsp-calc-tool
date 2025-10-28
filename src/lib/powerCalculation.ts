@@ -128,9 +128,18 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
     const sorterTier = settings?.sorter.tier || 'mk1';
     const sorterIconId = ICONS.sorter[sorterTier];
     
+    // Get proper sorter name from game data based on tier
+    let sorterName = 'ソーター'; // fallback
+    if (gameData?.machines) {
+      const sorterMachine = gameData.machines.get(sorterIconId);
+      if (sorterMachine?.name) {
+        sorterName = sorterMachine.name;
+      }
+    }
+    
     byMachine.push({
       machineId: sorterIconId, // Use actual sorter icon ID instead of -1
-      machineName: 'ソーター',
+      machineName: sorterName,
       machineCount: totalSorterCount,
       powerPerMachine: powerPerSorter,
       totalPower: totalSorterPower,

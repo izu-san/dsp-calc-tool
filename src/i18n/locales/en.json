@@ -85,6 +85,7 @@
   "proliferatorMK3": "Proliferator Mk.III",
   "exclusive": "Exclusive",
   "productionModeDisabled": "Production mode disabled for this recipe",
+  "productionModeDisabledDescription": "This recipe does not support production mode, only speed mode is available",
   "notAllowed": "Not allowed",
   "output": "output",
   "speed": "speed",

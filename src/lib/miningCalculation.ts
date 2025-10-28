@@ -1,5 +1,6 @@
 import type { CalculationResult } from '../types/calculation';
 import type { GameData } from '../types/game-data';
+import { LIQUID_MINING_ITEMS, LIQUID_MINING_EQUIPMENT } from '../constants/rawMaterials';
 
 export interface MiningRequirement {
   itemId: number;
@@ -13,7 +14,7 @@ export interface MiningRequirement {
   veinsNeeded: number; // Total number of veins needed to cover
   orbitCollectorsNeeded?: number; // Alternative: orbital collectors (Hydrogen/Deuterium only)
   orbitalCollectorSpeed?: number; // Speed per orbital collector (if applicable)
-  machineType: 'Mining Machine' | 'Advanced Mining Machine'; // Type of mining machine used
+  machineType: 'Mining Machine' | 'Advanced Mining Machine' | 'Water Pump' | 'Oil Extractor'; // Type of mining machine used
 }
 
 export interface MiningCalculation {

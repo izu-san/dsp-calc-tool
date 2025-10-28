@@ -102,9 +102,6 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
               <div className="text-2xl font-bold text-white">
                 ×{formatBuildingCount(enhancedBuildingCost.sorters)}
               </div>
-              <div className="text-xs text-space-200 mt-1">
-                ({t('mkIOrHigher')})
-              </div>
             </div>
 
             <div className="p-4 bg-neon-cyan/20 backdrop-blur-sm rounded-lg border border-neon-cyan/40 shadow-[0_0_15px_rgba(0,217,255,0.2)]">
@@ -115,44 +112,15 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
               <div className="text-2xl font-bold text-white">
                 ×{formatBuildingCount(enhancedBuildingCost.belts)}
               </div>
-              <div className="text-xs text-space-200 mt-1">
-                ({t('currentTierSetting')})
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Summary */}
-        <div className="pt-4 border-t border-neon-green/30">
-          <div className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-neon-green text-lg">✓</span>
-              <span className="text-sm font-semibold text-white">
-                {t('totalBuildingRequirements')}
-              </span>
-            </div>
-            <div className="text-xs text-space-200 space-y-1">
-              <div className="flex justify-between">
-                <span>{t('productionMachines')}:</span>
-                <span className="font-semibold text-neon-green">
-                  {enhancedBuildingCost.machines.reduce((sum, m) => sum + Math.ceil(m.count), 0)} {t('units')}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>{t('sorters')}:</span>
-                <span className="font-semibold text-neon-green">{formatBuildingCount(enhancedBuildingCost.sorters)} {t('units')}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{t('conveyorBelts')}:</span>
-                <span className="font-semibold text-neon-green">{formatBuildingCount(enhancedBuildingCost.belts)} {t('units')}</span>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Mining Calculator */}
-      <MiningCalculator calculationResult={calculationResult} />
+      <div className="pt-6">
+        <MiningCalculator calculationResult={calculationResult} />
+      </div>
     </div>
   );
 }

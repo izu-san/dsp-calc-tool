@@ -202,12 +202,18 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       {t('mode')}
-                      {!isProductionAllowed && (
-                        <span className="ml-2 text-xs text-orange-600 dark:text-orange-400">
-                          ⚠️ {t('productionModeDisabled')}
-                        </span>
-                      )}
                     </label>
+                    {!isProductionAllowed && (
+                      <div className="mb-3 p-2 bg-orange-100 dark:bg-orange-900/20 border border-orange-300 dark:border-orange-700 rounded-lg" role="alert">
+                        <div className="flex items-center gap-2 text-sm text-orange-800 dark:text-orange-300 font-medium">
+                          <span className="text-lg">⚠️</span>
+                          <span>{t('productionModeDisabled')}</span>
+                        </div>
+                        <div className="text-xs text-orange-700 dark:text-orange-400 mt-1 ml-6">
+                          {t('productionModeDisabledDescription')}
+                        </div>
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-2">
                       {(['production', 'speed'] as ProliferatorMode[]).map((mode) => {
                         const isDisabled = mode === 'production' && !isProductionAllowed;
@@ -219,7 +225,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                             className={`
                               px-3 py-2 text-sm font-medium rounded-lg border transition-all
                               ${isDisabled
-                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-700 cursor-not-allowed'
+                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-700 cursor-not-allowed opacity-50 hover:bg-gray-100 dark:hover:bg-gray-800'
                                 : proliferatorMode === mode
                                   ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-400 dark:border-blue-600 ring-2 ring-blue-300 dark:ring-blue-700'
                                   : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'

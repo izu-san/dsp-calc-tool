@@ -85,6 +85,7 @@
   "proliferatorMK3": "増産剤 Mk.III",
   "exclusive": "排他的",
   "productionModeDisabled": "このレシピでは追加生産モードは使用できません",
+  "productionModeDisabledDescription": "このレシピは追加生産に対応していないため、速度上昇モードのみ使用可能です",
   "notAllowed": "使用不可",
   "output": "生産量",
   "speed": "速度",

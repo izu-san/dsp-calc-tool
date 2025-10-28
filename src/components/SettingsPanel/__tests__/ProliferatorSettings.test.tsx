@@ -141,7 +141,10 @@ describe('ProliferatorSettings', () => {
 
     render(<ProliferatorSettings />);
 
-    expect(screen.getByText(/productionModeDisabled/)).toBeInTheDocument();
+    // Check for warning message in the warning box
+    const warningBox = screen.getByRole('alert');
+    expect(warningBox).toBeInTheDocument();
+    expect(screen.getByText(/productionModeDisabledDescription/)).toBeInTheDocument();
   });
 
   it('生産モードが許可されていない場合にボタンを無効化する', () => {

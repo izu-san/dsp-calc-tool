@@ -130,12 +130,6 @@ describe('BuildingCostView', () => {
       expect(conveyorBeltsElements.length).toBeGreaterThan(0);
     });
 
-    it('should render summary section with totals', () => {
-      render(<BuildingCostView calculationResult={mockCalculationResult} />);
-
-      expect(screen.getByText(/totalBuildingRequirements/i)).toBeInTheDocument();
-    });
-
     it('should render MiningCalculator child component', () => {
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
@@ -159,14 +153,6 @@ describe('BuildingCostView', () => {
       // Check for numeric values with formatNumber (30, 20)
       expect(screen.getByText(/×30/)).toBeInTheDocument();
       expect(screen.getByText(/×20/)).toBeInTheDocument();
-    });
-
-    it('should display summary totals with reduce sum', () => {
-      render(<BuildingCostView calculationResult={mockCalculationResult} />);
-
-      // Total machines should be sum of all machine counts
-      expect(screen.getByText(/totalBuildingRequirements/i)).toBeInTheDocument();
-      expect(screen.getByText(/10\s+units/i)).toBeInTheDocument(); // Total of 10 machines
     });
 
     it('should fallback to machineId when gameData getMachineName not available', () => {
@@ -235,8 +221,6 @@ describe('BuildingCostView', () => {
       
       const logisticsElements = screen.getAllByText(/logistics/i);
       expect(logisticsElements.length).toBeGreaterThan(0);
-      
-      expect(screen.getByText(/totalBuildingRequirements/i)).toBeInTheDocument();
     });
 
     it('should format numbers correctly with formatBuildingCount', () => {

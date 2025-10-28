@@ -183,7 +183,19 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                 
                 {/* Mode */}
                 {proliferatorType !== 'none' && (
-                  <div className="grid grid-cols-2 gap-1">
+                  <div>
+                    {!isProductionAllowed && (
+                      <div className="mb-2 p-1.5 bg-neon-orange/10 border border-neon-orange/30 rounded text-xs" role="alert">
+                        <div className="flex items-center gap-1 text-neon-orange font-medium">
+                          <span>⚠️</span>
+                          <span>{t('productionModeDisabled')}</span>
+                        </div>
+                        <div className="text-neon-orange/80 mt-0.5 ml-4">
+                          {t('productionModeDisabledDescription')}
+                        </div>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-1">
                     {(['production', 'speed'] as ProliferatorMode[]).map((mode) => {
                       const isDisabled = mode === 'production' && !isProductionAllowed;
                       return (
@@ -200,7 +212,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                           className={`
                             px-2 py-2 text-xs rounded transition-all min-h-[2rem] flex items-center justify-center ripple-effect
                             ${isDisabled
-                              ? 'bg-dark-600 border border-neon-magenta/20 text-space-400 cursor-not-allowed'
+                              ? 'bg-dark-600 border border-neon-magenta/20 text-space-400 cursor-not-allowed opacity-50 hover:bg-dark-600'
                               : proliferatorMode === mode
                                 ? 'bg-neon-magenta/30 border border-neon-magenta text-white shadow-[0_0_10px_rgba(233,53,255,0.4)]'
                                 : 'bg-dark-700/50 border border-neon-magenta/30 text-space-200 hover:border-neon-magenta/60 hover:bg-neon-magenta/10 hover:text-neon-magenta'
@@ -214,6 +226,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                         </button>
                       );
                     })}
+                    </div>
                   </div>
                 )}
               </div>
