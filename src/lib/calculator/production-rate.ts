@@ -37,10 +37,12 @@ export function calculateProductionRate(
   // 通常のレシピ計算
   const baseTime = recipe.TimeSpend / 60; // Convert ticks to seconds
   
-  // Some machines (like Matrix Lab) have assemblerSpeed = 0, treat as 100%
+  // Calculate machine speed multiplier (10000 = 100%)
+  // Note: Some machines like Matrix Lab have assemblerSpeed = 10000 (1.0x), 
+  // while Self-evolution Lab has assemblerSpeed = 30000 (3.0x)
   let machineSpeedMultiplier = machine.assemblerSpeed / 10000; // 10000 = 100%
   if (machineSpeedMultiplier === 0) {
-    machineSpeedMultiplier = 1.0; // Default to 100% for special machines
+    machineSpeedMultiplier = 1.0; // Default to 100% for special machines (like turrets)
   }
   
   // Speed mode: reduces time per craft (apply effective speed bonus)

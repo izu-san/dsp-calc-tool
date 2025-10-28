@@ -109,7 +109,13 @@ export const createMockCalculationResult = () => ({
 
 // 設定用のモックデータ
 export const createMockSettings = () => ({
-  proliferator: { type: 'none', mode: 'speed' },
+  proliferator: { 
+    type: 'none', 
+    mode: 'speed',
+    productionBonus: 0,
+    speedBonus: 0,
+    powerIncrease: 0,
+  },
   proliferatorMultiplier: { production: 1, speed: 1 },
   machineRank: { 
     Smelt: 'arc', 

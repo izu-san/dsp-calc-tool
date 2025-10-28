@@ -273,6 +273,7 @@ export function buildRecipeTree(
   
   // Resolve machine
   const machine = resolveMachine(recipe, gameData, settings, override);
+  
 
   // Calculate production rate per machine
   const ratePerMachine = calculateProductionRate(

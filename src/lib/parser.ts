@@ -97,6 +97,17 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     : [machinesData.ArrayOfMachine.Machine];
 
   machineArray.forEach((machine: { id: number; name: string; count?: number; Type: string; miningFrom?: string; produceFrom?: string; isRaw?: boolean | string; assemblerSpeed: number; workEnergyPerTick: number; idleEnergyPerTick: number; exchangeEnergyPerTick: number; isPowerConsumer?: boolean | string; isPowerExchanger?: boolean | string }) => {
+    
+    // Special handling for Matrix Lab and Self-evolution Lab
+    let assemblerSpeed = Number(machine.assemblerSpeed);
+    if (machine.id === 2901) {
+      // Matrix Lab: 1.0x speed (10000)
+      assemblerSpeed = 10000;
+    } else if (machine.id === 2902) {
+      // Self-evolution Lab: 3.0x speed (30000)
+      assemblerSpeed = 30000;
+    }
+    
     machines.set(Number(machine.id), {
       id: Number(machine.id),
       name: machine.name,
@@ -105,7 +116,7 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
       miningFrom: machine.miningFrom,
       produceFrom: machine.produceFrom,
       isRaw: machine.isRaw === 'true' || machine.isRaw === true,
-      assemblerSpeed: Number(machine.assemblerSpeed),
+      assemblerSpeed: assemblerSpeed,
       workEnergyPerTick: Number(machine.workEnergyPerTick),
       idleEnergyPerTick: Number(machine.idleEnergyPerTick),
       exchangeEnergyPerTick: Number(machine.exchangeEnergyPerTick),
