@@ -5,6 +5,8 @@ import { calculateMiningRequirements } from '../../lib/miningCalculation';
 import { formatBuildingCount, formatRate } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
 import { useSettingsStore } from '../../stores/settingsStore';
+import { useMiningSettingsStore } from '../../stores/miningSettingsStore';
+import { useGameDataStore } from '../../stores/gameDataStore';
 import { cn } from '../../utils/classNames';
 
 interface MiningCalculatorProps {
@@ -14,9 +16,9 @@ interface MiningCalculatorProps {
 export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
   const { t } = useTranslation();
   const { settings, setMiningSpeedResearch } = useSettingsStore();
+  const { settings: miningSettings, setMachineType, setWorkSpeedMultiplier } = useMiningSettingsStore();
+  const { data: gameData } = useGameDataStore();
   const [miningSpeedBonus, setMiningSpeedBonus] = useState(() => settings.miningSpeedResearch);
-  const [machineType, setMachineType] = useState<'Mining Machine' | 'Advanced Mining Machine'>('Advanced Mining Machine');
-  const [workSpeedMultiplier, setWorkSpeedMultiplier] = useState(100);
 
   // Save to settings store when changed
   useEffect(() => {
@@ -27,10 +29,11 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
     return calculateMiningRequirements(
       calculationResult,
       miningSpeedBonus / 100, // Convert percentage to multiplier
-      machineType,
-      workSpeedMultiplier
+      miningSettings.machineType,
+      miningSettings.workSpeedMultiplier,
+      gameData
     );
-  }, [calculationResult, miningSpeedBonus, machineType, workSpeedMultiplier]);
+  }, [calculationResult, miningSpeedBonus, miningSettings.machineType, miningSettings.workSpeedMultiplier, gameData]);
 
   if (miningCalc.rawMaterials.length === 0) {
     return (
@@ -109,8 +112,8 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
           </label>
           <select
             data-testid="mining-machine-type-select"
-            value={machineType}
-            onChange={(e) => setMachineType(e.target.value as typeof machineType)}
+            value={miningSettings.machineType}
+            onChange={(e) => setMachineType(e.target.value as typeof miningSettings.machineType)}
             className="w-full px-3 py-2 bg-dark-700/50 border border-neon-green/40 rounded-lg text-white focus:border-neon-green focus:shadow-[0_0_10px_rgba(0,255,136,0.3)] transition-all"
             style={{
               backgroundColor: 'rgba(30, 41, 59, 0.5)',
@@ -126,8 +129,8 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
         <div>
           <label className="block text-sm font-medium text-neon-cyan mb-2 flex items-center gap-2">
             <span>⚡</span>
-            {t('workSpeed')}: {workSpeedMultiplier}%
-            {machineType === 'Mining Machine' && (
+            {t('workSpeed')}: {miningSettings.workSpeedMultiplier}%
+            {miningSettings.machineType === 'Mining Machine' && (
               <span className="text-xs text-space-400 ml-1">({t('advancedOnly')})</span>
             )}
           </label>
@@ -137,30 +140,30 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             min="100"
             max="300"
             step="1"
-            value={workSpeedMultiplier}
+            value={miningSettings.workSpeedMultiplier}
             onChange={(e) => setWorkSpeedMultiplier(parseInt(e.target.value))}
-            disabled={machineType === 'Mining Machine'}
+            disabled={miningSettings.machineType === 'Mining Machine'}
             className={`
               w-full h-2 rounded-lg appearance-none cursor-pointer
-              ${machineType === 'Mining Machine'
+              ${miningSettings.machineType === 'Mining Machine'
                 ? 'bg-dark-600 border border-neon-cyan/20 opacity-50 cursor-not-allowed'
                 : 'bg-dark-600 border border-neon-cyan/40'
               }
             `}
             style={{
-              background: machineType === 'Advanced Mining Machine'
-                ? `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
+              background: miningSettings.machineType === 'Advanced Mining Machine'
+                ? `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(miningSettings.workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(miningSettings.workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
                 : undefined,
-              backgroundImage: machineType === 'Advanced Mining Machine'
-                ? `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
+              backgroundImage: miningSettings.machineType === 'Advanced Mining Machine'
+                ? `linear-gradient(to right, rgb(0, 217, 255) 0%, rgb(0, 217, 255) ${(miningSettings.workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) ${(miningSettings.workSpeedMultiplier - 100) / 2}%, rgb(30, 41, 59) 100%)`
                 : undefined
             }}
-            data-has-gradient={machineType === 'Advanced Mining Machine' ? 'true' : 'false'}
+            data-has-gradient={miningSettings.machineType === 'Advanced Mining Machine' ? 'true' : 'false'}
           />
           <div className="flex justify-between text-xs text-space-300 mt-1">
             <span>100%</span>
             <span className="text-neon-cyan">
-              {t('power')}: {((workSpeedMultiplier / 100) ** 2 * 100).toFixed(0)}%
+              {t('power')}: {((miningSettings.workSpeedMultiplier / 100) ** 2 * 100).toFixed(0)}%
             </span>
             <span>300%</span>
           </div>
@@ -197,10 +200,10 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
             {t('powerMultiplier')}
           </div>
           <div className="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
-            {workSpeedMultiplier > 100 ? `${((workSpeedMultiplier / 100) ** 2).toFixed(2)}x` : '1.0x'}
+            {miningSettings.workSpeedMultiplier > 100 ? `${((miningSettings.workSpeedMultiplier / 100) ** 2).toFixed(2)}x` : '1.0x'}
           </div>
           <div className="text-xs text-neon-purple mt-1">
-            {workSpeedMultiplier > 100 ? `${workSpeedMultiplier}% ${t('speed')} = ${((workSpeedMultiplier / 100) ** 2 * 100).toFixed(0)}% ${t('power')}` : t('standardPower')}
+            {miningSettings.workSpeedMultiplier > 100 ? `${miningSettings.workSpeedMultiplier}% ${t('speed')} = ${((miningSettings.workSpeedMultiplier / 100) ** 2 * 100).toFixed(0)}% ${t('power')}` : t('standardPower')}
           </div>
         </div>
       </div>

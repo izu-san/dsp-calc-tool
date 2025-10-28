@@ -1,5 +1,5 @@
 import type { CalculationResult } from '../types/calculation';
-import { useGameDataStore } from '../stores/gameDataStore';
+import type { GameData } from '../types/game-data';
 
 export interface MiningRequirement {
   itemId: number;
@@ -13,6 +13,7 @@ export interface MiningRequirement {
   veinsNeeded: number; // Total number of veins needed to cover
   orbitCollectorsNeeded?: number; // Alternative: orbital collectors (Hydrogen/Deuterium only)
   orbitalCollectorSpeed?: number; // Speed per orbital collector (if applicable)
+  machineType: 'Mining Machine' | 'Advanced Mining Machine'; // Type of mining machine used
 }
 
 export interface MiningCalculation {
@@ -69,7 +70,8 @@ export function calculateMiningRequirements(
   calculationResult: CalculationResult | null,
   miningSpeedBonus: number = 1.0,
   machineType: 'Mining Machine' | 'Advanced Mining Machine' = 'Advanced Mining Machine',
-  workSpeedMultiplier: number = 100
+  workSpeedMultiplier: number = 100,
+  gameData?: GameData | null
 ): MiningCalculation {
   if (!calculationResult) {
     return {
@@ -79,7 +81,6 @@ export function calculateMiningRequirements(
     };
   }
 
-  const gameData = useGameDataStore.getState().data;
   if (!gameData) {
     return {
       rawMaterials: [],
@@ -94,6 +95,14 @@ export function calculateMiningRequirements(
   let totalOrbitalCollectors = 0;
 
   // Process each raw material
+  if (!calculationResult.rawMaterials) {
+    return {
+      rawMaterials: [],
+      totalMiners: 0,
+      totalOrbitalCollectors: 0,
+    };
+  }
+
   calculationResult.rawMaterials.forEach((rate, itemId) => {
     const item = gameData.items.get(itemId);
     if (!item) return;
@@ -120,7 +129,7 @@ export function calculateMiningRequirements(
 
     // Calculate power multiplier (Advanced Mining Machine only)
     const powerMultiplier = machineType === 'Advanced Mining Machine' 
-      ? POWER_MULTIPLIER_BY_SPEED[workSpeedMultiplier] || 1.0
+      ? Math.pow(workSpeedMultiplier / 100, 2) // Dynamic calculation: (speed/100)^2
       : 1.0;
 
     // Calculate orbital collectors for Hydrogen and Deuterium only
@@ -145,6 +154,7 @@ export function calculateMiningRequirements(
       veinsNeeded,
       orbitCollectorsNeeded,
       orbitalCollectorSpeed,
+      machineType, // Add machine type to the result
     });
 
     totalMiners += minersNeeded;

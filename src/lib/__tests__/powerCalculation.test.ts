@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { calculatePowerConsumption } from '../powerCalculation';
 import type { RecipeTreeNode } from '../../types/calculation';
-import type { Machine, Recipe } from '../../types/game-data';
+import type { Machine, Recipe, GameData } from '../../types/game-data';
 import type { GlobalSettings } from '../../types/settings';
+import type { MiningCalculation } from '../miningCalculation';
 import { SORTER_DATA } from '../../types/settings';
 
 // Mock machine data
@@ -68,6 +69,18 @@ const mockRecipe: Recipe = {
   Results: [{ id: 1101, name: 'Output', count: 1, Type: 'Material', isRaw: false }],
   GridIndex: '1101',
   productive: false,
+};
+
+// Mock game data for mining machines
+const mockGameData: GameData = {
+  items: new Map([
+    [1001, { id: 1001, name: 'Iron Ore', Type: 'Resource', isRaw: true }],
+  ]),
+  machines: new Map([
+    [2301, { id: 2301, name: '採掘機', Type: 'Production', assemblerSpeed: 0, workEnergyPerTick: 420, idleEnergyPerTick: 0, exchangeEnergyPerTick: 0, isPowerConsumer: true, isPowerExchanger: false, isRaw: false }],
+    [2316, { id: 2316, name: '高度採掘機', Type: 'Production', assemblerSpeed: 0, workEnergyPerTick: 630, idleEnergyPerTick: 0, exchangeEnergyPerTick: 0, isPowerConsumer: true, isPowerExchanger: false, isRaw: false }],
+  ]),
+  recipes: new Map(),
 };
 
 describe('calculatePowerConsumption', () => {
@@ -831,6 +844,272 @@ describe('calculatePowerConsumption', () => {
       
       const sorterEntry = result.byMachine.find(m => m.machineName === 'ソーター');
       expect(sorterEntry?.machineId).toBe(2014); // Pile sorter icon ID
+    });
+  });
+
+  describe('採掘機の電力計算', () => {
+    it('採掘機の電力消費を計算する', () => {
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 30,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 3.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+      // 採掘機: 420 kW * 1.0 * 10機 = 4200 kW = 4.2 MW
+      expect(result.total).toBeCloseTo(4200, 2);
+      expect(result.byMachine).toHaveLength(1);
+      
+      const miningMachine = result.byMachine[0];
+      expect(miningMachine.machineId).toBe(2301);
+      expect(miningMachine.machineName).toBe('採掘機'); // 速度表示なし
+      expect(miningMachine.machineCount).toBe(10);
+      expect(miningMachine.powerPerMachine).toBeCloseTo(420, 2);
+      expect(miningMachine.totalPower).toBeCloseTo(4200, 2);
+    });
+
+    it('高度採掘機の電力消費を計算する（100%速度）', () => {
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 60,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 6.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+      // 高度採掘機: 630 kW * 1.0 * 10機 = 6300 kW = 6.3 MW
+      expect(result.total).toBeCloseTo(6300, 2);
+      expect(result.byMachine).toHaveLength(1);
+      
+      const advancedMiningMachine = result.byMachine[0];
+      expect(advancedMiningMachine.machineId).toBe(2316);
+      expect(advancedMiningMachine.machineName).toBe('高度採掘機'); // 100%速度なので表示なし
+      expect(advancedMiningMachine.machineCount).toBe(10);
+      expect(advancedMiningMachine.powerPerMachine).toBeCloseTo(630, 2);
+      expect(advancedMiningMachine.totalPower).toBeCloseTo(6300, 2);
+    });
+
+    it('高度採掘機の電力消費を計算する（150%速度）', () => {
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 90,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 150,
+            powerMultiplier: 2.25, // (150/100)^2 = 2.25
+            outputPerSecond: 9.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+      // 高度採掘機: 630 kW * 2.25 * 10機 = 14175 kW = 14.175 MW
+      expect(result.total).toBeCloseTo(14175, 2);
+      expect(result.byMachine).toHaveLength(1);
+      
+      const advancedMiningMachine = result.byMachine[0];
+      expect(advancedMiningMachine.machineId).toBe(2316);
+      expect(advancedMiningMachine.machineName).toBe('高度採掘機 (150%)'); // 速度表示あり
+      expect(advancedMiningMachine.machineCount).toBe(10);
+      expect(advancedMiningMachine.powerPerMachine).toBeCloseTo(1417.5, 2); // 630 * 2.25
+      expect(advancedMiningMachine.totalPower).toBeCloseTo(14175, 2);
+    });
+
+    it('高度採掘機の電力消費を計算する（200%速度）', () => {
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 120,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 200,
+            powerMultiplier: 4.0, // (200/100)^2 = 4.0
+            outputPerSecond: 12.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+      // 高度採掘機: 630 kW * 4.0 * 10機 = 25200 kW = 25.2 MW
+      expect(result.total).toBeCloseTo(25200, 2);
+      expect(result.byMachine).toHaveLength(1);
+      
+      const advancedMiningMachine = result.byMachine[0];
+      expect(advancedMiningMachine.machineId).toBe(2316);
+      expect(advancedMiningMachine.machineName).toBe('高度採掘機 (200%)'); // 速度表示あり
+      expect(advancedMiningMachine.machineCount).toBe(10);
+      expect(advancedMiningMachine.powerPerMachine).toBeCloseTo(2520, 2); // 630 * 4.0
+      expect(advancedMiningMachine.totalPower).toBeCloseTo(25200, 2);
+    });
+
+    it('複数の採掘機タイプを組み合わせる', () => {
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 30,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 3.0,
+            minersNeeded: 5,
+            veinsNeeded: 30,
+            machineType: 'Mining Machine',
+          },
+          {
+            itemId: 1002,
+            itemName: 'Copper Ore',
+            requiredRate: 60,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 150,
+            powerMultiplier: 2.25,
+            outputPerSecond: 9.0,
+            minersNeeded: 5,
+            veinsNeeded: 30,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+      // 採掘機: 420 kW * 1.0 * 5機 = 2100 kW
+      // 高度採掘機: 630 kW * 2.25 * 5機 = 7087.5 kW
+      // Total: 9187.5 kW = 9.1875 MW
+      expect(result.total).toBeCloseTo(9187.5, 2);
+      expect(result.byMachine).toHaveLength(2);
+      
+      // 電力消費量の降順でソートされる
+      expect(result.byMachine[0].machineId).toBe(2316); // 高度採掘機（高い電力）
+      expect(result.byMachine[1].machineId).toBe(2301); // 採掘機（低い電力）
+      
+      const advancedMiningMachine = result.byMachine[0];
+      expect(advancedMiningMachine.machineName).toBe('高度採掘機 (150%)');
+      expect(advancedMiningMachine.totalPower).toBeCloseTo(7087.5, 2);
+      
+      const miningMachine = result.byMachine[1];
+      expect(miningMachine.machineName).toBe('採掘機');
+      expect(miningMachine.totalPower).toBeCloseTo(2100, 2);
+    });
+
+    it('軌道コレクターは電力消費に含まれない', () => {
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1120,
+            itemName: 'Hydrogen',
+            requiredRate: 8.4,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 0,
+            minersNeeded: 0,
+            veinsNeeded: 0,
+            orbitCollectorsNeeded: 10,
+            orbitalCollectorSpeed: 0.84,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 0,
+        totalOrbitalCollectors: 10,
+      };
+
+      const result = calculatePowerConsumption(null, mockSettings, miningCalculation, mockGameData);
+
+      // 軌道コレクターは電力消費しない
+      expect(result.total).toBe(0);
+      expect(result.byMachine).toHaveLength(0);
+    });
+
+    it('採掘機と通常の機械の電力消費を組み合わせる', () => {
+      const node: RecipeTreeNode = {
+        recipe: mockRecipe,
+        machine: mockArcSmelter,
+        targetOutputRate: 30,
+        machineCount: 5,
+        inputs: [],
+        children: [],
+        power: { machines: 0, sorters: 0, total: 0 },
+        conveyorBelts: { inputs: 0, outputs: 0, total: 2 },
+        depth: 0,
+        isRawMaterial: false,
+      };
+
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 60,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 200,
+            powerMultiplier: 4.0,
+            outputPerSecond: 12.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculatePowerConsumption(node, mockSettings, miningCalculation, mockGameData);
+
+      // Arc Smelter: 0.72 kW * 5機 = 3.6 kW
+      // 高度採掘機: 630 kW * 4.0 * 10機 = 25200 kW
+      // Total: 25203.6 kW
+      expect(result.total).toBeCloseTo(25203.6, 2);
+      expect(result.byMachine).toHaveLength(2);
+      
+      // 電力消費量の降順でソートされる
+      expect(result.byMachine[0].machineId).toBe(2316); // 高度採掘機（高い電力）
+      expect(result.byMachine[1].machineId).toBe(2302); // Arc Smelter（低い電力）
     });
   });
 });

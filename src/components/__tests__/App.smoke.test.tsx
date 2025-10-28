@@ -361,7 +361,10 @@ describe('App smoke', () => {
         isRawMaterial: false,
         recipe: { SID: 2001, name: 'Test Recipe' },
         children: []
-      }
+      },
+      rawMaterials: new Map(),
+      totalMachines: 0,
+      totalPower: { machines: 0, sorters: 0, total: 0 }
     };
 
     await renderFreshApp(() => {
@@ -410,7 +413,10 @@ describe('App smoke', () => {
         isRawMaterial: false,
         recipe: { SID: 2001, name: 'Test Recipe' },
         children: []
-      }
+      },
+      rawMaterials: new Map(),
+      totalMachines: 0,
+      totalPower: { machines: 0, sorters: 0, total: 0 }
     };
 
     await renderFreshApp(() => {
@@ -459,7 +465,10 @@ describe('App smoke', () => {
         isRawMaterial: false,
         recipe: { SID: 2001, name: 'Test Recipe' },
         children: []
-      }
+      },
+      rawMaterials: new Map(),
+      totalMachines: 0,
+      totalPower: { machines: 0, sorters: 0, total: 0 }
     };
 
     await renderFreshApp(() => {

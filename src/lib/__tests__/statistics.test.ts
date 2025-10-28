@@ -9,6 +9,7 @@ import {
 import type { RecipeTreeNode } from '../../types/calculation';
 import type { Machine, Recipe } from '../../types/game-data';
 import type { ProliferatorConfig } from '../../types/settings';
+import type { MiningCalculation } from '../miningCalculation';
 import { PROLIFERATOR_DATA } from '../../types/settings';
 
 // Mock data
@@ -812,6 +813,195 @@ describe('statistics', () => {
       expect(graphiteFinal).toBeDefined();
       expect(graphiteFinal?.totalConsumption).toBeCloseTo(0);
       expect(graphiteFinal?.totalProduction).toBeCloseTo(0.67);
+    });
+  });
+
+  describe('採掘計算の統合', () => {
+    it('採掘計算なしの場合、採掘関連の統計は0', () => {
+      const node: RecipeTreeNode = {
+        recipe: mockIronIngotRecipe,
+        machine: mockMachine,
+        targetOutputRate: 30,
+        machineCount: 5,
+        proliferator: mockNoProliferator,
+        power: { machines: 540, sorters: 0, total: 540 },
+        inputs: [],
+        children: [],
+        conveyorBelts: { inputs: 1, outputs: 1, total: 2 },
+        nodeId: 'root',
+      };
+
+      const result = calculateItemStatistics(node);
+
+      expect(result.totalMiningMachines).toBe(0);
+      expect(result.totalMiningPower).toBe(0);
+      expect(result.totalOrbitalCollectors).toBe(0);
+    });
+
+    it('採掘計算ありの場合、採掘関連の統計を計算する', () => {
+      const node: RecipeTreeNode = {
+        recipe: mockIronIngotRecipe,
+        machine: mockMachine,
+        targetOutputRate: 30,
+        machineCount: 5,
+        proliferator: mockNoProliferator,
+        power: { machines: 540, sorters: 0, total: 540 },
+        inputs: [],
+        children: [],
+        conveyorBelts: { inputs: 1, outputs: 1, total: 2 },
+        nodeId: 'root',
+      };
+
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 30,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 3.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Mining Machine',
+          },
+          {
+            itemId: 1002,
+            itemName: 'Copper Ore',
+            requiredRate: 60,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 150,
+            powerMultiplier: 2.25,
+            outputPerSecond: 9.0,
+            minersNeeded: 5,
+            veinsNeeded: 30,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 15,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculateItemStatistics(node, miningCalculation);
+
+      // 採掘機の総数
+      expect(result.totalMiningMachines).toBe(15);
+      
+      // 採掘電力の計算
+      // Mining Machine: 420 kW * 1.0 * 10機 = 4200 kW
+      // Advanced Mining Machine: 630 kW * 2.25 * 5機 = 7087.5 kW
+      // Total: 11287.5 kW
+      expect(result.totalMiningPower).toBeCloseTo(11287.5, 2);
+      
+      // 軌道コレクターの総数
+      expect(result.totalOrbitalCollectors).toBe(0);
+    });
+
+    it('軌道コレクターを含む採掘計算の統計', () => {
+      const node: RecipeTreeNode = {
+        recipe: mockIronIngotRecipe,
+        machine: mockMachine,
+        targetOutputRate: 30,
+        machineCount: 5,
+        proliferator: mockNoProliferator,
+        power: { machines: 540, sorters: 0, total: 540 },
+        inputs: [],
+        children: [],
+        conveyorBelts: { inputs: 1, outputs: 1, total: 2 },
+        nodeId: 'root',
+      };
+
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 30,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 3.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Mining Machine',
+          },
+          {
+            itemId: 1120,
+            itemName: 'Hydrogen',
+            requiredRate: 8.4,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 100,
+            powerMultiplier: 1.0,
+            outputPerSecond: 0,
+            minersNeeded: 0,
+            veinsNeeded: 0,
+            orbitCollectorsNeeded: 10,
+            orbitalCollectorSpeed: 0.84,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 10,
+      };
+
+      const result = calculateItemStatistics(node, miningCalculation);
+
+      // 採掘機の総数（軌道コレクターは含まない）
+      expect(result.totalMiningMachines).toBe(10);
+      
+      // 採掘電力の計算（軌道コレクターは電力消費しない）
+      // Mining Machine: 420 kW * 1.0 * 10機 = 4200 kW
+      expect(result.totalMiningPower).toBeCloseTo(4200, 2);
+      
+      // 軌道コレクターの総数
+      expect(result.totalOrbitalCollectors).toBe(10);
+    });
+
+    it('採掘計算と通常の統計を組み合わせる', () => {
+      const node: RecipeTreeNode = {
+        recipe: mockIronIngotRecipe,
+        machine: mockMachine,
+        targetOutputRate: 30,
+        machineCount: 5,
+        proliferator: mockNoProliferator,
+        power: { machines: 540, sorters: 0, total: 540 },
+        inputs: [],
+        children: [],
+        conveyorBelts: { inputs: 1, outputs: 1, total: 2 },
+        nodeId: 'root',
+      };
+
+      const miningCalculation: MiningCalculation = {
+        rawMaterials: [
+          {
+            itemId: 1001,
+            itemName: 'Iron Ore',
+            requiredRate: 30,
+            miningSpeedBonus: 1.0,
+            workSpeedMultiplier: 200,
+            powerMultiplier: 4.0,
+            outputPerSecond: 6.0,
+            minersNeeded: 10,
+            veinsNeeded: 60,
+            machineType: 'Advanced Mining Machine',
+          },
+        ],
+        totalMiners: 10,
+        totalOrbitalCollectors: 0,
+      };
+
+      const result = calculateItemStatistics(node, miningCalculation);
+
+      // 通常の統計
+      expect(result.totalMachines).toBe(5);
+      expect(result.totalPower).toBe(540);
+      
+      // 採掘関連の統計
+      expect(result.totalMiningMachines).toBe(10);
+      // Advanced Mining Machine: 630 kW * 4.0 * 10機 = 25200 kW
+      expect(result.totalMiningPower).toBeCloseTo(25200, 2);
+      expect(result.totalOrbitalCollectors).toBe(0);
     });
   });
 });

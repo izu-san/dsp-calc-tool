@@ -76,7 +76,15 @@ describe('StatisticsView', () => {
     mockUseGameDataStore.mockReturnValue({
       data: mockGameData,
     });
-    (statisticsLib.calculateItemStatistics as any).mockReturnValue(mockStatistics);
+    (statisticsLib.calculateItemStatistics as any).mockImplementation((rootNode, miningCalculation) => {
+      // Return mock statistics with mining calculation integration
+      return {
+        ...mockStatistics,
+        totalMiningMachines: miningCalculation ? miningCalculation.totalMiners : 0,
+        totalMiningPower: miningCalculation ? miningCalculation.totalMiners * 420 : 0, // Simplified calculation
+        totalOrbitalCollectors: miningCalculation ? miningCalculation.totalOrbitalCollectors : 0,
+      };
+    });
     (statisticsLib.getRawMaterials as any).mockReturnValue(mockRawMaterials);
     (statisticsLib.getIntermediateProducts as any).mockReturnValue(mockIntermediateProducts);
     (statisticsLib.getFinalProducts as any).mockReturnValue(mockFinalProducts);
@@ -84,21 +92,21 @@ describe('StatisticsView', () => {
 
   describe('Rendering - Empty State', () => {
     it('should render empty message when calculationResult is null', () => {
-      render(<StatisticsView calculationResult={null} />);
+      render(<StatisticsView calculationResult={null} miningCalculation={null} />);
       expect(screen.getByText(/productionStatistics/i)).toBeInTheDocument();
       expect(screen.getByText(/selectRecipeToSeeStats/i)).toBeInTheDocument();
     });
 
     it('should render empty message when statistics is null', () => {
       (statisticsLib.calculateItemStatistics as any).mockReturnValue(null);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
       expect(screen.getByText(/selectRecipeToSeeStats/i)).toBeInTheDocument();
     });
   });
 
   describe('Rendering - Overview Section', () => {
     it('should render production overview with all stats', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/productionOverview/i)).toBeInTheDocument();
       expect(screen.getByText(/totalMachines/i)).toBeInTheDocument();
@@ -111,7 +119,7 @@ describe('StatisticsView', () => {
     });
 
     it('should display correct overview numbers', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Total machines: 25.5 -> 26 (ceiling)
       expect(screen.getByText('26')).toBeInTheDocument();
@@ -127,7 +135,7 @@ describe('StatisticsView', () => {
     });
 
     it('should render power graph toggle button', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
       expect(toggleButton).toBeInTheDocument();
@@ -136,13 +144,13 @@ describe('StatisticsView', () => {
 
   describe('PowerGraph Toggle', () => {
     it('should not show PowerGraphView initially', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.queryByTestId('power-graph-view')).not.toBeInTheDocument();
     });
 
     it('should show PowerGraphView when toggle button is clicked', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
       fireEvent.click(toggleButton);
@@ -151,7 +159,7 @@ describe('StatisticsView', () => {
     });
 
     it('should hide PowerGraphView when toggle button is clicked again', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
       
@@ -165,7 +173,7 @@ describe('StatisticsView', () => {
     });
 
     it('should update button text when toggled', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
       
@@ -180,7 +188,7 @@ describe('StatisticsView', () => {
 
   describe('Raw Materials Section', () => {
     it('should render raw materials table with correct data', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Section title appears multiple times
       const rawMaterialsElements = screen.getAllByText(/rawMaterials/i);
@@ -191,14 +199,14 @@ describe('StatisticsView', () => {
     });
 
     it('should render item icons in raw materials', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByTestId('item-icon-1002')).toBeInTheDocument();
     });
 
     it('should not render raw materials section when empty', () => {
       (statisticsLib.getRawMaterials as any).mockReturnValue([]);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Title should only appear once (in overview)
       const elements = screen.queryAllByText(/🔨/);
@@ -208,7 +216,7 @@ describe('StatisticsView', () => {
 
   describe('Intermediate Products Section', () => {
     it('should render intermediate products table with correct data', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/intermediateProducts/i)).toBeInTheDocument();
       expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
@@ -225,7 +233,7 @@ describe('StatisticsView', () => {
     });
 
     it('should display production, consumption, and net values', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Iron Ingot: production 45, consumption 45, net 0
       const rateElements = screen.getAllByText('45.0/s');
@@ -237,7 +245,7 @@ describe('StatisticsView', () => {
 
     it('should not render intermediate products section when empty', () => {
       (statisticsLib.getIntermediateProducts as any).mockReturnValue([]);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const elements = screen.queryAllByText(/⚙️/);
       expect(elements.length).toBe(0); // Section icon shouldn't appear
@@ -246,7 +254,7 @@ describe('StatisticsView', () => {
 
   describe('Final Products Section', () => {
     it('should render final products table with correct data', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/finalProducts/i)).toBeInTheDocument();
       expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
@@ -255,14 +263,14 @@ describe('StatisticsView', () => {
     });
 
     it('should render item icons in final products', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByTestId('item-icon-1001')).toBeInTheDocument();
     });
 
     it('should not render final products section when empty', () => {
       (statisticsLib.getFinalProducts as any).mockReturnValue([]);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const elements = screen.queryAllByText(/📦/);
       expect(elements.length).toBe(0); // Section icon shouldn't appear
@@ -271,7 +279,7 @@ describe('StatisticsView', () => {
 
   describe('Item Name Resolution', () => {
     it('should display item names from gameData', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
       expect(screen.getByText('Iron Ore')).toBeInTheDocument();
@@ -292,7 +300,7 @@ describe('StatisticsView', () => {
         { itemId: 1001, itemName: 'Item 1001', totalProduction: 60, totalConsumption: 0, netProduction: 60 },
       ]);
       
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/Item 1001/)).toBeInTheDocument();
       expect(screen.getByText(/Item 1002/)).toBeInTheDocument();
@@ -317,7 +325,7 @@ describe('StatisticsView', () => {
         { itemId: 1001, itemName: 'Electromagnetic Matrix', totalProduction: 60, totalConsumption: 0, netProduction: 60 },
       ]);
       
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
       expect(screen.getByText(/Item 1002/)).toBeInTheDocument(); // Fallback
@@ -327,7 +335,7 @@ describe('StatisticsView', () => {
 
   describe('Edge Cases', () => {
     it('should handle single item in each category', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Each category should render correctly with single item
       expect(screen.getByText('Iron Ore')).toBeInTheDocument();
@@ -342,14 +350,17 @@ describe('StatisticsView', () => {
         ]),
         totalMachines: 999.9,
         totalPower: 5000000, // 5000 MW
+        totalMiningMachines: 0,
+        totalMiningPower: 0,
+        totalOrbitalCollectors: 0,
       };
 
-      (statisticsLib.calculateItemStatistics as any).mockReturnValue(largeStatistics);
+      (statisticsLib.calculateItemStatistics as any).mockImplementation(() => largeStatistics);
       (statisticsLib.getFinalProducts as any).mockReturnValue([
         { itemId: 1001, itemName: 'Electromagnetic Matrix', totalProduction: 12345, totalConsumption: 0, netProduction: 12345 },
       ]);
 
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Large machine count: 999.9 -> 1000 (ceiling)
       expect(screen.getByText('1000')).toBeInTheDocument();
@@ -393,7 +404,7 @@ describe('StatisticsView', () => {
         locale: 'ja',
       });
 
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // 両方の最終生産物が表示されるべき
       expect(screen.getByText('Refined Oil')).toBeInTheDocument();

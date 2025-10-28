@@ -1,4 +1,5 @@
 import type { RecipeTreeNode } from '../types';
+import type { MiningCalculation } from './miningCalculation';
 
 /**
  * Item statistics for production chain
@@ -19,15 +20,47 @@ export interface ProductionStatistics {
   items: Map<number, ItemStatistics>;
   totalMachines: number;
   totalPower: number;
+  // Mining-related statistics
+  totalMiningMachines: number;
+  totalMiningPower: number;
+  totalOrbitalCollectors: number;
 }
 
 /**
  * Calculate item statistics from recipe tree
  */
-export function calculateItemStatistics(rootNode: RecipeTreeNode): ProductionStatistics {
+export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculation?: MiningCalculation): ProductionStatistics {
   const itemStats = new Map<number, ItemStatistics>();
   let totalMachines = 0;
   let totalPower = 0;
+  
+  // Mining-related totals
+  let totalMiningMachines = 0;
+  let totalMiningPower = 0;
+  let totalOrbitalCollectors = 0;
+  
+  // Add mining statistics if provided
+  if (miningCalculation) {
+    totalMiningMachines = miningCalculation.totalMiners;
+    totalOrbitalCollectors = miningCalculation.totalOrbitalCollectors;
+    
+    // Calculate mining power consumption
+    // Mining Machine: 420 kW base
+    // Advanced Mining Machine: 630 kW base
+    // Power multiplier applies to Advanced Mining Machine based on work speed
+    miningCalculation.rawMaterials.forEach(material => {
+      if (material.orbitCollectorsNeeded) {
+        // Orbital collectors don't consume power (they're passive)
+        return;
+      }
+      
+      // Calculate power per miner based on machine type and work speed
+      const basePowerPerMiner = material.machineType === 'Advanced Mining Machine' ? 630 : 420;
+      const powerPerMiner = basePowerPerMiner * material.powerMultiplier;
+      const minersPower = material.minersNeeded * powerPerMiner;
+      totalMiningPower += minersPower;
+    });
+  }
 
   // Recursive function to traverse the tree
   function traverse(node: RecipeTreeNode) {
@@ -150,6 +183,9 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode): ProductionSta
     items: itemStats,
     totalMachines,
     totalPower,
+    totalMiningMachines,
+    totalMiningPower,
+    totalOrbitalCollectors,
   };
 }
 

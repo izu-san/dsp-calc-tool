@@ -6,12 +6,21 @@ import type { CalculationResult, RecipeTreeNode, PowerConsumption } from '../../
 // Mock dependencies
 vi.mock('../../../lib/miningCalculation');
 vi.mock('../../../stores/settingsStore');
+vi.mock('../../../stores/miningSettingsStore');
 
 // Mock useSettingsStore
 const mockSetMiningSpeedResearch = vi.fn();
 const mockUseSettingsStore = vi.fn();
 vi.mock('../../../stores/settingsStore', () => ({
   useSettingsStore: () => mockUseSettingsStore(),
+}));
+
+// Mock useMiningSettingsStore
+const mockSetMachineType = vi.fn();
+const mockSetWorkSpeedMultiplier = vi.fn();
+const mockUseMiningSettingsStore = vi.fn();
+vi.mock('../../../stores/miningSettingsStore', () => ({
+  useMiningSettingsStore: () => mockUseMiningSettingsStore(),
 }));
 
 // Helper to create complete MiningRequirement
@@ -25,6 +34,7 @@ const createMiningRequirement = (overrides: any = {}) => ({
   outputPerSecond: 1.0,
   minersNeeded: 10,
   veinsNeeded: 100,
+  machineType: 'Advanced Mining Machine',
   ...overrides,
 });
 
@@ -76,6 +86,15 @@ describe('MiningCalculator', () => {
     mockUseSettingsStore.mockReturnValue({
       settings: { miningSpeedResearch: 100 },
       setMiningSpeedResearch: mockSetMiningSpeedResearch,
+    });
+    
+    mockUseMiningSettingsStore.mockReturnValue({
+      settings: {
+        machineType: 'Advanced Mining Machine',
+        workSpeedMultiplier: 100,
+      },
+      setMachineType: mockSetMachineType,
+      setWorkSpeedMultiplier: mockSetWorkSpeedMultiplier,
     });
 
     const module = await import('../../../lib/miningCalculation');
@@ -253,7 +272,9 @@ describe('MiningCalculator', () => {
       const select = screen.getByRole('combobox') as HTMLSelectElement;
 
       fireEvent.change(select, { target: { value: 'Mining Machine' } });
-      expect(select.value).toBe('Mining Machine');
+      
+      // Verify that setMachineType was called
+      expect(mockSetMachineType).toHaveBeenCalledWith('Mining Machine');
     });
 
     it('should change workSpeedMultiplier via slider', () => {
@@ -262,20 +283,26 @@ describe('MiningCalculator', () => {
       const slider = screen.getByRole('slider') as HTMLInputElement;
 
       fireEvent.change(slider, { target: { value: '250' } });
-      expect(slider.value).toBe('250');
+      
+      // Verify that setWorkSpeedMultiplier was called
+      expect(mockSetWorkSpeedMultiplier).toHaveBeenCalledWith(250);
     });
 
     it('should disable slider when machineType is Mining Machine', () => {
+      // Mock Mining Machine state
+      mockUseMiningSettingsStore.mockReturnValue({
+        settings: {
+          machineType: 'Mining Machine',
+          workSpeedMultiplier: 100,
+        },
+        setMachineType: mockSetMachineType,
+        setWorkSpeedMultiplier: mockSetWorkSpeedMultiplier,
+      });
+
       render(<MiningCalculator calculationResult={mockCalculationResult} />);
 
-      const select = screen.getByRole('combobox') as HTMLSelectElement;
       const slider = screen.getByRole('slider') as HTMLInputElement;
-
-      fireEvent.change(select, { target: { value: 'Mining Machine' } });
       expect(slider.disabled).toBe(true);
-
-      fireEvent.change(select, { target: { value: 'Advanced Mining Machine' } });
-      expect(slider.disabled).toBe(false);
     });
 
     it('should apply slider gradient for Advanced Mining Machine', () => {
@@ -295,14 +322,31 @@ describe('MiningCalculator', () => {
 
   describe('Display Logic', () => {
     it('should display power multiplier correctly', () => {
-      vi.mocked(calculateMiningRequirements).mockReturnValue(createMiningCalculation());
+      // Mock store with 200% work speed
+      mockUseMiningSettingsStore.mockReturnValue({
+        settings: {
+          machineType: 'Advanced Mining Machine',
+          workSpeedMultiplier: 200,
+        },
+        setMachineType: mockSetMachineType,
+        setWorkSpeedMultiplier: mockSetWorkSpeedMultiplier,
+      });
+
+      // Mock calculation with 200% work speed
+      vi.mocked(calculateMiningRequirements).mockReturnValue(
+        createMiningCalculation({
+          rawMaterials: [
+            createMiningRequirement({
+              workSpeedMultiplier: 200,
+              powerMultiplier: 4.0, // (200/100)^2 = 4.0
+            }),
+          ],
+        })
+      );
 
       render(<MiningCalculator calculationResult={mockCalculationResult} />);
 
-      const slider = screen.getByRole('slider') as HTMLInputElement;
-      fireEvent.change(slider, { target: { value: '200' } });
-
-      // (200/100)^2 = 4.0
+      // Should display 4.00x power multiplier
       expect(screen.getByText(/4\.00x/)).toBeInTheDocument();
     });
 
@@ -345,14 +389,31 @@ describe('MiningCalculator', () => {
     });
 
     it('should calculate power multiplier using formula', () => {
-      vi.mocked(calculateMiningRequirements).mockReturnValue(createMiningCalculation());
+      // Mock store with 300% work speed
+      mockUseMiningSettingsStore.mockReturnValue({
+        settings: {
+          machineType: 'Advanced Mining Machine',
+          workSpeedMultiplier: 300,
+        },
+        setMachineType: mockSetMachineType,
+        setWorkSpeedMultiplier: mockSetWorkSpeedMultiplier,
+      });
+
+      // Mock calculation with 300% work speed
+      vi.mocked(calculateMiningRequirements).mockReturnValue(
+        createMiningCalculation({
+          rawMaterials: [
+            createMiningRequirement({
+              workSpeedMultiplier: 300,
+              powerMultiplier: 9.0, // (300/100)^2 = 9.0
+            }),
+          ],
+        })
+      );
 
       render(<MiningCalculator calculationResult={mockCalculationResult} />);
 
-      const slider = screen.getByRole('slider') as HTMLInputElement;
-      fireEvent.change(slider, { target: { value: '300' } });
-
-      // (300/100)^2 = 9.0
+      // Should display 9.00x power multiplier
       expect(screen.getByText(/9\.00x/)).toBeInTheDocument();
     });
 

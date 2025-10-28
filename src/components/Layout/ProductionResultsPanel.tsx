@@ -1,9 +1,13 @@
-import { useState, Suspense, lazy } from 'react';
+import { useState, Suspense, lazy, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Recipe, CalculationResult } from '../../types';
+import { calculateMiningRequirements } from '../../lib/miningCalculation';
 import { cn } from '../../utils/classNames';
 import { ItemIcon } from '../ItemIcon';
 import { formatNumber } from '../../utils/format';
+import { useSettingsStore } from '../../stores/settingsStore';
+import { useMiningSettingsStore } from '../../stores/miningSettingsStore';
+import { useGameDataStore } from '../../stores/gameDataStore';
 
 const ProductionTree = lazy(() => import('../ResultTree').then(m => ({ default: m.ProductionTree })));
 const StatisticsView = lazy(() => import('../StatisticsView').then(m => ({ default: m.StatisticsView })));
@@ -34,6 +38,21 @@ export function ProductionResultsPanel({
   const [showStatistics, setShowStatistics] = useState(false);
   const [showBuildingCost, setShowBuildingCost] = useState(false);
   const [showPowerGeneration, setShowPowerGeneration] = useState(false);
+  const { settings } = useSettingsStore();
+  const { settings: miningSettings } = useMiningSettingsStore();
+  const { data: gameData } = useGameDataStore();
+
+  // Calculate mining requirements for statistics
+  const miningCalculation = useMemo(() => {
+    if (!calculationResult) return null;
+    return calculateMiningRequirements(
+      calculationResult,
+      settings.miningSpeedResearch / 100,
+      miningSettings.machineType,
+      miningSettings.workSpeedMultiplier,
+      gameData
+    );
+  }, [calculationResult, settings.miningSpeedResearch, miningSettings.machineType, miningSettings.workSpeedMultiplier, gameData]);
 
   return (
     <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
@@ -153,7 +172,7 @@ export function ProductionResultsPanel({
             {/* Content */}
             <Suspense fallback={<div className="text-center py-4">{t('loading')}</div>}>
               {showStatistics ? (
-                <StatisticsView calculationResult={calculationResult} />
+                <StatisticsView calculationResult={calculationResult} miningCalculation={miningCalculation} />
               ) : showBuildingCost ? (
                 <BuildingCostView calculationResult={calculationResult} />
               ) : showPowerGeneration ? (

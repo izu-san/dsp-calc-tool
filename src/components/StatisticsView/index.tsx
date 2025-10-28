@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalculationResult } from '../../types';
+import type { MiningCalculation } from '../../lib/miningCalculation';
 import { calculateItemStatistics, getRawMaterials, getIntermediateProducts, getFinalProducts } from '../../lib/statistics';
 import { formatRate, formatPower, formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
@@ -9,17 +10,18 @@ import { useGameDataStore } from '../../stores/gameDataStore';
 
 interface StatisticsViewProps {
   calculationResult: CalculationResult | null;
+  miningCalculation?: MiningCalculation | null;
 }
 
-export function StatisticsView({ calculationResult }: StatisticsViewProps) {
+export function StatisticsView({ calculationResult, miningCalculation }: StatisticsViewProps) {
   const { t } = useTranslation();
   const [showPowerGraph, setShowPowerGraph] = useState(false);
   const { data } = useGameDataStore();
 
   const statistics = useMemo(() => {
     if (!calculationResult) return null;
-    return calculateItemStatistics(calculationResult.rootNode);
-  }, [calculationResult]);
+    return calculateItemStatistics(calculationResult.rootNode, miningCalculation || undefined);
+  }, [calculationResult, miningCalculation]);
 
   // Enhanced statistics with resolved item names (language-dependent)
   const enhancedStatistics = useMemo(() => {
@@ -98,10 +100,20 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
           <div className="bg-neon-blue/20 backdrop-blur-sm border border-neon-blue/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,136,255,0.2)]">
             <div className="text-sm text-space-300">{t('totalMachines')}</div>
             <div className="text-2xl font-bold text-neon-blue">{formatBuildingCount(enhancedStatistics.totalMachines)}</div>
+            {enhancedStatistics.totalMiningMachines > 0 && (
+              <div className="text-xs text-neon-blue mt-1">
+                ⛏️ {t('miningMachines')}: {formatBuildingCount(enhancedStatistics.totalMiningMachines)}
+              </div>
+            )}
           </div>
           <div className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
             <div className="text-sm text-space-300">{t('totalPower')}</div>
-            <div className="text-2xl font-bold text-neon-green">{formatPower(enhancedStatistics.totalPower)}</div>
+            <div className="text-2xl font-bold text-neon-green">{formatPower(enhancedStatistics.totalPower + enhancedStatistics.totalMiningPower)}</div>
+            {enhancedStatistics.totalMiningPower > 0 && (
+              <div className="text-xs text-neon-green mt-1">
+                ⛏️ {t('miningPower')}: {formatPower(enhancedStatistics.totalMiningPower)}
+              </div>
+            )}
             {calculationResult && calculationResult.totalPower.dysonSphere > 0 && (
               <div className="text-xs text-yellow-400 mt-1">
                 ⚡ {t('dysonSpherePower')}: {formatPower(calculationResult.totalPower.dysonSphere)}
@@ -111,6 +123,11 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
           <div className="bg-neon-yellow/20 backdrop-blur-sm border border-neon-yellow/40 rounded-lg p-4 shadow-[0_0_15px_rgba(255,215,0,0.2)]">
             <div className="text-sm text-space-300">{t('rawMaterials')}</div>
             <div className="text-2xl font-bold text-neon-yellow">{rawMaterials.length}</div>
+            {enhancedStatistics.totalOrbitalCollectors > 0 && (
+              <div className="text-xs text-neon-yellow mt-1">
+                🚀 {t('orbitalCollectors')}: {formatBuildingCount(enhancedStatistics.totalOrbitalCollectors)}
+              </div>
+            )}
           </div>
           <div className="bg-neon-purple/20 backdrop-blur-sm border border-neon-purple/40 rounded-lg p-4 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
             <div className="text-sm text-space-300">{t('itemsProduced')}</div>
@@ -121,7 +138,7 @@ export function StatisticsView({ calculationResult }: StatisticsViewProps) {
 
       {/* Power Graph - conditionally shown */}
       {showPowerGraph && calculationResult && (
-        <PowerGraphView calculationResult={calculationResult} />
+        <PowerGraphView calculationResult={calculationResult} miningCalculation={miningCalculation} />
       )}
 
       {/* Raw Materials */}

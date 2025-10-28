@@ -10,8 +10,8 @@ const setSelectedRecipe = vi.fn();
 const setTargetQuantity = vi.fn();
 const setCalculationResult = vi.fn();
 
-vi.mock('../../stores/gameDataStore', () => ({
-  useGameDataStore: () => ({
+vi.mock('../../stores/gameDataStore', () => {
+  const mockStore = {
     data: {
       recipes: new Map<number, any>([
         [2001, { SID: 2001, name: 'Test Recipe', Results: [{ id: 1001 }] }],
@@ -21,8 +21,15 @@ vi.mock('../../stores/gameDataStore', () => ({
     error: null,
     loadData: vi.fn(),
     locale: 'ja',
-  }),
-}));
+  };
+  
+  const mockHook = () => mockStore;
+  mockHook.getState = () => mockStore;
+  
+  return {
+    useGameDataStore: mockHook,
+  };
+});
 
 vi.mock('../../stores/recipeSelectionStore', () => ({
   useRecipeSelectionStore: () => ({
@@ -118,7 +125,7 @@ describe('App interactions', () => {
 
     // child mocks re-define after reset
     vi.doMock('../../components/StatisticsView', () => ({
-      StatisticsView: () => <div data-testid="statistics-view" />,
+      StatisticsView: ({ miningCalculation }: { miningCalculation?: any }) => <div data-testid="statistics-view" />,
     }));
     vi.doMock('../../components/BuildingCostView', () => ({
       BuildingCostView: () => <div data-testid="building-cost-view" />,
@@ -143,6 +150,9 @@ describe('App interactions', () => {
         proliferator: { type: 'none', mode: 'speed' },
         children: [],
       },
+      rawMaterials: new Map(),
+      totalPower: { total: 1, machines: 1, sorters: 0 },
+      totalMachines: 1,
     } as any;
 
     vi.doMock('../../stores/recipeSelectionStore', () => ({

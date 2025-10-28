@@ -3,22 +3,16 @@ import { calculateMiningRequirements, POWER_MULTIPLIER_BY_SPEED } from '../minin
 import type { CalculationResult } from '../../types/calculation';
 
 
-// Mock useGameDataStore
-vi.mock('../../stores/gameDataStore', () => ({
-  useGameDataStore: {
-    getState: vi.fn(() => ({
-      data: {
-        items: new Map([
-          [1001, { id: 1001, name: 'Iron Ore', Type: 'Resource', isRaw: true }],
-          [1002, { id: 1002, name: 'Copper Ore', Type: 'Resource', isRaw: true }],
-          [1003, { id: 1003, name: 'Stone', Type: 'Resource', isRaw: true }],
-          [1120, { id: 1120, name: 'Hydrogen', Type: 'Material', isRaw: false }],
-          [1121, { id: 1121, name: 'Deuterium', Type: 'Material', isRaw: false }],
-        ]),
-      },
-    })),
-  },
-}));
+// Mock game data
+const mockGameData = {
+  items: new Map([
+    [1001, { id: 1001, name: 'Iron Ore', Type: 'Resource', isRaw: true }],
+    [1002, { id: 1002, name: 'Copper Ore', Type: 'Resource', isRaw: true }],
+    [1003, { id: 1003, name: 'Stone', Type: 'Resource', isRaw: true }],
+    [1120, { id: 1120, name: 'Hydrogen', Type: 'Material', isRaw: false }],
+    [1121, { id: 1121, name: 'Deuterium', Type: 'Material', isRaw: false }],
+  ]),
+};
 
 describe('miningCalculation', () => {
   describe('calculateMiningRequirements', () => {
@@ -40,7 +34,7 @@ describe('miningCalculation', () => {
         };
 
         // Mining Machine: 0.5/s per vein, 研究ボーナスなし (1.0), 速度設定なし
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Mining Machine', 100, mockGameData);
 
         expect(result.rawMaterials).toHaveLength(1);
         const iron = result.rawMaterials[0];
@@ -56,6 +50,7 @@ describe('miningCalculation', () => {
         expect(iron.minersNeeded).toBe(10);
         expect(iron.outputPerSecond).toBe(3.0);
         expect(iron.powerMultiplier).toBe(1.0); // Mining Machineは常に1.0
+        expect(iron.machineType).toBe('Mining Machine'); // 機械の種類が正しく設定される
       });
 
       it('Advanced Mining Machineの基本速度（1.0/s per vein）を計算する', () => {
@@ -67,7 +62,7 @@ describe('miningCalculation', () => {
         };
 
         // Advanced Mining Machine: 1.0/s per vein, 研究ボーナスなし (1.0), 100% speed
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
 
         expect(result.rawMaterials).toHaveLength(1);
         const iron = result.rawMaterials[0];
@@ -80,6 +75,7 @@ describe('miningCalculation', () => {
         expect(iron.minersNeeded).toBe(10);
         expect(iron.outputPerSecond).toBe(6.0);
         expect(iron.powerMultiplier).toBe(1.0); // 100% speed → 1.0x power
+        expect(iron.machineType).toBe('Advanced Mining Machine'); // 機械の種類が正しく設定される
       });
 
       it('複数の原材料を処理する', () => {
@@ -94,7 +90,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
 
         expect(result.rawMaterials).toHaveLength(3);
 
@@ -122,7 +118,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
 
         // 降順ソート: 60, 30, 15
         expect(result.rawMaterials[0].requiredRate).toBe(60);
@@ -141,7 +137,7 @@ describe('miningCalculation', () => {
         };
 
         // Advanced Mining Machine, 200% speed (2.0x research bonus)
-        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 100, mockGameData);
 
         const iron = result.rawMaterials[0];
 
@@ -163,7 +159,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.5, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.5, 'Advanced Mining Machine', 100, mockGameData);
 
         const iron = result.rawMaterials[0];
 
@@ -182,7 +178,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 2.0, 'Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 2.0, 'Mining Machine', 100, mockGameData);
 
         const iron = result.rawMaterials[0];
 
@@ -203,7 +199,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 150);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 150, mockGameData);
 
         const iron = result.rawMaterials[0];
 
@@ -225,7 +221,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 200);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 200, mockGameData);
 
         const iron = result.rawMaterials[0];
 
@@ -245,7 +241,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 300);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 300, mockGameData);
 
         const iron = result.rawMaterials[0];
 
@@ -268,7 +264,7 @@ describe('miningCalculation', () => {
         };
 
         // Hydrogen: 0.84/s per collector, 研究ボーナスなし (1.0)
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
 
         const hydrogen = result.rawMaterials[0];
 
@@ -289,7 +285,7 @@ describe('miningCalculation', () => {
         };
 
         // Deuterium: 0.03/s per collector, 研究ボーナスなし (1.0)
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
 
         const deuterium = result.rawMaterials[0];
 
@@ -310,7 +306,7 @@ describe('miningCalculation', () => {
         };
 
         // Hydrogen: 0.84/s * 2.0 = 1.68/s per collector
-        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 100, mockGameData);
 
         const hydrogen = result.rawMaterials[0];
 
@@ -318,6 +314,78 @@ describe('miningCalculation', () => {
         // orbitCollectorsNeeded = ceil(16.8 / 1.68) = 10 collectors
         expect(hydrogen.orbitalCollectorSpeed).toBe(1.68);
         expect(hydrogen.orbitCollectorsNeeded).toBe(10);
+      });
+    });
+
+    describe('動的電力計算', () => {
+      it('任意の速度設定で電力倍率を動的に計算する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1001, 60]]),
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // 101% speed (POWER_MULTIPLIER_BY_SPEEDに定義されていない値)
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 101, mockGameData);
+
+        const iron = result.rawMaterials[0];
+
+        // powerMultiplier = (101/100)^2 = 1.0201
+        expect(iron.workSpeedMultiplier).toBe(101);
+        expect(iron.powerMultiplier).toBeCloseTo(1.0201, 4);
+      });
+
+      it('125% speedで電力倍率を動的に計算する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1001, 60]]),
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 125, mockGameData);
+
+        const iron = result.rawMaterials[0];
+
+        // powerMultiplier = (125/100)^2 = 1.5625
+        expect(iron.workSpeedMultiplier).toBe(125);
+        expect(iron.powerMultiplier).toBe(1.5625);
+      });
+
+      it('275% speedで電力倍率を動的に計算する', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1001, 60]]),
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 275, mockGameData);
+
+        const iron = result.rawMaterials[0];
+
+        // powerMultiplier = (275/100)^2 = 7.5625
+        expect(iron.workSpeedMultiplier).toBe(275);
+        expect(iron.powerMultiplier).toBe(7.5625);
+      });
+
+      it('Mining Machineでは速度に関係なく電力倍率は1.0', () => {
+        const calcResult: CalculationResult = {
+          rootNode: {} as any,
+          rawMaterials: new Map([[1001, 30]]),
+          totalMachines: 0,
+          totalPower: { machines: 0, sorters: 0, total: 0 },
+        };
+
+        // Mining Machineで200% speedを指定しても、実際は100%として扱われる
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Mining Machine', 200, mockGameData);
+
+        const iron = result.rawMaterials[0];
+
+        expect(iron.workSpeedMultiplier).toBe(100); // Mining Machineは常に100%
+        expect(iron.powerMultiplier).toBe(1.0); // Mining Machineは常に1.0x
+        expect(iron.machineType).toBe('Mining Machine');
       });
     });
 
@@ -334,7 +402,7 @@ describe('miningCalculation', () => {
           totalPower: { machines: 0, sorters: 0, total: 0 },
         };
 
-        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100);
+        const result = calculateMiningRequirements(calcResult, 1.0, 'Advanced Mining Machine', 100, mockGameData);
 
         expect(result.rawMaterials).toHaveLength(3);
 
@@ -369,7 +437,7 @@ describe('miningCalculation', () => {
         };
 
         // 研究ボーナス+100% (2.0), 速度設定 150%
-        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 150);
+        const result = calculateMiningRequirements(calcResult, 2.0, 'Advanced Mining Machine', 150, mockGameData);
 
         const iron = result.rawMaterials[0];
 

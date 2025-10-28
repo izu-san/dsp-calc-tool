@@ -1,5 +1,7 @@
 import type { RecipeTreeNode } from '../types/calculation';
 import type { GlobalSettings } from '../types/settings';
+import type { MiningCalculation } from './miningCalculation';
+import type { GameData } from '../types/game-data';
 import { ICONS } from '../constants/icons';
 
 export interface PowerConsumption {
@@ -19,8 +21,9 @@ export interface PowerBreakdown {
 /**
  * Calculate power consumption breakdown from production tree
  */
-export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, settings?: GlobalSettings): PowerBreakdown {
-  if (!rootNode) {
+export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, settings?: GlobalSettings, miningCalculation?: MiningCalculation, gameData?: GameData): PowerBreakdown {
+  // If no root node and no mining calculation, return empty result
+  if (!rootNode && !miningCalculation) {
     return { total: 0, byMachine: [] };
   }
 
@@ -97,7 +100,10 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
     node.children.forEach(child => traverse(child));
   }
 
-  traverse(rootNode);
+  // Only traverse if we have a root node
+  if (rootNode) {
+    traverse(rootNode);
+  }
 
   // Convert map to array and calculate totals
   const byMachine: PowerConsumption[] = [];
@@ -132,8 +138,73 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
     });
   }
 
-  // Total power = machines + sorters (excluding dysonSphere)
-  const totalPower = totalMachinePower + totalSorterPower;
+  // Add mining machines to power breakdown
+  if (miningCalculation && miningCalculation.totalMiners > 0) {
+    // Group mining machines by type and work speed
+    const miningMachineGroups = new Map<string, { count: number; powerPerMachine: number; machineName: string }>();
+    
+    miningCalculation.rawMaterials.forEach(material => {
+      if (material.orbitCollectorsNeeded) {
+        // Orbital collectors don't consume power
+        return;
+      }
+      
+      const basePowerPerMiner = material.machineType === 'Advanced Mining Machine' ? 630 : 420;
+      const powerPerMiner = basePowerPerMiner * material.powerMultiplier;
+      const key = `${material.machineType}-${material.workSpeedMultiplier}%`;
+      
+      if (miningMachineGroups.has(key)) {
+        const existing = miningMachineGroups.get(key)!;
+        existing.count += material.minersNeeded;
+      } else {
+        miningMachineGroups.set(key, {
+          count: material.minersNeeded,
+          powerPerMachine: powerPerMiner,
+          machineName: `${material.machineType} (${material.workSpeedMultiplier}%)`,
+        });
+      }
+    });
+    
+    // Add mining machines to breakdown
+    miningMachineGroups.forEach((data) => {
+      const totalPower = data.count * data.powerPerMachine;
+      
+      // Get proper Japanese machine name from game data
+      const machineId = data.machineName.includes('Advanced') ? 2316 : 2301; // 高度採掘機 or 採掘機 ID
+      const baseMachineName = gameData?.machines.get(machineId)?.name || data.machineName;
+      
+      // Only show work speed for Advanced Mining Machine (and not for 100%)
+      let displayMachineName = baseMachineName;
+      if (data.machineName.includes('Advanced')) {
+        const workSpeedMatch = data.machineName.match(/\((\d+)%\)/);
+        if (workSpeedMatch && workSpeedMatch[1] !== '100') {
+          displayMachineName = `${baseMachineName} (${workSpeedMatch[1]}%)`;
+        }
+      }
+      
+      byMachine.push({
+        machineId,
+        machineName: displayMachineName,
+        machineCount: data.count,
+        powerPerMachine: data.powerPerMachine,
+        totalPower,
+        percentage: 0, // Will calculate after we know total
+      });
+    });
+  }
+
+  // Calculate total mining power
+  let totalMiningPower = 0;
+  if (miningCalculation && miningCalculation.totalMiners > 0) {
+    totalMiningPower = miningCalculation.rawMaterials.reduce((sum, material) => {
+      if (material.orbitCollectorsNeeded) return sum;
+      const basePowerPerMiner = material.machineType === 'Advanced Mining Machine' ? 630 : 420;
+      return sum + (material.minersNeeded * basePowerPerMiner * material.powerMultiplier);
+    }, 0);
+  }
+
+  // Total power = machines + sorters + mining machines (excluding dysonSphere)
+  const totalPower = totalMachinePower + totalSorterPower + totalMiningPower;
 
   // Calculate percentages based on total power and sort by power consumption (descending)
   byMachine.forEach(item => {

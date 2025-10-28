@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import type { CalculationResult } from '../../types/calculation';
+import type { MiningCalculation } from '../../lib/miningCalculation';
 import { calculatePowerConsumption } from '../../lib/powerCalculation';
 import { formatNumber, formatPower, formatBuildingCount } from '../../utils/format';
 import { ItemIcon } from '../ItemIcon';
@@ -14,6 +15,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface PowerGraphViewProps {
   calculationResult: CalculationResult;
+  miningCalculation?: MiningCalculation | null;
 }
 
 // SF-themed color palette for the pie chart
@@ -30,14 +32,14 @@ const CHART_COLORS = [
   'rgb(255, 128, 0)',   // bright-orange
 ];
 
-export function PowerGraphView({ calculationResult }: PowerGraphViewProps) {
+export function PowerGraphView({ calculationResult, miningCalculation }: PowerGraphViewProps) {
   const { t } = useTranslation();
   const { data: gameData } = useGameDataStore();
   const { settings } = useSettingsStore();
 
   const powerBreakdown = useMemo(() => {
-    return calculatePowerConsumption(calculationResult.rootNode, settings);
-  }, [calculationResult, settings]);
+    return calculatePowerConsumption(calculationResult.rootNode, settings, miningCalculation || undefined, gameData || undefined);
+  }, [calculationResult, settings, miningCalculation, gameData]);
 
   const chartData = useMemo(() => {
     return {
