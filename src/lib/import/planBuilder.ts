@@ -1,13 +1,13 @@
 /**
  * Plan builder for import functionality
- * 
+ *
  * インポート結果から SavedPlan を構築する
  */
 
-import type { SavedPlan } from '../../types/saved-plan';
-import type { PlanInfoForValidation } from '../../types/import';
-import type { GameData } from '../../types/game-data';
-import type { GlobalSettings } from '../../types/settings';
+import type { SavedPlan } from "../../types/saved-plan";
+import type { PlanInfoForValidation } from "../../types/import";
+import type { GameData } from "../../types/game-data";
+import type { GlobalSettings } from "../../types/settings";
 
 /**
  * インポートされたプラン情報からSavedPlanオブジェクトを構築する

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { getDataPath } from '../utils/paths';
-import { getOptimalImagePath } from '../utils/imageFormat';
+import { useEffect, useMemo, useState } from "react";
+import { getDataPath } from "../utils/paths";
+import { getOptimalImagePath } from "../utils/imageFormat";
 
 interface SpriteCoordinates {
   x: number;
@@ -26,13 +26,10 @@ const spriteCache = new Map<string, SpriteData>();
 
 // スプライトデータの事前ロード関数（アプリ起動時に呼び出す）
 export async function preloadSpriteData(): Promise<void> {
-  await Promise.all([
-    loadSpriteData('items'),
-    loadSpriteData('recipes'),
-  ]);
+  await Promise.all([loadSpriteData("items"), loadSpriteData("recipes")]);
 }
 
-async function loadSpriteData(type: 'items' | 'recipes'): Promise<SpriteData | null> {
+async function loadSpriteData(type: "items" | "recipes"): Promise<SpriteData | null> {
   // キャッシュをチェック
   if (spriteCache.has(type)) {
     return spriteCache.get(type)!;
@@ -60,7 +57,7 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
   const itemKey = String(itemId);
   // preferRecipes に基づいてチェック順を決める（安定化のため useMemo を使用）
   const spritesToCheck = useMemo(
-    () => (preferRecipes ? (['recipes', 'items'] as const) : (['items', 'recipes'] as const)),
+    () => (preferRecipes ? (["recipes", "items"] as const) : (["items", "recipes"] as const)),
     [preferRecipes]
   );
 
@@ -112,4 +109,3 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
   // 即時結果があればそれを返し、なければ state の結果を返す
   return immediateResult ?? spriteInfo;
 }
-

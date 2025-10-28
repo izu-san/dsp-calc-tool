@@ -1,4 +1,4 @@
-import type { ProliferatorConfig } from '../types';
+import type { ProliferatorConfig } from "../types";
 
 export interface ProliferatorMultipliers {
   production: number;
@@ -14,7 +14,8 @@ export function getEffectiveBonuses(
   return {
     effectiveProductionBonus: proliferator.productionBonus * prodMult,
     effectiveSpeedBonus: proliferator.speedBonus * speedMult,
-    effectivePowerIncrease: proliferator.powerIncrease * (proliferator.mode === 'speed' ? speedMult : prodMult),
+    effectivePowerIncrease:
+      proliferator.powerIncrease * (proliferator.mode === "speed" ? speedMult : prodMult),
   };
 }
 
@@ -23,10 +24,12 @@ export function getSpeedAndProductionMultipliers(
   multipliers: ProliferatorMultipliers,
   isProductionAllowed: boolean
 ) {
-  const { effectiveProductionBonus, effectiveSpeedBonus } = getEffectiveBonuses(proliferator, multipliers);
-  const speedMultiplier = proliferator.mode === 'speed' ? 1 + effectiveSpeedBonus : 1;
-  const productionMultiplier = proliferator.mode === 'production' && isProductionAllowed ? 1 + effectiveProductionBonus : 1;
+  const { effectiveProductionBonus, effectiveSpeedBonus } = getEffectiveBonuses(
+    proliferator,
+    multipliers
+  );
+  const speedMultiplier = proliferator.mode === "speed" ? 1 + effectiveSpeedBonus : 1;
+  const productionMultiplier =
+    proliferator.mode === "production" && isProductionAllowed ? 1 + effectiveProductionBonus : 1;
   return { speedMultiplier, productionMultiplier };
 }
-
-

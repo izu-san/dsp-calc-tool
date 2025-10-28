@@ -1,8 +1,8 @@
-import type { RecipeTreeNode } from '../types/calculation';
-import type { GlobalSettings } from '../types/settings';
-import type { MiningCalculation } from './miningCalculation';
-import type { GameData } from '../types/game-data';
-import { ICONS } from '../constants/icons';
+import type { RecipeTreeNode } from "../types/calculation";
+import type { GlobalSettings } from "../types/settings";
+import type { MiningCalculation } from "./miningCalculation";
+import type { GameData } from "../types/game-data";
+import { ICONS } from "../constants/icons";
 
 export interface PowerConsumption {
   machineId: number;
@@ -21,7 +21,12 @@ export interface PowerBreakdown {
 /**
  * Calculate power consumption breakdown from production tree
  */
-export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, settings?: GlobalSettings, miningCalculation?: MiningCalculation, gameData?: GameData): PowerBreakdown {
+export function calculatePowerConsumption(
+  rootNode: RecipeTreeNode | null,
+  settings?: GlobalSettings,
+  miningCalculation?: MiningCalculation,
+  gameData?: GameData
+): PowerBreakdown {
   // If no root node and no mining calculation, return empty result
   if (!rootNode && !miningCalculation) {
     return { total: 0, byMachine: [] };
@@ -42,14 +47,14 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
 
     const machine = node.machine;
     const machineId = machine.id;
-    const machineName = machine.name || 'Unknown Machine';
+    const machineName = machine.name || "Unknown Machine";
     const machineCount = node.machineCount;
-    
+
     // Skip Ray Receivers (γ線レシーバー) - they use Dyson Sphere power, not regular power plants
     if (machine.id === 2208) {
       // Still track sorter power and count for Ray Receivers
       totalSorterPower += node.power.sorters;
-      
+
       // Calculate sorter count for this node
       if (node.recipe) {
         const inputItems = node.recipe.Items?.length || 0;
@@ -57,18 +62,18 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
         const sortersPerMachine = inputItems + outputItems;
         totalSorterCount += Math.ceil(node.machineCount) * sortersPerMachine;
       }
-      
+
       node.children.forEach(child => traverse(child));
       return;
     }
 
     // Calculate power per machine including proliferator power increase
-    let powerPerMachine = (machine.workEnergyPerTick || 0) * 60 / 1000; // kW
-    
+    let powerPerMachine = ((machine.workEnergyPerTick || 0) * 60) / 1000; // kW
+
     // Apply proliferator power increase if present
-    if (node.proliferator && node.proliferator.type !== 'none') {
+    if (node.proliferator && node.proliferator.type !== "none") {
       const powerIncrease = node.proliferator.powerIncrease || 0;
-      powerPerMachine *= (1 + powerIncrease);
+      powerPerMachine *= 1 + powerIncrease;
     }
 
     // Add or update power map
@@ -87,7 +92,7 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
 
     // Track sorter power and count separately (all sorters consume power)
     totalSorterPower += node.power.sorters;
-    
+
     // Calculate sorter count for this node
     if (node.recipe) {
       const inputItems = node.recipe.Items?.length || 0;
@@ -125,18 +130,18 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
   // Add sorters as a separate entry in the breakdown
   if (totalSorterPower > 0) {
     const powerPerSorter = totalSorterCount > 0 ? totalSorterPower / totalSorterCount : 0;
-    const sorterTier = settings?.sorter.tier || 'mk1';
+    const sorterTier = settings?.sorter.tier || "mk1";
     const sorterIconId = ICONS.sorter[sorterTier];
-    
+
     // Get proper sorter name from game data based on tier
-    let sorterName = 'ソーター'; // fallback
+    let sorterName = "ソーター"; // fallback
     if (gameData?.machines) {
       const sorterMachine = gameData.machines.get(sorterIconId);
       if (sorterMachine?.name) {
         sorterName = sorterMachine.name;
       }
     }
-    
+
     byMachine.push({
       machineId: sorterIconId, // Use actual sorter icon ID instead of -1
       machineName: sorterName,
@@ -150,35 +155,38 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
   // Add mining machines to power breakdown
   if (miningCalculation && miningCalculation.totalMiners > 0) {
     // Group mining machines by type and work speed
-    const miningMachineGroups = new Map<string, { count: number; powerPerMachine: number; machineName: string; machineId: number }>();
-    
+    const miningMachineGroups = new Map<
+      string,
+      { count: number; powerPerMachine: number; machineName: string; machineId: number }
+    >();
+
     miningCalculation.rawMaterials.forEach(material => {
       if (material.orbitCollectorsNeeded) {
         // Orbital collectors don't consume power
         return;
       }
-      
+
       let basePowerPerMiner: number;
       let machineId: number;
-      
+
       // Handle different mining equipment types
-      if (material.machineType === 'Water Pump') {
+      if (material.machineType === "Water Pump") {
         basePowerPerMiner = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
         machineId = 2306; // Water Pump ID
-      } else if (material.machineType === 'Oil Extractor') {
+      } else if (material.machineType === "Oil Extractor") {
         basePowerPerMiner = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
         machineId = 2307; // Oil Extractor ID
-      } else if (material.machineType === 'Advanced Mining Machine') {
+      } else if (material.machineType === "Advanced Mining Machine") {
         basePowerPerMiner = 630; // Advanced Mining Machine base power
         machineId = 2316; // Advanced Mining Machine ID
       } else {
         basePowerPerMiner = 420; // Regular Mining Machine base power
         machineId = 2301; // Mining Machine ID
       }
-      
+
       const powerPerMiner = basePowerPerMiner * material.powerMultiplier;
       const key = `${material.machineType}-${material.workSpeedMultiplier}%`;
-      
+
       if (miningMachineGroups.has(key)) {
         const existing = miningMachineGroups.get(key)!;
         existing.count += material.minersNeeded;
@@ -191,26 +199,29 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
         });
       }
     });
-    
+
     // Add mining machines to breakdown
-    miningMachineGroups.forEach((data) => {
+    miningMachineGroups.forEach(data => {
       const totalPower = data.count * data.powerPerMachine;
-      
+
       // Get proper Japanese machine name from game data
       const baseMachineName = gameData?.machines.get(data.machineId)?.name || data.machineName;
-      
+
       // Only show work speed for Advanced Mining Machine (and not for 100%)
       let displayMachineName = baseMachineName;
-      if (data.machineName.includes('Advanced')) {
+      if (data.machineName.includes("Advanced")) {
         const workSpeedMatch = data.machineName.match(/\((\d+)%\)/);
-        if (workSpeedMatch && workSpeedMatch[1] !== '100') {
+        if (workSpeedMatch && workSpeedMatch[1] !== "100") {
           displayMachineName = `${baseMachineName} (${workSpeedMatch[1]}%)`;
         }
-      } else if (data.machineName.includes('Water Pump') || data.machineName.includes('Oil Extractor')) {
+      } else if (
+        data.machineName.includes("Water Pump") ||
+        data.machineName.includes("Oil Extractor")
+      ) {
         // Liquid mining equipment doesn't show work speed (always 100%)
         displayMachineName = baseMachineName;
       }
-      
+
       byMachine.push({
         machineId: data.machineId,
         machineName: displayMachineName,
@@ -227,19 +238,19 @@ export function calculatePowerConsumption(rootNode: RecipeTreeNode | null, setti
   if (miningCalculation && miningCalculation.totalMiners > 0) {
     totalMiningPower = miningCalculation.rawMaterials.reduce((sum, material) => {
       if (material.orbitCollectorsNeeded) return sum;
-      
+
       let basePowerPerMiner: number;
-      if (material.machineType === 'Water Pump') {
+      if (material.machineType === "Water Pump") {
         basePowerPerMiner = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
-      } else if (material.machineType === 'Oil Extractor') {
+      } else if (material.machineType === "Oil Extractor") {
         basePowerPerMiner = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
-      } else if (material.machineType === 'Advanced Mining Machine') {
+      } else if (material.machineType === "Advanced Mining Machine") {
         basePowerPerMiner = 630; // Advanced Mining Machine base power
       } else {
         basePowerPerMiner = 420; // Regular Mining Machine base power
       }
-      
-      return sum + (material.minersNeeded * basePowerPerMiner * material.powerMultiplier);
+
+      return sum + material.minersNeeded * basePowerPerMiner * material.powerMultiplier;
     }, 0);
   }
 

@@ -1,15 +1,15 @@
-import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useGameDataStore } from '../../stores/gameDataStore';
-import { useRecipeSelectionStore } from '../../stores/recipeSelectionStore';
-import { useSettingsStore } from '../../stores/settingsStore';
-import { ItemIcon } from '../ItemIcon';
-import { formatNumber } from '../../utils/format';
-import { parseColorTags } from '../../utils/html';
-import { isRawMaterial } from '../../constants/rawMaterials';
-import { RecipeComparisonModal } from '../RecipeComparisonModal';
-import { cn } from '../../utils/classNames';
-import type { Recipe, RecipeTreeNode } from '../../types';
+import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useGameDataStore } from "../../stores/gameDataStore";
+import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import { ItemIcon } from "../ItemIcon";
+import { formatNumber } from "../../utils/format";
+import { parseColorTags } from "../../utils/html";
+import { isRawMaterial } from "../../constants/rawMaterials";
+import { RecipeComparisonModal } from "../RecipeComparisonModal";
+import { cn } from "../../utils/classNames";
+import type { Recipe, RecipeTreeNode } from "../../types";
 
 export function AlternativeRecipeSelector() {
   const { t } = useTranslation();
@@ -17,18 +17,24 @@ export function AlternativeRecipeSelector() {
   const { selectedRecipe: currentRecipe, calculationResult } = useRecipeSelectionStore();
   const { settings, setAlternativeRecipe } = useSettingsStore();
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
-  const [comparisonModal, setComparisonModal] = useState<{ itemId: number; itemName: string; recipes: Recipe[]; canBeMined: boolean; miningFrom?: string } | null>(null);
+  const [comparisonModal, setComparisonModal] = useState<{
+    itemId: number;
+    itemName: string;
+    recipes: Recipe[];
+    canBeMined: boolean;
+    miningFrom?: string;
+  } | null>(null);
 
   // Get all items used in the calculation result that have alternatives
   const itemsWithAlternatives = useMemo(() => {
     if (!data || !currentRecipe || !calculationResult) return [];
-    
+
     // Collect all item IDs from current recipe tree (inputs recursively)
     const relevantItemIds = new Set<number>();
-    
+
     const collectItemIds = (node: RecipeTreeNode) => {
       if (node.recipe) {
-        node.recipe.Items.forEach((item) => {
+        node.recipe.Items.forEach(item => {
           relevantItemIds.add(item.id);
         });
       }
@@ -37,20 +43,20 @@ export function AlternativeRecipeSelector() {
         relevantItemIds.add(node.itemId);
       }
       if (node.children) {
-        node.children.forEach((child) => collectItemIds(child));
+        node.children.forEach(child => collectItemIds(child));
       }
     };
-    
+
     // Start from rootNode
     collectItemIds(calculationResult.rootNode);
-    
+
     // Filter to items with multiple recipes OR items that can be mined AND have recipes
     return Array.from(data.recipesByItemId.entries())
       .filter(([itemId, recipes]) => {
         const hasMultipleRecipes = recipes.length > 1;
         const canBeMined = isRawMaterial(itemId);
         const hasRecipes = recipes.length > 0;
-        
+
         // Show if: has multiple recipes, OR can be mined and has at least one recipe
         return relevantItemIds.has(itemId) && (hasMultipleRecipes || (canBeMined && hasRecipes));
       })
@@ -61,7 +67,7 @@ export function AlternativeRecipeSelector() {
           itemName: item?.name || `Item ${itemId}`,
           recipes: recipes.sort((a, b) => a.SID - b.SID),
           canBeMined: isRawMaterial(itemId),
-          miningFrom: item?.miningFrom || '',
+          miningFrom: item?.miningFrom || "",
         };
       })
       .sort((a, b) => a.itemName.localeCompare(b.itemName));
@@ -97,14 +103,14 @@ export function AlternativeRecipeSelector() {
       id: item.id,
     }));
     const timeSeconds = recipe.TimeSpend / 60;
-    
+
     return { inputs, outputs, timeSeconds };
   };
 
   if (itemsWithAlternatives.length === 0) {
     return (
       <div className="text-sm text-space-300 p-4 bg-dark-700/30 backdrop-blur-sm rounded-lg border border-neon-green/20">
-        {t('noAlternativeRecipesFound')}
+        {t("noAlternativeRecipesFound")}
       </div>
     );
   }
@@ -112,7 +118,7 @@ export function AlternativeRecipeSelector() {
   return (
     <div className="space-y-2">
       <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-        {t('selectPreferredRecipesDesc')}
+        {t("selectPreferredRecipesDesc")}
       </div>
 
       <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -123,7 +129,10 @@ export function AlternativeRecipeSelector() {
           const selectedRecipeId = settings.alternativeRecipes.get(itemId) ?? defaultOption;
 
           return (
-            <div key={itemId} className="border border-neon-green/30 rounded-lg bg-dark-700/30 backdrop-blur-sm hover:border-neon-green/50 transition-all">
+            <div
+              key={itemId}
+              className="border border-neon-green/30 rounded-lg bg-dark-700/30 backdrop-blur-sm hover:border-neon-green/50 transition-all"
+            >
               {/* Item Header */}
               <div
                 onClick={() => toggleExpand(itemId)}
@@ -133,15 +142,12 @@ export function AlternativeRecipeSelector() {
                   <ItemIcon itemId={itemId} size={32} />
                   <div className="text-left">
                     <div className="font-medium text-white">{itemName}</div>
-                    <div 
-                      data-testid={`recipe-count-${itemId}`}
-                      className="text-xs text-space-300">
+                    <div data-testid={`recipe-count-${itemId}`} className="text-xs text-space-300">
                       {canBeMined && recipes.length > 0
-                        ? `${recipes.length} ${t('recipes')} + ${t('mining')}`
+                        ? `${recipes.length} ${t("recipes")} + ${t("mining")}`
                         : canBeMined
-                          ? t('miningOnly')
-                          : `${recipes.length} ${t('alternativeRecipes')}`
-                      }
+                          ? t("miningOnly")
+                          : `${recipes.length} ${t("alternativeRecipes")}`}
                     </div>
                   </div>
                 </div>
@@ -150,31 +156,39 @@ export function AlternativeRecipeSelector() {
                   {(canBeMined || recipes.length > 1) && (
                     <button
                       data-testid={`alternative-recipe-compare-button-${itemId}`}
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         setComparisonModal({ itemId, itemName, recipes, canBeMined, miningFrom });
                       }}
                       className="px-2 py-1 text-xs bg-neon-purple/30 border border-neon-purple text-white rounded hover:bg-neon-purple/40 transition-all flex items-center gap-1 whitespace-nowrap shadow-[0_0_10px_rgba(168,85,247,0.3)] ripple-effect"
-                      title={t('compareRecipes')}
+                      title={t("compareRecipes")}
                     >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
                       </svg>
-                      <span className="hidden sm:inline">{t('compare')}</span>
+                      <span className="hidden sm:inline">{t("compare")}</span>
                     </button>
                   )}
                   <span className="text-xs text-blue-600 dark:text-blue-400 font-medium truncate max-w-[120px]">
                     {selectedRecipeId === -1
-                      ? `⛏️ ${t('mining')}`
-                      : recipes.find(r => r.SID === selectedRecipeId)?.name || 'None selected'
-                    }
+                      ? `⛏️ ${t("mining")}`
+                      : recipes.find(r => r.SID === selectedRecipeId)?.name || "None selected"}
                   </span>
-                  <span className={cn(
-                    'transition-transform dark:text-gray-400 flex-shrink-0',
-                    {
-                      'rotate-180': isExpanded,
-                    }
-                  )}>
+                  <span
+                    className={cn("transition-transform dark:text-gray-400 flex-shrink-0", {
+                      "rotate-180": isExpanded,
+                    })}
+                  >
                     ▼
                   </span>
                 </div>
@@ -190,33 +204,40 @@ export function AlternativeRecipeSelector() {
                       onClick={() => handleRecipeSelect(itemId, -1)}
                       className={`
                         w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
-                        ${selectedRecipeId === -1
-                          ? 'bg-neon-yellow/20 border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.4)] backdrop-blur-sm font-bold scale-105'
-                          : 'bg-dark-700/50 border-neon-yellow/20 hover:border-neon-yellow/50 hover:bg-neon-yellow/10'
+                        ${
+                          selectedRecipeId === -1
+                            ? "bg-neon-yellow/20 border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.4)] backdrop-blur-sm font-bold scale-105"
+                            : "bg-dark-700/50 border-neon-yellow/20 hover:border-neon-yellow/50 hover:bg-neon-yellow/10"
                         }
                       `}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="text-xl">⛏️</span>
-                          <div className="font-medium text-white">
-                            {t('mining')}
-                          </div>
+                          <div className="font-medium text-white">{t("mining")}</div>
                           {!settings.alternativeRecipes.has(itemId) && (
-                            <span className="text-yellow-500 dark:text-yellow-400 text-sm" title={t('defaultOption')}>⭐</span>
+                            <span
+                              className="text-yellow-500 dark:text-yellow-400 text-sm"
+                              title={t("defaultOption")}
+                            >
+                              ⭐
+                            </span>
                           )}
                         </div>
                         {selectedRecipeId === -1 && (
-                          <span className="text-amber-600 dark:text-amber-400 font-medium text-sm">✓ {t('selected')}</span>
+                          <span className="text-amber-600 dark:text-amber-400 font-medium text-sm">
+                            ✓ {t("selected")}
+                          </span>
                         )}
                       </div>
 
                       <div className="text-xs">
                         <div className="text-gray-500 dark:text-gray-400 font-medium mb-1">
-                          {t('source')}: {miningFrom ? parseColorTags(miningFrom) : 'Various locations'}
+                          {t("source")}:{" "}
+                          {miningFrom ? parseColorTags(miningFrom) : "Various locations"}
                         </div>
                         <div className="text-gray-600 dark:text-gray-300">
-                          {t('noInputsRequired')}
+                          {t("noInputsRequired")}
                         </div>
                       </div>
                     </button>
@@ -226,7 +247,10 @@ export function AlternativeRecipeSelector() {
                   {recipes.map(recipe => {
                     const { inputs, outputs, timeSeconds } = getRecipeDetails(recipe);
                     const isSelected = selectedRecipeId === recipe.SID;
-                    const isDefault = !canBeMined && !settings.alternativeRecipes.has(itemId) && recipe.SID === recipes[0].SID;
+                    const isDefault =
+                      !canBeMined &&
+                      !settings.alternativeRecipes.has(itemId) &&
+                      recipe.SID === recipes[0].SID;
 
                     return (
                       <button
@@ -235,9 +259,10 @@ export function AlternativeRecipeSelector() {
                         onClick={() => handleRecipeSelect(itemId, recipe.SID)}
                         className={`
                           w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
-                          ${isSelected
-                            ? 'bg-neon-green/20 border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.4)] backdrop-blur-sm font-bold scale-105'
-                            : 'bg-dark-700/50 border-neon-green/20 hover:border-neon-green/50 hover:bg-neon-green/10'
+                          ${
+                            isSelected
+                              ? "bg-neon-green/20 border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.4)] backdrop-blur-sm font-bold scale-105"
+                              : "bg-dark-700/50 border-neon-green/20 hover:border-neon-green/50 hover:bg-neon-green/10"
                           }
                         `}
                       >
@@ -247,18 +272,27 @@ export function AlternativeRecipeSelector() {
                               {recipe.name}
                             </div>
                             {isDefault && (
-                              <span className="text-yellow-500 dark:text-yellow-400 text-sm" title={t('defaultRecipe')}>⭐</span>
+                              <span
+                                className="text-yellow-500 dark:text-yellow-400 text-sm"
+                                title={t("defaultRecipe")}
+                              >
+                                ⭐
+                              </span>
                             )}
                           </div>
                           {isSelected && (
-                            <span className="text-blue-600 dark:text-blue-400 font-medium text-sm">✓ {t('selected')}</span>
+                            <span className="text-blue-600 dark:text-blue-400 font-medium text-sm">
+                              ✓ {t("selected")}
+                            </span>
                           )}
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 text-xs">
                           {/* Inputs */}
                           <div>
-                            <div className="text-gray-500 dark:text-gray-400 font-medium mb-1">{t('inputs')}:</div>
+                            <div className="text-gray-500 dark:text-gray-400 font-medium mb-1">
+                              {t("inputs")}:
+                            </div>
                             <div className="space-y-0.5">
                               {inputs.map((input, idx) => (
                                 <div key={idx} className="flex items-center gap-1">
@@ -273,7 +307,9 @@ export function AlternativeRecipeSelector() {
 
                           {/* Outputs */}
                           <div>
-                            <div className="text-gray-500 dark:text-gray-400 font-medium mb-1">{t('outputs')}:</div>
+                            <div className="text-gray-500 dark:text-gray-400 font-medium mb-1">
+                              {t("outputs")}:
+                            </div>
                             <div className="space-y-0.5">
                               {outputs.map((output, idx) => (
                                 <div key={idx} className="flex items-center gap-1">
@@ -289,13 +325,15 @@ export function AlternativeRecipeSelector() {
 
                         <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs">
                           <span className="text-gray-500 dark:text-gray-400">
-                            {t('time')}: {formatNumber(timeSeconds)}s
+                            {t("time")}: {formatNumber(timeSeconds)}s
                           </span>
                           <span className="text-gray-500 dark:text-gray-400">
-                            {t('type')}: {recipe.Type}
+                            {t("type")}: {recipe.Type}
                           </span>
                           {recipe.productive && (
-                            <span className="text-green-600 dark:text-green-400 font-medium">🧪 {t('productionModeOK')}</span>
+                            <span className="text-green-600 dark:text-green-400 font-medium">
+                              🧪 {t("productionModeOK")}
+                            </span>
                           )}
                         </div>
                       </button>
@@ -318,7 +356,7 @@ export function AlternativeRecipeSelector() {
           miningFrom={comparisonModal.miningFrom}
           isOpen={true}
           onClose={() => setComparisonModal(null)}
-          onSelectRecipe={(recipeId) => setAlternativeRecipe(comparisonModal.itemId, recipeId)}
+          onSelectRecipe={recipeId => setAlternativeRecipe(comparisonModal.itemId, recipeId)}
         />
       )}
     </div>

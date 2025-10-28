@@ -1,19 +1,23 @@
-import { describe, it, expect } from 'vitest';
-import { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from '../aggregations';
-import type { RecipeTreeNode, Recipe } from '../../../types';
-import { PROLIFERATOR_DATA, CONVEYOR_BELT_DATA, SORTER_DATA } from '../../../types/settings';
+import { describe, it, expect } from "vitest";
+import {
+  calculateTotalPower,
+  calculateTotalMachines,
+  calculateRawMaterials,
+} from "../aggregations";
+import type { RecipeTreeNode, Recipe } from "../../../types";
+import { PROLIFERATOR_DATA, CONVEYOR_BELT_DATA, SORTER_DATA } from "../../../types/settings";
 
-describe('aggregations', () => {
+describe("aggregations", () => {
   const createMockNode = (overrides?: Partial<RecipeTreeNode>): RecipeTreeNode => {
     const mockRecipe: Recipe = {
       SID: 1,
-      name: 'Test Recipe',
+      name: "Test Recipe",
       TimeSpend: 60,
-      Results: [{ id: 1, name: 'Test Item', count: 1, Type: '0', isRaw: false }],
+      Results: [{ id: 1, name: "Test Item", count: 1, Type: "0", isRaw: false }],
       Items: [],
-      Type: 'Assemble',
+      Type: "Assemble",
       Explicit: false,
-      GridIndex: '1',
+      GridIndex: "1",
       productive: true,
     };
 
@@ -21,18 +25,18 @@ describe('aggregations', () => {
       recipe: mockRecipe,
       targetOutputRate: 1,
       machineCount: 1,
-      proliferator: { ...PROLIFERATOR_DATA.none, mode: 'speed' },
+      proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       power: { machines: 100, sorters: 10, total: 110 },
       inputs: [],
       children: [],
       conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
-      nodeId: 'test-node',
+      nodeId: "test-node",
       ...overrides,
     };
   };
 
-  describe('calculateTotalPower', () => {
-    it('should calculate power for single node', () => {
+  describe("calculateTotalPower", () => {
+    it("should calculate power for single node", () => {
       const node = createMockNode({
         power: { machines: 100, sorters: 10, total: 110 },
       });
@@ -44,15 +48,15 @@ describe('aggregations', () => {
       expect(result.total).toBe(110);
     });
 
-    it('should sum power across tree', () => {
+    it("should sum power across tree", () => {
       const child1 = createMockNode({
         power: { machines: 50, sorters: 5, total: 55 },
-        nodeId: 'child1',
+        nodeId: "child1",
       });
-      
+
       const child2 = createMockNode({
         power: { machines: 30, sorters: 3, total: 33 },
-        nodeId: 'child2',
+        nodeId: "child2",
       });
 
       const parent = createMockNode({
@@ -67,16 +71,16 @@ describe('aggregations', () => {
       expect(result.total).toBe(198); // 180 + 18
     });
 
-    it('should handle deep tree structures', () => {
+    it("should handle deep tree structures", () => {
       const grandchild = createMockNode({
         power: { machines: 20, sorters: 2, total: 22 },
-        nodeId: 'grandchild',
+        nodeId: "grandchild",
       });
 
       const child = createMockNode({
         power: { machines: 50, sorters: 5, total: 55 },
         children: [grandchild],
-        nodeId: 'child',
+        nodeId: "child",
       });
 
       const parent = createMockNode({
@@ -92,8 +96,8 @@ describe('aggregations', () => {
     });
   });
 
-  describe('calculateTotalMachines', () => {
-    it('should count machines for single node', () => {
+  describe("calculateTotalMachines", () => {
+    it("should count machines for single node", () => {
       const node = createMockNode({ machineCount: 5 });
 
       const result = calculateTotalMachines(node);
@@ -101,9 +105,9 @@ describe('aggregations', () => {
       expect(result).toBe(5);
     });
 
-    it('should sum machines across tree', () => {
-      const child1 = createMockNode({ machineCount: 3, nodeId: 'child1' });
-      const child2 = createMockNode({ machineCount: 2, nodeId: 'child2' });
+    it("should sum machines across tree", () => {
+      const child1 = createMockNode({ machineCount: 3, nodeId: "child1" });
+      const child2 = createMockNode({ machineCount: 2, nodeId: "child2" });
       const parent = createMockNode({
         machineCount: 5,
         children: [child1, child2],
@@ -114,12 +118,12 @@ describe('aggregations', () => {
       expect(result).toBe(10); // 5 + 3 + 2
     });
 
-    it('should handle deep tree structures', () => {
-      const grandchild = createMockNode({ machineCount: 1, nodeId: 'grandchild' });
+    it("should handle deep tree structures", () => {
+      const grandchild = createMockNode({ machineCount: 1, nodeId: "grandchild" });
       const child = createMockNode({
         machineCount: 2,
         children: [grandchild],
-        nodeId: 'child',
+        nodeId: "child",
       });
       const parent = createMockNode({
         machineCount: 3,
@@ -131,11 +135,11 @@ describe('aggregations', () => {
       expect(result).toBe(6); // 3 + 2 + 1
     });
 
-    it('should handle raw material nodes with zero machines', () => {
+    it("should handle raw material nodes with zero machines", () => {
       const rawNode = createMockNode({
         isRawMaterial: true,
         machineCount: 0,
-        nodeId: 'raw',
+        nodeId: "raw",
       });
       const parent = createMockNode({
         machineCount: 5,
@@ -148,14 +152,14 @@ describe('aggregations', () => {
     });
   });
 
-  describe('calculateRawMaterials', () => {
-    it('should collect raw materials from tree', () => {
+  describe("calculateRawMaterials", () => {
+    it("should collect raw materials from tree", () => {
       const rawNode = createMockNode({
         isRawMaterial: true,
         itemId: 1001,
-        itemName: 'Iron Ore',
+        itemName: "Iron Ore",
         targetOutputRate: 10,
-        nodeId: 'raw-1001',
+        nodeId: "raw-1001",
       });
 
       const parent = createMockNode({
@@ -168,19 +172,19 @@ describe('aggregations', () => {
       expect(result.get(1001)).toBe(10);
     });
 
-    it('should sum same raw materials from multiple nodes', () => {
+    it("should sum same raw materials from multiple nodes", () => {
       const rawNode1 = createMockNode({
         isRawMaterial: true,
         itemId: 1001,
         targetOutputRate: 10,
-        nodeId: 'raw-1',
+        nodeId: "raw-1",
       });
 
       const rawNode2 = createMockNode({
         isRawMaterial: true,
         itemId: 1001,
         targetOutputRate: 5,
-        nodeId: 'raw-2',
+        nodeId: "raw-2",
       });
 
       const parent = createMockNode({
@@ -193,19 +197,19 @@ describe('aggregations', () => {
       expect(result.get(1001)).toBe(15); // 10 + 5
     });
 
-    it('should collect multiple different raw materials', () => {
+    it("should collect multiple different raw materials", () => {
       const ironNode = createMockNode({
         isRawMaterial: true,
         itemId: 1001,
         targetOutputRate: 10,
-        nodeId: 'raw-iron',
+        nodeId: "raw-iron",
       });
 
       const copperNode = createMockNode({
         isRawMaterial: true,
         itemId: 1002,
         targetOutputRate: 5,
-        nodeId: 'raw-copper',
+        nodeId: "raw-copper",
       });
 
       const parent = createMockNode({
@@ -219,31 +223,31 @@ describe('aggregations', () => {
       expect(result.get(1002)).toBe(5);
     });
 
-    it('should handle deep tree structures', () => {
+    it("should handle deep tree structures", () => {
       const grandchildRaw = createMockNode({
         isRawMaterial: true,
         itemId: 1001,
         targetOutputRate: 3,
-        nodeId: 'grandchild-raw',
+        nodeId: "grandchild-raw",
       });
 
       const childRaw = createMockNode({
         isRawMaterial: true,
         itemId: 1001,
         targetOutputRate: 5,
-        nodeId: 'child-raw',
+        nodeId: "child-raw",
       });
 
       const child = createMockNode({
         children: [childRaw, grandchildRaw],
-        nodeId: 'child',
+        nodeId: "child",
       });
 
       const parentRaw = createMockNode({
         isRawMaterial: true,
         itemId: 1002,
         targetOutputRate: 7,
-        nodeId: 'parent-raw',
+        nodeId: "parent-raw",
       });
 
       const parent = createMockNode({
@@ -258,4 +262,3 @@ describe('aggregations', () => {
     });
   });
 });
-

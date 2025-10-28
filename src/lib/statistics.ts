@@ -1,5 +1,5 @@
-import type { RecipeTreeNode } from '../types';
-import type { MiningCalculation } from './miningCalculation';
+import type { RecipeTreeNode } from "../types";
+import type { MiningCalculation } from "./miningCalculation";
 
 /**
  * Item statistics for production chain
@@ -29,21 +29,24 @@ export interface ProductionStatistics {
 /**
  * Calculate item statistics from recipe tree
  */
-export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculation?: MiningCalculation): ProductionStatistics {
+export function calculateItemStatistics(
+  rootNode: RecipeTreeNode,
+  miningCalculation?: MiningCalculation
+): ProductionStatistics {
   const itemStats = new Map<number, ItemStatistics>();
   let totalMachines = 0;
   let totalPower = 0;
-  
+
   // Mining-related totals
   let totalMiningMachines = 0;
   let totalMiningPower = 0;
   let totalOrbitalCollectors = 0;
-  
+
   // Add mining statistics if provided
   if (miningCalculation) {
     totalMiningMachines = miningCalculation.totalMiners;
     totalOrbitalCollectors = miningCalculation.totalOrbitalCollectors;
-    
+
     // Calculate mining power consumption
     // Mining Machine: 420 kW base
     // Advanced Mining Machine: 630 kW base
@@ -53,9 +56,9 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
         // Orbital collectors don't consume power (they're passive)
         return;
       }
-      
+
       // Calculate power per miner based on machine type and work speed
-      const basePowerPerMiner = material.machineType === 'Advanced Mining Machine' ? 630 : 420;
+      const basePowerPerMiner = material.machineType === "Advanced Mining Machine" ? 630 : 420;
       const powerPerMiner = basePowerPerMiner * material.powerMultiplier;
       const minersPower = material.minersNeeded * powerPerMiner;
       totalMiningPower += minersPower;
@@ -66,7 +69,7 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
   function traverse(node: RecipeTreeNode) {
     // Add machine count
     totalMachines += node.machineCount;
-    
+
     // Add power consumption: machines + sorters (always consumed by power plants)
     // Note: dysonSphere power is NOT included (it's provided by Dyson Sphere, not power plants)
     // Skip Ray Receivers (γ線レシーバー) - they use Dyson Sphere power, not regular power plants
@@ -79,7 +82,7 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
 
     // Process outputs (production)
     if (node.recipe?.Results) {
-      node.recipe.Results.forEach((result) => {
+      node.recipe.Results.forEach(result => {
         const itemId = result.id;
         if (!itemStats.has(itemId)) {
           itemStats.set(itemId, {
@@ -91,14 +94,14 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
           });
         }
         const stats = itemStats.get(itemId)!;
-        
+
         // Calculate production rate for this specific result item
         // targetOutputRate is for the main output (Results[0])
         // For other outputs, we need to calculate proportionally
         if (node.recipe) {
           const mainOutput = node.recipe.Results[0];
           const thisOutput = node.recipe.Results.find(r => r.id === itemId);
-          
+
           if (mainOutput && thisOutput) {
             // If this is the main output, use targetOutputRate directly
             if (thisOutput.id === mainOutput.id) {
@@ -116,7 +119,7 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
 
     // Process inputs (consumption)
     if (node.inputs) {
-      node.inputs.forEach((input) => {
+      node.inputs.forEach(input => {
         const itemId = input.itemId;
         if (!itemStats.has(itemId)) {
           itemStats.set(itemId, {
@@ -136,14 +139,14 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
     if (node.children) {
       // Get item IDs from parent's inputs to detect double counting
       const parentInputIds = new Set(node.inputs?.map(i => i.itemId) || []);
-      
-      node.children.forEach((child) => {
+
+      node.children.forEach(child => {
         // Handle raw materials (nodes without recipe)
         if (!child.recipe && child.isRawMaterial) {
           // Raw material node: use itemId and targetOutputRate
           const itemId = child.itemId!;
           const requiredRate = child.targetOutputRate;
-          
+
           // Create entry if not exists
           if (!itemStats.has(itemId)) {
             itemStats.set(itemId, {
@@ -154,11 +157,11 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
               isRawMaterial: true,
             });
           }
-          
+
           // Mark as raw material
           const stats = itemStats.get(itemId)!;
           stats.isRawMaterial = true;
-          
+
           // Only add consumption if this item is NOT already counted in parent's inputs
           // This prevents double counting for circular dependencies
           if (!parentInputIds.has(itemId)) {
@@ -175,7 +178,7 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode, miningCalculat
   traverse(rootNode);
 
   // Calculate net production for each item
-  itemStats.forEach((stats) => {
+  itemStats.forEach(stats => {
     stats.netProduction = stats.totalProduction - stats.totalConsumption;
   });
 
@@ -232,14 +235,14 @@ export function getFinalProducts(statistics: ProductionStatistics): ItemStatisti
     .filter(item => {
       // Must have production
       if (item.totalProduction === 0) return false;
-      
+
       // If not consumed at all, it's definitely a final product
       if (item.totalConsumption === 0) return true;
-      
+
       // If it's a raw material with net positive production, it's a final product
       // (e.g., hydrogen in X-ray cracking: input 1.3/s, output 2.0/s, net +0.7/s)
       if (item.isRawMaterial && item.netProduction > 0) return true;
-      
+
       // Otherwise, it's an intermediate product
       return false;
     })

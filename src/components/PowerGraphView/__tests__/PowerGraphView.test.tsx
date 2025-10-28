@@ -1,17 +1,21 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { PowerGraphView } from '../index';
-import type { CalculationResult, RecipeTreeNode, PowerConsumption } from '../../../types/calculation';
-import { calculatePowerConsumption } from '../../../lib/powerCalculation';
-import { formatNumber, formatPower } from '../../../utils/format';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { PowerGraphView } from "../index";
+import type {
+  CalculationResult,
+  RecipeTreeNode,
+  PowerConsumption,
+} from "../../../types/calculation";
+import { calculatePowerConsumption } from "../../../lib/powerCalculation";
+import { formatNumber, formatPower } from "../../../utils/format";
 
 // Mock dependencies
-vi.mock('../../../lib/powerCalculation');
-vi.mock('../../../stores/gameDataStore');
-vi.mock('react-chartjs-2', () => ({
+vi.mock("../../../lib/powerCalculation");
+vi.mock("../../../stores/gameDataStore");
+vi.mock("react-chartjs-2", () => ({
   Pie: vi.fn(() => <div data-testid="pie-chart">Mocked Pie Chart</div>),
 }));
-vi.mock('chart.js', () => ({
+vi.mock("chart.js", () => ({
   Chart: {
     register: vi.fn(),
   },
@@ -22,11 +26,11 @@ vi.mock('chart.js', () => ({
 
 // Mock useGameDataStore
 const mockUseGameDataStore = vi.fn();
-vi.mock('../../../stores/gameDataStore', () => ({
+vi.mock("../../../stores/gameDataStore", () => ({
   useGameDataStore: () => mockUseGameDataStore(),
 }));
 
-describe('PowerGraphView', () => {
+describe("PowerGraphView", () => {
   const mockPower: PowerConsumption = {
     machines: 1000,
     sorters: 100,
@@ -37,8 +41,8 @@ describe('PowerGraphView', () => {
     targetOutputRate: 1,
     machineCount: 10,
     proliferator: {
-      type: 'none',
-      mode: 'production',
+      type: "none",
+      mode: "production",
       productionBonus: 0,
       speedBonus: 0,
       powerIncrease: 0,
@@ -47,7 +51,7 @@ describe('PowerGraphView', () => {
     inputs: [],
     children: [],
     conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
-    nodeId: 'test-node-1',
+    nodeId: "test-node-1",
   };
 
   const mockCalculationResult: CalculationResult = {
@@ -59,9 +63,9 @@ describe('PowerGraphView', () => {
 
   const mockGameData = {
     machines: new Map([
-      [2303, { id: 2303, name: 'Assembling Machine Mk.I' }],
-      [2304, { id: 2304, name: 'Assembling Machine Mk.II' }],
-      [2315, { id: 2315, name: 'Plane Smelter' }],
+      [2303, { id: 2303, name: "Assembling Machine Mk.I" }],
+      [2304, { id: 2304, name: "Assembling Machine Mk.II" }],
+      [2315, { id: 2315, name: "Plane Smelter" }],
     ]),
   };
 
@@ -74,8 +78,8 @@ describe('PowerGraphView', () => {
   // 1. Rendering Tests (5)
   // ===========================
 
-  describe('Rendering - Empty States', () => {
-    it('should render empty state when power total is 0', () => {
+  describe("Rendering - Empty States", () => {
+    it("should render empty state when power total is 0", () => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 0,
         byMachine: [],
@@ -84,18 +88,18 @@ describe('PowerGraphView', () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       expect(screen.getByText(/noPowerConsumptionData/i)).toBeInTheDocument();
-      expect(screen.queryByTestId('pie-chart')).not.toBeInTheDocument();
+      expect(screen.queryByTestId("pie-chart")).not.toBeInTheDocument();
     });
   });
 
-  describe('Rendering - Valid Data', () => {
+  describe("Rendering - Valid Data", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 1500,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Assembling Machine Mk.I',
+            machineName: "Assembling Machine Mk.I",
             machineCount: 10,
             powerPerMachine: 100,
             totalPower: 1000,
@@ -103,7 +107,7 @@ describe('PowerGraphView', () => {
           },
           {
             machineId: 2315,
-            machineName: 'Plane Smelter',
+            machineName: "Plane Smelter",
             machineCount: 5,
             powerPerMachine: 100,
             totalPower: 500,
@@ -113,35 +117,37 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should render summary card with total power consumption', () => {
+    it("should render summary card with total power consumption", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       expect(screen.getByText(/totalPowerConsumption/i)).toBeInTheDocument();
       expect(screen.getByText(formatPower(1500))).toBeInTheDocument();
     });
 
-    it('should render total power in MW and GW', () => {
+    it("should render total power in MW and GW", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       const mwText = formatNumber(1500 / 1000);
       const gwText = formatNumber(1500 / 1000000);
-      
+
       // Check that MW and GW are displayed in the summary section
-      const elements = screen.getAllByText(new RegExp(`${mwText}.*MW.*${gwText}.*GW|${mwText}|${gwText}`));
+      const elements = screen.getAllByText(
+        new RegExp(`${mwText}.*MW.*${gwText}.*GW|${mwText}|${gwText}`)
+      );
       expect(elements.length).toBeGreaterThan(0);
     });
 
-    it('should render pie chart component', () => {
+    it("should render pie chart component", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
+      expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     });
 
-    it('should render power breakdown list with all machines', () => {
+    it("should render power breakdown list with all machines", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
-      expect(screen.getByText('Plane Smelter')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
+      expect(screen.getByText("Plane Smelter")).toBeInTheDocument();
     });
   });
 
@@ -149,13 +155,13 @@ describe('PowerGraphView', () => {
   // 2. Data Transformation (4)
   // ===========================
 
-  describe('Data Transformation', () => {
+  describe("Data Transformation", () => {
     const mockPowerBreakdown = {
       total: 2000,
       byMachine: [
         {
           machineId: 2303,
-          machineName: 'Assembling Machine Mk.I',
+          machineName: "Assembling Machine Mk.I",
           machineCount: 10,
           powerPerMachine: 100,
           totalPower: 1000,
@@ -163,7 +169,7 @@ describe('PowerGraphView', () => {
         },
         {
           machineId: 2304,
-          machineName: 'Assembling Machine Mk.II',
+          machineName: "Assembling Machine Mk.II",
           machineCount: 5,
           powerPerMachine: 200,
           totalPower: 1000,
@@ -176,15 +182,15 @@ describe('PowerGraphView', () => {
       vi.mocked(calculatePowerConsumption).mockReturnValue(mockPowerBreakdown);
     });
 
-    it('should generate chart data with correct labels (machine names)', () => {
+    it("should generate chart data with correct labels (machine names)", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Verify machine names are in the breakdown (labels are passed to Pie component)
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
-      expect(screen.getByText('Assembling Machine Mk.II')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.II")).toBeInTheDocument();
     });
 
-    it('should generate chart data with correct values (totalPower)', () => {
+    it("should generate chart data with correct values (totalPower)", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Verify power values are displayed in breakdown (two machines with 1000 each)
@@ -192,15 +198,15 @@ describe('PowerGraphView', () => {
       expect(powerElements.length).toBe(2); // Both machines have 1.0 MW
     });
 
-    it('should display percentage for each machine', () => {
+    it("should display percentage for each machine", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Both machines have 50% each
-      const percentageElements = screen.getAllByText('50.0%');
+      const percentageElements = screen.getAllByText("50.0%");
       expect(percentageElements.length).toBe(2);
     });
 
-    it('should apply CHART_COLORS to chart data', () => {
+    it("should apply CHART_COLORS to chart data", () => {
       const { container } = render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Verify color indicators are rendered
@@ -213,14 +219,14 @@ describe('PowerGraphView', () => {
   // 3. Machine Icon Logic (3)
   // ===========================
 
-  describe('Machine Icon Logic', () => {
+  describe("Machine Icon Logic", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 1000,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Assembling Machine Mk.I',
+            machineName: "Assembling Machine Mk.I",
             machineCount: 10,
             powerPerMachine: 100,
             totalPower: 1000,
@@ -230,35 +236,33 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should get machine icon from gameData when available', () => {
+    it("should get machine icon from gameData when available", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // ItemIcon component should be rendered with machine ID
       // Check that the machine name is displayed (indicates icon was rendered)
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
     });
 
-    it('should fallback to machineId when gameData is not available', () => {
+    it("should fallback to machineId when gameData is not available", () => {
       mockUseGameDataStore.mockReturnValue({ data: null });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Should still render without crashing
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
     });
 
-    it('should fallback to machineId when machine not found in gameData', () => {
+    it("should fallback to machineId when machine not found in gameData", () => {
       const gameDataWithMissingMachine = {
-        machines: new Map([
-          [2304, { id: 2304, name: 'Assembling Machine Mk.II' }],
-        ]),
+        machines: new Map([[2304, { id: 2304, name: "Assembling Machine Mk.II" }]]),
       };
       mockUseGameDataStore.mockReturnValue({ data: gameDataWithMissingMachine });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Should still render without crashing
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
     });
   });
 
@@ -266,14 +270,14 @@ describe('PowerGraphView', () => {
   // 4. Layout & Styling (2)
   // ===========================
 
-  describe('Layout & Styling', () => {
+  describe("Layout & Styling", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 5000000,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Assembling Machine Mk.I',
+            machineName: "Assembling Machine Mk.I",
             machineCount: 100,
             powerPerMachine: 500,
             totalPower: 50000,
@@ -283,7 +287,7 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should display summary card with MW and GW conversions', () => {
+    it("should display summary card with MW and GW conversions", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       const mw = formatNumber(5000000 / 1000);
@@ -294,7 +298,7 @@ describe('PowerGraphView', () => {
       expect(allElements.length).toBeGreaterThan(0);
     });
 
-    it('should display breakdown items with machine count and power per machine', () => {
+    it("should display breakdown items with machine count and power per machine", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Should show machine count
@@ -308,14 +312,14 @@ describe('PowerGraphView', () => {
   // 5. Edge Cases (2)
   // ===========================
 
-  describe('Edge Cases', () => {
-    it('should handle single machine in breakdown', () => {
+  describe("Edge Cases", () => {
+    it("should handle single machine in breakdown", () => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 100,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Assembling Machine Mk.I',
+            machineName: "Assembling Machine Mk.I",
             machineCount: 1,
             powerPerMachine: 100,
             totalPower: 100,
@@ -326,11 +330,11 @@ describe('PowerGraphView', () => {
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
-      expect(screen.getByText('100.0%')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
+      expect(screen.getByText("100.0%")).toBeInTheDocument();
     });
 
-    it('should handle many machines with color rotation', () => {
+    it("should handle many machines with color rotation", () => {
       const manyMachines = Array.from({ length: 15 }, (_, i) => ({
         machineId: 2300 + i,
         machineName: `Machine ${i}`,
@@ -348,8 +352,8 @@ describe('PowerGraphView', () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Should render all machines
-      expect(screen.getByText('Machine 0')).toBeInTheDocument();
-      expect(screen.getByText('Machine 14')).toBeInTheDocument();
+      expect(screen.getByText("Machine 0")).toBeInTheDocument();
+      expect(screen.getByText("Machine 14")).toBeInTheDocument();
     });
   });
 
@@ -357,14 +361,14 @@ describe('PowerGraphView', () => {
   // 6. Chart Options & Configuration (3)
   // ===========================
 
-  describe('Chart Options & Configuration', () => {
+  describe("Chart Options & Configuration", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 1000,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Test Machine',
+            machineName: "Test Machine",
             machineCount: 5,
             powerPerMachine: 200,
             totalPower: 1000,
@@ -374,25 +378,25 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should configure chart with correct responsive settings', () => {
+    it("should configure chart with correct responsive settings", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Chart should be rendered with responsive configuration
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
+      expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     });
 
-    it('should configure tooltip with correct callbacks', () => {
+    it("should configure tooltip with correct callbacks", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Tooltip configuration is internal to Chart.js, but we can verify chart renders
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
+      expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     });
 
-    it('should configure legend with correct styling', () => {
+    it("should configure legend with correct styling", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Legend configuration is internal to Chart.js, but we can verify chart renders
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
+      expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     });
   });
 
@@ -400,14 +404,14 @@ describe('PowerGraphView', () => {
   // 7. Chart Data Generation (4)
   // ===========================
 
-  describe('Chart Data Generation', () => {
+  describe("Chart Data Generation", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 3000,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Machine A',
+            machineName: "Machine A",
             machineCount: 10,
             powerPerMachine: 150,
             totalPower: 1500,
@@ -415,7 +419,7 @@ describe('PowerGraphView', () => {
           },
           {
             machineId: 2304,
-            machineName: 'Machine B',
+            machineName: "Machine B",
             machineCount: 15,
             powerPerMachine: 100,
             totalPower: 1500,
@@ -425,15 +429,15 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should generate chart labels from machine names', () => {
+    it("should generate chart labels from machine names", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Labels are passed to Pie component, verify machines are displayed
-      expect(screen.getByText('Machine A')).toBeInTheDocument();
-      expect(screen.getByText('Machine B')).toBeInTheDocument();
+      expect(screen.getByText("Machine A")).toBeInTheDocument();
+      expect(screen.getByText("Machine B")).toBeInTheDocument();
     });
 
-    it('should generate chart data from totalPower values', () => {
+    it("should generate chart data from totalPower values", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Data values are passed to Pie component, verify power values are displayed
@@ -441,7 +445,7 @@ describe('PowerGraphView', () => {
       expect(powerElements.length).toBe(2); // Both machines have 1.5 MW
     });
 
-    it('should apply chart colors from CHART_COLORS array', () => {
+    it("should apply chart colors from CHART_COLORS array", () => {
       const { container } = render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Color indicators should be rendered with chart colors
@@ -449,7 +453,7 @@ describe('PowerGraphView', () => {
       expect(colorIndicators.length).toBeGreaterThan(0);
     });
 
-    it('should handle empty machine list in chart data', () => {
+    it("should handle empty machine list in chart data", () => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 0,
         byMachine: [],
@@ -459,7 +463,7 @@ describe('PowerGraphView', () => {
 
       // Should show empty state instead of chart
       expect(screen.getByText(/noPowerConsumptionData/i)).toBeInTheDocument();
-      expect(screen.queryByTestId('pie-chart')).not.toBeInTheDocument();
+      expect(screen.queryByTestId("pie-chart")).not.toBeInTheDocument();
     });
   });
 
@@ -467,14 +471,14 @@ describe('PowerGraphView', () => {
   // 8. getMachineIcon Function (3)
   // ===========================
 
-  describe('getMachineIcon Function', () => {
+  describe("getMachineIcon Function", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 1000,
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Test Machine',
+            machineName: "Test Machine",
             machineCount: 5,
             powerPerMachine: 200,
             totalPower: 1000,
@@ -484,34 +488,32 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should return machine ID when machine exists in gameData', () => {
+    it("should return machine ID when machine exists in gameData", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // ItemIcon should be rendered with machine ID
-      expect(screen.getByText('Test Machine')).toBeInTheDocument();
+      expect(screen.getByText("Test Machine")).toBeInTheDocument();
     });
 
-    it('should return machine ID when machine not found in gameData', () => {
+    it("should return machine ID when machine not found in gameData", () => {
       const gameDataWithoutMachine = {
-        machines: new Map([
-          [9999, { id: 9999, name: 'Other Machine' }],
-        ]),
+        machines: new Map([[9999, { id: 9999, name: "Other Machine" }]]),
       };
       mockUseGameDataStore.mockReturnValue({ data: gameDataWithoutMachine });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Should still render without crashing
-      expect(screen.getByText('Test Machine')).toBeInTheDocument();
+      expect(screen.getByText("Test Machine")).toBeInTheDocument();
     });
 
-    it('should return machine ID when gameData is null', () => {
+    it("should return machine ID when gameData is null", () => {
       mockUseGameDataStore.mockReturnValue({ data: null });
 
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Should still render without crashing
-      expect(screen.getByText('Test Machine')).toBeInTheDocument();
+      expect(screen.getByText("Test Machine")).toBeInTheDocument();
     });
   });
 
@@ -519,14 +521,14 @@ describe('PowerGraphView', () => {
   // 9. Power Formatting & Display (3)
   // ===========================
 
-  describe('Power Formatting & Display', () => {
+  describe("Power Formatting & Display", () => {
     beforeEach(() => {
       vi.mocked(calculatePowerConsumption).mockReturnValue({
         total: 1500000, // 1.5 MW
         byMachine: [
           {
             machineId: 2303,
-            machineName: 'Test Machine',
+            machineName: "Test Machine",
             machineCount: 10,
             powerPerMachine: 150, // 150 W
             totalPower: 1500000, // 1.5 MW
@@ -536,25 +538,25 @@ describe('PowerGraphView', () => {
       });
     });
 
-    it('should display total power with correct formatting', () => {
+    it("should display total power with correct formatting", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       const powerElements = screen.getAllByText(formatPower(1500000));
       expect(powerElements.length).toBeGreaterThan(0);
     });
 
-    it('should display MW and GW conversions correctly', () => {
+    it("should display MW and GW conversions correctly", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       const mw = formatNumber(1500000 / 1000); // 1.5 MW
       const gw = formatNumber(1500000 / 1000000); // 0.0015 GW
-      
+
       // Check that MW and GW values are displayed
       const elements = screen.getAllByText(new RegExp(`${mw}|${gw}`));
       expect(elements.length).toBeGreaterThan(0);
     });
 
-    it('should display individual machine power with correct formatting', () => {
+    it("should display individual machine power with correct formatting", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Check power per machine is displayed (150.0 kW)
@@ -566,8 +568,8 @@ describe('PowerGraphView', () => {
   // 10. useMemo Dependencies (2)
   // ===========================
 
-  describe('useMemo Dependencies', () => {
-    it('should recalculate powerBreakdown when calculationResult changes', () => {
+  describe("useMemo Dependencies", () => {
+    it("should recalculate powerBreakdown when calculationResult changes", () => {
       const { rerender } = render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Change calculation result
@@ -575,7 +577,7 @@ describe('PowerGraphView', () => {
         ...mockCalculationResult,
         rootNode: {
           ...mockCalculationResult.rootNode,
-          nodeId: 'new-node-id',
+          nodeId: "new-node-id",
         },
       };
 
@@ -585,11 +587,11 @@ describe('PowerGraphView', () => {
       expect(calculatePowerConsumption).toHaveBeenCalledTimes(2);
     });
 
-    it('should recalculate chartData when powerBreakdown or t changes', () => {
+    it("should recalculate chartData when powerBreakdown or t changes", () => {
       render(<PowerGraphView calculationResult={mockCalculationResult} />);
 
       // Chart data generation is tested indirectly through rendering
-      expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
+      expect(screen.getByTestId("pie-chart")).toBeInTheDocument();
     });
   });
 });

@@ -1,66 +1,69 @@
 /**
  * Markdown importer
- * 
+ *
  * Markdown 形式のファイルをパースして ImportResult を返す
  */
 
-import type { ImportResult, ExtractedPlanInfo, ImportError, ImportWarning } from '../../types/import';
+import type {
+  ImportResult,
+  ExtractedPlanInfo,
+  ImportError,
+  ImportWarning,
+} from "../../types/import";
 
 /**
  * Markdown 形式のテキストをパースする
- * 
+ *
  * @param markdown - Markdown テキスト
  * @returns パース結果
  */
-export function importFromMarkdown(
-  markdown: string
-): ImportResult {
+export function importFromMarkdown(markdown: string): ImportResult {
   const extractedData: ExtractedPlanInfo = {};
   const errors: ImportError[] = [];
   const warnings: ImportWarning[] = [];
-  
+
   try {
     // プラン名を抽出
     const planName = extractPlanName(markdown);
     if (planName) {
       extractedData.planName = planName;
     }
-    
+
     // レシピSIDを抽出
     const recipeSID = extractRecipeSID(markdown);
     if (recipeSID !== null) {
       extractedData.recipeSID = recipeSID;
     } else {
       errors.push({
-        type: 'missing_data',
-        message: 'Recipe SID not found in Markdown.',
+        type: "missing_data",
+        message: "Recipe SID not found in Markdown.",
       });
     }
-    
+
     // レシピ名を抽出
     const recipeName = extractRecipeName(markdown);
     if (recipeName) {
       extractedData.recipeName = recipeName;
     }
-    
+
     // 目標生産量を抽出
     const targetQuantity = extractTargetQuantity(markdown);
     if (targetQuantity !== null) {
       extractedData.targetQuantity = targetQuantity;
     } else {
       warnings.push({
-        type: 'partial_data',
-        message: 'Target Quantity not found, defaulting to 1.',
+        type: "partial_data",
+        message: "Target Quantity not found, defaulting to 1.",
       });
       extractedData.targetQuantity = 1;
     }
-    
+
     // エクスポート日時を抽出
     const exportDate = extractExportDate(markdown);
     if (exportDate) {
       extractedData.timestamp = exportDate;
     }
-    
+
     return {
       success: errors.length === 0,
       extractedData,
@@ -69,8 +72,8 @@ export function importFromMarkdown(
     };
   } catch (error) {
     errors.push({
-      type: 'parse',
-      message: error instanceof Error ? error.message : 'Unknown parse error',
+      type: "parse",
+      message: error instanceof Error ? error.message : "Unknown parse error",
     });
     return {
       success: false,
@@ -129,4 +132,3 @@ function extractExportDate(markdown: string): number | null {
   }
   return null;
 }
-

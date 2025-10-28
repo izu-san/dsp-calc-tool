@@ -1,7 +1,7 @@
 // Calculation result types
 
-import type { Recipe, Machine } from './game-data';
-import type { ProliferatorConfig } from './settings';
+import type { Recipe, Machine } from "./game-data";
+import type { ProliferatorConfig } from "./settings";
 
 export interface NodeOverrideSettings {
   proliferator?: ProliferatorConfig; // Override proliferator settings
@@ -20,10 +20,10 @@ export interface RecipeTreeNode {
   conveyorBelts: ConveyorBeltRequirement; // Required conveyor belts
   nodeId: string; // Unique identifier for this node
   overrideSettings?: NodeOverrideSettings; // Node-specific settings override
-  
+
   // For recipes with multiple outputs
   targetItemId?: number; // Which item this node is producing (for multi-output recipes)
-  
+
   // For raw material leaf nodes
   isRawMaterial?: boolean;
   itemId?: number;
@@ -35,7 +35,7 @@ export interface RecipeTreeNode {
     powerConsumption: number;
     beltOutputs: number;
   };
-  
+
   // For circular dependency nodes
   isCircularDependency?: boolean; // True if this node represents a circular dependency
   sourceRecipe?: Recipe; // The recipe that requires this circular input
@@ -59,7 +59,7 @@ export interface ConveyorBeltRequirement {
   outputs: number; // Number of belts for outputs (sum of all output items)
   total: number; // Total number of belts
   saturation?: number; // Maximum saturation percentage (0-100) - bottleneck indicator
-  bottleneckType?: 'input' | 'output'; // Which side is the bottleneck
+  bottleneckType?: "input" | "output"; // Which side is the bottleneck
 }
 
 export interface CalculationResult {
@@ -67,7 +67,7 @@ export interface CalculationResult {
   totalPower: PowerConsumption;
   totalMachines: number; // Total machine count across all nodes
   rawMaterials: Map<number, number>; // itemId -> rate (items/s)
-  
+
   // For multi-output recipes
   multiOutputResults?: MultiOutputResult[]; // All output items for multi-output recipes
 }

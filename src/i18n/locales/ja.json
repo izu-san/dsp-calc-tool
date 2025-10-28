@@ -123,7 +123,7 @@
   "beltTier": "ベルトランク",
   "sorterRank": "ソーターランク",
   "sorterMkI": "Mk.I",
-  "sorterMkII": "Mk.II", 
+  "sorterMkII": "Mk.II",
   "sorterMkIII": "Mk.III",
   "stackCount": "スタック数 (1-4)",
   "selectConveyorBeltDesc": "ベルト数計算に使用するコンベアベルトのランクとスタック数を選択してください。",
@@ -475,4 +475,3 @@
     "proliferatorEffectProduction": "人工恒星以外: 出力と燃料エネルギーが追加生産ボーナス分向上（燃料消費速度は変わらない）"
   }
 }
-

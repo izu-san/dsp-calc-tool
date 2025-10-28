@@ -1,4 +1,4 @@
-import type { RecipeTreeNode, PowerConsumption } from '../../types';
+import type { RecipeTreeNode, PowerConsumption } from "../../types";
 
 /**
  * Calculate total power consumption recursively
@@ -63,4 +63,3 @@ export function calculateRawMaterials(node: RecipeTreeNode): Map<number, number>
   traverse(node);
   return rawMaterials;
 }
-

@@ -1,11 +1,11 @@
 /**
  * Import data types
- * 
+ *
  * インポート機能で使用する型定義
  */
 
-import type { SavedPlan } from './saved-plan';
-import type { GlobalSettings } from './settings';
+import type { SavedPlan } from "./saved-plan";
+import type { GlobalSettings } from "./settings";
 import type {
   ExportStatistics,
   ExportRawMaterial,
@@ -14,7 +14,7 @@ import type {
   ExportPowerConsumption,
   ExportConveyorBelts,
   ExportPowerGeneration,
-} from './export';
+} from "./export";
 
 /**
  * インポート結果
@@ -44,7 +44,7 @@ export interface ImportResult {
  */
 export interface ImportError {
   /** エラーの種類 */
-  type: 'parse' | 'validation' | 'missing_data' | 'unsupported_version';
+  type: "parse" | "validation" | "missing_data" | "unsupported_version";
   /** エラーメッセージ */
   message: string;
   /** 詳細情報 (optional) */
@@ -56,7 +56,7 @@ export interface ImportError {
  */
 export interface ImportWarning {
   /** 警告の種類 */
-  type: 'version_mismatch' | 'partial_data' | 'unrecognized_field';
+  type: "version_mismatch" | "partial_data" | "unrecognized_field";
   /** 警告メッセージ */
   message: string;
   /** 詳細情報 (optional) */
@@ -283,4 +283,3 @@ export interface ValidationResult {
   /** 警告リスト */
   warnings: ImportWarning[];
 }
-

@@ -1,0 +1,42 @@
+# Prettier ignore file
+# フォーマットしたくないファイルやディレクトリを指定
+
+# ビルド成果物
+dist/
+build/
+coverage/
+
+# 依存関係
+node_modules/
+
+# ログファイル
+*.log
+
+# 環境設定ファイル
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# パッケージマネージャーのロックファイル
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# 自動生成されたファイル
+public/data/
+scripts/generated/
+
+# テスト結果
+test-results/
+playwright-report/
+
+# その他の自動生成ファイル
+*.tsbuildinfo
+
+# Cursor関連ファイル
+.cursor/
+
+# GitHub関連ファイル
+.github/

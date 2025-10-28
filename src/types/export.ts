@@ -1,6 +1,6 @@
-import type { GlobalSettings } from './settings';
+import type { GlobalSettings } from "./settings";
 
-export const EXPORT_VERSION = '1.0.0';
+export const EXPORT_VERSION = "1.0.0";
 
 export interface ExportData {
   version: string;
@@ -72,7 +72,7 @@ export interface ExportConveyorBelts {
   totalBelts: number;
   totalLength: number; // meters
   maxSaturation: number; // %
-  bottleneckType?: 'input' | 'output';
+  bottleneckType?: "input" | "output";
 }
 
 export interface ExportPowerGeneration {

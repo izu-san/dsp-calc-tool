@@ -35,11 +35,9 @@ export const ICONS = {
     },
     research: {
       standard: 2901,
-      'self-evolution': 2902,
+      "self-evolution": 2902,
     },
   },
 } as const;
 
 export type IconId = number;
-
-

@@ -1,5 +1,5 @@
-import type { ExportData } from '../../types/export';
-import { formatRate, formatPower } from '../../utils/format';
+import type { ExportData } from "../../types/export";
+import { formatRate, formatPower } from "../../utils/format";
 
 /**
  * ExportDataをMarkdown形式の文字列に変換する
@@ -80,7 +80,9 @@ export function exportToMarkdown(data: ExportData): string {
     markdown += `| Generator | Count | Power/Generator | Total Power | Fuel Consumption |\n`;
     markdown += `|---|---|---|---|---|\n`;
     data.powerGeneration.generators.forEach(generator => {
-      const fuelConsumption = generator.fuel?.map(f => `${formatRate(f.consumptionRate)} ${f.itemName}`).join(', ') || 'N/A';
+      const fuelConsumption =
+        generator.fuel?.map(f => `${formatRate(f.consumptionRate)} ${f.itemName}`).join(", ") ||
+        "N/A";
       markdown += `| ${generator.generatorName} | ${generator.count} | ${formatPower(generator.powerPerGenerator)} | ${formatPower(generator.totalPower)} | ${fuelConsumption} |\n`;
     });
   } else {

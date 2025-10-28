@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { calculateBuildingCost } from '../buildingCost';
-import type { RecipeTreeNode } from '../../types/calculation';
-import type { Machine, Recipe } from '../../types/game-data';
+import { describe, it, expect } from "vitest";
+import { calculateBuildingCost } from "../buildingCost";
+import type { RecipeTreeNode } from "../../types/calculation";
+import type { Machine, Recipe } from "../../types/game-data";
 
 // Mock machine data
 const mockArcSmelter: Machine = {
   id: 2302,
-  name: 'Arc Smelter',
-  Type: 'Smelt',
+  name: "Arc Smelter",
+  Type: "Smelt",
   assemblerSpeed: 10000,
   workEnergyPerTick: 12,
   idleEnergyPerTick: 4,
@@ -18,8 +18,8 @@ const mockArcSmelter: Machine = {
 
 const mockAssembler: Machine = {
   id: 2303,
-  name: 'Assembling Machine Mk.I',
-  Type: 'Assemble',
+  name: "Assembling Machine Mk.I",
+  Type: "Assemble",
   assemblerSpeed: 7500,
   workEnergyPerTick: 9,
   idleEnergyPerTick: 3,
@@ -30,8 +30,8 @@ const mockAssembler: Machine = {
 
 const mockSorter: Machine = {
   id: 2040,
-  name: 'Sorter Mk.I',
-  Type: 'Logistics',
+  name: "Sorter Mk.I",
+  Type: "Logistics",
   assemblerSpeed: 0,
   workEnergyPerTick: 1,
   idleEnergyPerTick: 0,
@@ -42,8 +42,8 @@ const mockSorter: Machine = {
 
 const mockChemicalPlant: Machine = {
   id: 2309,
-  name: 'Chemical Plant',
-  Type: 'Chemical',
+  name: "Chemical Plant",
+  Type: "Chemical",
   assemblerSpeed: 10000,
   workEnergyPerTick: 15,
   idleEnergyPerTick: 5,
@@ -55,32 +55,32 @@ const mockChemicalPlant: Machine = {
 // Mock recipe data
 const mockIronIngotRecipe: Recipe = {
   SID: 1,
-  name: 'Iron Ingot',
-  Type: 'Smelt',
+  name: "Iron Ingot",
+  Type: "Smelt",
   Explicit: false,
   TimeSpend: 60,
-  Items: [{ id: 1001, name: 'Iron Ore', count: 1, Type: 'Resource', isRaw: true }],
-  Results: [{ id: 1101, name: 'Iron Ingot', count: 1, Type: 'Material', isRaw: false }],
-  GridIndex: '1101',
+  Items: [{ id: 1001, name: "Iron Ore", count: 1, Type: "Resource", isRaw: true }],
+  Results: [{ id: 1101, name: "Iron Ingot", count: 1, Type: "Material", isRaw: false }],
+  GridIndex: "1101",
   productive: false,
 };
 
 const mockGearRecipe: Recipe = {
   SID: 2,
-  name: 'Gear',
-  Type: 'Assemble',
+  name: "Gear",
+  Type: "Assemble",
   Explicit: false,
   TimeSpend: 60,
-  Items: [{ id: 1101, name: 'Iron Ingot', count: 1, Type: 'Material', isRaw: false }],
-  Results: [{ id: 1102, name: 'Gear', count: 1, Type: 'Component', isRaw: false }],
-  GridIndex: '1102',
+  Items: [{ id: 1101, name: "Iron Ingot", count: 1, Type: "Material", isRaw: false }],
+  Results: [{ id: 1102, name: "Gear", count: 1, Type: "Component", isRaw: false }],
+  GridIndex: "1102",
   productive: false,
 };
 
-describe('calculateBuildingCost', () => {
+describe("calculateBuildingCost", () => {
   // 基本機能テスト
-  describe('基本機能', () => {
-    it('単一レシピノードの建物コストを計算する', () => {
+  describe("基本機能", () => {
+    it("単一レシピノードの建物コストを計算する", () => {
       const node: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
         machine: mockArcSmelter,
@@ -103,7 +103,7 @@ describe('calculateBuildingCost', () => {
       expect(result.belts).toBe(2);
     });
 
-    it('複数機械タイプを集計する', () => {
+    it("複数機械タイプを集計する", () => {
       const childNode: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
         machine: mockArcSmelter,
@@ -133,17 +133,17 @@ describe('calculateBuildingCost', () => {
       const result = calculateBuildingCost(parentNode);
 
       expect(result.machines).toHaveLength(2);
-      
+
       // ソート順の確認（machineIdでソート）
       expect(result.machines[0].machineId).toBe(2302); // Arc Smelter
       expect(result.machines[0].count).toBe(4); // Math.ceil(3.2)
       expect(result.machines[1].machineId).toBe(2303); // Assembler
       expect(result.machines[1].count).toBe(3); // Math.ceil(2.8)
-      
+
       expect(result.belts).toBe(3); // 1 + 2
     });
 
-    it('ソーター数を計算する（入力+出力アイテム数）', () => {
+    it("ソーター数を計算する（入力+出力アイテム数）", () => {
       const node: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
         machine: mockArcSmelter,
@@ -164,7 +164,7 @@ describe('calculateBuildingCost', () => {
       expect(result.sorters).toBe(10);
     });
 
-    it('コンベアベルト数を集計する', () => {
+    it("コンベアベルト数を集計する", () => {
       const child1: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
         machine: mockArcSmelter,
@@ -209,7 +209,7 @@ describe('calculateBuildingCost', () => {
       expect(result.belts).toBe(10); // 5 + 3 + 2
     });
 
-    it('機械IDでソート済み配列を返す', () => {
+    it("機械IDでソート済み配列を返す", () => {
       const child1: RecipeTreeNode = {
         recipe: mockGearRecipe,
         machine: mockChemicalPlant, // ID: 2309
@@ -257,7 +257,7 @@ describe('calculateBuildingCost', () => {
       expect(result.machines[2].machineId).toBe(2309); // Chemical Plant
     });
 
-    it('machineCountの小数点を切り上げる', () => {
+    it("machineCountの小数点を切り上げる", () => {
       const node: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
         machine: mockArcSmelter,
@@ -278,7 +278,7 @@ describe('calculateBuildingCost', () => {
   });
 
   // エッジケーステスト
-  describe('エッジケース', () => {
+  describe("エッジケース", () => {
     it('物流機械（Type="Logistics"）を除外する', () => {
       const sorterNode: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
@@ -313,7 +313,7 @@ describe('calculateBuildingCost', () => {
       expect(result.machines[0].machineId).toBe(2303);
     });
 
-    it('原材料ノード（機械なし）を処理する', () => {
+    it("原材料ノード（機械なし）を処理する", () => {
       const rawMaterialNode: RecipeTreeNode = {
         recipe: undefined,
         machine: undefined,
@@ -348,7 +348,7 @@ describe('calculateBuildingCost', () => {
       expect(result.machines[0].machineId).toBe(2302);
     });
 
-    it('深い階層ツリー（5階層）を処理する', () => {
+    it("深い階層ツリー（5階層）を処理する", () => {
       // 5階層のツリーを構築
       const level4: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
@@ -424,7 +424,7 @@ describe('calculateBuildingCost', () => {
       expect(result.belts).toBe(5); // 各階層1本ずつ
     });
 
-    it('空のツリー（子ノードなし）を処理する', () => {
+    it("空のツリー（子ノードなし）を処理する", () => {
       const node: RecipeTreeNode = {
         recipe: mockIronIngotRecipe,
         machine: mockArcSmelter,
@@ -447,8 +447,8 @@ describe('calculateBuildingCost', () => {
   });
 
   // 統合テスト
-  describe('統合テスト', () => {
-    it('複雑な生産チェーンの総コストを計算する', () => {
+  describe("統合テスト", () => {
+    it("複雑な生産チェーンの総コストを計算する", () => {
       // 複雑なツリー: Gear生産に必要なすべての建物
       const ironOreNode: RecipeTreeNode = {
         recipe: undefined,
@@ -497,31 +497,31 @@ describe('calculateBuildingCost', () => {
       expect(result.machines[0].count).toBe(10);
       expect(result.machines[1].machineId).toBe(2303); // Assembler
       expect(result.machines[1].count).toBe(12);
-      
+
       expect(result.belts).toBe(9); // 4 + 5
-      
+
       // ソーター計算: Arc Smelter (10機 × 2) + Assembler (12機 × 2) = 44
       expect(result.sorters).toBe(44);
     });
 
-    it('ソーター計算の正確性を検証する', () => {
+    it("ソーター計算の正確性を検証する", () => {
       // 複数入力・複数出力のレシピ
       const complexRecipe: Recipe = {
         SID: 100,
-        name: 'Complex Item',
-        Type: 'Chemical',
+        name: "Complex Item",
+        Type: "Chemical",
         Explicit: true,
         TimeSpend: 120,
         Items: [
-          { id: 1, name: 'Input A', count: 2, Type: 'Material', isRaw: false },
-          { id: 2, name: 'Input B', count: 1, Type: 'Material', isRaw: false },
-          { id: 3, name: 'Input C', count: 3, Type: 'Material', isRaw: false },
+          { id: 1, name: "Input A", count: 2, Type: "Material", isRaw: false },
+          { id: 2, name: "Input B", count: 1, Type: "Material", isRaw: false },
+          { id: 3, name: "Input C", count: 3, Type: "Material", isRaw: false },
         ],
         Results: [
-          { id: 101, name: 'Output A', count: 2, Type: 'Product', isRaw: false },
-          { id: 102, name: 'Output B', count: 1, Type: 'Product', isRaw: false },
+          { id: 101, name: "Output A", count: 2, Type: "Product", isRaw: false },
+          { id: 102, name: "Output B", count: 1, Type: "Product", isRaw: false },
         ],
-        GridIndex: '5001',
+        GridIndex: "5001",
         productive: false,
       };
 

@@ -1,4 +1,4 @@
-import type { ProliferatorConfig } from './proliferator';
+import type { ProliferatorConfig } from "./proliferator";
 
 /**
  * 光子生成設定
@@ -17,8 +17,8 @@ export interface PhotonGenerationSettings {
 export const DEFAULT_PHOTON_GENERATION_SETTINGS: PhotonGenerationSettings = {
   useGravitonLens: false,
   gravitonLensProliferator: {
-    type: 'none',
-    mode: 'speed',
+    type: "none",
+    mode: "speed",
     speedBonus: 0,
     productionBonus: 0,
     powerIncrease: 0,
@@ -26,4 +26,3 @@ export const DEFAULT_PHOTON_GENERATION_SETTINGS: PhotonGenerationSettings = {
   rayTransmissionEfficiency: 0,
   continuousReception: 100, // 固定100%
 };
-

@@ -1,5 +1,5 @@
-import type { GlobalSettings } from './settings';
-import type { NodeOverrideSettings } from './calculation';
+import type { GlobalSettings } from "./settings";
+import type { NodeOverrideSettings } from "./calculation";
 
 /**
  * Saved production plan
@@ -7,25 +7,25 @@ import type { NodeOverrideSettings } from './calculation';
 export interface SavedPlan {
   /** Plan name */
   name: string;
-  
+
   /** Timestamp when saved */
   timestamp: number;
-  
+
   /** Selected recipe SID */
   recipeSID: number;
-  
+
   /** Target production quantity */
   targetQuantity: number;
-  
+
   /** Global settings */
   settings: GlobalSettings;
-  
+
   /** Alternative recipe selections (itemId -> recipeId) */
   alternativeRecipes: Record<number, number>;
-  
+
   /** Node-specific override settings (nodeId -> settings) */
   nodeOverrides: Record<string, NodeOverrideSettings>;
-  
+
   /** Power generation settings (optional) */
   powerGenerationSettings?: {
     /** Template name */
@@ -42,7 +42,7 @@ export interface SavedPlan {
       productionBonus: number;
     };
   };
-  
+
   /** Optional description */
   description?: string;
 }

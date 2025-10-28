@@ -1,17 +1,17 @@
 // Central export point for settings-related types
 
 // Re-export all types and constants
-export * from './proliferator';
-export * from './machine';
-export * from './conveyor';
-export * from './templates';
-export * from './photonGeneration';
+export * from "./proliferator";
+export * from "./machine";
+export * from "./conveyor";
+export * from "./templates";
+export * from "./photonGeneration";
 
 // Import types for GlobalSettings
-import type { ProliferatorConfig } from './proliferator';
-import type { MachineRankSettings } from './machine';
-import type { ConveyorBeltConfig, SorterConfig } from './conveyor';
-import type { PhotonGenerationSettings } from './photonGeneration';
+import type { ProliferatorConfig } from "./proliferator";
+import type { MachineRankSettings } from "./machine";
+import type { ConveyorBeltConfig, SorterConfig } from "./conveyor";
+import type { PhotonGenerationSettings } from "./photonGeneration";
 
 // Global settings interface
 export interface GlobalSettings {
@@ -27,4 +27,3 @@ export interface GlobalSettings {
   };
   photonGeneration: PhotonGenerationSettings; // 光子生成設定
 }
-

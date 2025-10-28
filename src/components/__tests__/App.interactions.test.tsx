@@ -1,37 +1,37 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import App from '../../App';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import App from "../../App";
 
 // i18n mock
-vi.mock('../../i18n', () => ({ default: { language: 'ja', changeLanguage: vi.fn() } }));
+vi.mock("../../i18n", () => ({ default: { language: "ja", changeLanguage: vi.fn() } }));
 
 // stores
 const setSelectedRecipe = vi.fn();
 const setTargetQuantity = vi.fn();
 const setCalculationResult = vi.fn();
 
-vi.mock('../../stores/gameDataStore', () => {
+vi.mock("../../stores/gameDataStore", () => {
   const mockStore = {
     data: {
       recipes: new Map<number, any>([
-        [2001, { SID: 2001, name: 'Test Recipe', Results: [{ id: 1001 }] }],
+        [2001, { SID: 2001, name: "Test Recipe", Results: [{ id: 1001 }] }],
       ]),
     },
     isLoading: false,
     error: null,
     loadData: vi.fn(),
-    locale: 'ja',
+    locale: "ja",
   };
-  
+
   const mockHook = () => mockStore;
   mockHook.getState = () => mockStore;
-  
+
   return {
     useGameDataStore: mockHook,
   };
 });
 
-vi.mock('../../stores/recipeSelectionStore', () => ({
+vi.mock("../../stores/recipeSelectionStore", () => ({
   useRecipeSelectionStore: () => ({
     selectedRecipe: null,
     targetQuantity: 1,
@@ -42,112 +42,124 @@ vi.mock('../../stores/recipeSelectionStore', () => ({
   }),
 }));
 
-vi.mock('../../stores/settingsStore', () => ({
+vi.mock("../../stores/settingsStore", () => ({
   useSettingsStore: () => ({ settings: {}, updateSettings: vi.fn() }),
 }));
 
-vi.mock('../../stores/nodeOverrideStore', () => ({
+vi.mock("../../stores/nodeOverrideStore", () => ({
   useNodeOverrideStore: () => ({ nodeOverrides: {}, version: 1, setAllOverrides: vi.fn() }),
 }));
 
 // lazy children
-vi.mock('../../components/RecipeSelector', () => ({
+vi.mock("../../components/RecipeSelector", () => ({
   RecipeSelector: (props: any) => (
     <div>
-      <button onClick={() => props.onRecipeSelect({ SID: 2001, name: 'Test Recipe', Results: [{ id: 1001 }] })}>
+      <button
+        onClick={() =>
+          props.onRecipeSelect({ SID: 2001, name: "Test Recipe", Results: [{ id: 1001 }] })
+        }
+      >
         select-recipe
       </button>
       <div data-testid="recipe-selector" />
     </div>
   ),
 }));
-vi.mock('../../components/ResultTree', () => ({
+vi.mock("../../components/ResultTree", () => ({
   ProductionTree: () => <div data-testid="production-tree" />,
 }));
-vi.mock('../../components/SettingsPanel', () => ({
+vi.mock("../../components/SettingsPanel", () => ({
   SettingsPanel: () => <div data-testid="settings-panel" />,
 }));
-vi.mock('../../components/PlanManager', () => ({
+vi.mock("../../components/PlanManager", () => ({
   PlanManager: () => <div data-testid="plan-manager" />,
 }));
-vi.mock('../../components/StatisticsView', () => ({
+vi.mock("../../components/StatisticsView", () => ({
   StatisticsView: () => <div data-testid="statistics-view" />,
 }));
-vi.mock('../../components/BuildingCostView', () => ({
+vi.mock("../../components/BuildingCostView", () => ({
   BuildingCostView: () => <div data-testid="building-cost-view" />,
 }));
-vi.mock('../../components/ModSettings', () => ({ ModSettings: () => null }));
-vi.mock('../../components/WelcomeModal', () => ({ WelcomeModal: () => null }));
-vi.mock('../../components/LanguageSwitcher', () => ({ LanguageSwitcher: () => <div data-testid="language-switcher" /> }));
+vi.mock("../../components/ModSettings", () => ({ ModSettings: () => null }));
+vi.mock("../../components/WelcomeModal", () => ({ WelcomeModal: () => null }));
+vi.mock("../../components/LanguageSwitcher", () => ({
+  LanguageSwitcher: () => <div data-testid="language-switcher" />,
+}));
 
 // calculator returns a minimal tree when called
-vi.mock('../../lib/calculator', () => ({
+vi.mock("../../lib/calculator", () => ({
   calculateProductionChain: vi.fn(() => ({
     rootNode: {
-      nodeId: 'root',
+      nodeId: "root",
       itemId: 1001,
-      itemName: 'Item',
+      itemName: "Item",
       isRawMaterial: false,
       targetOutputRate: 1,
-      machine: { id: 1, name: 'Machine', assemblerSpeed: 1, workEnergyPerTick: 1 },
+      machine: { id: 1, name: "Machine", assemblerSpeed: 1, workEnergyPerTick: 1 },
       machineCount: 1,
       inputs: [],
       power: { total: 1, machines: 1, sorters: 0 },
       conveyorBelts: { inputs: 0, outputs: 0, total: 0, saturation: 0 },
-      proliferator: { type: 'none', mode: 'speed' },
+      proliferator: { type: "none", mode: "speed" },
       children: [],
     },
   })),
 }));
 
-describe('App interactions', () => {
+describe("App interactions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     document.body.innerHTML = '<div id="root"></div>';
   });
 
-  it('初期レンダリングでヘッダーと主要パネルが表示される', async () => {
+  it("初期レンダリングでヘッダーと主要パネルが表示される", async () => {
     render(<App />);
-    expect(screen.getByText('title')).toBeInTheDocument();
-    expect(await screen.findByTestId('recipe-selector')).toBeInTheDocument();
-    expect(screen.getByTestId('settings-panel')).toBeInTheDocument();
+    expect(screen.getByText("title")).toBeInTheDocument();
+    expect(await screen.findByTestId("recipe-selector")).toBeInTheDocument();
+    expect(screen.getByTestId("settings-panel")).toBeInTheDocument();
   });
 
-  it('レシピ選択→数量変更でハンドラが呼ばれる', async () => {
+  it("レシピ選択→数量変更でハンドラが呼ばれる", async () => {
     render(<App />);
     // レシピ選択
-    fireEvent.click(await screen.findByText('select-recipe'));
-    expect(setSelectedRecipe).toHaveBeenCalledWith({ SID: 2001, name: 'Test Recipe', Results: [{ id: 1001 }] });
+    fireEvent.click(await screen.findByText("select-recipe"));
+    expect(setSelectedRecipe).toHaveBeenCalledWith({
+      SID: 2001,
+      name: "Test Recipe",
+      Results: [{ id: 1001 }],
+    });
   });
 
-  it('統計/建設コストのタブ切替ができる', async () => {
+  it("統計/建設コストのタブ切替ができる", async () => {
     vi.resetModules();
 
     // child mocks re-define after reset
-    vi.doMock('../../components/StatisticsView', () => ({
-      StatisticsView: ({ miningCalculation }: { miningCalculation?: any }) => <div data-testid="statistics-view" />,
+    vi.doMock("../../components/StatisticsView", () => ({
+      StatisticsView: ({ miningCalculation }: { miningCalculation?: any }) => (
+        <div data-testid="statistics-view" />
+      ),
     }));
-    vi.doMock('../../components/BuildingCostView', () => ({
+    vi.doMock("../../components/BuildingCostView", () => ({
       BuildingCostView: () => <div data-testid="building-cost-view" />,
     }));
-    vi.doMock('../../components/ResultTree', () => ({
+    vi.doMock("../../components/ResultTree", () => ({
       ProductionTree: () => <div data-testid="production-tree" />,
     }));
 
     // provide selectedRecipe and calculationResult in store directly
     const calcResult = {
       rootNode: {
-        nodeId: 'root',
+        nodeId: "root",
         itemId: 1001,
-        itemName: 'Item',
+        itemName: "Item",
         isRawMaterial: false,
         targetOutputRate: 1,
-        machine: { id: 1, name: 'Machine', assemblerSpeed: 1, workEnergyPerTick: 1 },
+        machine: { id: 1, name: "Machine", assemblerSpeed: 1, workEnergyPerTick: 1 },
         machineCount: 1,
         inputs: [],
         power: { total: 1, machines: 1, sorters: 0 },
         conveyorBelts: { inputs: 0, outputs: 0, total: 0, saturation: 0 },
-        proliferator: { type: 'none', mode: 'speed' },
+        proliferator: { type: "none", mode: "speed" },
         children: [],
       },
       rawMaterials: new Map(),
@@ -155,9 +167,9 @@ describe('App interactions', () => {
       totalMachines: 1,
     } as any;
 
-    vi.doMock('../../stores/recipeSelectionStore', () => ({
+    vi.doMock("../../stores/recipeSelectionStore", () => ({
       useRecipeSelectionStore: () => ({
-        selectedRecipe: { SID: 2001, name: 'Test Recipe', Results: [{ id: 1001 }] },
+        selectedRecipe: { SID: 2001, name: "Test Recipe", Results: [{ id: 1001 }] },
         targetQuantity: 1,
         calculationResult: calcResult,
         setSelectedRecipe: vi.fn(),
@@ -165,37 +177,39 @@ describe('App interactions', () => {
         setCalculationResult: vi.fn(),
       }),
     }));
-    vi.doMock('../../stores/gameDataStore', () => ({
+    vi.doMock("../../stores/gameDataStore", () => ({
       useGameDataStore: () => ({
-        data: { recipes: new Map<number, any>([[2001, { SID: 2001, name: 'Test Recipe', Results: [{ id: 1001 }] }]]) },
+        data: {
+          recipes: new Map<number, any>([
+            [2001, { SID: 2001, name: "Test Recipe", Results: [{ id: 1001 }] }],
+          ]),
+        },
         isLoading: false,
         error: null,
         loadData: vi.fn(),
-        locale: 'ja',
+        locale: "ja",
       }),
     }));
 
-    const AppDynamic = (await import('../../App')).default;
+    const AppDynamic = (await import("../../App")).default;
     render(<AppDynamic />);
 
     // タブボタンをクリックして切替
-    fireEvent.click(screen.getAllByRole('button', { name: 'statistics' })[0]);
-    expect(await screen.findByTestId('statistics-view')).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "statistics" })[0]);
+    expect(await screen.findByTestId("statistics-view")).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'buildingCost' })[0]);
-    expect(await screen.findByTestId('building-cost-view')).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "buildingCost" })[0]);
+    expect(await screen.findByTestId("building-cost-view")).toBeInTheDocument();
 
     // 全展開/全折りたたみトグルの状態遷移（ProductionTree表示時のみ）
-    fireEvent.click(screen.getAllByRole('button', { name: 'productionTree' })[0]);
-    const toggleBtn = screen.getByRole('button', { name: /expandAll|collapseAll/ });
+    fireEvent.click(screen.getAllByRole("button", { name: "productionTree" })[0]);
+    const toggleBtn = screen.getByRole("button", { name: /expandAll|collapseAll/ });
     // 1度目クリックで展開状態へ
     fireEvent.click(toggleBtn);
     // ラベルが collapseAll に変化するか、ボタンが存在していることを確認（描画に依存しない緩めの検証）
-    expect(screen.getByRole('button', { name: /expandAll|collapseAll/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /expandAll|collapseAll/ })).toBeInTheDocument();
     // 2度目クリックで折りたたみへ
-    fireEvent.click(screen.getByRole('button', { name: /expandAll|collapseAll/ }));
-    expect(screen.getByRole('button', { name: /expandAll|collapseAll/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /expandAll|collapseAll/ }));
+    expect(screen.getByRole("button", { name: /expandAll|collapseAll/ })).toBeInTheDocument();
   });
 });
-
-

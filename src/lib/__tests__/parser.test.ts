@@ -1,10 +1,10 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { loadGameData } from '../parser';
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { loadGameData } from "../parser";
 
 // Mock fetch globally
 global.fetch = vi.fn();
 
-describe('parser', () => {
+describe("parser", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -13,7 +13,7 @@ describe('parser', () => {
     vi.restoreAllMocks();
   });
 
-  describe('loadGameData', () => {
+  describe("loadGameData", () => {
     const mockItemsXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfItem>
   <Item>
@@ -127,22 +127,22 @@ describe('parser', () => {
   </Machine>
 </ArrayOfMachine>`;
 
-    it('正しくXMLをパースしてGameDataを返す（日本語ロケール）', async () => {
+    it("正しくXMLをパースしてGameDataを返す（日本語ロケール）", async () => {
       (global.fetch as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockItemsXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockRecipesXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       // Items (Critical PhotonとGraviton Lensが追加されているため、3 + 2 = 5)
       expect(gameData.items.size).toBe(5);
       expect(gameData.items.get(1101)).toEqual({
         id: 1101,
-        name: '鉄鉱石',
+        name: "鉄鉱石",
         count: 1,
-        Type: 'Smelt',
-        miningFrom: 'VeinMiner',
+        Type: "Smelt",
+        miningFrom: "VeinMiner",
         produceFrom: undefined,
         isRaw: true,
       });
@@ -151,7 +151,7 @@ describe('parser', () => {
       expect(gameData.recipes.size).toBe(3);
       const recipe1 = gameData.recipes.get(1);
       expect(recipe1).toBeDefined();
-      expect(recipe1?.name).toBe('鉄インゴット');
+      expect(recipe1?.name).toBe("鉄インゴット");
       expect(recipe1?.Items).toHaveLength(1);
       expect(recipe1?.Results).toHaveLength(1);
       expect(recipe1?.productive).toBe(true);
@@ -160,9 +160,9 @@ describe('parser', () => {
       expect(gameData.machines.size).toBe(3);
       expect(gameData.machines.get(2301)).toEqual({
         id: 2301,
-        name: '製錬設備',
+        name: "製錬設備",
         count: 1,
-        Type: 'Smelt',
+        Type: "Smelt",
         miningFrom: undefined,
         produceFrom: undefined,
         isRaw: false,
@@ -182,69 +182,77 @@ describe('parser', () => {
       expect(gameData.allItems.size).toBe(8); // 5 items + 3 machines
     });
 
-    it('英語ロケールでファイルパスを正しく生成', async () => {
+    it("英語ロケールでファイルパスを正しく生成", async () => {
       (global.fetch as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockItemsXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockRecipesXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      await loadGameData(undefined, 'en');
+      await loadGameData(undefined, "en");
 
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Items/Items_en.xml'));
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes_en.xml'));
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines_en.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining("data/Items/Items_en.xml"));
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("data/Recipes/Recipes_en.xml")
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("data/Machines/Machines_en.xml")
+      );
     });
 
-    it('ロケールファイルがない場合デフォルトにフォールバック', async () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    it("ロケールファイルがない場合デフォルトにフォールバック", async () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       // Promise.allで並列実行されるため、すべてのfetchをセットアップ
       let callCount = 0;
       (global.fetch as ReturnType<typeof vi.fn>).mockImplementation((url: string) => {
         callCount++;
-        
+
         // Items_fr.xml → reject → Items.xml → resolve
-        if (url.includes('Items_fr.xml')) {
-          return Promise.reject(new Error('Not found'));
+        if (url.includes("Items_fr.xml")) {
+          return Promise.reject(new Error("Not found"));
         }
-        if (url.includes('Items.xml') && !url.includes('Items_')) {
+        if (url.includes("Items.xml") && !url.includes("Items_")) {
           return Promise.resolve({ text: () => Promise.resolve(mockItemsXml) } as Response);
         }
-        
+
         // Recipes_fr.xml → reject → Recipes.xml → resolve
-        if (url.includes('Recipes_fr.xml')) {
-          return Promise.reject(new Error('Not found'));
+        if (url.includes("Recipes_fr.xml")) {
+          return Promise.reject(new Error("Not found"));
         }
-        if (url.includes('Recipes.xml') && !url.includes('Recipes_')) {
+        if (url.includes("Recipes.xml") && !url.includes("Recipes_")) {
           return Promise.resolve({ text: () => Promise.resolve(mockRecipesXml) } as Response);
         }
-        
+
         // Machines_fr.xml → reject → Machines.xml → resolve
-        if (url.includes('Machines_fr.xml')) {
-          return Promise.reject(new Error('Not found'));
+        if (url.includes("Machines_fr.xml")) {
+          return Promise.reject(new Error("Not found"));
         }
-        if (url.includes('Machines.xml') && !url.includes('Machines_')) {
+        if (url.includes("Machines.xml") && !url.includes("Machines_")) {
           return Promise.resolve({ text: () => Promise.resolve(mockMachinesXml) } as Response);
         }
-        
+
         return Promise.reject(new Error(`Unexpected fetch: ${url}`));
       });
 
-      const gameData = await loadGameData(undefined, 'fr');
+      const gameData = await loadGameData(undefined, "fr");
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Items_fr.xml not found')
+        expect.stringContaining("Items_fr.xml not found")
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Recipes_fr.xml not found')
+        expect.stringContaining("Recipes_fr.xml not found")
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Machines_fr.xml not found')
+        expect.stringContaining("Machines_fr.xml not found")
       );
 
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Items/Items.xml'));
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes.xml'));
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining("data/Items/Items.xml"));
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("data/Recipes/Recipes.xml")
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("data/Machines/Machines.xml")
+      );
 
       expect(gameData.items.size).toBe(5); // Critical PhotonとGraviton Lensが追加されているため
       expect(gameData.recipes.size).toBe(3); // Critical Photonレシピが追加されているため
@@ -253,7 +261,7 @@ describe('parser', () => {
       consoleWarnSpy.mockRestore();
     });
 
-    it('カスタムRecipes XMLを使用できる', async () => {
+    it("カスタムRecipes XMLを使用できる", async () => {
       const customRecipesXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfRecipe>
   <Recipe>
@@ -289,18 +297,18 @@ describe('parser', () => {
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockItemsXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(customRecipesXml, 'ja');
+      const gameData = await loadGameData(customRecipesXml, "ja");
 
       expect(gameData.recipes.size).toBe(2); // Critical Photonレシピが追加されているため
       const customRecipe = gameData.recipes.get(999);
       expect(customRecipe).toBeDefined();
-      expect(customRecipe?.name).toBe('カスタムレシピ');
+      expect(customRecipe?.name).toBe("カスタムレシピ");
       expect(customRecipe?.Explicit).toBe(true);
       expect(customRecipe?.Items[0].count).toBe(2);
       expect(customRecipe?.Results[0].count).toBe(3);
     });
 
-    it('単一アイテムのXMLも正しくパース（配列でない場合）', async () => {
+    it("単一アイテムのXMLも正しくパース（配列でない場合）", async () => {
       const singleItemXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfItem>
   <Item>
@@ -364,14 +372,14 @@ describe('parser', () => {
         .mockResolvedValueOnce({ text: () => Promise.resolve(singleRecipeXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(singleMachineXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       expect(gameData.items.size).toBe(3); // Critical PhotonとGraviton Lensが追加されているため
       expect(gameData.recipes.size).toBe(2); // Critical Photonレシピが追加されているため
       expect(gameData.machines.size).toBe(2); // Ray Receiverが追加されているため
     });
 
-    it('文字列のboolean値を正しく変換（isRaw, Explicit, productive）', async () => {
+    it("文字列のboolean値を正しく変換（isRaw, Explicit, productive）", async () => {
       const booleanTestXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfItem>
   <Item>
@@ -417,7 +425,7 @@ describe('parser', () => {
         .mockResolvedValueOnce({ text: () => Promise.resolve(booleanRecipeXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       expect(gameData.items.get(1101)?.isRaw).toBe(true);
       expect(gameData.items.get(1102)?.isRaw).toBe(false);
@@ -425,7 +433,7 @@ describe('parser', () => {
       expect(gameData.recipes.get(1)?.productive).toBe(true);
     });
 
-    it('recipesByItemIdインデックスが正しく構築される', async () => {
+    it("recipesByItemIdインデックスが正しく構築される", async () => {
       const multiRecipeXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfRecipe>
   <Recipe>
@@ -471,7 +479,7 @@ describe('parser', () => {
         .mockResolvedValueOnce({ text: () => Promise.resolve(multiRecipeXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       const recipesFor1103 = gameData.recipesByItemId.get(1103);
       expect(recipesFor1103).toBeDefined();
@@ -480,49 +488,49 @@ describe('parser', () => {
       expect(recipesFor1103?.[1].SID).toBe(2);
     });
 
-    it('allItemsマップがitemsとmachinesを統合', async () => {
+    it("allItemsマップがitemsとmachinesを統合", async () => {
       (global.fetch as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockItemsXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockRecipesXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       // 5 items (Critical PhotonとGraviton Lensが追加) + 3 machines (Ray Receiverが追加) = 8 total
       expect(gameData.allItems.size).toBe(8);
 
       // itemsから取得
-      expect(gameData.allItems.get(1101)?.name).toBe('鉄鉱石');
+      expect(gameData.allItems.get(1101)?.name).toBe("鉄鉱石");
 
       // machinesから取得
-      expect(gameData.allItems.get(2301)?.name).toBe('製錬設備');
+      expect(gameData.allItems.get(2301)?.name).toBe("製錬設備");
     });
 
-    it('数値型フィールドが正しく変換される', async () => {
+    it("数値型フィールドが正しく変換される", async () => {
       (global.fetch as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockItemsXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockRecipesXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       const item = gameData.items.get(1101);
-      expect(typeof item?.id).toBe('number');
-      expect(typeof item?.count).toBe('number');
+      expect(typeof item?.id).toBe("number");
+      expect(typeof item?.count).toBe("number");
 
       const recipe = gameData.recipes.get(1);
-      expect(typeof recipe?.SID).toBe('number');
-      expect(typeof recipe?.TimeSpend).toBe('number');
-      expect(typeof recipe?.Items[0].count).toBe('number');
+      expect(typeof recipe?.SID).toBe("number");
+      expect(typeof recipe?.TimeSpend).toBe("number");
+      expect(typeof recipe?.Items[0].count).toBe("number");
 
       const machine = gameData.machines.get(2301);
-      expect(typeof machine?.assemblerSpeed).toBe('number');
-      expect(typeof machine?.workEnergyPerTick).toBe('number');
+      expect(typeof machine?.assemblerSpeed).toBe("number");
+      expect(typeof machine?.workEnergyPerTick).toBe("number");
       expect(machine?.assemblerSpeed).toBe(1);
       expect(machine?.workEnergyPerTick).toBe(360);
     });
 
-    it('Items/Resultsが空の場合も正しく処理', async () => {
+    it("Items/Resultsが空の場合も正しく処理", async () => {
       const emptyItemsRecipeXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfRecipe>
   <Recipe>
@@ -550,7 +558,7 @@ describe('parser', () => {
         .mockResolvedValueOnce({ text: () => Promise.resolve(emptyItemsRecipeXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockMachinesXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       const recipe = gameData.recipes.get(1);
       expect(recipe?.Items).toEqual([]);
@@ -565,12 +573,16 @@ describe('parser', () => {
 
       await loadGameData();
 
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Items/Items_ja.xml'));
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Recipes/Recipes_ja.xml'));
-      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('data/Machines/Machines_ja.xml'));
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining("data/Items/Items_ja.xml"));
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("data/Recipes/Recipes_ja.xml")
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringContaining("data/Machines/Machines_ja.xml")
+      );
     });
 
-    it('機械のboolean値（isPowerConsumer, isPowerExchanger）を正しく変換', async () => {
+    it("機械のboolean値（isPowerConsumer, isPowerExchanger）を正しく変換", async () => {
       const machineWithBoolXml = `<?xml version="1.0" encoding="UTF-8"?>
 <ArrayOfMachine>
   <Machine>
@@ -604,7 +616,7 @@ describe('parser', () => {
         .mockResolvedValueOnce({ text: () => Promise.resolve(mockRecipesXml) } as Response)
         .mockResolvedValueOnce({ text: () => Promise.resolve(machineWithBoolXml) } as Response);
 
-      const gameData = await loadGameData(undefined, 'ja');
+      const gameData = await loadGameData(undefined, "ja");
 
       const consumer = gameData.machines.get(2301);
       expect(consumer?.isPowerConsumer).toBe(true);

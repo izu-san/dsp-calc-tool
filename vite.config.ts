@@ -1,31 +1,31 @@
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
   // カスタムドメイン (dsp-calc.com) を使用
-  base: '/',
+  base: "/",
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   test: {
     globals: true,
-    environment: 'happy-dom',
-    setupFiles: './src/test/setup.ts',
+    environment: "happy-dom",
+    setupFiles: "./src/test/setup.ts",
     exclude: [
-      'node_modules/**',
-      'dist/**',
-      'tests/e2e/**',
-      'tests/fixtures/**',
-      '**/*.e2e.spec.ts'
+      "node_modules/**",
+      "dist/**",
+      "tests/e2e/**",
+      "tests/fixtures/**",
+      "**/*.e2e.spec.ts",
     ],
     // ワーカープロセスのクラッシュを防ぐための設定
     // threadsプールを使用（forksより安定）
-    pool: 'threads',
+    pool: "threads",
     // @ts-expect-error - Vitestの型定義が不完全
     poolOptions: {
       threads: {
@@ -40,54 +40,54 @@ export default defineConfig({
     // ファイル並列実行数を制限
     maxConcurrency: 3,
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       exclude: [
-        'node_modules/',
-        'src/test/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mockData',
-        'dist/',
-        'tests/e2e/',
-        'tests/fixtures/'
-      ]
-    }
+        "node_modules/",
+        "src/test/",
+        "**/*.d.ts",
+        "**/*.config.*",
+        "**/mockData",
+        "dist/",
+        "tests/e2e/",
+        "tests/fixtures/",
+      ],
+    },
   },
   build: {
     rollupOptions: {
       output: {
         manualChunks: {
           // React core libraries
-          'react-vendor': ['react', 'react-dom'],
+          "react-vendor": ["react", "react-dom"],
           // UI component libraries
-          'ui-vendor': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-label', 
-            '@radix-ui/react-select',
-            '@radix-ui/react-switch',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-tooltip'
+          "ui-vendor": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-label",
+            "@radix-ui/react-select",
+            "@radix-ui/react-switch",
+            "@radix-ui/react-tabs",
+            "@radix-ui/react-tooltip",
           ],
           // Chart and visualization
-          'chart-vendor': ['chart.js', 'react-chartjs-2'],
+          "chart-vendor": ["chart.js", "react-chartjs-2"],
           // Utilities and parsers
-          'utils-vendor': [
-            'decimal.js',
-            'dompurify', 
-            'fast-xml-parser',
-            'lz-string',
-            'js-cookie',
-            'zod'
+          "utils-vendor": [
+            "decimal.js",
+            "dompurify",
+            "fast-xml-parser",
+            "lz-string",
+            "js-cookie",
+            "zod",
           ],
           // Internationalization
-          'i18n-vendor': ['i18next', 'react-i18next'],
+          "i18n-vendor": ["i18next", "react-i18next"],
           // State management
-          'state-vendor': ['zustand']
-        }
-      }
+          "state-vendor": ["zustand"],
+        },
+      },
     },
     // Increase chunk size warning limit to 800KB
-    chunkSizeWarningLimit: 800
-  }
-})
+    chunkSizeWarningLimit: 800,
+  },
+});

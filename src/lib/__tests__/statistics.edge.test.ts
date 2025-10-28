@@ -1,10 +1,16 @@
-import { describe, it, expect } from 'vitest';
-import { calculateItemStatistics, getSortedItems, getRawMaterials, getIntermediateProducts, getFinalProducts } from '../statistics';
+import { describe, it, expect } from "vitest";
+import {
+  calculateItemStatistics,
+  getSortedItems,
+  getRawMaterials,
+  getIntermediateProducts,
+  getFinalProducts,
+} from "../statistics";
 
-describe('statistics edge cases', () => {
-  it('handles empty tree gracefully', () => {
+describe("statistics edge cases", () => {
+  it("handles empty tree gracefully", () => {
     const emptyRoot: any = {
-      nodeId: 'root',
+      nodeId: "root",
       isRawMaterial: false,
       targetOutputRate: 0,
       machineCount: 0,
@@ -23,9 +29,9 @@ describe('statistics edge cases', () => {
     expect(getFinalProducts(stats)).toEqual([]);
   });
 
-  it('treats raw material child as consumption only when no recipe', () => {
+  it("treats raw material child as consumption only when no recipe", () => {
     const root: any = {
-      nodeId: 'root',
+      nodeId: "root",
       isRawMaterial: false,
       targetOutputRate: 60,
       machineCount: 1,
@@ -35,13 +41,13 @@ describe('statistics edge cases', () => {
         SID: 2001,
         Results: [{ id: 1002, count: 1 }],
       },
-      inputs: [{ itemId: 1001, itemName: 'Iron Ore', requiredRate: 60 }],
+      inputs: [{ itemId: 1001, itemName: "Iron Ore", requiredRate: 60 }],
       children: [
         {
-          nodeId: 'raw-1001-0',
+          nodeId: "raw-1001-0",
           isRawMaterial: true,
           itemId: 1001,
-          itemName: 'Iron Ore',
+          itemName: "Iron Ore",
           targetOutputRate: 60,
           conveyorBelts: { outputs: 1 },
           children: [],
@@ -71,9 +77,9 @@ describe('statistics edge cases', () => {
     expect(getFinalProducts(stats).length).toBe(1);
   });
 
-  it('proportional outputs are calculated relative to main output count', () => {
+  it("proportional outputs are calculated relative to main output count", () => {
     const root: any = {
-      nodeId: 'root',
+      nodeId: "root",
       isRawMaterial: false,
       targetOutputRate: 60,
       machineCount: 1,
@@ -98,5 +104,3 @@ describe('statistics edge cases', () => {
     expect(sub.totalProduction).toBeCloseTo(30, 6);
   });
 });
-
-

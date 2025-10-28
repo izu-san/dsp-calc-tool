@@ -1,4 +1,4 @@
-import type { Recipe, Machine, Item } from '../types/game-data';
+import type { Recipe, Machine, Item } from "../types/game-data";
 
 /**
  * 臨界光子のアイテムデータ
@@ -6,8 +6,8 @@ import type { Recipe, Machine, Item } from '../types/game-data';
  */
 export const CRITICAL_PHOTON_ITEM: Item = {
   id: 1208,
-  name: 'Critical Photon',
-  Type: 'Material',
+  name: "Critical Photon",
+  Type: "Material",
   isRaw: false,
 };
 
@@ -17,8 +17,8 @@ export const CRITICAL_PHOTON_ITEM: Item = {
  */
 export const GRAVITON_LENS_ITEM: Item = {
   id: 1209,
-  name: 'Graviton Lens',
-  Type: 'Material',
+  name: "Graviton Lens",
+  Type: "Material",
   isRaw: false,
 };
 
@@ -28,8 +28,8 @@ export const GRAVITON_LENS_ITEM: Item = {
  */
 export const RAY_RECEIVER_MACHINE: Machine = {
   id: 2208,
-  name: 'Ray Receiver',
-  Type: 'PhotonGenerator',
+  name: "Ray Receiver",
+  Type: "PhotonGenerator",
   isRaw: false,
   assemblerSpeed: 10000, // 100% base speed
   workEnergyPerTick: 0, // ダイソンスフィア電力を別計算するため0
@@ -45,21 +45,21 @@ export const RAY_RECEIVER_MACHINE: Machine = {
  */
 export const CRITICAL_PHOTON_RECIPE: Recipe = {
   SID: -1,
-  name: 'Critical Photon (Ray Receiver)',
-  Type: 'PhotonGeneration',
+  name: "Critical Photon (Ray Receiver)",
+  Type: "PhotonGeneration",
   Explicit: true,
   TimeSpend: 60, // 1秒 = 60 ticks
   Items: [], // 重力子レンズは動的に追加される
   Results: [
     {
       id: 1208,
-      name: 'Critical Photon',
+      name: "Critical Photon",
       count: 1,
-      Type: 'Material',
+      Type: "Material",
       isRaw: false,
     },
   ],
-  GridIndex: '0000', // 特殊レシピなのでグリッド位置なし
+  GridIndex: "0000", // 特殊レシピなのでグリッド位置なし
   productive: false, // Ray Receiver本体には増産剤を適用できない
 };
 
@@ -68,4 +68,3 @@ export const CRITICAL_PHOTON_RECIPE: Recipe = {
  * 0.1個/分 = 0.1/60 個/秒
  */
 export const GRAVITON_LENS_CONSUMPTION_RATE = 0.1 / 60;
-

@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import type { Recipe } from '../../types';
-import { parseGridIndex } from '../../utils/grid';
-import { useFavoritesStore } from '../../stores/favoritesStore';
-import { ItemIcon } from '../ItemIcon';
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import type { Recipe } from "../../types";
+import { parseGridIndex } from "../../utils/grid";
+import { useFavoritesStore } from "../../stores/favoritesStore";
+import { ItemIcon } from "../ItemIcon";
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -22,7 +22,7 @@ export function RecipeGrid({ recipes, tab, onRecipeSelect, selectedRecipeId }: R
       Array.from({ length: GRID_COLS }, () => null)
     );
 
-    recipes.forEach((recipe) => {
+    recipes.forEach(recipe => {
       const pos = parseGridIndex(recipe.GridIndex);
       // GridIndex is 1-indexed, convert to 0-indexed for array
       if (pos.z === tab && pos.y > 0 && pos.x > 0 && pos.y <= GRID_ROWS && pos.x <= GRID_COLS) {
@@ -35,7 +35,10 @@ export function RecipeGrid({ recipes, tab, onRecipeSelect, selectedRecipeId }: R
 
   return (
     <div className="w-full overflow-auto">
-      <div className="grid gap-1 p-4" style={{ gridTemplateColumns: `repeat(${GRID_COLS}, minmax(0, 1fr))` }}>
+      <div
+        className="grid gap-1 p-4"
+        style={{ gridTemplateColumns: `repeat(${GRID_COLS}, minmax(0, 1fr))` }}
+      >
         {gridRecipes.map((row, rowIndex) =>
           row.map((recipe, colIndex) => (
             <RecipeCell
@@ -67,7 +70,7 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
 
   // Determine the icon ID based on recipe type
   // Explicit recipes use recipe SID, implicit recipes use first result item ID
-  const itemId = recipe.Explicit ? recipe.SID : (recipe.Results[0]?.id || recipe.SID);
+  const itemId = recipe.Explicit ? recipe.SID : recipe.Results[0]?.id || recipe.SID;
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -84,13 +87,14 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
         className={`
           absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10
           rounded-bl text-xs transition-all cursor-pointer
-          ${isFavorite(recipe.SID)
-            ? 'bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100 shadow-[0_0_10px_rgba(255,215,0,0.5)]'
-            : 'bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100'
+          ${
+            isFavorite(recipe.SID)
+              ? "bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100 shadow-[0_0_10px_rgba(255,215,0,0.5)]"
+              : "bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100"
           }
           hover:scale-110 hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]
         `}
-        title={isFavorite(recipe.SID) ? t('removeFromFavorites') : t('addToFavorites')}
+        title={isFavorite(recipe.SID) ? t("removeFromFavorites") : t("addToFavorites")}
       >
         ⭐
       </div>
@@ -103,20 +107,16 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
           w-full h-full rounded border-2 transition-all ripple-effect
           hover:border-neon-cyan hover:scale-105 hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]
           focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-1
-          ${isSelected 
-            ? 'border-neon-cyan bg-neon-cyan/20 backdrop-blur-sm shadow-[0_0_15px_rgba(0,217,255,0.5)] scale-105' 
-            : 'border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm'
+          ${
+            isSelected
+              ? "border-neon-cyan bg-neon-cyan/20 backdrop-blur-sm shadow-[0_0_15px_rgba(0,217,255,0.5)] scale-105"
+              : "border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm"
           }
         `}
         title={recipe.name}
       >
         <div className="w-full h-full flex items-center justify-center p-1">
-          <ItemIcon
-            itemId={itemId}
-            alt={recipe.name}
-            preferRecipes={recipe.Explicit}
-            size="auto"
-          />
+          <ItemIcon itemId={itemId} alt={recipe.name} preferRecipes={recipe.Explicit} size="auto" />
         </div>
       </button>
     </div>

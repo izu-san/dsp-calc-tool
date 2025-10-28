@@ -1,22 +1,22 @@
 /**
  * Data transformer for export functionality
- * 
+ *
  * CalculationResult を ExportData に変換する
  */
 
-import type { CalculationResult, RecipeTreeNode } from '../../types/calculation';
-import type { GlobalSettings } from '../../types/settings';
-import type { ExportData } from '../../types/export';
-import type { Recipe } from '../../types/game-data';
-import type { PowerGeneratorType } from '../../types/power-generation';
-import type { GameTemplate } from '../../types/settings/templates';
-import type { ProliferatorConfig } from '../../types/settings';
-import { EXPORT_VERSION } from '../../constants/exportVersion';
-import { calculatePowerGeneration } from '../powerGenerationCalculation';
+import type { CalculationResult, RecipeTreeNode } from "../../types/calculation";
+import type { GlobalSettings } from "../../types/settings";
+import type { ExportData } from "../../types/export";
+import type { Recipe } from "../../types/game-data";
+import type { PowerGeneratorType } from "../../types/power-generation";
+import type { GameTemplate } from "../../types/settings/templates";
+import type { ProliferatorConfig } from "../../types/settings";
+import { EXPORT_VERSION } from "../../constants/exportVersion";
+import { calculatePowerGeneration } from "../powerGenerationCalculation";
 
 /**
  * CalculationResult を ExportData に変換する
- * 
+ *
  * @param calculationResult - 計算結果
  * @param selectedRecipe - 選択されたレシピ
  * @param targetQuantity - 目標生産量
@@ -54,7 +54,7 @@ export function transformToExportData(
       itemId,
       itemName: gameData.items.get(itemId)?.name || `Item ${itemId}`,
       consumptionRate: rate,
-      unit: '/s',
+      unit: "/s",
     })
   );
 
@@ -66,16 +66,18 @@ export function transformToExportData(
         productionRate: output.productionRate,
         consumptionRate: 0,
         netProduction: output.productionRate,
-        unit: '/s',
+        unit: "/s",
       }))
-    : [{
-        itemId: selectedRecipe.Results[0]?.id || 0,
-        itemName: selectedRecipe.Results[0]?.name || selectedRecipe.name,
-        productionRate: calculationResult.rootNode.targetOutputRate,
-        consumptionRate: 0,
-        netProduction: calculationResult.rootNode.targetOutputRate,
-        unit: '/s',
-      }];
+    : [
+        {
+          itemId: selectedRecipe.Results[0]?.id || 0,
+          itemName: selectedRecipe.Results[0]?.name || selectedRecipe.name,
+          productionRate: calculationResult.rootNode.targetOutputRate,
+          consumptionRate: 0,
+          netProduction: calculationResult.rootNode.targetOutputRate,
+          unit: "/s",
+        },
+      ];
 
   // 中間製品リスト
   const intermediateProducts = Array.from(products.entries())
@@ -87,7 +89,7 @@ export function transformToExportData(
       productionRate: data.produced,
       consumptionRate: data.consumed,
       netProduction: data.produced - data.consumed,
-      unit: '/s',
+      unit: "/s",
     }));
 
   // 全製品リスト
@@ -131,19 +133,26 @@ export function transformToExportData(
 
   const exportPowerGeneration = {
     totalRequiredPower: calculationResult.totalPower.total,
-    totalGeneratedPower: powerGenerationResult.generators.reduce((sum, gen) => sum + gen.totalOutput, 0),
+    totalGeneratedPower: powerGenerationResult.generators.reduce(
+      (sum, gen) => sum + gen.totalOutput,
+      0
+    ),
     generators: powerGenerationResult.generators.map(gen => ({
       generatorId: gen.generator.machineId,
       generatorName: gen.generator.machineName,
       count: gen.count,
       powerPerGenerator: gen.actualOutputPerUnit,
       totalPower: gen.totalOutput,
-      fuel: gen.fuel ? [{
-        itemId: gen.fuel.itemId,
-        itemName: gen.fuel.itemName,
-        consumptionRate: gen.fuelConsumptionRate,
-        unit: '/s',
-      }] : [],
+      fuel: gen.fuel
+        ? [
+            {
+              itemId: gen.fuel.itemId,
+              itemName: gen.fuel.itemName,
+              consumptionRate: gen.fuelConsumptionRate,
+              unit: "/s",
+            },
+          ]
+        : [],
     })),
   };
 
@@ -174,7 +183,7 @@ export function transformToExportData(
 
 /**
  * ツリーを再帰的にトラバースして情報を収集する
- * 
+ *
  * @param node - ツリーノード
  * @param machines - 機械の集計マップ
  * @param products - 製品の集計マップ
@@ -199,7 +208,7 @@ function traverseTree(
   // 製品を集計
   if (node.recipe) {
     // 出力
-    node.recipe.Results.forEach((result) => {
+    node.recipe.Results.forEach(result => {
       const existing = products.get(result.id) || {
         name: result.name,
         produced: 0,

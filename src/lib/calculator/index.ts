@@ -5,14 +5,14 @@ import type {
   CalculationResult,
   NodeOverrideSettings,
   MultiOutputResult,
-} from '../../types';
-import { buildRecipeTree } from './tree-builder';
-import { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from './aggregations';
+} from "../../types";
+import { buildRecipeTree } from "./tree-builder";
+import { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from "./aggregations";
 
 // Re-export all public functions
-export { calculateProductionRate } from './production-rate';
-export { calculateMachinePower, calculateSorterPower } from './power-calculation';
-export { calculateConveyorBelts } from './belt-calculation';
+export { calculateProductionRate } from "./production-rate";
+export { calculateMachinePower, calculateSorterPower } from "./power-calculation";
+export { calculateConveyorBelts } from "./belt-calculation";
 export {
   buildRecipeTree,
   resolveProliferatorMode,
@@ -20,8 +20,8 @@ export {
   resolveMachine,
   createRawMaterialNode,
   buildChildNodes,
-} from './tree-builder';
-export { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from './aggregations';
+} from "./tree-builder";
+export { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from "./aggregations";
 
 /**
  * Main calculation function
@@ -32,14 +32,17 @@ export function calculateProductionChain(
   gameData: GameData,
   settings: GlobalSettings,
   nodeOverrides: Map<string, NodeOverrideSettings> = new Map(),
-  miningSettings: { machineType: 'Mining Machine' | 'Advanced Mining Machine'; workSpeedMultiplier: number }
+  miningSettings: {
+    machineType: "Mining Machine" | "Advanced Mining Machine";
+    workSpeedMultiplier: number;
+  }
 ): CalculationResult {
   // For root node, set targetItemId to the first result (primary output)
   if (!recipe.Results || recipe.Results.length === 0) {
     throw new Error(`Recipe ${recipe.name} has no results`);
   }
   const targetItemId = recipe.Results[0].id;
-  
+
   const rootNode = buildRecipeTree(
     recipe,
     targetRate,
@@ -58,9 +61,8 @@ export function calculateProductionChain(
   const rawMaterials = calculateRawMaterials(rootNode);
 
   // Calculate multi-output results if recipe has multiple outputs
-  const multiOutputResults = recipe.Results.length > 1 
-    ? calculateMultiOutputResults(recipe, targetRate)
-    : undefined;
+  const multiOutputResults =
+    recipe.Results.length > 1 ? calculateMultiOutputResults(recipe, targetRate) : undefined;
 
   return {
     rootNode,
@@ -74,17 +76,14 @@ export function calculateProductionChain(
 /**
  * Calculate production rates for all output items in multi-output recipes
  */
-function calculateMultiOutputResults(
-  recipe: Recipe,
-  targetRate: number
-): MultiOutputResult[] {
+function calculateMultiOutputResults(recipe: Recipe, targetRate: number): MultiOutputResult[] {
   const mainOutput = recipe.Results[0];
   const mainOutputRate = targetRate; // Target rate is for the main output
-  
+
   return recipe.Results.map(result => {
     const ratio = result.count / mainOutput.count;
     const productionRate = mainOutputRate * ratio;
-    
+
     return {
       itemId: result.id,
       itemName: result.name,
@@ -93,4 +92,3 @@ function calculateMultiOutputResults(
     };
   });
 }
-

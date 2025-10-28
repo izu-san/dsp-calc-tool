@@ -1,55 +1,55 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { RecipeSelector } from '../index';
-import type { Recipe } from '../../../types';
-import { useFavoritesStore } from '../../../stores/favoritesStore';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { RecipeSelector } from "../index";
+import type { Recipe } from "../../../types";
+import { useFavoritesStore } from "../../../stores/favoritesStore";
 
 // i18nextのモック
-vi.mock('react-i18next', () => ({
+vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
 // favoritesStoreのモック
-vi.mock('../../../stores/favoritesStore', () => ({
+vi.mock("../../../stores/favoritesStore", () => ({
   useFavoritesStore: vi.fn(),
 }));
 
-describe('RecipeSelector', () => {
+describe("RecipeSelector", () => {
   const mockRecipes: Recipe[] = [
     {
       SID: 1,
-      name: 'Iron Ingot',
-      Type: 'Smelt',
-      GridIndex: '1101',
-      Items: [{ id: 1001, name: 'Iron Ore', count: 1, Type: 'Material', isRaw: true }],
-      Results: [{ id: 1101, name: 'Iron Ingot', count: 1, Type: 'Material', isRaw: false }],
+      name: "Iron Ingot",
+      Type: "Smelt",
+      GridIndex: "1101",
+      Items: [{ id: 1001, name: "Iron Ore", count: 1, Type: "Material", isRaw: true }],
+      Results: [{ id: 1101, name: "Iron Ingot", count: 1, Type: "Material", isRaw: false }],
       Explicit: false,
       TimeSpend: 60,
       productive: false,
     },
     {
       SID: 2,
-      name: 'Copper Ingot',
-      Type: 'Smelt',
-      GridIndex: '1104',
-      Items: [{ id: 1002, name: 'Copper Ore', count: 1, Type: 'Material', isRaw: true }],
-      Results: [{ id: 1104, name: 'Copper Ingot', count: 1, Type: 'Material', isRaw: false }],
+      name: "Copper Ingot",
+      Type: "Smelt",
+      GridIndex: "1104",
+      Items: [{ id: 1002, name: "Copper Ore", count: 1, Type: "Material", isRaw: true }],
+      Results: [{ id: 1104, name: "Copper Ingot", count: 1, Type: "Material", isRaw: false }],
       Explicit: false,
       TimeSpend: 60,
       productive: false,
     },
     {
       SID: 3,
-      name: 'Circuit Board',
-      Type: 'Assemble',
-      GridIndex: '1105',
+      name: "Circuit Board",
+      Type: "Assemble",
+      GridIndex: "1105",
       Items: [
-        { id: 1101, name: 'Iron Ingot', count: 2, Type: 'Material', isRaw: false },
-        { id: 1104, name: 'Copper Ingot', count: 1, Type: 'Material', isRaw: false },
+        { id: 1101, name: "Iron Ingot", count: 2, Type: "Material", isRaw: false },
+        { id: 1104, name: "Copper Ingot", count: 1, Type: "Material", isRaw: false },
       ],
-      Results: [{ id: 1105, name: 'Circuit Board', count: 2, Type: 'Component', isRaw: false }],
+      Results: [{ id: 1105, name: "Circuit Board", count: 2, Type: "Component", isRaw: false }],
       Explicit: false,
       TimeSpend: 60,
       productive: false,
@@ -69,68 +69,50 @@ describe('RecipeSelector', () => {
     });
   });
 
-  it('レシピグリッドをレンダリングできる', () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("レシピグリッドをレンダリングできる", () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // 検索ボックスが表示されることを確認
-    expect(screen.getByPlaceholderText('searchRecipesItemsMaterials')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("searchRecipesItemsMaterials")).toBeInTheDocument();
   });
 
-  it('検索クエリでレシピをフィルタリングできる', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索クエリでレシピをフィルタリングできる", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 「iron」で検索
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
+    fireEvent.change(searchInput, { target: { value: "iron" } });
 
     await waitFor(() => {
       // Iron Ingotのみが表示されることを期待
       // フィルタリング結果は RecipeGrid コンポーネントに依存するため、
       // ここでは検索入力が正しく動作することを確認
-      expect(searchInput).toHaveValue('iron');
+      expect(searchInput).toHaveValue("iron");
     });
   });
 
-  it('検索クエリをクリアできる', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索クエリをクリアできる", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索テキストを入力
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
-    expect(searchInput).toHaveValue('iron');
+    fireEvent.change(searchInput, { target: { value: "iron" } });
+    expect(searchInput).toHaveValue("iron");
 
     // クリアボタンをクリック
-    const clearButton = screen.getByRole('button', { name: '✕' });
+    const clearButton = screen.getByRole("button", { name: "✕" });
     fireEvent.click(clearButton);
 
     await waitFor(() => {
-      expect(searchInput).toHaveValue('');
+      expect(searchInput).toHaveValue("");
     });
   });
 
-  it('カテゴリフィルタリングが動作する', () => {
+  it("カテゴリフィルタリングが動作する", () => {
     const { container } = render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
+      <RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />
     );
 
     // カテゴリボタンが存在することを確認
@@ -138,135 +120,107 @@ describe('RecipeSelector', () => {
     expect(categoryButtons.length).toBeGreaterThan(0);
   });
 
-  it('お気に入りフィルタが動作する', () => {
+  it("お気に入りフィルタが動作する", () => {
     // お気に入りに追加されたレシピをモック
     (useFavoritesStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       favoriteRecipes: new Set([1]), // Iron Ingot をお気に入りに
-      isFavorite: vi.fn((id) => id === 1),
+      isFavorite: vi.fn(id => id === 1),
       addFavorite: vi.fn(),
       removeFavorite: vi.fn(),
       toggleFavorite: vi.fn(),
     });
 
     const { container } = render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
+      <RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />
     );
 
     // お気に入りボタンが存在することを確認（実装に依存）
     expect(container).toBeInTheDocument();
   });
 
-  it('原材料で検索できる（入力アイテム）', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("原材料で検索できる（入力アイテム）", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 「Iron Ore」で検索（Circuit Boardの原材料ではない）
-    fireEvent.change(searchInput, { target: { value: 'ore' } });
+    fireEvent.change(searchInput, { target: { value: "ore" } });
 
     await waitFor(() => {
-      expect(searchInput).toHaveValue('ore');
+      expect(searchInput).toHaveValue("ore");
       // Iron Ore を使用する Iron Ingot と Copper Ore を使用する Copper Ingot が表示される
     });
   });
 
-  it('生成物で検索できる（出力アイテム）', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("生成物で検索できる（出力アイテム）", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 「Circuit」で検索
-    fireEvent.change(searchInput, { target: { value: 'circuit' } });
+    fireEvent.change(searchInput, { target: { value: "circuit" } });
 
     await waitFor(() => {
-      expect(searchInput).toHaveValue('circuit');
+      expect(searchInput).toHaveValue("circuit");
       // Circuit Board レシピが表示される
     });
   });
 
-  it('検索結果がない場合にヘルプメッセージを表示する', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索結果がない場合にヘルプメッセージを表示する", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 存在しないアイテムで検索
-    fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
+    fireEvent.change(searchInput, { target: { value: "nonexistent" } });
 
     await waitFor(() => {
       // ヘルプメッセージが表示される
-      expect(screen.getByText('noResultsFound')).toBeInTheDocument();
+      expect(screen.getByText("noResultsFound")).toBeInTheDocument();
     });
   });
 
-  it('検索サジェスチョンが表示される', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索サジェスチョンが表示される", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索テキストを入力してフォーカス
-    fireEvent.change(searchInput, { target: { value: 'ir' } });
+    fireEvent.change(searchInput, { target: { value: "ir" } });
     fireEvent.focus(searchInput);
 
     await waitFor(() => {
       // サジェスチョンヘッダーが表示される
-      const suggestions = screen.queryByText('suggestions');
+      const suggestions = screen.queryByText("suggestions");
       if (suggestions) {
         expect(suggestions).toBeInTheDocument();
       }
     });
   });
 
-  it('サジェスチョンをクリックして検索できる', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("サジェスチョンをクリックして検索できる", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索テキストを入力
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
+    fireEvent.change(searchInput, { target: { value: "iron" } });
     fireEvent.focus(searchInput);
 
     await waitFor(() => {
-      const suggestionButtons = screen.queryAllByRole('button');
-      const ironSuggestion = suggestionButtons.find(btn => 
-        btn.textContent?.toLowerCase().includes('iron')
+      const suggestionButtons = screen.queryAllByRole("button");
+      const ironSuggestion = suggestionButtons.find(btn =>
+        btn.textContent?.toLowerCase().includes("iron")
       );
-      
+
       if (ironSuggestion) {
         fireEvent.click(ironSuggestion);
-        expect(searchInput).toHaveValue('Iron Ingot');
+        expect(searchInput).toHaveValue("Iron Ingot");
       }
     });
   });
 
-  it('選択されたレシピIDをハイライトする', () => {
+  it("選択されたレシピIDをハイライトする", () => {
     const { container } = render(
       <RecipeSelector
         recipes={mockRecipes}
@@ -283,167 +237,127 @@ describe('RecipeSelector', () => {
   // 追加の関数カバレッジテスト
   // ===========================
 
-  it('カテゴリフィルタリングが正しく動作する', () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("カテゴリフィルタリングが正しく動作する", () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // Smelt カテゴリをクリック
-    const smeltButton = screen.getByText('categorySmelt');
+    const smeltButton = screen.getByText("categorySmelt");
     fireEvent.click(smeltButton);
 
     // カテゴリが選択されたことを確認
-    expect(smeltButton).toHaveClass('bg-neon-blue/40');
+    expect(smeltButton).toHaveClass("bg-neon-blue/40");
   });
 
-  it('お気に入りフィルタが正しく動作する', () => {
+  it("お気に入りフィルタが正しく動作する", () => {
     // お気に入りに追加されたレシピをモック
     (useFavoritesStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       favoriteRecipes: new Set([1]), // Iron Ingot をお気に入りに
-      isFavorite: vi.fn((id) => id === 1),
+      isFavorite: vi.fn(id => id === 1),
       addFavorite: vi.fn(),
       removeFavorite: vi.fn(),
       toggleFavorite: vi.fn(),
     });
 
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // お気に入りボタンをクリック
     const favoritesButton = screen.getByText(/favorites/);
     fireEvent.click(favoritesButton);
 
     // お気に入りフィルタが有効になったことを確認
-    expect(favoritesButton).toHaveClass('bg-neon-yellow/40');
+    expect(favoritesButton).toHaveClass("bg-neon-yellow/40");
   });
 
-  it('検索クエリが2文字未満の場合はサジェスチョンを表示しない', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索クエリが2文字未満の場合はサジェスチョンを表示しない", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 1文字だけ入力
-    fireEvent.change(searchInput, { target: { value: 'i' } });
+    fireEvent.change(searchInput, { target: { value: "i" } });
     fireEvent.focus(searchInput);
 
     await waitFor(() => {
       // サジェスチョンが表示されないことを確認
-      expect(screen.queryByText('suggestions')).not.toBeInTheDocument();
+      expect(screen.queryByText("suggestions")).not.toBeInTheDocument();
     });
   });
 
-  it('検索サジェスチョンが5件までに制限される', async () => {
+  it("検索サジェスチョンが5件までに制限される", async () => {
     // 多くのレシピを含むモックデータを作成
     const manyRecipes: Recipe[] = Array.from({ length: 10 }, (_, i) => ({
       SID: i + 100,
       name: `Test Item ${i}`,
-      Type: 'Assemble',
+      Type: "Assemble",
       GridIndex: `${1000 + i}`,
       Items: [],
-      Results: [{ id: 1000 + i, name: `Test Item ${i}`, count: 1, Type: 'Material', isRaw: false }],
+      Results: [{ id: 1000 + i, name: `Test Item ${i}`, count: 1, Type: "Material", isRaw: false }],
       Explicit: false,
       TimeSpend: 60,
       productive: false,
     }));
 
-    render(
-      <RecipeSelector
-        recipes={manyRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+    render(<RecipeSelector recipes={manyRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 「Test」で検索
-    fireEvent.change(searchInput, { target: { value: 'test' } });
+    fireEvent.change(searchInput, { target: { value: "test" } });
     fireEvent.focus(searchInput);
 
     await waitFor(() => {
       // サジェスチョンが表示されることを確認
-      const suggestions = screen.queryByText('suggestions');
+      const suggestions = screen.queryByText("suggestions");
       if (suggestions) {
         expect(suggestions).toBeInTheDocument();
       }
     });
   });
 
-  it('検索でSIDがマッチする', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索でSIDがマッチする", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // SIDで検索
-    fireEvent.change(searchInput, { target: { value: '1' } });
+    fireEvent.change(searchInput, { target: { value: "1" } });
 
     await waitFor(() => {
-      expect(searchInput).toHaveValue('1');
+      expect(searchInput).toHaveValue("1");
     });
   });
 
-  it('タブ切り替えが正しく動作する', () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("タブ切り替えが正しく動作する", () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // Buildings タブをクリック
-    const buildingsTab = screen.getByText('Buildings');
+    const buildingsTab = screen.getByText("Buildings");
     fireEvent.click(buildingsTab);
 
     // Buildings タブが選択されたことを確認
-    expect(buildingsTab).toHaveClass('data-[state=active]:text-neon-cyan');
+    expect(buildingsTab).toHaveClass("data-[state=active]:text-neon-cyan");
   });
 
-  it('検索クエリが空の場合は全てのレシピが表示される', () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索クエリが空の場合は全てのレシピが表示される", () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索クエリが空であることを確認
-    expect(searchInput).toHaveValue('');
-    
+    expect(searchInput).toHaveValue("");
+
     // 結果カウントが全てのレシピ数を表示することを確認（テキストが分割されているため、より柔軟な検索を使用）
     expect(screen.getByText(mockRecipes.length.toString())).toBeInTheDocument();
-    expect(screen.getByText('recipes found')).toBeInTheDocument();
+    expect(screen.getByText("recipes found")).toBeInTheDocument();
   });
 
-  it('検索結果カウントが正しく表示される', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索結果カウントが正しく表示される", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 「iron」で検索
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
+    fireEvent.change(searchInput, { target: { value: "iron" } });
 
     await waitFor(() => {
       // 検索結果カウントが表示されることを確認
@@ -451,18 +365,13 @@ describe('RecipeSelector', () => {
     });
   });
 
-  it('検索クエリが入力されている場合は検索範囲が表示される', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索クエリが入力されている場合は検索範囲が表示される", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索クエリを入力
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
+    fireEvent.change(searchInput, { target: { value: "iron" } });
 
     await waitFor(() => {
       // 検索範囲の説明が表示されることを確認
@@ -470,32 +379,22 @@ describe('RecipeSelector', () => {
     });
   });
 
-  it('カテゴリアイコンが正しく表示される', () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("カテゴリアイコンが正しく表示される", () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // カテゴリボタンにアイコンが含まれることを確認
-    const categoryButtons = screen.getAllByRole('button');
-    const smeltButton = categoryButtons.find(btn => btn.textContent?.includes('categorySmelt'));
-    
+    const categoryButtons = screen.getAllByRole("button");
+    const smeltButton = categoryButtons.find(btn => btn.textContent?.includes("categorySmelt"));
+
     expect(smeltButton).toBeTruthy();
   });
 
-  it('カテゴリアイコンの読み込みエラーが処理される', () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("カテゴリアイコンの読み込みエラーが処理される", () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // アイコン要素を取得
-    const iconImages = screen.getAllByRole('img');
-    
+    const iconImages = screen.getAllByRole("img");
+
     // アイコンが存在する場合はエラーハンドリングが設定されていることを確認
     if (iconImages.length > 0) {
       // React Testing LibraryではonErrorは直接属性として取得できないため、
@@ -504,28 +403,23 @@ describe('RecipeSelector', () => {
     }
   });
 
-  it('お気に入り数の表示が正しく動作する', () => {
+  it("お気に入り数の表示が正しく動作する", () => {
     // お気に入りに追加されたレシピをモック
     (useFavoritesStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       favoriteRecipes: new Set([1, 2]), // 2つのレシピをお気に入りに
-      isFavorite: vi.fn((id) => id === 1 || id === 2),
+      isFavorite: vi.fn(id => id === 1 || id === 2),
       addFavorite: vi.fn(),
       removeFavorite: vi.fn(),
       toggleFavorite: vi.fn(),
     });
 
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // お気に入りボタンにお気に入り数が表示されることを確認
     expect(screen.getByText(/favorites.*2/)).toBeInTheDocument();
   });
 
-  it('お気に入りが0の場合は数が表示されない', () => {
+  it("お気に入りが0の場合は数が表示されない", () => {
     // お気に入りが空の状態をモック
     (useFavoritesStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       favoriteRecipes: new Set(),
@@ -535,62 +429,47 @@ describe('RecipeSelector', () => {
       toggleFavorite: vi.fn(),
     });
 
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
     // お気に入りボタンに数が表示されないことを確認
     const favoritesButton = screen.getByText(/favorites/);
     expect(favoritesButton.textContent).not.toMatch(/\(\d+\)/);
   });
 
-  it('検索サジェスチョンのクリックで検索クエリが設定される', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索サジェスチョンのクリックで検索クエリが設定される", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索テキストを入力
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
+    fireEvent.change(searchInput, { target: { value: "iron" } });
     fireEvent.focus(searchInput);
 
     await waitFor(() => {
-      const suggestionButtons = screen.queryAllByRole('button');
-      const ironSuggestion = suggestionButtons.find(btn => 
-        btn.textContent?.toLowerCase().includes('iron')
+      const suggestionButtons = screen.queryAllByRole("button");
+      const ironSuggestion = suggestionButtons.find(btn =>
+        btn.textContent?.toLowerCase().includes("iron")
       );
-      
+
       if (ironSuggestion) {
         fireEvent.click(ironSuggestion);
-        expect(searchInput).toHaveValue('Iron Ingot');
+        expect(searchInput).toHaveValue("Iron Ingot");
       }
     });
   });
 
-  it('検索サジェスチョンがフォーカスアウトで非表示になる', async () => {
-    render(
-      <RecipeSelector
-        recipes={mockRecipes}
-        onRecipeSelect={mockOnRecipeSelect}
-      />
-    );
+  it("検索サジェスチョンがフォーカスアウトで非表示になる", async () => {
+    render(<RecipeSelector recipes={mockRecipes} onRecipeSelect={mockOnRecipeSelect} />);
 
-    const searchInput = screen.getByPlaceholderText('searchRecipesItemsMaterials');
-    
+    const searchInput = screen.getByPlaceholderText("searchRecipesItemsMaterials");
+
     // 検索テキストを入力してフォーカス
-    fireEvent.change(searchInput, { target: { value: 'iron' } });
+    fireEvent.change(searchInput, { target: { value: "iron" } });
     fireEvent.focus(searchInput);
 
     await waitFor(() => {
       // サジェスチョンが表示されることを確認
-      const suggestions = screen.queryByText('suggestions');
+      const suggestions = screen.queryByText("suggestions");
       if (suggestions) {
         expect(suggestions).toBeInTheDocument();
       }
@@ -600,13 +479,16 @@ describe('RecipeSelector', () => {
     fireEvent.blur(searchInput);
 
     // サジェスチョンが非表示になるまで動的に待つ（CI環境対応）
-    await waitFor(() => {
-      expect(screen.queryByText('suggestions')).not.toBeInTheDocument();
-    }, { timeout: 1000 }); // タイムアウトを1秒に設定
+    await waitFor(
+      () => {
+        expect(screen.queryByText("suggestions")).not.toBeInTheDocument();
+      },
+      { timeout: 1000 }
+    ); // タイムアウトを1秒に設定
   });
 
   // Issue #34: 同じレシピを再選択した場合の挙動テスト
-  it('同じレシピを再選択した場合はonRecipeSelectが呼ばれない', () => {
+  it("同じレシピを再選択した場合はonRecipeSelectが呼ばれない", () => {
     const { rerender } = render(
       <RecipeSelector
         recipes={mockRecipes}
@@ -622,7 +504,7 @@ describe('RecipeSelector', () => {
     // 直接 handleRecipeSelect を呼び出すことはできないため、
     // RecipeGrid が onRecipeSelect を呼び出すことを想定
     // ここでは、RecipeGrid が渡された onRecipeSelect を呼び出すことを確認
-    
+
     // 再レンダリング（同じ selectedRecipeId）
     rerender(
       <RecipeSelector
@@ -636,7 +518,7 @@ describe('RecipeSelector', () => {
     expect(mockOnRecipeSelect).not.toHaveBeenCalled();
   });
 
-  it('異なるレシピを選択した場合はonRecipeSelectが呼ばれる', () => {
+  it("異なるレシピを選択した場合はonRecipeSelectが呼ばれる", () => {
     render(
       <RecipeSelector
         recipes={mockRecipes}
@@ -647,7 +529,7 @@ describe('RecipeSelector', () => {
 
     // RecipeGrid が渡された onRecipeSelect prop を持っていることを確認
     // この確認は実際の実装により異なる可能性がある
-    
+
     expect(mockOnRecipeSelect).not.toHaveBeenCalled();
   });
 });

@@ -1,40 +1,40 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getDataPath } from '../../../utils/paths';
-import { render, screen } from '@testing-library/react';
-import { BuildingCostView } from '../index';
-import type { CalculationResult } from '../../../types/calculation';
-import type { BuildingCost } from '../../../lib/buildingCost';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { getDataPath } from "../../../utils/paths";
+import { render, screen } from "@testing-library/react";
+import { BuildingCostView } from "../index";
+import type { CalculationResult } from "../../../types/calculation";
+import type { BuildingCost } from "../../../lib/buildingCost";
 
 // Mock dependencies
-vi.mock('../../../lib/miningCalculation');
-vi.mock('../../../stores/settingsStore', () => ({
+vi.mock("../../../lib/miningCalculation");
+vi.mock("../../../stores/settingsStore", () => ({
   useSettingsStore: () => ({
     settings: {
       sorter: {
-        tier: 'mk1',
+        tier: "mk1",
         powerConsumption: 18,
       },
     },
   }),
 }));
-vi.mock('../../../utils/format', () => ({
-  formatNumber: (val: number) => val.toLocaleString('en-US'),
+vi.mock("../../../utils/format", () => ({
+  formatNumber: (val: number) => val.toLocaleString("en-US"),
   formatBuildingCount: (val: number) => Math.ceil(val).toString(),
 }));
 
 // Mock useGameDataStore
 const mockUseGameDataStore = vi.fn();
-vi.mock('../../../stores/gameDataStore', () => ({
+vi.mock("../../../stores/gameDataStore", () => ({
   useGameDataStore: () => mockUseGameDataStore(),
 }));
 
 // Mock calculateBuildingCost
 const mockCalculateBuildingCost = vi.fn();
-vi.mock('../../../lib/buildingCost', () => ({
+vi.mock("../../../lib/buildingCost", () => ({
   calculateBuildingCost: (...args: unknown[]) => mockCalculateBuildingCost(...args),
 }));
 
-describe('BuildingCostView', () => {
+describe("BuildingCostView", () => {
   const mockCalculationResult: CalculationResult = {
     rootNode: {} as any,
     rawMaterials: new Map(),
@@ -47,9 +47,7 @@ describe('BuildingCostView', () => {
   };
 
   const mockBuildingCost: BuildingCost = {
-    machines: [
-      { machineId: 2303, count: 10 },
-    ],
+    machines: [{ machineId: 2303, count: 10 }],
     sorters: 30,
     belts: 20,
   };
@@ -62,26 +60,26 @@ describe('BuildingCostView', () => {
         2303,
         {
           id: 2303,
-          name: 'Assembling Machine Mk.I',
-          description: '',
-          type: 'assembler',
+          name: "Assembling Machine Mk.I",
+          description: "",
+          type: "assembler",
           gridPos: 0,
           speed: 0.75,
           prefabId: 2303,
-            iconPath: getDataPath('data/Machines/Icons/2303.png'),
+          iconPath: getDataPath("data/Machines/Icons/2303.png"),
         },
       ],
       [
         2304,
         {
           id: 2304,
-          name: 'Assembling Machine Mk.II',
-          description: '',
-          type: 'assembler',
+          name: "Assembling Machine Mk.II",
+          description: "",
+          type: "assembler",
           gridPos: 0,
           speed: 1.0,
           prefabId: 2304,
-            iconPath: getDataPath('data/Machines/Icons/2304.png'),
+          iconPath: getDataPath("data/Machines/Icons/2304.png"),
         },
       ],
     ]),
@@ -95,50 +93,50 @@ describe('BuildingCostView', () => {
     mockCalculateBuildingCost.mockReturnValue(mockBuildingCost);
   });
 
-  describe('Rendering - Empty State', () => {
-    it('should render empty message when buildingCost is null', () => {
+  describe("Rendering - Empty State", () => {
+    it("should render empty message when buildingCost is null", () => {
       mockCalculateBuildingCost.mockReturnValue(null);
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
       expect(screen.getByText(/selectRecipeForBuildingReqs/i)).toBeInTheDocument();
     });
   });
 
-  describe('Rendering - Valid Data', () => {
-    it('should render header and machines section', () => {
+  describe("Rendering - Valid Data", () => {
+    it("should render header and machines section", () => {
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
       expect(screen.getByText(/buildingCost/i)).toBeInTheDocument();
-      
+
       // productionMachines appears multiple times (header + summary)
       const productionMachinesElements = screen.getAllByText(/productionMachines/i);
       expect(productionMachinesElements.length).toBeGreaterThan(0);
     });
 
-    it('should render logistics section with sorters and belts', () => {
+    it("should render logistics section with sorters and belts", () => {
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
       const logisticsElements = screen.getAllByText(/logistics/i);
       expect(logisticsElements.length).toBeGreaterThan(0);
-      
+
       const sortersElements = screen.getAllByText(/sorters/i);
       expect(sortersElements.length).toBeGreaterThan(0);
-      
+
       const conveyorBeltsElements = screen.getAllByText(/conveyorBelts/i);
       expect(conveyorBeltsElements.length).toBeGreaterThan(0);
     });
   });
 
-  describe('Data Display', () => {
-    it('should display machine names and counts from gameData', () => {
+  describe("Data Display", () => {
+    it("should display machine names and counts from gameData", () => {
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
-      
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
+
       // formatNumber returns "10" with en-US locale
       expect(screen.getByText(/×10/)).toBeInTheDocument();
     });
 
-    it('should display logistics counts (sorters and belts)', () => {
+    it("should display logistics counts (sorters and belts)", () => {
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
       // Check for numeric values with formatNumber (30, 20)
@@ -146,7 +144,7 @@ describe('BuildingCostView', () => {
       expect(screen.getByText(/×20/)).toBeInTheDocument();
     });
 
-    it('should fallback to machineId when gameData getMachineName not available', () => {
+    it("should fallback to machineId when gameData getMachineName not available", () => {
       mockUseGameDataStore.mockReturnValue({ data: null });
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
@@ -155,8 +153,8 @@ describe('BuildingCostView', () => {
     });
   });
 
-  describe('Edge Cases', () => {
-    it('should handle empty machines array', () => {
+  describe("Edge Cases", () => {
+    it("should handle empty machines array", () => {
       mockCalculateBuildingCost.mockReturnValue({
         machines: [],
         sorters: 30,
@@ -169,7 +167,7 @@ describe('BuildingCostView', () => {
       expect(logisticsElements.length).toBeGreaterThan(0);
     });
 
-    it('should handle single machine', () => {
+    it("should handle single machine", () => {
       mockCalculateBuildingCost.mockReturnValue({
         machines: [{ machineId: 2303, count: 1 }],
         sorters: 2,
@@ -177,14 +175,14 @@ describe('BuildingCostView', () => {
       });
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
-      
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
+
       // ×1 appears multiple times (machines + belts), use getAllByText
       const countElements = screen.getAllByText(/×1/);
       expect(countElements.length).toBeGreaterThan(0);
     });
 
-    it('should handle multiple machines with different types', () => {
+    it("should handle multiple machines with different types", () => {
       mockCalculateBuildingCost.mockReturnValue({
         machines: [
           { machineId: 2303, count: 10 },
@@ -195,26 +193,26 @@ describe('BuildingCostView', () => {
       });
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByText('Assembling Machine Mk.I')).toBeInTheDocument();
-      expect(screen.getByText('Assembling Machine Mk.II')).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.I")).toBeInTheDocument();
+      expect(screen.getByText("Assembling Machine Mk.II")).toBeInTheDocument();
     });
   });
 
-  describe('i18n & Formatting', () => {
-    it('should use all required translation keys', () => {
+  describe("i18n & Formatting", () => {
+    it("should use all required translation keys", () => {
       render(<BuildingCostView calculationResult={mockCalculationResult} />);
 
       // Check that translation keys are used (they appear as-is in test environment)
       expect(screen.getByText(/buildingCost/i)).toBeInTheDocument();
-      
+
       const productionMachinesElements = screen.getAllByText(/productionMachines/i);
       expect(productionMachinesElements.length).toBeGreaterThan(0);
-      
+
       const logisticsElements = screen.getAllByText(/logistics/i);
       expect(logisticsElements.length).toBeGreaterThan(0);
     });
 
-    it('should format numbers correctly with formatBuildingCount', () => {
+    it("should format numbers correctly with formatBuildingCount", () => {
       mockCalculateBuildingCost.mockReturnValue({
         machines: [{ machineId: 2303, count: 1234 }],
         sorters: 5678,

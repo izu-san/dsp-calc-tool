@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { NodeOverrideSettings } from '../types';
+import { create } from "zustand";
+import type { NodeOverrideSettings } from "../types";
 
 interface NodeOverrideStore {
   nodeOverrides: Map<string, NodeOverrideSettings>;
@@ -15,26 +15,27 @@ interface NodeOverrideStore {
   setAllOverrides: (overrides: Map<string, NodeOverrideSettings>) => void;
 }
 
-export const useNodeOverrideStore = create<NodeOverrideStore>((set) => ({
+export const useNodeOverrideStore = create<NodeOverrideStore>(set => ({
   nodeOverrides: new Map(),
   version: 0,
 
   setNodeOverride: (nodeId, settings) =>
-    set((state) => {
+    set(state => {
       const newOverrides = new Map(state.nodeOverrides);
       newOverrides.set(nodeId, settings);
-      
+
       return { nodeOverrides: newOverrides, version: state.version + 1 };
     }),
 
-  clearNodeOverride: (nodeId) =>
-    set((state) => {
+  clearNodeOverride: nodeId =>
+    set(state => {
       const newOverrides = new Map(state.nodeOverrides);
       newOverrides.delete(nodeId);
       return { nodeOverrides: newOverrides, version: state.version + 1 };
     }),
 
-  setAllOverrides: (overrides) => set((state) => ({ nodeOverrides: new Map(overrides), version: state.version + 1 })),
+  setAllOverrides: overrides =>
+    set(state => ({ nodeOverrides: new Map(overrides), version: state.version + 1 })),
 
-  clearAllOverrides: () => set((state) => ({ nodeOverrides: new Map(), version: state.version + 1 })),
+  clearAllOverrides: () => set(state => ({ nodeOverrides: new Map(), version: state.version + 1 })),
 }));
