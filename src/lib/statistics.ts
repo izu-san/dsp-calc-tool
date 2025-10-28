@@ -36,7 +36,13 @@ export function calculateItemStatistics(rootNode: RecipeTreeNode): ProductionSta
     
     // Add power consumption: machines + sorters (always consumed by power plants)
     // Note: dysonSphere power is NOT included (it's provided by Dyson Sphere, not power plants)
-    totalPower += node.power.machines + node.power.sorters;
+    // Skip Ray Receivers (γ線レシーバー) - they use Dyson Sphere power, not regular power plants
+    if (node.machine?.id !== 2208) {
+      totalPower += node.power.machines + node.power.sorters;
+    } else {
+      // For Ray Receivers, only count sorter power (machines use Dyson Sphere power)
+      totalPower += node.power.sorters;
+    }
 
     // Process outputs (production)
     if (node.recipe?.Results) {

@@ -14,6 +14,11 @@ interface ItemIconProps {
 }
 
 export function ItemIcon({ itemId, size = 32, className = '', alt = '', preferRecipes = false, 'data-testid': dataTestId }: ItemIconProps) {
+  // Special handling for sorter icon (ID: -1) - use actual sorter icon (ID: 2011)
+  if (itemId === -1) {
+    itemId = 2011; // Convert sorter ID to actual sorter item ID
+  }
+
   const spriteInfo = useSpriteData(itemId, preferRecipes);
   const containerRef = useRef<HTMLDivElement>(null);
   const [actualSize, setActualSize] = useState(80);

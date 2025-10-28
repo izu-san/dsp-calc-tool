@@ -162,4 +162,30 @@ describe('ItemIcon', () => {
       expect(iconDiv.style.backgroundSize).toContain('573px'); // 1146 * 0.5
     });
   });
+
+  describe('ソーターアイコン（ID: -1）', () => {
+    it('ソーターのアイコンを正しく表示する（ID: 2011に変換）', () => {
+      render(<ItemIcon itemId={-1} alt="ソーター" />);
+      
+      const sorterIcon = screen.getByRole('img', { name: 'ソーター' });
+      expect(sorterIcon).toBeInTheDocument();
+      // ID: -1 は ID: 2011 に変換されるので、スプライトアイコンが表示される
+      expect(sorterIcon).toHaveStyle({ width: '32px', height: '32px' });
+    });
+
+    it('ソーターアイコンにカスタムサイズを適用できる', () => {
+      render(<ItemIcon itemId={-1} size={64} alt="ソーター" />);
+      
+      const sorterIcon = screen.getByRole('img', { name: 'ソーター' });
+      expect(sorterIcon).toHaveStyle({ width: '64px', height: '64px' });
+    });
+
+    it('ソーターアイコンにカスタムclassNameを適用できる', () => {
+      render(<ItemIcon itemId={-1} className="custom-class" alt="ソーター" />);
+      
+      const sorterIcon = screen.getByRole('img', { name: 'ソーター' });
+      const container = sorterIcon.parentElement;
+      expect(container).toHaveClass('custom-class');
+    });
+  });
 });
