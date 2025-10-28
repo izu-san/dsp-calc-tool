@@ -53,9 +53,9 @@ export function SettingsPanel() {
     return false;
   })() : false;
   
-  // Check if the production chain includes Critical Photon (id: 6003)
+  // Check if the production chain includes Critical Photon (id: 1208)
   const hasCriticalPhoton = calculationResult ? (() => {
-    const CRITICAL_PHOTON_ID = 6003;
+    const CRITICAL_PHOTON_ID = 1208;
     
     // Collect all items from the calculation result tree
     const hasItem = (node: RecipeTreeNode): boolean => {
