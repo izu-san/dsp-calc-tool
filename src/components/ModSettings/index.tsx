@@ -147,11 +147,13 @@ export function ModSettings() {
   };
 
   const handleResetProliferatorToDefault = () => {
-    setProductionMultiplier(1);
-    setSpeedMultiplier(1);
-    setProliferatorMultiplier(1, 1);
-    setProliferatorSuccess(true);
-    setProliferatorError("");
+    if (confirm(t("confirmResetProliferatorToDefault"))) {
+      setProductionMultiplier(1);
+      setSpeedMultiplier(1);
+      setProliferatorMultiplier(1, 1);
+      setProliferatorSuccess(true);
+      setProliferatorError("");
+    }
   };
 
   const handleResetToDefault = async () => {

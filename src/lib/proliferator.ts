@@ -14,8 +14,8 @@ export function getEffectiveBonuses(
   return {
     effectiveProductionBonus: proliferator.productionBonus * prodMult,
     effectiveSpeedBonus: proliferator.speedBonus * speedMult,
-    effectivePowerIncrease:
-      proliferator.powerIncrease * (proliferator.mode === "speed" ? speedMult : prodMult),
+    // 電力増加はMOD設定の倍率を適用しない（固定値として扱う）
+    effectivePowerIncrease: proliferator.powerIncrease,
   };
 }
 

@@ -1,9 +1,8 @@
-import React from "react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
-import { act } from "react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import React, { act } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { actAsync } from "../../../test/helpers/actHelpers";
 import { ModSettings } from "../index";
-import { actAsync, actAndWaitFor } from "../../../test/helpers/actHelpers";
 
 // i18n モック
 vi.mock("react-i18next", () => ({
@@ -250,7 +249,7 @@ describe("ModSettings", () => {
     loadGameData.mockRejectedValueOnce(new Error("Load error"));
 
     await actAsync(() => {
-      fireEvent.click(screen.getByText("resetToDefault"));
+      fireEvent.click(screen.getByTestId("mod-settings-reset-to-default-button"));
     });
 
     await waitFor(() => {
@@ -298,5 +297,33 @@ describe("ModSettings", () => {
     expect(screen.getByText(/Mk\.I 25\.0%, Mk\.II 40\.0%, Mk\.III 50\.0%/)).toBeInTheDocument();
     // 速度乗数の計算表示を確認
     expect(screen.getByText(/Mk\.I 75\.0%, Mk\.II 150\.0%, Mk\.III 300\.0%/)).toBeInTheDocument();
+  });
+
+  it("増産剤リセットボタンで確認ダイアログが表示される", async () => {
+    openModal();
+    const resetButton = screen.getByTestId("mod-settings-reset-proliferator-button");
+
+    // 確認ダイアログでキャンセル
+    confirmMock.mockReturnValueOnce(false);
+    await actAsync(() => {
+      fireEvent.click(resetButton);
+    });
+
+    expect(confirmMock).toHaveBeenCalledWith("confirmResetProliferatorToDefault");
+    expect(setProliferatorMultiplier).not.toHaveBeenCalled();
+  });
+
+  it("増産剤リセットボタンで確認ダイアログでOKを押すとリセットされる", async () => {
+    openModal();
+    const resetButton = screen.getByTestId("mod-settings-reset-proliferator-button");
+
+    // 確認ダイアログでOK
+    confirmMock.mockReturnValueOnce(true);
+    await actAsync(() => {
+      fireEvent.click(resetButton);
+    });
+
+    expect(confirmMock).toHaveBeenCalledWith("confirmResetProliferatorToDefault");
+    expect(setProliferatorMultiplier).toHaveBeenCalledWith(1, 1);
   });
 });

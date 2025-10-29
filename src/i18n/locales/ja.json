@@ -256,6 +256,7 @@
   "failedToParseCustomRecipes": "カスタムレシピの解析に失敗しました",
   "failedToReadFile": "ファイルの読み取りに失敗しました",
   "confirmResetToDefault": "デフォルトのゲームデータにリセットしますか？元のファイルからすべてのレシピを再読み込みします。",
+  "confirmResetProliferatorToDefault": "増産剤倍率をデフォルト値（1倍）にリセットしますか？",
   "failedToReset": "リセットに失敗しました",
   "whatIfSimulator": "What-ifシミュレーター",
   "whatIfAnalysis": "What-if分析",

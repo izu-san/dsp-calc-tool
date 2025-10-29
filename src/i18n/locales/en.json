@@ -256,6 +256,7 @@
   "failedToParseCustomRecipes": "Failed to parse custom recipes",
   "failedToReadFile": "Failed to read file",
   "confirmResetToDefault": "Reset to default game data? This will reload all recipes from the original files.",
+  "confirmResetProliferatorToDefault": "Reset proliferator multipliers to default values (1x)?",
   "failedToReset": "Failed to reset",
   "whatIfSimulator": "What-If Simulator",
   "whatIfAnalysis": "What-If Analysis",

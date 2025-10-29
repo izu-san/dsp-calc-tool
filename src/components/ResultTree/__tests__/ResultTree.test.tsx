@@ -1,7 +1,6 @@
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
-import { getDataPath } from "../../../utils/paths";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProductionTree } from "../index";
 
 // i18n モック（キーをそのまま返す）
@@ -96,6 +95,12 @@ describe("ProductionTree", () => {
     conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
     inputs: [],
     miningFrom: "Iron Vein",
+    miningEquipment: {
+      machineId: 2302,
+      machineName: "Mining Machine",
+      machineCount: 1,
+      powerConsumption: 0,
+    },
     children: [],
   };
 
@@ -156,6 +161,12 @@ describe("ProductionTree", () => {
     // 新しいデザインではベルト情報は詳細グリッドに表示される
     expect(screen.getByText("outputs:")).toBeInTheDocument();
     expect(screen.getByText("total:")).toBeInTheDocument();
+
+    // 採掘設備のtestidの確認
+    expect(screen.getByTestId("mining-equipment-count-1001")).toBeInTheDocument();
+    expect(screen.getByTestId("mining-equipment-count-1001")).toHaveTextContent(
+      "Mining Machine × 1"
+    );
   });
 
   it("レシピノードの場合、レシピ情報と機械情報が表示される", () => {
@@ -165,6 +176,10 @@ describe("ProductionTree", () => {
     expect(screen.getByText("Arc Smelter × 1")).toBeInTheDocument();
     expect(screen.getAllByText("60.0/s")[0]).toBeInTheDocument();
     expect(screen.getAllByText("120.0 kW")[0]).toBeInTheDocument();
+
+    // 新しいtestidの確認
+    expect(screen.getByTestId("machine-count-2001")).toBeInTheDocument();
+    expect(screen.getByTestId("machine-count-2001")).toHaveTextContent("Arc Smelter × 1");
   });
 
   it("子ノードがある場合、展開・折りたたみができる", () => {

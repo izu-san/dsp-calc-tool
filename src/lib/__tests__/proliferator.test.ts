@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { ProliferatorConfig } from "../../types/settings";
+import { PROLIFERATOR_DATA } from "../../types/settings";
 import {
   getEffectiveBonuses,
   getSpeedAndProductionMultipliers,
   type ProliferatorMultipliers,
 } from "../proliferator";
-import type { ProliferatorConfig } from "../../types/settings";
-import { PROLIFERATOR_DATA } from "../../types/settings";
 
 describe("proliferator", () => {
   const defaultMultipliers: ProliferatorMultipliers = {
@@ -38,7 +38,7 @@ describe("proliferator", () => {
       // Mk.I: productionBonus=0.125, speedBonus=0.25, powerIncrease=0.30
       expect(result.effectiveProductionBonus).toBe(0.125);
       expect(result.effectiveSpeedBonus).toBe(0.25);
-      expect(result.effectivePowerIncrease).toBe(0.3); // speed mode: powerIncrease * speedMult
+      expect(result.effectivePowerIncrease).toBe(0.3); // 倍率適用なし、固定値
     });
 
     it("増産剤Mk.III（production mode）のボーナスを計算する", () => {
@@ -52,7 +52,7 @@ describe("proliferator", () => {
       // Mk.III: productionBonus=0.25, speedBonus=1.00, powerIncrease=1.50
       expect(result.effectiveProductionBonus).toBe(0.25);
       expect(result.effectiveSpeedBonus).toBe(1.0);
-      expect(result.effectivePowerIncrease).toBe(1.5); // production mode: powerIncrease * prodMult
+      expect(result.effectivePowerIncrease).toBe(1.5); // 倍率適用なし、固定値
     });
 
     it("乗数が適用される（production: 2x, speed: 2x）", () => {
@@ -71,10 +71,10 @@ describe("proliferator", () => {
       // Mk.II: productionBonus=0.20, speedBonus=0.50, powerIncrease=0.70
       // effectiveProductionBonus = 0.20 * 2 = 0.40
       // effectiveSpeedBonus = 0.50 * 2 = 1.00
-      // effectivePowerIncrease = 0.70 * 2 = 1.40 (speed mode)
+      // effectivePowerIncrease = 0.70 (倍率適用なし、固定値)
       expect(result.effectiveProductionBonus).toBe(0.4);
       expect(result.effectiveSpeedBonus).toBe(1.0);
-      expect(result.effectivePowerIncrease).toBe(1.4);
+      expect(result.effectivePowerIncrease).toBe(0.7);
     });
 
     it("nullish乗数がデフォルト1として扱われる", () => {
