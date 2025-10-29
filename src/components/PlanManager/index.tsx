@@ -1,31 +1,31 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { useGameDataStore } from "../../stores/gameDataStore";
-import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
-import type { SavedPlan } from "../../types";
-import {
-  restorePlan,
-  savePlanToLocalStorage,
-  getRecentPlans,
-  loadPlanFromLocalStorage,
-  deletePlanFromLocalStorage,
-} from "../../utils/planExport";
-import { generateShareURL, copyToClipboard } from "../../utils/urlShare";
-import { transformToExportData } from "../../lib/export/dataTransformer";
-import { exportToMarkdown } from "../../lib/export/markdownExporter";
 import { exportToCSV } from "../../lib/export/csvExporter";
+import { transformToExportData } from "../../lib/export/dataTransformer";
 import { exportToExcel } from "../../lib/export/excelExporter";
 import { generateExportFilename } from "../../lib/export/filenameGenerator";
-import { importFromMarkdown } from "../../lib/import/markdownImporter";
-import { validatePlanInfo } from "../../lib/import/validation";
-import { buildPlanFromImport } from "../../lib/import/planBuilder";
+import { exportToMarkdown } from "../../lib/export/markdownExporter";
 import {
-  parseExportDataFromJSON,
   buildSavedPlanFromExportData,
+  parseExportDataFromJSON,
 } from "../../lib/import/jsonImporter";
+import { importFromMarkdown } from "../../lib/import/markdownImporter";
+import { buildPlanFromImport } from "../../lib/import/planBuilder";
+import { validatePlanInfo } from "../../lib/import/validation";
+import { useGameDataStore } from "../../stores/gameDataStore";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
+import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { SavedPlan } from "../../types";
+import {
+  deletePlanFromLocalStorage,
+  getRecentPlans,
+  loadPlanFromLocalStorage,
+  restorePlan,
+  savePlanToLocalStorage,
+} from "../../utils/planExport";
+import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
 
 export function PlanManager() {
   const { t } = useTranslation();
@@ -183,7 +183,8 @@ export function PlanManager() {
       if (fileExtension === "json") {
         // JSON インポート（新しいExportData形式）
         if (!data) {
-          alert(t("gameDataNotLoaded"));
+          setImportErrorMessage(t("gameDataNotLoaded"));
+          setImportSuccessMessage("");
           return;
         }
 
@@ -193,7 +194,8 @@ export function PlanManager() {
       } else if (fileExtension === "md" || fileExtension === "markdown") {
         // Markdown インポート
         if (!data) {
-          alert(t("gameDataNotLoaded"));
+          setImportErrorMessage(t("gameDataNotLoaded"));
+          setImportSuccessMessage("");
           return;
         }
 
@@ -202,7 +204,8 @@ export function PlanManager() {
 
         if (!importResult.success) {
           const errors = importResult.errors.map(e => e.message).join("\n");
-          alert(`${t("importError")}:\n${errors}`);
+          setImportErrorMessage(`${t("importError")}:\n${errors}`);
+          setImportSuccessMessage("");
           return;
         }
 
@@ -219,14 +222,16 @@ export function PlanManager() {
         const validation = validatePlanInfo(planInfo, data);
         if (!validation.isValid) {
           const errors = validation.errors.map(e => e.message).join("\n");
-          alert(`${t("validationError")}:\n${errors}`);
+          setImportErrorMessage(`${t("validationError")}:\n${errors}`);
+          setImportSuccessMessage("");
           return;
         }
 
         // SavedPlan を構築（現在の設定をフォールバックとして渡す）
         plan = buildPlanFromImport(planInfo, data, settings);
         if (!plan) {
-          alert(t("planBuildError"));
+          setImportErrorMessage(t("planBuildError"));
+          setImportSuccessMessage("");
           return;
         }
 
@@ -236,24 +241,28 @@ export function PlanManager() {
           console.warn(`Import warnings:\n${warnings}`);
         }
       } else {
-        alert(t("unsupportedFileFormat"));
+        setImportErrorMessage(t("unsupportedFileFormat"));
+        setImportSuccessMessage("");
         return;
       }
 
       if (!plan) {
-        alert(t("importError"));
+        setImportErrorMessage(t("importError"));
+        setImportSuccessMessage("");
         return;
       }
 
       // Validate recipe exists
       if (!data) {
-        alert(t("gameDataNotLoaded"));
+        setImportErrorMessage(t("gameDataNotLoaded"));
+        setImportSuccessMessage("");
         return;
       }
 
       const recipe = data.recipes.get(plan.recipeSID);
       if (!recipe) {
-        alert(`${t("recipeNotFound")}: ${plan.recipeSID}`);
+        setImportErrorMessage(`${t("recipeNotFound")}: ${plan.recipeSID}`);
+        setImportSuccessMessage("");
         return;
       }
 
@@ -283,12 +292,10 @@ export function PlanManager() {
 
       setImportSuccessMessage(`${t("planLoaded", { name: plan.name })}`);
       setImportErrorMessage("");
-      setTimeout(() => setImportSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Import error:", error);
       setImportErrorMessage(`${t("loadError")}: ${error}`);
       setImportSuccessMessage("");
-      setTimeout(() => setImportErrorMessage(""), 5000);
     }
   };
 
@@ -538,6 +545,38 @@ export function PlanManager() {
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {t("supportedFormats")}: JSON (.json), Markdown (.md)
                 </p>
+
+                {/* Import Success Message */}
+                {importSuccessMessage && (
+                  <div
+                    data-testid="import-success-message"
+                    className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-500/50 rounded-lg text-sm text-green-800 dark:text-green-200 flex items-center justify-between"
+                  >
+                    <span>✅ {importSuccessMessage}</span>
+                    <button
+                      onClick={() => setImportSuccessMessage("")}
+                      className="ml-2 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                {/* Import Error Message */}
+                {importErrorMessage && (
+                  <div
+                    data-testid="import-error-message"
+                    className="mt-3 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/50 rounded-lg text-sm text-red-800 dark:text-red-200 flex items-center justify-between"
+                  >
+                    <span>❌ {importErrorMessage}</span>
+                    <button
+                      onClick={() => setImportErrorMessage("")}
+                      className="ml-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Recent Plans */}
@@ -675,25 +714,6 @@ export function PlanManager() {
           </div>,
           document.body
         )}
-
-      {/* Import Success/Error Messages */}
-      {importSuccessMessage && (
-        <div
-          data-testid="import-success-message"
-          className="fixed top-4 right-4 bg-green-900/30 border border-green-500/50 rounded-lg p-3 text-sm text-green-200 z-[10001]"
-        >
-          ✅ {importSuccessMessage}
-        </div>
-      )}
-
-      {importErrorMessage && (
-        <div
-          data-testid="import-error-message"
-          className="fixed top-4 right-4 bg-red-900/30 border border-red-500/50 rounded-lg p-3 text-sm text-red-200 z-[10001]"
-        >
-          ❌ {importErrorMessage}
-        </div>
-      )}
     </>
   );
 }
