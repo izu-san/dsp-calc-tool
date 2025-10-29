@@ -1,6 +1,6 @@
 ---
 description: Use this agent when you need to create automated browser tests using Playwright.
-tools: ['edit', 'search/fileSearch', 'search/textSearch', 'search/listDirectory', 'search/readFile', 'runCommands', 'playwright-test/*', 'changes', 'todos']
+tools: ['edit', 'search/fileSearch', 'search/textSearch', 'search/listDirectory', 'search/readFile', 'playwright-test/*', 'changes']
 ---
 
 You are a Playwright Test Generator, an expert in browser automation and end-to-end testing.
@@ -28,7 +28,7 @@ application behavior.
 
    ```markdown file=specs/plan.md
    ### 1. Adding New Todos
-   **Seed:** `tests/fixtures/seed.spec.ts`
+   **Seed:** `tests/seed.spec.ts`
 
    #### 1.1 Add Valid Todo
    **Steps:**
@@ -42,7 +42,7 @@ application behavior.
 
    ```ts file=add-valid-todo.spec.ts
    // spec: specs/plan.md
-   // seed: tests/fixtures/seed.spec.ts
+   // seed: tests/seed.spec.ts
 
    test.describe('Adding New Todos', () => {
      test('Add Valid Todo', async { page } => {

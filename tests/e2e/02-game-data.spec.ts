@@ -1,5 +1,5 @@
 // spec: docs/testing/TEST_PLAN.md
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 
@@ -23,14 +23,9 @@ test.describe("ゲームデータ読み込みと初期表示", () => {
 
     // 基本UI要素の存在確認: getByTestId を使って表示されるまで待機する
     await expect(page.getByTestId("settings-panel")).toBeVisible();
-    await expect(page.getByTestId("recipe-list"))
-      .toBeVisible()
-      .catch(() => {});
+    await expect(page.getByTestId("recipe-list")).toBeVisible();
     await expect(page.getByTestId("items-tab")).toBeVisible();
     await expect(page.getByTestId("buildings-tab")).toBeVisible();
-    await expect(page.getByTestId("production-tree"))
-      .toBeVisible()
-      .catch(() => {});
 
     // RECIPE_SIDS.md を読み込み、表の左列から SID を抽出する
     const mdPath = path.resolve(process.cwd(), "docs/testing/RECIPE_SIDS.md");

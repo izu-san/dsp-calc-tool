@@ -58,11 +58,12 @@ export default defineConfig({
     },
 
     {
-      name: "webkit",
+      name: "edge",
       use: {
-        ...devices["Desktop Safari"],
+        ...devices["Desktop Edge"],
+        channel: "msedge",
         viewport: { width: 1920, height: 1080 },
-        // WebKit/Playwright for Safari-style might not accept --window-size; keep viewport set
+        launchOptions: { args: ["--window-size=1920,1080"] },
       },
     },
 
@@ -77,10 +78,6 @@ export default defineConfig({
     // },
 
     /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
     // {
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },

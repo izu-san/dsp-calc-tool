@@ -508,6 +508,7 @@ export function WhatIfSimulator() {
                       if (scenario) applyScenario(scenario);
                     }}
                     className="px-2 py-1 text-xs bg-neon-blue/30 border border-neon-blue hover:bg-neon-blue/40 text-white rounded transition-all whitespace-nowrap flex-shrink-0 shadow-[0_0_10px_rgba(0,136,255,0.3)] ripple-effect"
+                    data-testid={`whatif-fix-now-button-${suggestion.scenarioId}`}
                   >
                     {t("fixNow")}
                   </button>
@@ -847,6 +848,7 @@ export function WhatIfSimulator() {
                           ? t("current")
                           : t("applyScenarioToSettings")
                     }
+                    data-testid={`whatif-scenario-apply-button-${scenario.id}`}
                   >
                     {isApplied ? `✓ ${t("applied")}` : isAlreadyApplied ? t("current") : t("apply")}
                   </button>
@@ -1065,6 +1067,7 @@ export function WhatIfSimulator() {
                   key={scenarioId}
                   onClick={() => applyScenario(scenario)}
                   className="px-4 py-2 bg-neon-green/30 border-2 border-neon-green hover:bg-neon-green/40 text-white text-sm font-medium rounded-lg transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
+                  data-testid={`whatif-active-scenario-apply-button-${scenarioId}`}
                 >
                   <span>✓</span>
                   {t("apply")} "{scenario.name}"

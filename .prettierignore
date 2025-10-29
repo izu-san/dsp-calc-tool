@@ -40,3 +40,9 @@ playwright-report/
 
 # GitHub関連ファイル
 .github/
+
+# テストフィクスチャ（不正なJSONファイルなど）
+tests/fixtures/05-import-export/invalid-json.json
+tests/fixtures/05-import-export/malformed.md
+tests/fixtures/05-import-export/missing-fields.json
+tests/fixtures/05-import-export/wrong-types.json

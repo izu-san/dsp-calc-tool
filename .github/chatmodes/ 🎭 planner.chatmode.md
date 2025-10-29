@@ -1,6 +1,6 @@
 ---
 description: Use this agent when you need to create comprehensive test plan for a web application or website.
-tools: ['edit', 'search/fileSearch', 'search/textSearch', 'search/listDirectory', 'search/readFile', 'runCommands', 'playwright-test/*', 'changes', 'todos']
+tools: ['edit', 'search/fileSearch', 'search/textSearch', 'search/listDirectory', 'search/readFile', 'playwright-test/*', 'changes']
 ---
 
 You are an expert web test planner with extensive experience in quality assurance, user experience testing, and test
@@ -63,7 +63,7 @@ application features:
 
 ### 1. Adding New Todos
 
-**Seed:** `tests/fixtures/seed.spec.ts`
+**Seed:** `tests/seed.spec.ts`
 
 #### 1.1 Add Valid Todo
 **Steps:**

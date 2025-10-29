@@ -34,9 +34,28 @@ export async function expectNumberChange(
 ) {
   const before = await readFirstNumberFromTestId(page, testId);
   await action();
-  // small wait for UI to update
-  if (opts?.timeout) await page.waitForTimeout(opts.timeout);
-  else await page.waitForTimeout(500);
+  // wait until the numeric value observed in the DOM satisfies the comparator.
+  // This avoids blind timeouts and is more resilient than fixed sleeps.
+  const waitTimeout = opts?.timeout ?? 500;
+  await page.waitForFunction(
+    (args: { tid: string; beforeVal: number; cmp: string }) => {
+      const { tid, beforeVal, cmp } = args;
+      const el = document.querySelector(`[data-testid="${tid}"]`);
+      if (!el) return false;
+      const text = (el as HTMLElement).innerText.replace(/,/g, "");
+      const m = text.match(/[-+]?\d*\.?\d+(?:e[-+]?\d+)?/i);
+      if (!m) return false;
+      const after = parseFloat(m[0]);
+      if (Number.isNaN(after)) return false;
+      if (cmp === "changed") return after !== beforeVal;
+      if (cmp === "increased") return after > beforeVal;
+      if (cmp === "decreased") return after < beforeVal;
+      return false;
+    },
+    { tid: testId, beforeVal: before, cmp: comparator },
+    { timeout: waitTimeout }
+  );
+
   const after = await readFirstNumberFromTestId(page, testId);
 
   if (isNaN(before) || isNaN(after)) {
