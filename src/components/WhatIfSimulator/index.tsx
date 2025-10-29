@@ -522,7 +522,10 @@ export function WhatIfSimulator() {
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-300 dark:border-green-600 rounded-lg p-3">
+        <div
+          className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-300 dark:border-green-600 rounded-lg p-3"
+          data-testid="whatif-no-bottlenecks-message"
+        >
           <div className="flex items-start gap-2">
             <span className="text-green-600 dark:text-green-400 text-xl">✓</span>
             <div className="flex-1">

@@ -104,8 +104,10 @@ export const ProductionTree = memo(function ProductionTree({
               {/* Machine and count - same as recipe nodes */}
               {!isCircular && node.miningEquipment && (
                 <p className="text-sm text-space-300">
-                  {node.miningEquipment.machineName} ×{" "}
-                  {formatBuildingCount(node.miningEquipment.machineCount)}
+                  <span data-testid={`mining-equipment-count-${iconId}`}>
+                    {node.miningEquipment.machineName} ×{" "}
+                    {formatBuildingCount(node.miningEquipment.machineCount)}
+                  </span>
                 </p>
               )}
               {/* Badges */}
@@ -311,7 +313,9 @@ export const ProductionTree = memo(function ProductionTree({
                 })()}
               </h4>
               <p className="text-sm text-space-300">
-                {node.machine!.name} × {formatBuildingCount(node.machineCount)}
+                <span data-testid={`machine-count-${node.recipe!.SID}`}>
+                  {node.machine!.name} × {formatBuildingCount(node.machineCount)}
+                </span>
               </p>
               {/* Badges */}
               <div className="mt-1 flex flex-wrap items-center gap-1">
