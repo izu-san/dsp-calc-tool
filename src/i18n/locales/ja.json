@@ -244,6 +244,7 @@
   "productionMultiplierLabel": "生産倍率 (1 = デフォルト、25 = 25倍)",
   "speedMultiplierLabel": "速度倍率 (1 = デフォルト、5 = 5倍)",
   "applyCustomMultipliers": "カスタム倍率を適用",
+  "proliferatorMultipliersUpdated": "増産剤倍率が正常に更新されました！",
   "defaultMultipliers": "デフォルト倍率: 1x (生産)、1x (速度)",
   "pressCtrlShiftM": "Ctrl+Shift+M を押してこのパネルを開く",
   "invalidFileType": "無効なファイル形式です。XMLファイルをアップロードしてください。",

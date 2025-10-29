@@ -244,6 +244,7 @@
   "productionMultiplierLabel": "Production Multiplier (1 = default, 25 = 25x)",
   "speedMultiplierLabel": "Speed Multiplier (1 = default, 5 = 5x)",
   "applyCustomMultipliers": "Apply Custom Multipliers",
+  "proliferatorMultipliersUpdated": "Proliferator multipliers updated successfully!",
   "defaultMultipliers": "Default multipliers: 1x (Production), 1x (Speed)",
   "pressCtrlShiftM": "Press Ctrl+Shift+M to open this panel",
   "invalidFileType": "Invalid file type. Please upload an XML file.",

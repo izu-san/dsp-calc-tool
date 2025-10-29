@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useSettingsStore } from "../../stores/settingsStore";
+import { getEffectiveBonuses } from "../../lib/proliferator";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
-import type { ProliferatorType, ProliferatorMode } from "../../types/settings";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 
 // Proliferator item IDs
@@ -43,10 +44,13 @@ export function ProliferatorSettings() {
     setProliferator(proliferator.type, mode);
   };
 
-  // Get bonus percentages for display
-  const productionBonus = (proliferator.productionBonus * 100).toFixed(1);
-  const speedBonus = (proliferator.speedBonus * 100).toFixed(1);
-  const powerIncrease = (proliferator.powerIncrease * 100).toFixed(1);
+  // Get bonus percentages for display with custom multipliers applied
+  const customMultipliers = settings.proliferatorMultiplier ?? { production: 1, speed: 1 };
+  const effectiveBonuses = getEffectiveBonuses(proliferator, customMultipliers);
+
+  const productionBonus = (effectiveBonuses.effectiveProductionBonus * 100).toFixed(1);
+  const speedBonus = (effectiveBonuses.effectiveSpeedBonus * 100).toFixed(1);
+  const powerIncrease = (effectiveBonuses.effectivePowerIncrease * 100).toFixed(1);
 
   return (
     <div className="space-y-4">

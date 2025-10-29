@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { loadGameData } from "../../lib/parser";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import { loadGameData } from "../../lib/parser";
 
 export function ModSettings() {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [uploadError, setUploadError] = useState<string>("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [proliferatorError, setProliferatorError] = useState<string>("");
+  const [proliferatorSuccess, setProliferatorSuccess] = useState(false);
   const { updateData } = useGameDataStore();
   const { settings, setProliferatorMultiplier } = useSettingsStore();
 
@@ -22,9 +24,14 @@ export function ModSettings() {
   );
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handleFileUpload called");
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
 
+    console.log("File selected:", file.name, file.size);
     setUploadError("");
     setUploadSuccess(false);
 
@@ -43,9 +50,21 @@ export function ModSettings() {
     try {
       const text = await file.text();
 
+      // Debug logging
+      console.log("Uploaded file content preview:", text.substring(0, 200));
+      console.log("File length:", text.length);
+      console.log("Contains <?xml:", text.includes("<?xml"));
+      console.log("Contains <ArrayOfRecipe>:", text.includes("<ArrayOfRecipe"));
+      console.log("First 500 characters:", text.substring(0, 500));
+
       // Basic XML validation
-      if (!text.includes("<?xml") || !text.includes("<RecipeArray>")) {
-        setUploadError(t("invalidRecipesXML"));
+      if (!text.includes("<?xml")) {
+        setUploadError("XML宣言が見つかりません。");
+        return;
+      }
+
+      if (!text.includes("<ArrayOfRecipe")) {
+        setUploadError("ArrayOfRecipe要素が見つかりません。");
         return;
       }
 
@@ -91,9 +110,6 @@ export function ModSettings() {
 
         updateData(customData);
         setUploadSuccess(true);
-
-        // Auto-close success message after 3 seconds
-        setTimeout(() => setUploadSuccess(false), 3000);
       } catch (error) {
         setUploadError(t("failedToParseCustomRecipes") + ": " + (error as Error).message);
       }
@@ -105,11 +121,37 @@ export function ModSettings() {
     event.target.value = "";
   };
 
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    // Reset all message states when closing modal
+    setUploadError("");
+    setUploadSuccess(false);
+    setProliferatorError("");
+    setProliferatorSuccess(false);
+  };
+
+  const handleCloseUploadMessage = () => {
+    setUploadError("");
+    setUploadSuccess(false);
+  };
+
+  const handleCloseProliferatorMessage = () => {
+    setProliferatorError("");
+    setProliferatorSuccess(false);
+  };
+
   const handleApplyCustomProliferator = () => {
     setProliferatorMultiplier(productionMultiplier, speedMultiplier);
-    setUploadSuccess(true);
-    setUploadError("");
-    setTimeout(() => setUploadSuccess(false), 3000);
+    setProliferatorSuccess(true);
+    setProliferatorError("");
+  };
+
+  const handleResetProliferatorToDefault = () => {
+    setProductionMultiplier(1);
+    setSpeedMultiplier(1);
+    setProliferatorMultiplier(1, 1);
+    setProliferatorSuccess(true);
+    setProliferatorError("");
   };
 
   const handleResetToDefault = async () => {
@@ -118,7 +160,6 @@ export function ModSettings() {
         const data = await loadGameData();
         updateData(data);
         setUploadSuccess(true);
-        setTimeout(() => setUploadSuccess(false), 3000);
       } catch (error) {
         setUploadError(t("failedToReset") + ": " + (error as Error).message);
       }
@@ -129,6 +170,7 @@ export function ModSettings() {
     <>
       {/* Hidden trigger button (Ctrl+Shift+M) */}
       <button
+        data-testid="mod-settings-trigger"
         onClick={() => setIsOpen(true)}
         className="hidden"
         id="mod-settings-trigger"
@@ -156,10 +198,19 @@ export function ModSettings() {
       {/* Modal */}
       {isOpen &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-            <div className="bg-gray-900 border-2 border-red-500 rounded-xl shadow-2xl max-w-2xl w-full p-6">
+          <div
+            data-testid="mod-settings-modal"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+          >
+            <div
+              data-testid="mod-settings-dialog"
+              className="bg-gray-900 border-2 border-red-500 rounded-xl shadow-2xl max-w-2xl w-full p-6"
+            >
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
+              <div
+                data-testid="mod-settings-header"
+                className="flex items-center justify-between mb-6"
+              >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">🔧</span>
                   <div>
@@ -168,7 +219,8 @@ export function ModSettings() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  data-testid="mod-settings-close-button"
+                  onClick={handleCloseModal}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,7 +235,10 @@ export function ModSettings() {
               </div>
 
               {/* Warning Banner */}
-              <div className="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-4 mb-6">
+              <div
+                data-testid="mod-settings-warning-banner"
+                className="bg-yellow-900/30 border border-yellow-500/50 rounded-lg p-4 mb-6"
+              >
                 <div className="flex items-start gap-3">
                   <svg
                     className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5"
@@ -207,23 +262,30 @@ export function ModSettings() {
 
               <div className="space-y-6">
                 {/* Custom Recipes Upload */}
-                <div>
+                <div data-testid="mod-settings-custom-recipes-section">
                   <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                     📄 {t("customRecipesXML")}
                   </h3>
-                  <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                  <div
+                    data-testid="mod-settings-custom-recipes-panel"
+                    className="bg-gray-800 rounded-lg p-4 border border-gray-700"
+                  >
                     <p className="text-sm text-gray-300 mb-3">{t("uploadCustomRecipesDesc")}</p>
 
                     <div className="flex items-center gap-3">
                       <label className="flex-1">
                         <input
+                          data-testid="mod-settings-xml-upload-input"
                           type="file"
                           accept=".xml"
                           onChange={handleFileUpload}
                           className="hidden"
                           id="recipes-upload"
                         />
-                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors">
+                        <div
+                          data-testid="mod-settings-xml-upload-button"
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg cursor-pointer transition-colors"
+                        >
                           <svg
                             className="w-5 h-5"
                             fill="none"
@@ -242,6 +304,7 @@ export function ModSettings() {
                       </label>
 
                       <button
+                        data-testid="mod-settings-reset-to-default-button"
                         onClick={handleResetToDefault}
                         className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm"
                       >
@@ -252,40 +315,80 @@ export function ModSettings() {
                     {uploadError && (
                       <div
                         data-testid="modsettings-load-error"
-                        className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded text-sm text-red-200"
+                        className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded text-sm text-red-200 flex items-center justify-between"
                       >
-                        ❌ {uploadError}
+                        <span>❌ {uploadError}</span>
+                        <button
+                          onClick={handleCloseUploadMessage}
+                          className="text-red-400 hover:text-red-200 transition-colors ml-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     )}
 
                     {uploadSuccess && (
                       <div
                         data-testid="modsettings-load-success"
-                        className="mt-3 p-3 bg-green-900/30 border border-green-500/50 rounded text-sm text-green-200"
+                        className="mt-3 p-3 bg-green-900/30 border border-green-500/50 rounded text-sm text-green-200 flex items-center justify-between"
                       >
-                        ✅ {t("recipesUpdatedSuccessfully")}
+                        <span>✅ {t("recipesUpdatedSuccessfully")}</span>
+                        <button
+                          onClick={handleCloseUploadMessage}
+                          className="text-green-400 hover:text-green-200 transition-colors ml-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Custom Proliferator Multipliers */}
-                <div>
+                <div data-testid="mod-settings-proliferator-section">
                   <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                     💊 {t("customProliferatorMultipliers")}
                   </h3>
-                  <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                  <div
+                    data-testid="mod-settings-proliferator-panel"
+                    className="bg-gray-800 rounded-lg p-4 border border-gray-700"
+                  >
                     <p className="text-sm text-gray-300 mb-4">
                       {t("customProliferatorMultipliersDesc")}
                     </p>
 
                     <div className="grid grid-cols-1 gap-4 mb-4">
                       {/* Production Multiplier */}
-                      <div>
+                      <div data-testid="mod-settings-production-multiplier-field">
                         <label className="block text-xs text-gray-400 mb-1">
                           {t("productionMultiplierLabel")}
                         </label>
                         <input
+                          data-testid="mod-settings-production-multiplier-input"
                           type="number"
                           step="1"
                           min="1"
@@ -293,7 +396,10 @@ export function ModSettings() {
                           onChange={e => setProductionMultiplier(parseFloat(e.target.value))}
                           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p
+                          data-testid="mod-settings-production-multiplier-current"
+                          className="text-xs text-gray-500 mt-1"
+                        >
                           {t("current")}: Mk.I {(0.125 * productionMultiplier * 100).toFixed(1)}%,
                           Mk.II {(0.2 * productionMultiplier * 100).toFixed(1)}%, Mk.III{" "}
                           {(0.25 * productionMultiplier * 100).toFixed(1)}%
@@ -301,11 +407,12 @@ export function ModSettings() {
                       </div>
 
                       {/* Speed Multiplier */}
-                      <div>
+                      <div data-testid="mod-settings-speed-multiplier-field">
                         <label className="block text-xs text-gray-400 mb-1">
                           {t("speedMultiplierLabel")}
                         </label>
                         <input
+                          data-testid="mod-settings-speed-multiplier-input"
                           type="number"
                           step="1"
                           min="1"
@@ -313,7 +420,10 @@ export function ModSettings() {
                           onChange={e => setSpeedMultiplier(parseFloat(e.target.value))}
                           className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p
+                          data-testid="mod-settings-speed-multiplier-current"
+                          className="text-xs text-gray-500 mt-1"
+                        >
                           {t("current")}: Mk.I {(0.25 * speedMultiplier * 100).toFixed(1)}%, Mk.II{" "}
                           {(0.5 * speedMultiplier * 100).toFixed(1)}%, Mk.III{" "}
                           {(1.0 * speedMultiplier * 100).toFixed(1)}%
@@ -321,14 +431,82 @@ export function ModSettings() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={handleApplyCustomProliferator}
-                      className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-medium"
-                    >
-                      {t("applyCustomMultipliers")}
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        data-testid="mod-settings-apply-multipliers-button"
+                        onClick={handleApplyCustomProliferator}
+                        className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm font-medium"
+                      >
+                        {t("applyCustomMultipliers")}
+                      </button>
 
-                    <p className="text-xs text-gray-400 mt-2 text-center">
+                      <button
+                        data-testid="mod-settings-reset-proliferator-button"
+                        onClick={handleResetProliferatorToDefault}
+                        className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm"
+                      >
+                        {t("resetToDefault")}
+                      </button>
+                    </div>
+
+                    {proliferatorError && (
+                      <div
+                        data-testid="modsettings-proliferator-error"
+                        className="mt-3 p-3 bg-red-900/30 border border-red-500/50 rounded text-sm text-red-200 flex items-center justify-between"
+                      >
+                        <span>❌ {proliferatorError}</span>
+                        <button
+                          onClick={handleCloseProliferatorMessage}
+                          className="text-red-400 hover:text-red-200 transition-colors ml-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+
+                    {proliferatorSuccess && (
+                      <div
+                        data-testid="modsettings-proliferator-success"
+                        className="mt-3 p-3 bg-green-900/30 border border-green-500/50 rounded text-sm text-green-200 flex items-center justify-between"
+                      >
+                        <span>✅ {t("proliferatorMultipliersUpdated")}</span>
+                        <button
+                          onClick={handleCloseProliferatorMessage}
+                          className="text-green-400 hover:text-green-200 transition-colors ml-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+
+                    <p
+                      data-testid="mod-settings-default-multipliers-text"
+                      className="text-xs text-gray-400 mt-2 text-center"
+                    >
                       {t("defaultMultipliers")}
                     </p>
                   </div>
@@ -336,8 +514,13 @@ export function ModSettings() {
               </div>
 
               {/* Footer */}
-              <div className="mt-6 pt-4 border-t border-gray-700">
-                <p className="text-xs text-gray-500 text-center">{t("pressCtrlShiftM")}</p>
+              <div data-testid="mod-settings-footer" className="mt-6 pt-4 border-t border-gray-700">
+                <p
+                  data-testid="mod-settings-keyboard-shortcut-hint"
+                  className="text-xs text-gray-500 text-center"
+                >
+                  {t("pressCtrlShiftM")}
+                </p>
               </div>
             </div>
           </div>,
