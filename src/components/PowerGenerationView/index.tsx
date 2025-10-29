@@ -423,7 +423,12 @@ export function PowerGenerationView({
         <h3 className="text-sm font-medium text-neon-cyan mb-2">
           {t("powerGeneration.requiredPower")}
         </h3>
-        <p className="text-2xl font-bold text-white">{formatPower(totalPowerConsumption)}</p>
+        <p
+          data-testid="power-generation-required-power-value"
+          className="text-2xl font-bold text-white"
+        >
+          {formatPower(totalPowerConsumption)}
+        </p>
       </div>
 
       {/* 発電設備リスト */}
@@ -441,7 +446,7 @@ export function PowerGenerationView({
             {/* 発電設備名 */}
             <div className="flex items-center gap-2 mb-3">
               <ItemIcon itemId={allocation.generator.machineId} size={32} />
-              <h4 className="text-base font-semibold text-white">
+              <h4 data-testid="power-generator-name" className="text-base font-semibold text-white">
                 {getGeneratorName(allocation.generator.machineId)}
               </h4>
             </div>
@@ -462,7 +467,7 @@ export function PowerGenerationView({
               </div>
               <div>
                 <span className="text-space-300">{t("powerGeneration.count")}:</span>
-                <span className="ml-2 text-neon-cyan font-bold">
+                <span data-testid="power-generator-count" className="ml-2 text-neon-cyan font-bold">
                   {allocation.count} {t("powerGeneration.units")}
                 </span>
               </div>
@@ -481,7 +486,7 @@ export function PowerGenerationView({
                   <div className="flex items-center gap-2">
                     <span className="text-space-300">{t("powerGeneration.fuel")}:</span>
                     <ItemIcon itemId={allocation.fuel.itemId} size={24} />
-                    <span className="text-white font-medium">
+                    <span data-testid="power-fuel-name" className="text-white font-medium">
                       {getItemName(allocation.fuel.itemId)}
                     </span>
                   </div>
@@ -493,7 +498,10 @@ export function PowerGenerationView({
                   </div>
                   <div className="col-span-2">
                     <span className="text-space-300">{t("powerGeneration.fuelConsumption")}:</span>
-                    <span className="ml-2 text-neon-cyan font-bold">
+                    <span
+                      data-testid="power-fuel-consumption"
+                      className="ml-2 text-neon-cyan font-bold"
+                    >
                       {formatRate(allocation.fuelConsumptionRate)}
                     </span>
                   </div>

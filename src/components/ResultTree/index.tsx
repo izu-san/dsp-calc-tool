@@ -112,6 +112,7 @@ export const ProductionTree = memo(function ProductionTree({
               <div className="mt-1 flex flex-wrap items-center gap-1">
                 {!isCircular && node.miningEquipment && (
                   <span
+                    data-testid={`mining-equipment-badge-${iconId}`}
                     className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/30 shadow-[0_0_5px_rgba(0,217,255,0.3)]"
                     title={t("miningEquipment")}
                   >
@@ -315,6 +316,7 @@ export const ProductionTree = memo(function ProductionTree({
               {/* Badges */}
               <div className="mt-1 flex flex-wrap items-center gap-1">
                 <span
+                  data-testid={`machine-badge-${node.recipe!.SID}`}
                   className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-neon-blue/20 text-neon-blue border border-neon-blue/30 shadow-[0_0_5px_rgba(0,136,255,0.3)]"
                   title={t("machine")}
                 >
@@ -322,6 +324,7 @@ export const ProductionTree = memo(function ProductionTree({
                 </span>
                 {node.proliferator.type !== "none" && (
                   <span
+                    data-testid={`proliferator-badge-${node.recipe!.SID}`}
                     className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-neon-magenta/20 text-neon-magenta border border-neon-magenta/30 shadow-[0_0_5px_rgba(233,53,255,0.3)]"
                     title={t("proliferator")}
                   >

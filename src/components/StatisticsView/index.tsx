@@ -145,7 +145,10 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
             className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]"
           >
             <div className="text-sm text-space-300">{t("totalPower")}</div>
-            <div className="text-2xl font-bold text-neon-green">
+            <div
+              data-testid="statistics-production-overview-total-power"
+              className="text-2xl font-bold text-neon-green"
+            >
               {formatPower(unifiedPowerResult?.totalConsumption || 0)}
             </div>
             {unifiedPowerResult && unifiedPowerResult.miningPower > 0 && (

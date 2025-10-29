@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
-import type { RecipeTreeNode, NodeOverrideSettings } from "../../types";
-import type { ProliferatorType, ProliferatorMode } from "../../types/settings";
-import { PROLIFERATOR_DATA } from "../../types/settings";
 import { ICONS } from "../../constants/icons";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
+import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
+import { PROLIFERATOR_DATA } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 
 interface InlineNodeSettingsProps {
@@ -132,7 +132,10 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
   if (!isExpanded) return null;
 
   return (
-    <div className="mt-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+    <div
+      className="mt-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600"
+      data-testid="inline-node-settings"
+    >
       <div className="space-y-4">
         {/* Override Toggle */}
         <div className="flex items-center justify-between">
@@ -149,6 +152,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
             role="switch"
             aria-checked={useOverride}
             aria-label={t("useCustomSettings")}
+            data-testid="custom-settings-toggle"
             className={`
               relative inline-flex h-5 w-9 items-center rounded-full transition-colors
               ${useOverride ? "bg-blue-600 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-600"}
@@ -183,6 +187,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
                       onClick={() => setProliferatorType(type)}
                       aria-pressed={proliferatorType === type}
                       aria-label={`${t("proliferator")} ${type}`}
+                      data-testid={`proliferator-type-${type}`}
                       className={`
                         px-2 py-1.5 text-xs font-medium rounded border transition-all
                         ${
@@ -228,6 +233,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
                           disabled={isDisabled}
                           aria-pressed={proliferatorMode === mode}
                           aria-label={`${t("mode")}: ${mode}`}
+                          data-testid={`proliferator-mode-${mode}`}
                           className={`
                             px-2 py-1.5 text-xs font-medium rounded border transition-all
                             ${
@@ -259,6 +265,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
                     <button
                       key={option.value}
                       onClick={() => setMachineRank(option.value)}
+                      data-testid={`machine-rank-${option.value}`}
                       className={`
                         px-2 py-1.5 text-xs font-medium rounded border transition-all
                         ${
@@ -293,6 +300,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
         <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-600">
           <button
             onClick={handleReset}
+            data-testid="reset-to-global-button"
             className="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
           >
             {t("resetToGlobal")}
@@ -300,12 +308,14 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
           <div className="flex gap-2">
             <button
               onClick={onToggle}
+              data-testid="cancel-button"
               className="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-500"
             >
               {t("cancel")}
             </button>
             <button
               onClick={handleSave}
+              data-testid="apply-settings-button"
               className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 dark:bg-blue-700 rounded hover:bg-blue-700 dark:hover:bg-blue-600"
             >
               {t("apply")}

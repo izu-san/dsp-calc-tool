@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
-import type { RecipeTreeNode, NodeOverrideSettings } from "../../types";
-import type { ProliferatorType, ProliferatorMode } from "../../types/settings";
-import { PROLIFERATOR_DATA } from "../../types/settings";
 import { ICONS } from "../../constants/icons";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
+import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
+import { PROLIFERATOR_DATA } from "../../types/settings";
 
 interface CompactNodeSettingsProps {
   node: RecipeTreeNode;
@@ -129,7 +129,10 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
   const machineOptions = getMachineRankOptions();
 
   return (
-    <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+    <div
+      className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+      data-testid="compact-node-settings"
+    >
       <div className="space-y-3">
         {/* Override Toggle */}
         <div className="flex items-center justify-between">
@@ -150,6 +153,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
             role="switch"
             aria-checked={useOverride}
             aria-label={t("useCustomSettings")}
+            data-testid="custom-settings-toggle"
             className={`
               relative inline-flex h-4 w-7 items-center rounded-full transition-all ripple-effect
               ${
@@ -184,6 +188,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                     setProliferatorType(e.target.value as ProliferatorType);
                   }}
                   aria-label={t("proliferator")}
+                  data-testid="proliferator-type-select"
                   className="w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta focus:shadow-[0_0_10px_rgba(233,53,255,0.3)] transition-all"
                   style={{
                     backgroundColor: "#1E293B",
@@ -235,6 +240,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                             disabled={isDisabled}
                             aria-pressed={proliferatorMode === mode}
                             aria-label={`${t("mode")}: ${mode}`}
+                            data-testid={`proliferator-mode-${mode}`}
                             className={`
                             px-2 py-2 text-xs rounded transition-all min-h-[2rem] flex items-center justify-center ripple-effect
                             ${
@@ -273,6 +279,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                   onChange={e => {
                     setMachineRank(e.target.value);
                   }}
+                  data-testid="machine-rank-select"
                   className="w-full text-xs border border-neon-blue/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-blue focus:shadow-[0_0_10px_rgba(0,136,255,0.3)] transition-all"
                   style={{
                     backgroundColor: "#1E293B",

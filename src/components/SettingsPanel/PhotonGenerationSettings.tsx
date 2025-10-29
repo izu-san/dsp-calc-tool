@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { useSettingsStore } from "../../stores/settingsStore";
 import {
   calculateRayTransmissionEfficiency,
   getMaxMeaningfulResearchLevel,
 } from "../../lib/photonGenerationCalculation";
+import { useSettingsStore } from "../../stores/settingsStore";
 import { PROLIFERATOR_DATA, type ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 
@@ -38,7 +38,7 @@ export function PhotonGenerationSettings() {
   const powerIncrease = (photonGeneration.gravitonLensProliferator.powerIncrease * 100).toFixed(1);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="photon-generation-settings-section">
       {/* 重力子レンズの使用 */}
       <label className="flex items-center gap-2 cursor-pointer">
         <input

@@ -126,7 +126,10 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
             <span>⚡</span>
             {t("totalPowerConsumption")}
           </h3>
-          <div className="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]">
+          <div
+            data-testid="power-graph-total-consumption-value"
+            className="text-3xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]"
+          >
             {formatPower(powerBreakdown.totalConsumption)}
           </div>
         </div>

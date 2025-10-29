@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
-import type { RecipeTreeNode, NodeOverrideSettings } from "../../types";
-import type { ProliferatorType, ProliferatorMode } from "../../types/settings";
-import { PROLIFERATOR_DATA } from "../../types/settings";
 import { ICONS } from "../../constants/icons";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
+import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
+import { PROLIFERATOR_DATA } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 
 interface NodeSettingsModalProps {
@@ -132,8 +132,14 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
   const machineOptions = getMachineRankOptions();
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50 p-4"
+      data-testid="node-settings-modal"
+    >
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        data-testid="node-settings-modal-content"
+      >
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -167,6 +173,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
             </div>
             <button
               onClick={() => setUseOverride(!useOverride)}
+              data-testid="custom-settings-toggle"
               className={`
                 relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                 ${useOverride ? "bg-blue-600 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-600"}
@@ -197,6 +204,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                       <button
                         key={type}
                         onClick={() => setProliferatorType(type)}
+                        data-testid={`proliferator-type-${type}`}
                         className={`
                           px-2 py-2 text-xs font-medium rounded-lg border transition-all
                           ${
@@ -240,6 +248,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                             key={mode}
                             onClick={() => !isDisabled && setProliferatorMode(mode)}
                             disabled={isDisabled}
+                            data-testid={`proliferator-mode-${mode}`}
                             className={`
                               px-3 py-2 text-sm font-medium rounded-lg border transition-all
                               ${
@@ -271,6 +280,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                       <button
                         key={option.value}
                         onClick={() => setMachineRank(option.value)}
+                        data-testid={`machine-rank-${option.value}`}
                         className={`
                           px-2 py-2 text-xs font-medium rounded-lg border transition-all
                           ${
@@ -304,6 +314,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
         <div className="sticky bottom-0 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
           <button
             onClick={handleReset}
+            data-testid="reset-to-global-button"
             className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
           >
             {t("resetToGlobal")}
@@ -311,12 +322,14 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
           <div className="flex gap-2">
             <button
               onClick={onClose}
+              data-testid="cancel-button"
               className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-500"
             >
               {t("cancel")}
             </button>
             <button
               onClick={handleSave}
+              data-testid="apply-settings-button"
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-700 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600"
             >
               {t("applySettings")}
