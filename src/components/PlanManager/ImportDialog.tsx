@@ -55,12 +55,12 @@ export function ImportDialog({
             id="file-import"
             ref={fileInputRef}
             type="file"
-            accept=".json,.md,.markdown"
+            accept=".json,.md,.markdown,.csv,.xlsx"
             onChange={handleFileChange}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
           />
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {t("supportedFormats")}: JSON (.json), Markdown (.md)
+            {t("supportedFormats")}: JSON (.json), Markdown (.md), CSV (.csv), Excel (.xlsx)
           </p>
         </div>
 

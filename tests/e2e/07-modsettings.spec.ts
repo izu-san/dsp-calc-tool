@@ -11,6 +11,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
 
   test("07-01: MOD設定画面の表示 (Ctrl+Shift+M)", async ({ page }) => {
     // 1. Ctrl+Shift+Mを押下する（単一コマンドで安定化）
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
     await page.keyboard.press("Control+Shift+M");
 
     // 期待値: Mod設定画面が開くこと
@@ -26,6 +27,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await expect(page.getByTestId("recipe-input-rate-1101-1001")).toHaveText("99.0/s");
 
     // 1. Ctrl+Shift+Mを押下する（単一コマンドで安定化）
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
     await page.keyboard.press("Control+Shift+M");
 
     // 2. 使用可能なカスタムレシピのxmlデータをアップロードする
@@ -43,6 +45,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
 
   test("07-03: カスタムレシピのアップロード（異常データ）", async ({ page }) => {
     // 1-2. モッド画面を開いて異常XMLをアップロード
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
     await page.keyboard.press("Control+Shift+M");
 
     // 2. 使用可能なカスタムレシピのxmlデータをアップロードする
@@ -61,6 +64,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await expect(page.getByTestId("recipe-input-rate-1101-1001")).toHaveText("99.0/s");
 
     // 1-2. モッド画面を開く
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
     await page.keyboard.press("Control+Shift+M");
 
     // 2. 使用可能なカスタムレシピのxmlデータをアップロードする
@@ -76,6 +80,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await expect(page.getByTestId("recipe-input-rate-1101-1001")).toHaveText("1.0/s");
 
     // 1-2. モッド画面を開く
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
     await page.keyboard.press("Control+Shift+M");
 
     // リセットするにブラウザの確認ダイアログが表示されるため、ヘルパーでダイアログを受け入れてからクリックする
@@ -104,6 +109,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await expect(page.getByTestId("recipe-input-rate-1101-1001")).toHaveText("79.2/s");
 
     // 1. Ctrl+Shift+Mを押下する（単一コマンドで安定化）
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
     await page.keyboard.press("Control+Shift+M");
 
     // 2. 生産倍率と速度倍率を変更する
@@ -140,11 +146,8 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await expect(page.getByTestId("recipe-input-rate-1101-1001")).toHaveText("79.2/s");
 
     // 1. Ctrl+Shift+Mを押下する
-    await page.keyboard.down("Control");
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("KeyM");
-    await page.keyboard.up("Shift");
-    await page.keyboard.up("Control");
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
+    await page.keyboard.press("Control+Shift+M");
 
     // 2. 生産倍率と速度倍率を変更する
     await page.getByTestId("mod-settings-production-multiplier-input").fill("4");
@@ -165,11 +168,8 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await expect(page.getByTestId("recipe-input-rate-1101-1001")).toHaveText("49.5/s");
 
     // 1. Ctrl+Shift+Mを押下する
-    await page.keyboard.down("Control");
-    await page.keyboard.down("Shift");
-    await page.keyboard.press("KeyM");
-    await page.keyboard.up("Shift");
-    await page.keyboard.up("Control");
+    await page.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
+    await page.keyboard.press("Control+Shift+M");
 
     // リセット — ヘルパーでダイアログを受け入れてからクリックする
     await acceptDialogDuring(page, async () => {
@@ -180,6 +180,23 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
 
     // Mk.IIIの生産速度上昇
     await page.reload();
+    try {
+      await page.getByTestId("welcome-skip-button").click({ timeout: 2000 });
+    } catch {
+      // モーダルが再表示されない環境では無視
+    }
+    try {
+      await page.getByTestId("welcome-skip-button").click({ timeout: 2000 });
+    } catch {
+      // モーダルが再表示されない環境では無視
+    }
+    // 再読込後はレシピリストが初期化されるため、Itemsタブと検索で確実にレシピを取得する
+    await page.getByTestId("items-tab").click();
+    await page.getByTestId("recipe-search-input").fill("鉄");
+    await expect(page.getByTestId("recipe-button-1101")).toBeVisible();
+    await page.getByTestId("recipe-button-1101").click();
+    await page.getByTestId("recipe-search-input").fill("");
+    await page.getByTestId("target-quantity-input").fill("99");
     await page.getByTestId("proliferator-type-button-mk3").click();
     await page.getByTestId("proliferator-mode-button-speed").click();
     await expect(page.getByTestId("machine-count-1101")).toHaveText("アーク製錬所 × 50");

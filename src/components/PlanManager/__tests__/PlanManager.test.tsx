@@ -139,12 +139,12 @@ describe("PlanManager", () => {
     expect(screen.queryByRole("button", { name: /saveToLocalStorage/i })).not.toBeInTheDocument();
   });
 
-  it("Save ダイアログで saveToFile(JSON) が呼ばれダイアログ閉じる", () => {
+  it("Save ダイアログで saveToFile(JSON) が呼ばれエクスポート成功メッセージが表示される", () => {
     render(<PlanManager />);
     fireEvent.click(screen.getByRole("button", { name: /save$/i }));
     fireEvent.click(screen.getByRole("button", { name: /^JSON$/i }));
-    // 新しい実装では exportPlan は直接呼ばれない（transformToExportData を使用）
-    expect(screen.queryByRole("button", { name: /^JSON$/i })).not.toBeInTheDocument();
+    // 新しい実装ではダイアログは閉じず、成功メッセージが表示される
+    expect(screen.getByText(/exported/i)).toBeInTheDocument();
   });
 
   it("Load ダイアログで recent plan の load が restorePlan を呼び、閉じる", () => {

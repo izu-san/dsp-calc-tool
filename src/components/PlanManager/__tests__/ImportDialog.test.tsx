@@ -41,7 +41,7 @@ describe("ImportDialog", () => {
     const fileInput = screen.getByLabelText(/loadFromFile/i);
     expect(fileInput).toBeInTheDocument();
     expect(fileInput).toHaveAttribute("type", "file");
-    expect(fileInput).toHaveAttribute("accept", ".json,.md,.markdown");
+    expect(fileInput).toHaveAttribute("accept", ".json,.md,.markdown,.csv,.xlsx");
   });
 
   it("recent plansが表示される", () => {

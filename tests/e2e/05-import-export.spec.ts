@@ -97,7 +97,7 @@ test.describe("データのエクスポートとインポート", () => {
     }
   });
 
-  test.skip("05-03: csv形式の正常データ", async ({ page }) => {
+  test("05-03: csv形式の正常データ", async ({ page }) => {
     // 3-4. 保存 -> CSVエクスポート
     const [download] = await Promise.all([
       page.waitForEvent("download"),
@@ -129,7 +129,7 @@ test.describe("データのエクスポートとインポート", () => {
     }
   });
 
-  test.skip("05-04: Excel形式の正常データ", async ({ page }) => {
+  test("05-04: Excel形式の正常データ", async ({ page }) => {
     // 3-4. 保存 -> Excelエクスポート
     const [download] = await Promise.all([
       page.waitForEvent("download"),
@@ -207,9 +207,9 @@ test.describe("データのエクスポートとインポート", () => {
     await page.getByTestId("load-dialog-close-button").click();
   });
 
-  test.skip("05-07: csv形式の異常データ", async ({ page }) => {
+  test("05-07: csv形式の異常データ", async ({ page }) => {
     const fixtureDir = nodePath.join(process.cwd(), "tests", "fixtures", "05-import-export");
-    const filePath = nodePath.join(fixtureDir, "malformed.csv");
+    const filePath = nodePath.join(fixtureDir, "invalid-csv.csv");
     // 存在確認してわかりやすいエラーにする
     try {
       await fs.stat(filePath);
@@ -228,9 +228,9 @@ test.describe("データのエクスポートとインポート", () => {
     await page.getByTestId("load-dialog-close-button").click();
   });
 
-  test.skip("05-08: Excel形式の異常データ", async ({ page }) => {
+  test("05-08: Excel形式の異常データ", async ({ page }) => {
     const fixtureDir = nodePath.join(process.cwd(), "tests", "fixtures", "05-import-export");
-    const filePath = nodePath.join(fixtureDir, "corrupt.xlsx");
+    const filePath = nodePath.join(fixtureDir, "invalid-excel.xlsx");
     // 存在確認してわかりやすいエラーにする
     try {
       await fs.stat(filePath);

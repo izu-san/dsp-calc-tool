@@ -6,6 +6,7 @@ import { transformToExportData } from "../../lib/export/dataTransformer";
 import { exportToExcel } from "../../lib/export/excelExporter";
 import { generateExportFilename } from "../../lib/export/filenameGenerator";
 import { exportToMarkdown } from "../../lib/export/markdownExporter";
+import { importPlan } from "../../lib/import";
 import {
   buildSavedPlanFromExportData,
   parseExportDataFromJSON,
@@ -145,8 +146,6 @@ export function PlanManager() {
 
       setExportSuccessMessage(t("exported"));
       setExportErrorMessage("");
-      setShowSaveDialog(false);
-      setPlanName("");
     } catch (error) {
       console.error("Export error:", error);
       setExportErrorMessage(`${t("exportError")}: ${error}`);
@@ -244,6 +243,77 @@ export function PlanManager() {
           const warnings = validation.warnings.map(w => w.message).join("\n");
           console.warn(`Import warnings:\n${warnings}`);
         }
+      } else if (fileExtension === "csv" || fileExtension === "xlsx") {
+        // CSV/Excel インポート
+        if (!data) {
+          setImportErrorMessage(t("gameDataNotLoaded"));
+          setImportSuccessMessage("");
+          return;
+        }
+
+        const importResult = await importPlan(file, {
+          validateData: true,
+          strictMode: false,
+          allowPartialImport: true,
+          autoFixErrors: true,
+          checkVersion: true,
+        });
+
+        if (!importResult.success) {
+          const errors =
+            "errors" in importResult
+              ? importResult.errors.map(e => e.message).join("\n")
+              : t("importError");
+          setImportErrorMessage(`${t("importError")}:\n${errors}`);
+          setImportSuccessMessage("");
+          return;
+        }
+
+        if (!("extractedData" in importResult)) {
+          setImportErrorMessage(t("importError"));
+          setImportSuccessMessage("");
+          return;
+        }
+
+        // エラーがあれば警告として表示（部分インポート許可のため）
+        if (importResult.errors.length > 0) {
+          const errors = importResult.errors.map(e => e.message).join("\n");
+          console.warn(`Import errors (continuing anyway):\n${errors}`);
+        }
+
+        // プラン情報を検証
+        const planInfo = {
+          name: importResult.extractedData.planInfo.name,
+          timestamp: importResult.extractedData.planInfo.timestamp,
+          recipeSID: importResult.extractedData.planInfo.recipeSID,
+          recipeName: importResult.extractedData.planInfo.recipeName,
+          targetQuantity: importResult.extractedData.planInfo.targetQuantity,
+        };
+
+        const validation = validatePlanInfo(planInfo, data);
+        if (!validation.isValid) {
+          const errors = validation.errors.map(e => e.message).join("\n");
+          setImportErrorMessage(`${t("validationError")}:\n${errors}`);
+          setImportSuccessMessage("");
+          return;
+        }
+
+        // SavedPlan を構築（現在の設定をフォールバックとして渡す）
+        plan = buildPlanFromImport(planInfo, data, settings);
+        if (!plan) {
+          setImportErrorMessage(t("planBuildError"));
+          setImportSuccessMessage("");
+          return;
+        }
+
+        // 警告があれば表示
+        if (importResult.warnings.length > 0 || validation.warnings.length > 0) {
+          const warnings = [
+            ...importResult.warnings.map(w => w.message),
+            ...validation.warnings.map(w => w.message),
+          ].join("\n");
+          console.warn(`Import warnings:\n${warnings}`);
+        }
       } else {
         setImportErrorMessage(t("unsupportedFileFormat"));
         setImportSuccessMessage("");
@@ -296,6 +366,10 @@ export function PlanManager() {
 
       setImportSuccessMessage(`${t("planLoaded", { name: plan.name })}`);
       setImportErrorMessage("");
+      // インポート成功時にモーダルを閉じる
+      setTimeout(() => {
+        setShowLoadDialog(false);
+      }, 500); // 成功メッセージを少し表示してから閉じる
     } catch (error) {
       console.error("Import error:", error);
       setImportErrorMessage(`${t("loadError")}: ${error}`);
@@ -577,7 +651,7 @@ export function PlanManager() {
                   data-testid="file-import-input"
                   ref={fileInputRef}
                   type="file"
-                  accept=".json,.md,.markdown"
+                  accept=".json,.md,.markdown,.csv,.xlsx"
                   onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) {
@@ -591,7 +665,7 @@ export function PlanManager() {
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700 dark:text-white"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  {t("supportedFormats")}: JSON (.json), Markdown (.md)
+                  {t("supportedFormats")}: JSON (.json), Markdown (.md), CSV (.csv), Excel (.xlsx)
                 </p>
 
                 {/* Import Success Message */}

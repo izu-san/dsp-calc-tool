@@ -4,9 +4,7 @@ ExportDate,2025-10-29T05:41:17.670Z
 
 # Plan Info
 PlanName,Plan_2025-10-29_14-41
-RecipeSID,1705,,,,
-RecipeName,デストロイヤー
-TargetQuantity,1
+RecipeSID
 
 # Statistics
 TotalMachines,8049
