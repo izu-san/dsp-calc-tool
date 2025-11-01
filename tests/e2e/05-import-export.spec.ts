@@ -273,4 +273,41 @@ test.describe("データのエクスポートとインポート", () => {
       await expect(newPage.getByTestId("recipe-node-1705")).toBeVisible();
     }
   });
+
+  test("05-10: 画像形式のエクスポート", async ({ page }) => {
+    // 統計タブに切り替える
+    await page.getByTestId("statistics-tab").click();
+    await expect(page.getByTestId("statistics-tab-content")).toBeVisible();
+
+    // 3-4. 保存 -> 画像エクスポート
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      page.getByTestId("save-button").click(),
+      page.getByTestId("export-image-button").click(),
+    ]);
+
+    await expect(page.getByTestId("export-success-message")).toBeVisible();
+    await page.getByTestId("save-dialog-close-button").click();
+
+    // ダウンロードされたファイルを確認
+    const filename = download.suggestedFilename();
+    expect(filename).toBeTruthy();
+    expect(filename).toMatch(/\.png$/i);
+
+    const savedDir = nodePath.join(os.tmpdir(), "dsp-calc-tool-downloads");
+    await fs.mkdir(savedDir, { recursive: true });
+    const savedPath = nodePath.join(savedDir, filename);
+    await download.saveAs(savedPath);
+
+    // ファイルがダウンロードされたことを確認
+    const stats = await fs.stat(savedPath);
+    expect(stats.size).toBeGreaterThan(0);
+
+    // テスト終了時に一時ファイルを削除
+    try {
+      await fs.unlink(savedPath);
+    } catch {
+      // ignore
+    }
+  });
 });
