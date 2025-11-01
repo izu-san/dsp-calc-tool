@@ -169,30 +169,41 @@ export function PlanManager() {
     try {
       const selectors: string[] = [];
 
-      // 各ビューに対応するセレクタを追加
+      // 各ビューに対応するセレクタを追加（表示されている場合のみ）
+      if (options.includeViews.productionTree) {
+        selectors.push("#production-tree-view");
+      }
       if (options.includeViews.statistics) {
-        selectors.push('[data-testid="statistics-tab-content"]');
+        selectors.push("#statistics-view");
       }
       if (options.includeViews.powerGraph) {
-        selectors.push('[data-testid="power-graph-content"]');
+        selectors.push("#power-graph-view");
       }
       if (options.includeViews.buildingCost) {
-        selectors.push('[data-testid="building-cost-content"]');
+        selectors.push("#building-cost-view");
       }
       if (options.includeViews.powerGeneration) {
-        selectors.push('[data-testid="power-generation-content"]');
+        selectors.push("#power-generation-view");
       }
 
-      if (selectors.length === 0) {
-        throw new Error("No views selected for export");
+      // 表示されているビューのみをフィルタリング
+      const visibleSelectors = selectors.filter(selector => {
+        const element = document.querySelector(selector);
+        return element !== null && (element as HTMLElement).offsetParent !== null; // 表示されているかチェック
+      });
+
+      if (visibleSelectors.length === 0) {
+        throw new Error(
+          "表示されているビューがありません。生産チェーン、統計、建設コスト、または発電設備のタブを開いてから画像エクスポートしてください。"
+        );
       }
 
       // 画像をエクスポート
       let blob: Blob;
-      if (selectors.length === 1) {
-        blob = await exportToImage(selectors[0], options);
+      if (visibleSelectors.length === 1) {
+        blob = await exportToImage(visibleSelectors[0], options);
       } else {
-        blob = await exportMultipleViews(selectors, options);
+        blob = await exportMultipleViews(visibleSelectors, options);
       }
 
       // ファイル名を生成
@@ -213,7 +224,9 @@ export function PlanManager() {
       setExportErrorMessage("");
     } catch (error) {
       console.error("Image export error:", error);
-      setExportErrorMessage(`${t("exportError")}: ${error}`);
+      setExportErrorMessage(
+        `${t("exportError")}: ${error instanceof Error ? error.message : String(error)}`
+      );
       setExportSuccessMessage("");
     }
   };
@@ -641,7 +654,8 @@ export function PlanManager() {
                         format: "png",
                         quality: 90,
                         includeViews: {
-                          statistics: true,
+                          productionTree: true,
+                          statistics: false,
                           powerGraph: false,
                           buildingCost: false,
                           powerGeneration: false,

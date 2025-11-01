@@ -101,6 +101,7 @@ export interface ImageExportOptions {
   format: "png" | "jpeg" | "webp";
   quality: number; // 0-100
   includeViews: {
+    productionTree: boolean;
     statistics: boolean;
     powerGraph: boolean;
     buildingCost: boolean;

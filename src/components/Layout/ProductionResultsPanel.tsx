@@ -247,18 +247,18 @@ export function ProductionResultsPanel({
             {/* Content */}
             <Suspense fallback={<div className="text-center py-4">{t("loading")}</div>}>
               {showStatistics ? (
-                <div data-testid="statistics-tab-content">
+                <div id="statistics-view" data-testid="statistics-tab-content">
                   <StatisticsView
                     calculationResult={calculationResult}
                     miningCalculation={miningCalculation}
                   />
                 </div>
               ) : showBuildingCost ? (
-                <div data-testid="building-cost-content">
+                <div id="building-cost-view" data-testid="building-cost-content">
                   <BuildingCostView calculationResult={calculationResult} />
                 </div>
               ) : showPowerGeneration ? (
-                <div data-testid="power-generation-content">
+                <div id="power-generation-view" data-testid="power-generation-content">
                   <PowerGenerationView
                     calculationResult={calculationResult}
                     miningCalculation={miningCalculation}
@@ -267,7 +267,7 @@ export function ProductionResultsPanel({
               ) : showMiningCalculator ? (
                 <MiningCalculator calculationResult={calculationResult} />
               ) : (
-                <div data-testid="production-tree-content">
+                <div id="production-tree-view" data-testid="production-tree-content">
                   <ProductionTree
                     node={calculationResult.rootNode}
                     collapsedNodes={collapsedNodes}
