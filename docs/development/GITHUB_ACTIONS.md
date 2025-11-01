@@ -9,6 +9,7 @@
 **トリガー**: `develop`および`main`ブランチへのPull Request、またはこれらのブランチへのpush
 
 **実行内容**:
+
 - ✅ **Lint Check**: ESLintによるコード品質チェック
 - ✅ **TypeScript Type Check**: 型エラーのチェック
 - ✅ **Unit Tests**: Vitestによる単体テスト実行
@@ -25,10 +26,12 @@
 **トリガー**: `main`ブランチへのpush
 
 **実行内容**:
+
 - 🚀 プロジェクトのビルド
 - 🌐 GitHub Pagesへの自動デプロイ
 
 **セットアップ手順**:
+
 1. GitHubリポジトリの Settings → Pages に移動
 2. Source を「GitHub Actions」に設定
 3. `main`ブランチにマージすると自動的にデプロイされます
@@ -38,9 +41,9 @@ GitHub Pagesでサブディレクトリにデプロイする場合は、`vite.co
 
 ```typescript
 export default defineConfig({
-  base: '/リポジトリ名/',
+  base: "/リポジトリ名/",
   // ...
-})
+});
 ```
 
 ### 3. Dependency Review (`.github/workflows/dependency-review.yml`)
@@ -48,6 +51,7 @@ export default defineConfig({
 **トリガー**: `develop`および`main`ブランチへのPull Request
 
 **実行内容**:
+
 - 🔍 依存関係の脆弱性チェック
 - ⚠️ 中程度以上の脆弱性が検出されると失敗
 - 📝 Pull Requestにレビューコメントを追加
@@ -57,6 +61,7 @@ export default defineConfig({
 **トリガー**: `develop`および`main`ブランチへのPull Request
 
 **実行内容**:
+
 - 📦 **Bundle Size Analysis**: ビルド後のファイルサイズ分析
   - Pull Requestにサイズレポートをコメント
 - 🔄 **Code Duplication Check**: 重複コードの検出
@@ -64,12 +69,14 @@ export default defineConfig({
 ### 5. Dependabot (`.github/dependabot.yml`)
 
 **実行内容**:
+
 - 📅 毎週月曜日9:00（JST）に依存関係をチェック
 - 🔄 npm パッケージの自動アップデート
 - ⚙️ GitHub Actionsの自動アップデート
 - 📦 関連する依存関係をグループ化してPull Requestを作成
 
 **設定されたグループ**:
+
 - `dev-dependencies`: 開発用依存関係
 - `react`: React関連パッケージ
 - `radix-ui`: Radix UI コンポーネント
@@ -77,6 +84,7 @@ export default defineConfig({
 ## 🚀 初回セットアップ
 
 1. **GitHub Pagesの有効化**（デプロイを使用する場合）:
+
    ```
    Settings → Pages → Source を "GitHub Actions" に設定
    ```
@@ -109,20 +117,22 @@ CI環境でテストがタイムアウトする場合:
 export default defineConfig({
   test: {
     testTimeout: 10000, // デフォルトは5000ms
-  }
-})
+  },
+});
 ```
 
 ### E2Eテストの有効化
 
 1. Playwrightの設定ファイルを作成:
+
    ```bash
    npm init playwright@latest
    ```
 
 2. `ci.yml`の`e2e-test`ジョブを有効化:
+
    ```yaml
-   if: true  # false から true に変更
+   if: true # false から true に変更
    ```
 
 3. E2Eテストスクリプトを追加:
@@ -158,10 +168,11 @@ READMEに以下のバッジが追加されています:
 ### Dependabotが多すぎる
 
 `.github/dependabot.yml`で以下を調整:
+
 ```yaml
-open-pull-requests-limit: 5  # デフォルトは10
+open-pull-requests-limit: 5 # デフォルトは10
 schedule:
-  interval: "monthly"  # weeklyからmonthlyに変更
+  interval: "monthly" # weeklyからmonthlyに変更
 ```
 
 ## 📚 参考リンク

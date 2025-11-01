@@ -1,5 +1,4 @@
-import type { RecipeTreeNode, PowerConsumption } from '../../types';
-import { isRawMaterial } from '../../constants/rawMaterials';
+import type { RecipeTreeNode, PowerConsumption } from "../../types";
 
 /**
  * Calculate total power consumption recursively
@@ -39,24 +38,22 @@ export function calculateTotalMachines(node: RecipeTreeNode): number {
 
 /**
  * Calculate raw materials required
+ * Only includes materials that are actually mined (not circular dependencies)
  */
 export function calculateRawMaterials(node: RecipeTreeNode): Map<number, number> {
   const rawMaterials = new Map<number, number>();
 
   function traverse(n: RecipeTreeNode) {
-    // If this node is a raw material node, count it
-    if (n.isRawMaterial && n.itemId !== undefined) {
+    // If this node is a raw material node AND not a circular dependency, count it
+    // Circular dependencies are items produced by recipes, not mined
+    if (n.isRawMaterial && n.itemId !== undefined && !n.isCircularDependency) {
       const current = rawMaterials.get(n.itemId) || 0;
       rawMaterials.set(n.itemId, current + n.targetOutputRate);
     }
 
-    // Also check inputs (for backwards compatibility)
-    for (const input of n.inputs) {
-      if (isRawMaterial(input.itemId)) {
-        const current = rawMaterials.get(input.itemId) || 0;
-        rawMaterials.set(input.itemId, current + input.requiredRate);
-      }
-    }
+    // Note: The inputs section below was removed as it was causing duplicate
+    // raw material entries. The tree-builder now properly creates raw material nodes,
+    // so this backwards compatibility section is no longer needed.
 
     for (const child of n.children) {
       traverse(child);
@@ -66,4 +63,3 @@ export function calculateRawMaterials(node: RecipeTreeNode): Map<number, number>
   traverse(node);
   return rawMaterials;
 }
-

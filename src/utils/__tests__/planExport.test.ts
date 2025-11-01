@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import {
   exportPlan,
   importPlan,
@@ -7,18 +7,18 @@ import {
   getRecentPlans,
   loadPlanFromLocalStorage,
   deletePlanFromLocalStorage,
-} from '../planExport';
-import type { SavedPlan, GlobalSettings, NodeOverrideSettings } from '../../types';
+} from "../planExport";
+import type { SavedPlan, GlobalSettings, NodeOverrideSettings } from "../../types";
 
 // Mock DOM APIs
 const mockCreateElement = vi.fn();
 const mockAppendChild = vi.fn();
 const mockRemoveChild = vi.fn();
 const mockClick = vi.fn();
-const mockCreateObjectURL = vi.fn(() => 'blob:mock-url');
+const mockCreateObjectURL = vi.fn(() => "blob:mock-url");
 const mockRevokeObjectURL = vi.fn();
 
-describe('planExport', () => {
+describe("planExport", () => {
   let mockSettings: GlobalSettings;
   let mockAlternativeRecipes: Map<number, number>;
   let mockNodeOverrides: Map<string, NodeOverrideSettings>;
@@ -39,30 +39,30 @@ describe('planExport', () => {
     } as unknown as typeof URL;
 
     mockCreateElement.mockReturnValue({
-      href: '',
-      download: '',
+      href: "",
+      download: "",
       click: mockClick,
     });
 
     // Setup mock data
     mockSettings = {
       proliferator: {
-        type: 'mk3',
-        mode: 'production',
+        type: "mk3",
+        mode: "production",
         productionBonus: 0.25,
         speedBonus: 0,
-        powerIncrease: 1.50,
+        powerIncrease: 1.5,
       },
       machineRank: {
-        Assemble: 'mk3',
-        Smelt: 'arc',
-        Chemical: 'standard',
-        Research: 'standard',
-        Refine: 'standard',
-        Particle: 'standard',
+        Assemble: "mk3",
+        Smelt: "arc",
+        Chemical: "standard",
+        Research: "standard",
+        Refine: "standard",
+        Particle: "standard",
       },
-      conveyorBelt: { tier: 'mk3', speed: 30, stackCount: 4 },
-      sorter: { tier: 'mk3', powerConsumption: 72 },
+      conveyorBelt: { tier: "mk3", speed: 30, stackCount: 4 },
+      sorter: { tier: "mk3", powerConsumption: 72 },
       alternativeRecipes: new Map([[1, 2]]),
       miningSpeedResearch: 100,
       proliferatorMultiplier: { production: 1, speed: 1 },
@@ -75,18 +75,18 @@ describe('planExport', () => {
 
     mockNodeOverrides = new Map([
       [
-        'node-1',
+        "node-1",
         {
           proliferator: {
-            type: 'mk2',
-            mode: 'speed',
+            type: "mk2",
+            mode: "speed",
             productionBonus: 0,
-            speedBonus: 0.50,
-            powerIncrease: 0.70,
+            speedBonus: 0.5,
+            powerIncrease: 0.7,
           },
         },
       ],
-      ['node-2', { machineRank: 'mk2' }],
+      ["node-2", { machineRank: "mk2" }],
     ]);
 
     // Mock localStorage
@@ -107,34 +107,27 @@ describe('planExport', () => {
     vi.restoreAllMocks();
   });
 
-  describe('exportPlan', () => {
-    it('JSON生成の正確性（バージョン含む）', () => {
-      exportPlan(
-        100,
-        50,
-        mockSettings,
-        mockAlternativeRecipes,
-        mockNodeOverrides,
-        'Test Plan'
-      );
+  describe("exportPlan", () => {
+    it("JSON生成の正確性（バージョン含む）", () => {
+      exportPlan(100, 50, mockSettings, mockAlternativeRecipes, mockNodeOverrides, "Test Plan");
 
       // Blob作成の検証
-      const blob = new Blob(['test']);
+      const blob = new Blob(["test"]);
       expect(blob).toBeDefined();
 
       // createElementが呼ばれたことを確認
-      expect(mockCreateElement).toHaveBeenCalledWith('a');
+      expect(mockCreateElement).toHaveBeenCalledWith("a");
       expect(mockAppendChild).toHaveBeenCalled();
       expect(mockClick).toHaveBeenCalled();
       expect(mockRemoveChild).toHaveBeenCalled();
-      expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
+      expect(mockRevokeObjectURL).toHaveBeenCalledWith("blob:mock-url");
     });
 
-    it('Map → Object変換（alternativeRecipes, nodeOverrides）', () => {
+    it("Map → Object変換（alternativeRecipes, nodeOverrides）", () => {
       // カスタムBlobコンストラクターでJSON内容をキャプチャ
       const originalBlob = global.Blob;
-      let capturedJson = '';
-      
+      let capturedJson = "";
+
       global.Blob = class MockBlob {
         constructor(parts: BlobPart[], options?: BlobPropertyBag) {
           capturedJson = parts[0] as string;
@@ -142,44 +135,37 @@ describe('planExport', () => {
         }
       } as unknown as typeof Blob;
 
-      exportPlan(
-        100,
-        50,
-        mockSettings,
-        mockAlternativeRecipes,
-        mockNodeOverrides,
-        'Test Plan'
-      );
+      exportPlan(100, 50, mockSettings, mockAlternativeRecipes, mockNodeOverrides, "Test Plan");
 
       const data = JSON.parse(capturedJson);
 
       // alternativeRecipesがオブジェクトに変換されている
       expect(data.plan.alternativeRecipes).toEqual({
-        '1001': 2001,
-        '1002': 2002,
+        "1001": 2001,
+        "1002": 2002,
       });
 
       // nodeOverridesがオブジェクトに変換されている
       expect(data.plan.nodeOverrides).toEqual({
-        'node-1': {
+        "node-1": {
           proliferator: {
-            type: 'mk2',
-            mode: 'speed',
+            type: "mk2",
+            mode: "speed",
             productionBonus: 0,
-            speedBonus: 0.50,
-            powerIncrease: 0.70,
+            speedBonus: 0.5,
+            powerIncrease: 0.7,
           },
         },
-        'node-2': { machineRank: 'mk2' },
+        "node-2": { machineRank: "mk2" },
       });
 
       global.Blob = originalBlob;
     });
 
-    it('デフォルトプラン名生成（Plan_YYYY-MM-DD_HH-MM）', () => {
+    it("デフォルトプラン名生成（Plan_YYYY-MM-DD_HH-MM）", () => {
       const originalBlob = global.Blob;
-      let capturedJson = '';
-      
+      let capturedJson = "";
+
       global.Blob = class MockBlob {
         constructor(parts: BlobPart[]) {
           capturedJson = parts[0] as string;
@@ -188,13 +174,7 @@ describe('planExport', () => {
       } as unknown as typeof Blob;
 
       // プラン名を指定しない
-      exportPlan(
-        100,
-        50,
-        mockSettings,
-        mockAlternativeRecipes,
-        mockNodeOverrides
-      );
+      exportPlan(100, 50, mockSettings, mockAlternativeRecipes, mockNodeOverrides);
 
       const data = JSON.parse(capturedJson);
 
@@ -204,10 +184,10 @@ describe('planExport', () => {
       global.Blob = originalBlob;
     });
 
-    it('カスタムプラン名の使用', () => {
+    it("カスタムプラン名の使用", () => {
       const originalBlob = global.Blob;
-      let capturedJson = '';
-      
+      let capturedJson = "";
+
       global.Blob = class MockBlob {
         constructor(parts: BlobPart[]) {
           capturedJson = parts[0] as string;
@@ -221,38 +201,31 @@ describe('planExport', () => {
         mockSettings,
         mockAlternativeRecipes,
         mockNodeOverrides,
-        'My Custom Plan'
+        "My Custom Plan"
       );
 
       const data = JSON.parse(capturedJson);
-      expect(data.plan.name).toBe('My Custom Plan');
+      expect(data.plan.name).toBe("My Custom Plan");
 
       global.Blob = originalBlob;
     });
 
-    it('Blobとダウンロード処理（モック化）', () => {
-      exportPlan(
-        100,
-        50,
-        mockSettings,
-        mockAlternativeRecipes,
-        mockNodeOverrides,
-        'Download Test'
-      );
+    it("Blobとダウンロード処理（モック化）", () => {
+      exportPlan(100, 50, mockSettings, mockAlternativeRecipes, mockNodeOverrides, "Download Test");
 
       // DOM操作の検証
-      expect(mockCreateElement).toHaveBeenCalledWith('a');
+      expect(mockCreateElement).toHaveBeenCalledWith("a");
       expect(mockCreateObjectURL).toHaveBeenCalled();
       expect(mockAppendChild).toHaveBeenCalled();
       expect(mockClick).toHaveBeenCalled();
       expect(mockRemoveChild).toHaveBeenCalled();
-      expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
+      expect(mockRevokeObjectURL).toHaveBeenCalledWith("blob:mock-url");
     });
 
-    it('バージョン情報の埋め込み', () => {
+    it("バージョン情報の埋め込み", () => {
       const originalBlob = global.Blob;
-      let capturedJson = '';
-      
+      let capturedJson = "";
+
       global.Blob = class MockBlob {
         constructor(parts: BlobPart[]) {
           capturedJson = parts[0] as string;
@@ -260,65 +233,58 @@ describe('planExport', () => {
         }
       } as unknown as typeof Blob;
 
-      exportPlan(
-        100,
-        50,
-        mockSettings,
-        mockAlternativeRecipes,
-        mockNodeOverrides,
-        'Version Test'
-      );
+      exportPlan(100, 50, mockSettings, mockAlternativeRecipes, mockNodeOverrides, "Version Test");
 
       const data = JSON.parse(capturedJson);
-      expect(data.version).toBe('1.0.0');
+      expect(data.version).toBe("1.0.0");
 
       global.Blob = originalBlob;
     });
   });
 
-  describe('importPlan', () => {
-    it('正しいJSONファイルの読み込み', async () => {
+  describe("importPlan", () => {
+    it("正しいJSONファイルの読み込み", async () => {
       const validPlan: SavedPlan = {
-        name: 'Test Plan',
+        name: "Test Plan",
         timestamp: 1234567890,
         recipeSID: 100,
         targetQuantity: 50,
         settings: mockSettings,
-        alternativeRecipes: { '1001': 2001 },
+        alternativeRecipes: { "1001": 2001 },
         nodeOverrides: {
-          'node-1': {
+          "node-1": {
             proliferator: {
-              type: 'mk2',
-              mode: 'speed',
+              type: "mk2",
+              mode: "speed",
               productionBonus: 0,
-              speedBonus: 0.50,
-              powerIncrease: 0.70,
+              speedBonus: 0.5,
+              powerIncrease: 0.7,
             },
           },
         },
       };
 
       const fileContent = JSON.stringify({
-        version: '1.0.0',
+        version: "1.0.0",
         plan: validPlan,
       });
 
-      const mockFile = new File([fileContent], 'test.json', { type: 'application/json' });
+      const mockFile = new File([fileContent], "test.json", { type: "application/json" });
 
       const result = await importPlan(mockFile);
 
-      expect(result.name).toBe('Test Plan');
+      expect(result.name).toBe("Test Plan");
       expect(result.recipeSID).toBe(100);
       expect(result.targetQuantity).toBe(50);
     });
 
-    it('バージョン検証とwarning', async () => {
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    it("バージョン検証とwarning", async () => {
+      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       const planWithDifferentVersion = {
-        version: '2.0.0', // 異なるバージョン
+        version: "2.0.0", // 異なるバージョン
         plan: {
-          name: 'Future Plan',
+          name: "Future Plan",
           timestamp: 1234567890,
           recipeSID: 100,
           targetQuantity: 50,
@@ -329,27 +295,27 @@ describe('planExport', () => {
       };
 
       const fileContent = JSON.stringify(planWithDifferentVersion);
-      const mockFile = new File([fileContent], 'test.json', { type: 'application/json' });
+      const mockFile = new File([fileContent], "test.json", { type: "application/json" });
 
       const result = await importPlan(mockFile);
 
-      expect(result.name).toBe('Future Plan');
+      expect(result.name).toBe("Future Plan");
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Plan version mismatch: 2.0.0 vs 1.0.0')
+        expect.stringContaining("Plan version mismatch: 2.0.0 vs 1.0.0")
       );
 
       consoleWarnSpy.mockRestore();
     });
 
-    it('無効なJSON処理（エラーthrow）', async () => {
-      const mockFile = new File(['invalid json {{{'], 'test.json', { type: 'application/json' });
+    it("無効なJSON処理（エラーthrow）", async () => {
+      const mockFile = new File(["invalid json {{{"], "test.json", { type: "application/json" });
 
       await expect(importPlan(mockFile)).rejects.toThrow(/is not valid JSON/);
     });
 
-    it('ファイル読み込みエラー処理', async () => {
+    it("ファイル読み込みエラー処理", async () => {
       const mockFile = {
-        name: 'test.json',
+        name: "test.json",
       } as File;
 
       // FileReaderのエラーをシミュレート
@@ -366,15 +332,15 @@ describe('planExport', () => {
         }
       } as unknown as typeof FileReader;
 
-      await expect(importPlan(mockFile)).rejects.toThrow('Failed to read file');
+      await expect(importPlan(mockFile)).rejects.toThrow("Failed to read file");
 
       global.FileReader = originalFileReader;
     });
 
-    it('versionフィールドがない場合のエラー', async () => {
+    it("versionフィールドがない場合のエラー", async () => {
       const invalidPlan = {
         plan: {
-          name: 'Test',
+          name: "Test",
           timestamp: 123,
           recipeSID: 1,
           targetQuantity: 1,
@@ -385,37 +351,37 @@ describe('planExport', () => {
       };
 
       const fileContent = JSON.stringify(invalidPlan);
-      const mockFile = new File([fileContent], 'test.json', { type: 'application/json' });
+      const mockFile = new File([fileContent], "test.json", { type: "application/json" });
 
-      await expect(importPlan(mockFile)).rejects.toThrow('Invalid plan file format');
+      await expect(importPlan(mockFile)).rejects.toThrow("Invalid plan file format");
     });
 
-    it('planフィールドがない場合のエラー', async () => {
+    it("planフィールドがない場合のエラー", async () => {
       const invalidData = {
-        version: '1.0.0',
+        version: "1.0.0",
       };
 
       const fileContent = JSON.stringify(invalidData);
-      const mockFile = new File([fileContent], 'test.json', { type: 'application/json' });
+      const mockFile = new File([fileContent], "test.json", { type: "application/json" });
 
-      await expect(importPlan(mockFile)).rejects.toThrow('Invalid plan file format');
+      await expect(importPlan(mockFile)).rejects.toThrow("Invalid plan file format");
     });
   });
 
-  describe('restorePlan', () => {
-    it('レシピと数量の復元', () => {
+  describe("restorePlan", () => {
+    it("レシピと数量の復元", () => {
       const setRecipe = vi.fn();
       const setTargetQuantity = vi.fn();
       const updateSettings = vi.fn();
       const setNodeOverrides = vi.fn();
 
       const plan: SavedPlan = {
-        name: 'Test Plan',
+        name: "Test Plan",
         timestamp: 1234567890,
         recipeSID: 100,
         targetQuantity: 50,
         settings: mockSettings,
-        alternativeRecipes: { '1001': 2001 },
+        alternativeRecipes: { "1001": 2001 },
         nodeOverrides: {},
       };
 
@@ -425,20 +391,20 @@ describe('planExport', () => {
       expect(setTargetQuantity).toHaveBeenCalledWith(50);
     });
 
-    it('設定の復元(Map変換含む)', () => {
+    it("設定の復元(Map変換含む)", () => {
       const setRecipe = vi.fn();
       const setTargetQuantity = vi.fn();
       const updateSettings = vi.fn();
       const setNodeOverrides = vi.fn();
 
       const plan: SavedPlan = {
-        name: 'Test Plan',
+        name: "Test Plan",
         timestamp: 1234567890,
         recipeSID: 100,
         targetQuantity: 50,
         settings: {
           ...mockSettings,
-          alternativeRecipes: { '1001': 2001, '1002': 2002 } as unknown as Map<number, number>,
+          alternativeRecipes: { "1001": 2001, "1002": 2002 } as unknown as Map<number, number>,
         },
         alternativeRecipes: {},
         nodeOverrides: {},
@@ -448,7 +414,7 @@ describe('planExport', () => {
 
       expect(updateSettings).toHaveBeenCalled();
       const calledSettings = updateSettings.mock.calls[0][0];
-      
+
       // alternativeRecipesがMapに変換されている
       expect(calledSettings.alternativeRecipes).toBeInstanceOf(Map);
       expect(calledSettings.alternativeRecipes.get(1001)).toBe(2001);
@@ -456,30 +422,30 @@ describe('planExport', () => {
       expect(calledSettings.alternativeRecipes.size).toBe(2);
     });
 
-    it('ノードオーバーライドの復元', () => {
+    it("ノードオーバーライドの復元", () => {
       const setRecipe = vi.fn();
       const setTargetQuantity = vi.fn();
       const updateSettings = vi.fn();
       const setNodeOverrides = vi.fn();
 
       const plan: SavedPlan = {
-        name: 'Test Plan',
+        name: "Test Plan",
         timestamp: 1234567890,
         recipeSID: 100,
         targetQuantity: 50,
         settings: mockSettings,
         alternativeRecipes: {},
         nodeOverrides: {
-          'node-1': {
+          "node-1": {
             proliferator: {
-              type: 'mk2',
-              mode: 'speed',
+              type: "mk2",
+              mode: "speed",
               productionBonus: 0,
-              speedBonus: 0.50,
-              powerIncrease: 0.70,
+              speedBonus: 0.5,
+              powerIncrease: 0.7,
             },
           },
-          'node-2': { machineRank: 'mk3' },
+          "node-2": { machineRank: "mk3" },
         },
       };
 
@@ -487,25 +453,25 @@ describe('planExport', () => {
 
       expect(setNodeOverrides).toHaveBeenCalled();
       const calledOverrides = setNodeOverrides.mock.calls[0][0];
-      
+
       expect(calledOverrides).toBeInstanceOf(Map);
       expect(calledOverrides.size).toBe(2);
-      expect(calledOverrides.get('node-1')).toEqual({
+      expect(calledOverrides.get("node-1")).toEqual({
         proliferator: {
-          type: 'mk2',
-          mode: 'speed',
+          type: "mk2",
+          mode: "speed",
           productionBonus: 0,
-          speedBonus: 0.50,
-          powerIncrease: 0.70,
+          speedBonus: 0.5,
+          powerIncrease: 0.7,
         },
       });
     });
   });
 
-  describe('localStorage管理', () => {
-    it('savePlanToLocalStorage: 保存とタイムスタンプ', () => {
+  describe("localStorage管理", () => {
+    it("savePlanToLocalStorage: 保存とタイムスタンプ", () => {
       const plan: SavedPlan = {
-        name: 'Local Plan',
+        name: "Local Plan",
         timestamp: 1234567890,
         recipeSID: 100,
         targetQuantity: 50,
@@ -519,20 +485,17 @@ describe('planExport', () => {
       savePlanToLocalStorage(plan);
 
       expect(global.localStorage.setItem).toHaveBeenCalledWith(
-        'plan_1234567890',
+        "plan_1234567890",
         expect.stringContaining('"version":"1.0.0"')
       );
 
-      expect(global.localStorage.setItem).toHaveBeenCalledWith(
-        'recent_plans',
-        expect.any(String)
-      );
+      expect(global.localStorage.setItem).toHaveBeenCalledWith("recent_plans", expect.any(String));
     });
 
-    it('getRecentPlans: 最新10件のプラン取得', () => {
+    it("getRecentPlans: 最新10件のプラン取得", () => {
       const recentPlans = [
-        { key: 'plan_1', name: 'Plan 1', timestamp: 1000 },
-        { key: 'plan_2', name: 'Plan 2', timestamp: 2000 },
+        { key: "plan_1", name: "Plan 1", timestamp: 1000 },
+        { key: "plan_2", name: "Plan 2", timestamp: 2000 },
       ];
 
       (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(
@@ -542,10 +505,10 @@ describe('planExport', () => {
       const result = getRecentPlans();
 
       expect(result).toEqual(recentPlans);
-      expect(global.localStorage.getItem).toHaveBeenCalledWith('recent_plans');
+      expect(global.localStorage.getItem).toHaveBeenCalledWith("recent_plans");
     });
 
-    it('getRecentPlans: データがない場合は空配列', () => {
+    it("getRecentPlans: データがない場合は空配列", () => {
       (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(null);
 
       const result = getRecentPlans();
@@ -553,9 +516,9 @@ describe('planExport', () => {
       expect(result).toEqual([]);
     });
 
-    it('localStorage管理 > loadPlanFromLocalStorage: プラン読み込み', () => {
+    it("localStorage管理 > loadPlanFromLocalStorage: プラン読み込み", () => {
       const plan: SavedPlan = {
-        name: 'Stored Plan',
+        name: "Stored Plan",
         timestamp: 1234567890,
         recipeSID: 100,
         targetQuantity: 50,
@@ -568,7 +531,7 @@ describe('planExport', () => {
       };
 
       const serialized = {
-        version: '1.0.0',
+        version: "1.0.0",
         plan,
       };
 
@@ -576,56 +539,54 @@ describe('planExport', () => {
         JSON.stringify(serialized)
       );
 
-      const result = loadPlanFromLocalStorage('plan_1234567890');
+      const result = loadPlanFromLocalStorage("plan_1234567890");
 
       expect(result).toEqual(plan);
     });
 
-    it('loadPlanFromLocalStorage: データがない場合はnull', () => {
+    it("loadPlanFromLocalStorage: データがない場合はnull", () => {
       (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(null);
 
-      const result = loadPlanFromLocalStorage('nonexistent');
+      const result = loadPlanFromLocalStorage("nonexistent");
 
       expect(result).toBeNull();
     });
 
-    it('loadPlanFromLocalStorage: 無効なJSON の場合はnull', () => {
-      (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(
-        'invalid json {{{'
-      );
+    it("loadPlanFromLocalStorage: 無効なJSON の場合はnull", () => {
+      (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue("invalid json {{{");
 
-      const result = loadPlanFromLocalStorage('invalid_plan');
+      const result = loadPlanFromLocalStorage("invalid_plan");
 
       expect(result).toBeNull();
     });
 
-    it('deletePlanFromLocalStorage: プラン削除と一覧更新', () => {
+    it("deletePlanFromLocalStorage: プラン削除と一覧更新", () => {
       const recentPlans = [
-        { key: 'plan_1', name: 'Plan 1', timestamp: 1000 },
-        { key: 'plan_2', name: 'Plan 2', timestamp: 2000 },
-        { key: 'plan_3', name: 'Plan 3', timestamp: 3000 },
+        { key: "plan_1", name: "Plan 1", timestamp: 1000 },
+        { key: "plan_2", name: "Plan 2", timestamp: 2000 },
+        { key: "plan_3", name: "Plan 3", timestamp: 3000 },
       ];
 
       (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(
         JSON.stringify(recentPlans)
       );
 
-      deletePlanFromLocalStorage('plan_2');
+      deletePlanFromLocalStorage("plan_2");
 
-      expect(global.localStorage.removeItem).toHaveBeenCalledWith('plan_2');
+      expect(global.localStorage.removeItem).toHaveBeenCalledWith("plan_2");
 
       // recent_plansからplan_2が削除されている
       const updateCall = (global.localStorage.setItem as ReturnType<typeof vi.fn>).mock.calls.find(
-        call => call[0] === 'recent_plans'
+        call => call[0] === "recent_plans"
       );
-      
+
       expect(updateCall).toBeDefined();
       const updatedPlans = JSON.parse(updateCall![1]);
       expect(updatedPlans).toHaveLength(2);
-      expect(updatedPlans.find((p: { key: string }) => p.key === 'plan_2')).toBeUndefined();
+      expect(updatedPlans.find((p: { key: string }) => p.key === "plan_2")).toBeUndefined();
     });
 
-    it('古いプランの自動削除（11件目以降）', () => {
+    it("古いプランの自動削除（11件目以降）", () => {
       const existingPlans = Array.from({ length: 5 }, (_, i) => ({
         key: `old_plan_${i}`,
         name: `Old Plan ${i}`,
@@ -637,7 +598,7 @@ describe('planExport', () => {
       );
 
       const newPlan: SavedPlan = {
-        name: 'New Plan',
+        name: "New Plan",
         timestamp: 9999,
         recipeSID: 100,
         targetQuantity: 50,
@@ -649,21 +610,21 @@ describe('planExport', () => {
       savePlanToLocalStorage(newPlan);
 
       // recent_plansの更新確認
-      const recentPlansCall = (global.localStorage.setItem as ReturnType<typeof vi.fn>).mock.calls.find(
-        call => call[0] === 'recent_plans'
-      );
+      const recentPlansCall = (
+        global.localStorage.setItem as ReturnType<typeof vi.fn>
+      ).mock.calls.find(call => call[0] === "recent_plans");
 
       expect(recentPlansCall).toBeDefined();
       const savedPlans = JSON.parse(recentPlansCall![1]);
-      
+
       // 最大10件まで
       expect(savedPlans.length).toBeLessThanOrEqual(10);
-      
+
       // 新しいプランが先頭
-      expect(savedPlans[0].key).toBe('plan_9999');
+      expect(savedPlans[0].key).toBe("plan_9999");
     });
 
-    it('10件を超える場合に古いプランが削除される', () => {
+    it("10件を超える場合に古いプランが削除される", () => {
       // 既に10件のプランが存在
       const existingPlans = Array.from({ length: 10 }, (_, i) => ({
         key: `plan_${i}`,
@@ -676,7 +637,7 @@ describe('planExport', () => {
       );
 
       const newPlan: SavedPlan = {
-        name: 'Plan 11',
+        name: "Plan 11",
         timestamp: 2000,
         recipeSID: 100,
         targetQuantity: 50,
@@ -689,12 +650,12 @@ describe('planExport', () => {
 
       // 古いプランの削除確認
       expect(global.localStorage.removeItem).toHaveBeenCalled();
-      
+
       // recent_plansが10件に制限されている
-      const recentPlansCall = (global.localStorage.setItem as ReturnType<typeof vi.fn>).mock.calls.find(
-        call => call[0] === 'recent_plans'
-      );
-      
+      const recentPlansCall = (
+        global.localStorage.setItem as ReturnType<typeof vi.fn>
+      ).mock.calls.find(call => call[0] === "recent_plans");
+
       const savedPlans = JSON.parse(recentPlansCall![1]);
       expect(savedPlans).toHaveLength(10);
     });

@@ -48,13 +48,13 @@ export function getMaxMeaningfulResearchLevel(): number {
   // 0.85^(level-7) < 0.00005 / 31.62
   // (level-7) * log(0.85) < log(0.00005 / 31.62)
   // level < 7 + log(0.00005 / 31.62) / log(0.85)
-  
+
   const threshold = 0.00005; // 0.00%と表示される閾値
   const baseLoss = 31.62;
   const decayRate = 0.85;
-  
+
   const maxLevel = Math.ceil(7 + Math.log(threshold / baseLoss) / Math.log(decayRate));
-  
+
   // 最大10000を超えないようにする
   return Math.min(maxLevel, 10000);
 }
@@ -120,4 +120,3 @@ export function calculateRequiredPower(
   const requiredPowerMW = theoreticalPower / receptionEfficiency;
   return requiredPowerMW * 1000; // MW -> kW
 }
-

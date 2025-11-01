@@ -6,17 +6,17 @@
  * 発電設備の種類
  */
 export type PowerGeneratorType =
-  | 'windTurbine' // 風力タービン (id: 2203)
-  | 'thermalPlant' // 火力発電所 (id: 2204)
-  | 'solarPanel' // ソーラーパネル (id: 2205)
-  | 'geothermal' // 地熱発電所 (id: 2213)
-  | 'miniFusion' // ミニ核融合発電所 (id: 2211)
-  | 'artificialStar'; // 人工恒星 (id: 2210)
+  | "windTurbine" // 風力タービン (id: 2203)
+  | "thermalPlant" // 火力発電所 (id: 2204)
+  | "solarPanel" // ソーラーパネル (id: 2205)
+  | "geothermal" // 地熱発電所 (id: 2213)
+  | "miniFusion" // ミニ核融合発電所 (id: 2211)
+  | "artificialStar"; // 人工恒星 (id: 2210)
 
 /**
  * 燃料の種類
  */
-export type FuelType = 'chemical' | 'nuclear' | 'mass';
+export type FuelType = "chemical" | "nuclear" | "mass";
 
 /**
  * 燃料アイテム情報
@@ -95,4 +95,3 @@ export interface GeneratorAllocation {
   /** 増産剤適用後の燃料エネルギー (MJ/個) - 増産剤追加生産ボーナス適用後 */
   actualFuelEnergy: number;
 }
-

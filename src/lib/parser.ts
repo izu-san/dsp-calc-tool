@@ -1,41 +1,51 @@
-import { XMLParser } from 'fast-xml-parser';
-import type { Item, Recipe, Machine, GameData } from '../types';
-import { getDataPath } from '../utils/paths';
-import { createLogger } from '../utils/logger';
+import { XMLParser } from "fast-xml-parser";
+import type { Item, Recipe, Machine, GameData } from "../types";
+import { getDataPath } from "../utils/paths";
+import { createLogger } from "../utils/logger";
 import {
   CRITICAL_PHOTON_ITEM,
   GRAVITON_LENS_ITEM,
   RAY_RECEIVER_MACHINE,
   CRITICAL_PHOTON_RECIPE,
-} from '../constants/photonGeneration';
+} from "../constants/photonGeneration";
 
-const logger = createLogger('Parser');
+const logger = createLogger("Parser");
 const parser = new XMLParser({
   ignoreAttributes: false,
-  attributeNamePrefix: '@_',
+  attributeNamePrefix: "@_",
 });
 
-export async function loadGameData(customRecipesXml?: string, locale: string = 'ja'): Promise<GameData> {
+export async function loadGameData(
+  customRecipesXml?: string,
+  locale: string = "ja"
+): Promise<GameData> {
   // Build file paths based on locale
   const itemsPath = getDataPath(`data/Items/Items_${locale}.xml`);
   const recipesPath = getDataPath(`data/Recipes/Recipes_${locale}.xml`);
   const machinesPath = getDataPath(`data/Machines/Machines_${locale}.xml`);
-  
+
   const [itemsXml, recipesXml, machinesXml] = await Promise.all([
-    fetch(itemsPath).then(r => r.text()).catch(() => {
-      // Fallback to default if locale-specific file doesn't exist
-      logger.warn(`${itemsPath} not found, falling back to default`);
-      return fetch(getDataPath('data/Items/Items.xml')).then(r => r.text());
-    }),
-    customRecipesXml ? Promise.resolve(customRecipesXml) : 
-      fetch(recipesPath).then(r => r.text()).catch(() => {
-        logger.warn(`${recipesPath} not found, falling back to default`);
-        return fetch(getDataPath('data/Recipes/Recipes.xml')).then(r => r.text());
+    fetch(itemsPath)
+      .then(r => r.text())
+      .catch(() => {
+        // Fallback to default if locale-specific file doesn't exist
+        logger.warn(`${itemsPath} not found, falling back to default`);
+        return fetch(getDataPath("data/Items/Items.xml")).then(r => r.text());
       }),
-    fetch(machinesPath).then(r => r.text()).catch(() => {
-      logger.warn(`${machinesPath} not found, falling back to default`);
-      return fetch(getDataPath('data/Machines/Machines.xml')).then(r => r.text());
-    }),
+    customRecipesXml
+      ? Promise.resolve(customRecipesXml)
+      : fetch(recipesPath)
+          .then(r => r.text())
+          .catch(() => {
+            logger.warn(`${recipesPath} not found, falling back to default`);
+            return fetch(getDataPath("data/Recipes/Recipes.xml")).then(r => r.text());
+          }),
+    fetch(machinesPath)
+      .then(r => r.text())
+      .catch(() => {
+        logger.warn(`${machinesPath} not found, falling back to default`);
+        return fetch(getDataPath("data/Machines/Machines.xml")).then(r => r.text());
+      }),
   ]);
 
   const itemsData = parser.parse(itemsXml);
@@ -47,18 +57,28 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
   const itemArray = Array.isArray(itemsData.ArrayOfItem.Item)
     ? itemsData.ArrayOfItem.Item
     : [itemsData.ArrayOfItem.Item];
-  
-  itemArray.forEach((item: { id: number; name: string; count?: number; Type: string; miningFrom?: string; produceFrom?: string; isRaw?: boolean | string }) => {
-    items.set(Number(item.id), {
-      id: Number(item.id),
-      name: item.name,
-      count: item.count ? Number(item.count) : 0,
-      Type: item.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
-      miningFrom: item.miningFrom,
-      produceFrom: item.produceFrom,
-      isRaw: item.isRaw === 'true' || item.isRaw === true,
-    });
-  });
+
+  itemArray.forEach(
+    (item: {
+      id: number;
+      name: string;
+      count?: number;
+      Type: string;
+      miningFrom?: string;
+      produceFrom?: string;
+      isRaw?: boolean | string;
+    }) => {
+      items.set(Number(item.id), {
+        id: Number(item.id),
+        name: item.name,
+        count: item.count ? Number(item.count) : 0,
+        Type: item.Type as "Smelt" | "Assemble" | "Chemical" | "Research" | "Refine" | "Particle",
+        miningFrom: item.miningFrom,
+        produceFrom: item.produceFrom,
+        isRaw: item.isRaw === "true" || item.isRaw === true,
+      });
+    }
+  );
 
   // Parse recipes
   const recipes = new Map<number, Recipe>();
@@ -67,28 +87,40 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     ? recipesData.ArrayOfRecipe.Recipe
     : [recipesData.ArrayOfRecipe.Recipe];
 
-  recipeArray.forEach((recipe: { SID: number; name: string; Type: string; Explicit?: boolean | string; TimeSpend: number; Items?: { Item: unknown }; Results?: { Item: unknown }; GridIndex: string; productive?: boolean | string }) => {
-    const recipeObj: Recipe = {
-      SID: Number(recipe.SID),
-      name: recipe.name,
-      Type: recipe.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
-      Explicit: recipe.Explicit === 'true' || recipe.Explicit === true,
-      TimeSpend: Number(recipe.TimeSpend),
-      Items: parseRecipeItems(recipe.Items?.Item, items),
-      Results: parseRecipeItems(recipe.Results?.Item, items),
-      GridIndex: String(recipe.GridIndex),
-      productive: recipe.productive === 'true' || recipe.productive === true,
-    };
+  recipeArray.forEach(
+    (recipe: {
+      SID: number;
+      name: string;
+      Type: string;
+      Explicit?: boolean | string;
+      TimeSpend: number;
+      Items?: { Item: unknown };
+      Results?: { Item: unknown };
+      GridIndex: string;
+      productive?: boolean | string;
+    }) => {
+      const recipeObj: Recipe = {
+        SID: Number(recipe.SID),
+        name: recipe.name,
+        Type: recipe.Type as "Smelt" | "Assemble" | "Chemical" | "Research" | "Refine" | "Particle",
+        Explicit: recipe.Explicit === "true" || recipe.Explicit === true,
+        TimeSpend: Number(recipe.TimeSpend),
+        Items: parseRecipeItems(recipe.Items?.Item, items),
+        Results: parseRecipeItems(recipe.Results?.Item, items),
+        GridIndex: String(recipe.GridIndex),
+        productive: recipe.productive === "true" || recipe.productive === true,
+      };
 
-    recipes.set(recipeObj.SID, recipeObj);
+      recipes.set(recipeObj.SID, recipeObj);
 
-    // Index by output item ID
-    recipeObj.Results.forEach(result => {
-      const existing = recipesByItemId.get(result.id) || [];
-      existing.push(recipeObj);
-      recipesByItemId.set(result.id, existing);
-    });
-  });
+      // Index by output item ID
+      recipeObj.Results.forEach(result => {
+        const existing = recipesByItemId.get(result.id) || [];
+        existing.push(recipeObj);
+        recipesByItemId.set(result.id, existing);
+      });
+    }
+  );
 
   // Parse machines
   const machines = new Map<number, Machine>();
@@ -96,31 +128,63 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     ? machinesData.ArrayOfMachine.Machine
     : [machinesData.ArrayOfMachine.Machine];
 
-  machineArray.forEach((machine: { id: number; name: string; count?: number; Type: string; miningFrom?: string; produceFrom?: string; isRaw?: boolean | string; assemblerSpeed: number; workEnergyPerTick: number; idleEnergyPerTick: number; exchangeEnergyPerTick: number; isPowerConsumer?: boolean | string; isPowerExchanger?: boolean | string }) => {
-    machines.set(Number(machine.id), {
-      id: Number(machine.id),
-      name: machine.name,
-      count: machine.count ? Number(machine.count) : 0,
-      Type: machine.Type as 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle',
-      miningFrom: machine.miningFrom,
-      produceFrom: machine.produceFrom,
-      isRaw: machine.isRaw === 'true' || machine.isRaw === true,
-      assemblerSpeed: Number(machine.assemblerSpeed),
-      workEnergyPerTick: Number(machine.workEnergyPerTick),
-      idleEnergyPerTick: Number(machine.idleEnergyPerTick),
-      exchangeEnergyPerTick: Number(machine.exchangeEnergyPerTick),
-      isPowerConsumer: machine.isPowerConsumer === 'true' || machine.isPowerConsumer === true,
-      isPowerExchanger: machine.isPowerExchanger === 'true' || machine.isPowerExchanger === true,
-    });
-  });
+  machineArray.forEach(
+    (machine: {
+      id: number;
+      name: string;
+      count?: number;
+      Type: string;
+      miningFrom?: string;
+      produceFrom?: string;
+      isRaw?: boolean | string;
+      assemblerSpeed: number;
+      workEnergyPerTick: number;
+      idleEnergyPerTick: number;
+      exchangeEnergyPerTick: number;
+      isPowerConsumer?: boolean | string;
+      isPowerExchanger?: boolean | string;
+    }) => {
+      // Special handling for Matrix Lab and Self-evolution Lab
+      let assemblerSpeed = Number(machine.assemblerSpeed);
+      if (machine.id === 2901) {
+        // Matrix Lab: 1.0x speed (10000)
+        assemblerSpeed = 10000;
+      } else if (machine.id === 2902) {
+        // Self-evolution Lab: 3.0x speed (30000)
+        assemblerSpeed = 30000;
+      }
+
+      machines.set(Number(machine.id), {
+        id: Number(machine.id),
+        name: machine.name,
+        count: machine.count ? Number(machine.count) : 0,
+        Type: machine.Type as
+          | "Smelt"
+          | "Assemble"
+          | "Chemical"
+          | "Research"
+          | "Refine"
+          | "Particle",
+        miningFrom: machine.miningFrom,
+        produceFrom: machine.produceFrom,
+        isRaw: machine.isRaw === "true" || machine.isRaw === true,
+        assemblerSpeed: assemblerSpeed,
+        workEnergyPerTick: Number(machine.workEnergyPerTick),
+        idleEnergyPerTick: Number(machine.idleEnergyPerTick),
+        exchangeEnergyPerTick: Number(machine.exchangeEnergyPerTick),
+        isPowerConsumer: machine.isPowerConsumer === "true" || machine.isPowerConsumer === true,
+        isPowerExchanger: machine.isPowerExchanger === "true" || machine.isPowerExchanger === true,
+      });
+    }
+  );
 
   // 臨界光子関連のデータを追加
   // XMLファイルに存在しないため、定数から登録
   // ロケールに応じた名前を設定
-  const criticalPhotonName = locale === 'ja' ? '臨界光子' : 'Critical Photon';
-  const gravitonLensName = locale === 'ja' ? '重力子レンズ' : 'Graviton Lens';
-  const rayReceiverName = locale === 'ja' ? 'γ線レシーバー' : 'Ray Receiver';
-  
+  const criticalPhotonName = locale === "ja" ? "臨界光子" : "Critical Photon";
+  const gravitonLensName = locale === "ja" ? "重力子レンズ" : "Graviton Lens";
+  const rayReceiverName = locale === "ja" ? "γ線レシーバー" : "Ray Receiver";
+
   items.set(CRITICAL_PHOTON_ITEM.id, {
     ...CRITICAL_PHOTON_ITEM,
     name: criticalPhotonName,
@@ -133,22 +197,23 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
     ...RAY_RECEIVER_MACHINE,
     name: rayReceiverName,
   });
-  
+
   const photonRecipe: Recipe = {
     ...CRITICAL_PHOTON_RECIPE,
-    name: locale === 'ja' ? `臨界光子 (${rayReceiverName})` : `Critical Photon (${rayReceiverName})`,
+    name:
+      locale === "ja" ? `臨界光子 (${rayReceiverName})` : `Critical Photon (${rayReceiverName})`,
     Results: [
       {
         id: 1208,
         name: criticalPhotonName,
         count: 1,
-        Type: 'Material',
+        Type: "Material",
         isRaw: false,
       },
     ],
   };
   recipes.set(CRITICAL_PHOTON_RECIPE.SID, photonRecipe);
-  
+
   // 臨界光子レシピを recipesByItemId に登録
   const criticalPhotonRecipes = recipesByItemId.get(CRITICAL_PHOTON_ITEM.id) || [];
   criticalPhotonRecipes.push(photonRecipe);
@@ -168,24 +233,41 @@ export async function loadGameData(customRecipesXml?: string, locale: string = '
   };
 }
 
-function parseRecipeItems(itemData: unknown, itemsMap: Map<number, Item>): Array<{ id: number; name: string; count: number; Type: string; isRaw: boolean }> {
+function parseRecipeItems(
+  itemData: unknown,
+  itemsMap: Map<number, Item>
+): Array<{ id: number; name: string; count: number; Type: string; isRaw: boolean }> {
   if (!itemData) return [];
-  return Array.isArray(itemData) 
-    ? itemData.map(item => parseItem(item, itemsMap)) 
-    : [parseItem(itemData as { id: number; name: string; count: number; Type: string; isRaw?: boolean | string }, itemsMap)];
+  return Array.isArray(itemData)
+    ? itemData.map(item => parseItem(item, itemsMap))
+    : [
+        parseItem(
+          itemData as {
+            id: number;
+            name: string;
+            count: number;
+            Type: string;
+            isRaw?: boolean | string;
+          },
+          itemsMap
+        ),
+      ];
 }
 
-function parseItem(item: { id: number; name: string; count: number; Type: string; isRaw?: boolean | string }, itemsMap: Map<number, Item>) {
+function parseItem(
+  item: { id: number; name: string; count: number; Type: string; isRaw?: boolean | string },
+  itemsMap: Map<number, Item>
+) {
   const itemId = Number(item.id);
   // アイテムマスタから正しい名前を取得（レシピ内の名前は古い可能性がある）
   const masterItem = itemsMap.get(itemId);
   const correctName = masterItem?.name || item.name;
-  
+
   return {
     id: itemId,
     name: correctName,
     count: Number(item.count),
     Type: item.Type,
-    isRaw: item.isRaw === 'true' || item.isRaw === true,
+    isRaw: item.isRaw === "true" || item.isRaw === true,
   };
 }

@@ -1,4 +1,9 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+
+// Resolve __dirname in ESM environment so testDir is an absolute path.
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Read environment variables from file.
@@ -10,7 +15,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: join(__dirname, "tests/e2e"),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -20,30 +25,46 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:5173',
+    baseURL: "http://localhost:5173",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
+    /* Viewport size for all tests */
+    viewport: { width: 1920, height: 1080 },
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        // Ensure tests run at 1920x1080 so UI (閉じるボタン等) is visible in headed runs
+        viewport: { width: 1920, height: 1080 },
+        launchOptions: { args: ["--window-size=1920,1080"] },
+      },
     },
 
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: {
+        ...devices["Desktop Firefox"],
+        viewport: { width: 1920, height: 1080 },
+        launchOptions: { args: ["--width=1920", "--height=1080"] },
+      },
     },
 
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "edge",
+      use: {
+        ...devices["Desktop Edge"],
+        channel: "msedge",
+        viewport: { width: 1920, height: 1080 },
+        launchOptions: { args: ["--window-size=1920,1080"] },
+      },
     },
 
     /* Test against mobile viewports. */
@@ -58,10 +79,6 @@ export default defineConfig({
 
     /* Test against branded browsers. */
     // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
@@ -69,8 +86,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: "npm run dev",
+    url: "http://localhost:5173",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

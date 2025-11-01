@@ -1,33 +1,56 @@
-import { useEffect, lazy, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useGameDataStore } from './stores/gameDataStore';
-import { useRecipeSelectionStore } from './stores/recipeSelectionStore';
-import { useSettingsStore } from './stores/settingsStore';
-import { useNodeOverrideStore } from './stores/nodeOverrideStore';
-import i18n from './i18n';
-import { BackgroundEffects } from './components/Layout/BackgroundEffects';
-import { Header } from './components/Layout/Header';
-import { SettingsPanelSection } from './components/Layout/SettingsPanelSection';
-import { RecipeSelectorSection } from './components/Layout/RecipeSelectorSection';
-import { ProductionResultsPanel } from './components/Layout/ProductionResultsPanel';
-import { useTreeCollapse } from './hooks/useTreeCollapse';
-import { useProductionCalculation } from './hooks/useProductionCalculation';
-import { getPlanFromURL } from './utils/urlShare';
-import { restorePlan } from './utils/planExport';
+import { useEffect, lazy, Suspense } from "react";
+import { useTranslation } from "react-i18next";
+import { useGameDataStore } from "./stores/gameDataStore";
+import { useRecipeSelectionStore } from "./stores/recipeSelectionStore";
+import { useSettingsStore } from "./stores/settingsStore";
+import { useNodeOverrideStore } from "./stores/nodeOverrideStore";
+import { useMiningSettingsStore } from "./stores/miningSettingsStore";
+import i18n from "./i18n";
+import { BackgroundEffects } from "./components/Layout/BackgroundEffects";
+import { Header } from "./components/Layout/Header";
+import { SettingsPanelSection } from "./components/Layout/SettingsPanelSection";
+import { RecipeSelectorSection } from "./components/Layout/RecipeSelectorSection";
+import { ProductionResultsPanel } from "./components/Layout/ProductionResultsPanel";
+import { useTreeCollapse } from "./hooks/useTreeCollapse";
+import { useProductionCalculation } from "./hooks/useProductionCalculation";
+import { getPlanFromURL } from "./utils/urlShare";
+import { restorePlan } from "./utils/planExport";
 
-const ModSettings = lazy(() => import('./components/ModSettings').then(m => ({ default: m.ModSettings })));
-const WelcomeModal = lazy(() => import('./components/WelcomeModal').then(m => ({ default: m.WelcomeModal })));
+const ModSettings = lazy(() =>
+  import("./components/ModSettings").then(m => ({ default: m.ModSettings }))
+);
+const WelcomeModal = lazy(() =>
+  import("./components/WelcomeModal").then(m => ({ default: m.WelcomeModal }))
+);
 
 function App() {
   const { t } = useTranslation();
   const { data, isLoading, error, loadData, locale } = useGameDataStore();
-  const { selectedRecipe, targetQuantity, calculationResult, setSelectedRecipe, setTargetQuantity, setCalculationResult } = useRecipeSelectionStore();
+  const {
+    selectedRecipe,
+    targetQuantity,
+    calculationResult,
+    setSelectedRecipe,
+    setTargetQuantity,
+    setCalculationResult,
+  } = useRecipeSelectionStore();
   const { settings, updateSettings } = useSettingsStore();
   const { nodeOverrides, version: nodeOverridesVersion, setAllOverrides } = useNodeOverrideStore();
-  
-  const { collapsedNodes, isTreeExpanded, handleToggleCollapse, handleToggleAll } = useTreeCollapse(calculationResult);
-  useProductionCalculation(selectedRecipe, targetQuantity, data, settings, nodeOverrides, nodeOverridesVersion, setCalculationResult);
-  
+  const { settings: miningSettings } = useMiningSettingsStore();
+
+  const { collapsedNodes, isTreeExpanded, handleToggleCollapse, handleToggleAll } =
+    useTreeCollapse(calculationResult);
+  useProductionCalculation(
+    selectedRecipe,
+    targetQuantity,
+    data,
+    settings,
+    nodeOverrides,
+    nodeOverridesVersion,
+    miningSettings,
+    setCalculationResult
+  );
+
   // 言語設定の同期とHTML lang属性の更新
   useEffect(() => {
     if (locale && i18n.language !== locale) {
@@ -35,7 +58,7 @@ function App() {
     }
     document.documentElement.lang = locale;
   }, [locale]);
-  
+
   // 言語変更時に選択されたレシピを新しいデータから再取得
   useEffect(() => {
     if (data && selectedRecipe) {
@@ -45,11 +68,11 @@ function App() {
       }
     }
   }, [locale, data, selectedRecipe, setSelectedRecipe]);
-  
+
   // ダークモードを永続的に有効化
   useEffect(() => {
-    document.documentElement.classList.add('dark');
-    document.documentElement.style.colorScheme = 'dark';
+    document.documentElement.classList.add("dark");
+    document.documentElement.style.colorScheme = "dark";
   }, []);
 
   // URLからプランを読み込む
@@ -67,14 +90,14 @@ function App() {
           updateSettings,
           setAllOverrides
         );
-        
+
         const url = new URL(window.location.href);
-        url.searchParams.delete('plan');
-        window.history.replaceState({}, '', url.toString());
+        url.searchParams.delete("plan");
+        window.history.replaceState({}, "", url.toString());
       }
     }
   }, [data, selectedRecipe, setSelectedRecipe, setTargetQuantity, updateSettings, setAllOverrides]);
-  
+
   // ゲームデータの読み込み
   useEffect(() => {
     loadData();
@@ -85,7 +108,7 @@ function App() {
       <div className="min-h-screen flex items-center justify-center bg-dark-500">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neon-blue shadow-neon-blue mx-auto"></div>
-          <p className="mt-4 text-space-200">{t('loadingGameData')}</p>
+          <p className="mt-4 text-space-200">{t("loadingGameData")}</p>
         </div>
       </div>
     );
@@ -95,7 +118,7 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark-500">
         <div className="text-center">
-          <div className="text-neon-orange text-xl mb-4">⚠ {t('error')}</div>
+          <div className="text-neon-orange text-xl mb-4">⚠ {t("error")}</div>
           <p className="text-space-200">{error}</p>
         </div>
       </div>

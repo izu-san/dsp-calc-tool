@@ -15,7 +15,7 @@ jobs:
   lint:
     name: Lint Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -36,7 +36,7 @@ jobs:
   typecheck:
     name: TypeScript Type Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -57,7 +57,7 @@ jobs:
   unit-test:
     name: Unit Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -91,7 +91,7 @@ jobs:
   build:
     name: Build Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -121,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     if: false  # Playwrightの設定が完了したらtrueに変更してください
     needs: build
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -139,7 +139,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E tests
-        run: npx playwright test e2e
+        run: npx playwright test --project=chromium --project=firefox --project=edge
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v5

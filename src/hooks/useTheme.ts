@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 /**
  * Hook for managing dark mode theme
@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 export function useTheme() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     // Initialize from localStorage or default to false (light mode)
-    const stored = localStorage.getItem('darkMode');
+    const stored = localStorage.getItem("darkMode");
     if (stored !== null) {
       return JSON.parse(stored);
     }
@@ -16,18 +16,18 @@ export function useTheme() {
 
   useEffect(() => {
     const root = document.documentElement;
-    
+
     // Apply dark mode class to html element
     if (isDarkMode) {
-      root.classList.add('dark');
-      root.style.colorScheme = 'dark';
+      root.classList.add("dark");
+      root.style.colorScheme = "dark";
     } else {
-      root.classList.remove('dark');
-      root.style.colorScheme = 'light';
+      root.classList.remove("dark");
+      root.style.colorScheme = "light";
     }
 
     // Save to localStorage
-    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+    localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
   const toggleTheme = () => {

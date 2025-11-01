@@ -1,33 +1,38 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { StatisticsView } from '../index';
-import type { CalculationResult } from '../../../types/calculation';
-import type { ProductionStatistics } from '../../../lib/statistics';
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { ProductionStatistics } from "../../../lib/statistics";
+import type { CalculationResult } from "../../../types/calculation";
+import { StatisticsView } from "../index";
 
 // Mock dependencies
-vi.mock('../../../lib/statistics');
-vi.mock('../../../utils/format', () => ({
+vi.mock("../../../lib/statistics");
+vi.mock("../../../lib/unifiedPowerCalculation", () => ({
+  calculateUnifiedPower: vi.fn(),
+}));
+vi.mock("../../../utils/format", () => ({
   formatRate: (val: number) => `${val.toFixed(1)}/s`,
-  formatPower: (val: number) => val > 1000 ? `${(val / 1000).toFixed(2)} MW` : `${val.toFixed(0)} kW`,
+  formatPower: (val: number) =>
+    val > 1000 ? `${(val / 1000).toFixed(2)} MW` : `${val.toFixed(0)} kW`,
   formatBuildingCount: (val: number) => Math.ceil(val).toString(),
 }));
-vi.mock('../../ItemIcon', () => ({
+vi.mock("../../ItemIcon", () => ({
   ItemIcon: ({ itemId }: { itemId: number }) => <div data-testid={`item-icon-${itemId}`} />,
 }));
-vi.mock('../../PowerGraphView', () => ({
+vi.mock("../../PowerGraphView", () => ({
   PowerGraphView: () => <div data-testid="power-graph-view">PowerGraphView</div>,
 }));
 
 // Mock useGameDataStore
 const mockUseGameDataStore = vi.fn();
-vi.mock('../../../stores/gameDataStore', () => ({
+vi.mock("../../../stores/gameDataStore", () => ({
   useGameDataStore: () => mockUseGameDataStore(),
 }));
 
 // Import mocked functions
-import * as statisticsLib from '../../../lib/statistics';
+import * as statisticsLib from "../../../lib/statistics";
+import * as unifiedPowerLib from "../../../lib/unifiedPowerCalculation";
 
-describe('StatisticsView', () => {
+describe("StatisticsView", () => {
   const mockCalculationResult: CalculationResult = {
     rootNode: {} as any,
     rawMaterials: new Map(),
@@ -41,9 +46,36 @@ describe('StatisticsView', () => {
 
   const mockStatistics: ProductionStatistics = {
     items: new Map([
-      [1001, { itemId: 1001, totalProduction: 60, totalConsumption: 0, netProduction: 60, isRawMaterial: false }], // Final product
-      [1002, { itemId: 1002, totalProduction: 0, totalConsumption: 30, netProduction: -30, isRawMaterial: true }], // Raw material
-      [1003, { itemId: 1003, totalProduction: 45, totalConsumption: 45, netProduction: 0, isRawMaterial: false }], // Intermediate
+      [
+        1001,
+        {
+          itemId: 1001,
+          totalProduction: 60,
+          totalConsumption: 0,
+          netProduction: 60,
+          isRawMaterial: false,
+        },
+      ], // Final product
+      [
+        1002,
+        {
+          itemId: 1002,
+          totalProduction: 0,
+          totalConsumption: 30,
+          netProduction: -30,
+          isRawMaterial: true,
+        },
+      ], // Raw material
+      [
+        1003,
+        {
+          itemId: 1003,
+          totalProduction: 45,
+          totalConsumption: 45,
+          netProduction: 0,
+          isRawMaterial: false,
+        },
+      ], // Intermediate
     ]),
     totalMachines: 25.5,
     totalPower: 1600,
@@ -51,24 +83,57 @@ describe('StatisticsView', () => {
 
   const mockGameData = {
     items: new Map([
-      [1001, { id: 1001, name: 'Electromagnetic Matrix', description: '', gridPos: 0, iconPath: '/icons/1001.png' }],
-      [1002, { id: 1002, name: 'Iron Ore', description: '', gridPos: 0, iconPath: '/icons/1002.png' }],
-      [1003, { id: 1003, name: 'Iron Ingot', description: '', gridPos: 0, iconPath: '/icons/1003.png' }],
+      [
+        1001,
+        {
+          id: 1001,
+          name: "Electromagnetic Matrix",
+          description: "",
+          gridPos: 0,
+          iconPath: "/icons/1001.png",
+        },
+      ],
+      [
+        1002,
+        { id: 1002, name: "Iron Ore", description: "", gridPos: 0, iconPath: "/icons/1002.png" },
+      ],
+      [
+        1003,
+        { id: 1003, name: "Iron Ingot", description: "", gridPos: 0, iconPath: "/icons/1003.png" },
+      ],
     ]),
     recipes: new Map(),
     machines: new Map(),
   };
 
   const mockRawMaterials = [
-    { itemId: 1002, itemName: 'Iron Ore', totalProduction: 0, totalConsumption: 30, netProduction: -30 },
+    {
+      itemId: 1002,
+      itemName: "Iron Ore",
+      totalProduction: 0,
+      totalConsumption: 30,
+      netProduction: -30,
+    },
   ];
 
   const mockIntermediateProducts = [
-    { itemId: 1003, itemName: 'Iron Ingot', totalProduction: 45, totalConsumption: 45, netProduction: 0 },
+    {
+      itemId: 1003,
+      itemName: "Iron Ingot",
+      totalProduction: 45,
+      totalConsumption: 45,
+      netProduction: 0,
+    },
   ];
 
   const mockFinalProducts = [
-    { itemId: 1001, itemName: 'Electromagnetic Matrix', totalProduction: 60, totalConsumption: 0, netProduction: 60 },
+    {
+      itemId: 1001,
+      itemName: "Electromagnetic Matrix",
+      totalProduction: 60,
+      totalConsumption: 0,
+      netProduction: 60,
+    },
   ];
 
   beforeEach(() => {
@@ -76,129 +141,144 @@ describe('StatisticsView', () => {
     mockUseGameDataStore.mockReturnValue({
       data: mockGameData,
     });
-    (statisticsLib.calculateItemStatistics as any).mockReturnValue(mockStatistics);
+    (statisticsLib.calculateItemStatistics as any).mockImplementation(
+      (rootNode, miningCalculation) => {
+        // Return mock statistics with mining calculation integration
+        return {
+          ...mockStatistics,
+          totalMiningMachines: miningCalculation ? miningCalculation.totalMiners : 0,
+          totalMiningPower: miningCalculation ? miningCalculation.totalMiners * 420 : 0, // Simplified calculation
+          totalOrbitalCollectors: miningCalculation ? miningCalculation.totalOrbitalCollectors : 0,
+        };
+      }
+    );
     (statisticsLib.getRawMaterials as any).mockReturnValue(mockRawMaterials);
     (statisticsLib.getIntermediateProducts as any).mockReturnValue(mockIntermediateProducts);
     (statisticsLib.getFinalProducts as any).mockReturnValue(mockFinalProducts);
+    (unifiedPowerLib.calculateUnifiedPower as any).mockImplementation(() => ({
+      totalConsumption: 1600, // 1.60 MW
+      miningPower: 0,
+      dysonSpherePower: 0,
+    }));
   });
 
-  describe('Rendering - Empty State', () => {
-    it('should render empty message when calculationResult is null', () => {
-      render(<StatisticsView calculationResult={null} />);
+  describe("Rendering - Empty State", () => {
+    it("should render empty message when calculationResult is null", () => {
+      render(<StatisticsView calculationResult={null} miningCalculation={null} />);
       expect(screen.getByText(/productionStatistics/i)).toBeInTheDocument();
       expect(screen.getByText(/selectRecipeToSeeStats/i)).toBeInTheDocument();
     });
 
-    it('should render empty message when statistics is null', () => {
+    it("should render empty message when statistics is null", () => {
       (statisticsLib.calculateItemStatistics as any).mockReturnValue(null);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
       expect(screen.getByText(/selectRecipeToSeeStats/i)).toBeInTheDocument();
     });
   });
 
-  describe('Rendering - Overview Section', () => {
-    it('should render production overview with all stats', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("Rendering - Overview Section", () => {
+    it("should render production overview with all stats", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/productionOverview/i)).toBeInTheDocument();
       expect(screen.getByText(/totalMachines/i)).toBeInTheDocument();
       expect(screen.getByText(/totalPower/i)).toBeInTheDocument();
       expect(screen.getByText(/itemsProduced/i)).toBeInTheDocument();
-      
+
       // rawMaterials appears twice (overview card + section title)
       const rawMaterialsElements = screen.getAllByText(/rawMaterials/i);
       expect(rawMaterialsElements.length).toBeGreaterThan(0);
     });
 
-    it('should display correct overview numbers', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should display correct overview numbers", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Total machines: 25.5 -> 26 (ceiling)
-      expect(screen.getByText('26')).toBeInTheDocument();
-      
+      expect(screen.getByText("26")).toBeInTheDocument();
+
       // Total power: 1600 kW -> 1.60 MW
       expect(screen.getByText(/1\.60 MW/i)).toBeInTheDocument();
-      
+
       // Raw materials count: 1
-      expect(screen.getByText('1')).toBeInTheDocument();
-      
+      expect(screen.getByText("1")).toBeInTheDocument();
+
       // Items produced: 3
-      expect(screen.getByText('3')).toBeInTheDocument();
+      expect(screen.getByText("3")).toBeInTheDocument();
     });
 
-    it('should render power graph toggle button', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should render power graph toggle button", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
+      const toggleButton = screen.getByRole("button", { name: /show.*powerGraph/i });
       expect(toggleButton).toBeInTheDocument();
     });
   });
 
-  describe('PowerGraph Toggle', () => {
-    it('should not show PowerGraphView initially', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("PowerGraph Toggle", () => {
+    it("should not show PowerGraphView initially", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      expect(screen.queryByTestId('power-graph-view')).not.toBeInTheDocument();
+      expect(screen.queryByTestId("power-graph-view")).not.toBeInTheDocument();
     });
 
-    it('should show PowerGraphView when toggle button is clicked', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should show PowerGraphView when toggle button is clicked", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
+      const toggleButton = screen.getByRole("button", { name: /show.*powerGraph/i });
       fireEvent.click(toggleButton);
 
-      expect(screen.getByTestId('power-graph-view')).toBeInTheDocument();
+      expect(screen.getByTestId("power-graph-view")).toBeInTheDocument();
     });
 
-    it('should hide PowerGraphView when toggle button is clicked again', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should hide PowerGraphView when toggle button is clicked again", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
-      
+      const toggleButton = screen.getByRole("button", { name: /show.*powerGraph/i });
+
       // Show
       fireEvent.click(toggleButton);
-      expect(screen.getByTestId('power-graph-view')).toBeInTheDocument();
-      
+      expect(screen.getByTestId("power-graph-view")).toBeInTheDocument();
+
       // Hide
       fireEvent.click(toggleButton);
-      expect(screen.queryByTestId('power-graph-view')).not.toBeInTheDocument();
+      expect(screen.queryByTestId("power-graph-view")).not.toBeInTheDocument();
     });
 
-    it('should update button text when toggled', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should update button text when toggled", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      const toggleButton = screen.getByRole('button', { name: /show.*powerGraph/i });
-      
+      const toggleButton = screen.getByRole("button", { name: /show.*powerGraph/i });
+
       // Initially shows "show"
       expect(toggleButton.textContent).toMatch(/show/i);
-      
+
       // After click, shows "hide"
       fireEvent.click(toggleButton);
       expect(toggleButton.textContent).toMatch(/hide/i);
     });
   });
 
-  describe('Raw Materials Section', () => {
-    it('should render raw materials table with correct data', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("Raw Materials Section", () => {
+    it("should render raw materials table with correct data", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Section title appears multiple times
       const rawMaterialsElements = screen.getAllByText(/rawMaterials/i);
       expect(rawMaterialsElements.length).toBeGreaterThan(0);
-      
-      expect(screen.getByText('Iron Ore')).toBeInTheDocument();
-      expect(screen.getByText('30.0/s')).toBeInTheDocument(); // Required rate
+
+      expect(screen.getByText("Iron Ore")).toBeInTheDocument();
+      expect(screen.getByText("30.0/s")).toBeInTheDocument(); // Required rate
     });
 
-    it('should render item icons in raw materials', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should render item icons in raw materials", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      expect(screen.getByTestId('item-icon-1002')).toBeInTheDocument();
+      expect(screen.getByTestId("item-icon-1002")).toBeInTheDocument();
     });
 
-    it('should not render raw materials section when empty', () => {
+    it("should not render raw materials section when empty", () => {
       (statisticsLib.getRawMaterials as any).mockReturnValue([]);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Title should only appear once (in overview)
       const elements = screen.queryAllByText(/🔨/);
@@ -206,93 +286,111 @@ describe('StatisticsView', () => {
     });
   });
 
-  describe('Intermediate Products Section', () => {
-    it('should render intermediate products table with correct data', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("Intermediate Products Section", () => {
+    it("should render intermediate products table with correct data", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/intermediateProducts/i)).toBeInTheDocument();
-      expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
-      
+      expect(screen.getByText("Iron Ingot")).toBeInTheDocument();
+
       // "production" appears in multiple headers (intermediate + final), use getAllByText
       const productionElements = screen.getAllByText(/production/i);
       expect(productionElements.length).toBeGreaterThan(0);
-      
+
       expect(screen.getByText(/consumption/i)).toBeInTheDocument();
-      
+
       // "net" might appear in item names too, use getAllByText
       const netElements = screen.getAllByText(/^net$/i); // Exact match for "net" header
       expect(netElements.length).toBeGreaterThan(0);
     });
 
-    it('should display production, consumption, and net values', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should display production, consumption, and net values", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Iron Ingot: production 45, consumption 45, net 0
-      const rateElements = screen.getAllByText('45.0/s');
+      const rateElements = screen.getAllByText("45.0/s");
       expect(rateElements.length).toBe(2); // production + consumption
-      
-      const netElements = screen.getAllByText('0.0/s');
+
+      const netElements = screen.getAllByText("0.0/s");
       expect(netElements.length).toBeGreaterThan(0); // net
     });
 
-    it('should not render intermediate products section when empty', () => {
+    it("should not render intermediate products section when empty", () => {
       (statisticsLib.getIntermediateProducts as any).mockReturnValue([]);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const elements = screen.queryAllByText(/⚙️/);
       expect(elements.length).toBe(0); // Section icon shouldn't appear
     });
   });
 
-  describe('Final Products Section', () => {
-    it('should render final products table with correct data', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("Final Products Section", () => {
+    it("should render final products table with correct data", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/finalProducts/i)).toBeInTheDocument();
-      expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
+      expect(screen.getByText("Electromagnetic Matrix")).toBeInTheDocument();
       expect(screen.getByText(/productionRate/i)).toBeInTheDocument();
-      expect(screen.getByText('60.0/s')).toBeInTheDocument();
+      expect(screen.getByText("60.0/s")).toBeInTheDocument();
     });
 
-    it('should render item icons in final products', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+    it("should render item icons in final products", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      expect(screen.getByTestId('item-icon-1001')).toBeInTheDocument();
+      expect(screen.getByTestId("item-icon-1001")).toBeInTheDocument();
     });
 
-    it('should not render final products section when empty', () => {
+    it("should not render final products section when empty", () => {
       (statisticsLib.getFinalProducts as any).mockReturnValue([]);
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       const elements = screen.queryAllByText(/📦/);
       expect(elements.length).toBe(0); // Section icon shouldn't appear
     });
   });
 
-  describe('Item Name Resolution', () => {
-    it('should display item names from gameData', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("Item Name Resolution", () => {
+    it("should display item names from gameData", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
-      expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
-      expect(screen.getByText('Iron Ore')).toBeInTheDocument();
-      expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
+      expect(screen.getByText("Electromagnetic Matrix")).toBeInTheDocument();
+      expect(screen.getByText("Iron Ore")).toBeInTheDocument();
+      expect(screen.getByText("Iron Ingot")).toBeInTheDocument();
     });
 
     it('should fallback to "Item {id}" when gameData is null', () => {
       mockUseGameDataStore.mockReturnValue({ data: null });
-      
+
       // Update mocks to return items with fallback names
       (statisticsLib.getRawMaterials as any).mockReturnValue([
-        { itemId: 1002, itemName: 'Item 1002', totalProduction: 0, totalConsumption: 30, netProduction: -30 },
+        {
+          itemId: 1002,
+          itemName: "Item 1002",
+          totalProduction: 0,
+          totalConsumption: 30,
+          netProduction: -30,
+        },
       ]);
       (statisticsLib.getIntermediateProducts as any).mockReturnValue([
-        { itemId: 1003, itemName: 'Item 1003', totalProduction: 45, totalConsumption: 45, netProduction: 0 },
+        {
+          itemId: 1003,
+          itemName: "Item 1003",
+          totalProduction: 45,
+          totalConsumption: 45,
+          netProduction: 0,
+        },
       ]);
       (statisticsLib.getFinalProducts as any).mockReturnValue([
-        { itemId: 1001, itemName: 'Item 1001', totalProduction: 60, totalConsumption: 0, netProduction: 60 },
+        {
+          itemId: 1001,
+          itemName: "Item 1001",
+          totalProduction: 60,
+          totalConsumption: 0,
+          netProduction: 60,
+        },
       ]);
-      
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       expect(screen.getByText(/Item 1001/)).toBeInTheDocument();
       expect(screen.getByText(/Item 1002/)).toBeInTheDocument();
@@ -305,67 +403,126 @@ describe('StatisticsView', () => {
         items: new Map([[1001, mockGameData.items.get(1001)!]]), // Only one item
       };
       mockUseGameDataStore.mockReturnValue({ data: limitedGameData });
-      
+
       // Update mocks to return items with fallback names for missing items
       (statisticsLib.getRawMaterials as any).mockReturnValue([
-        { itemId: 1002, itemName: 'Item 1002', totalProduction: 0, totalConsumption: 30, netProduction: -30 },
+        {
+          itemId: 1002,
+          itemName: "Item 1002",
+          totalProduction: 0,
+          totalConsumption: 30,
+          netProduction: -30,
+        },
       ]);
       (statisticsLib.getIntermediateProducts as any).mockReturnValue([
-        { itemId: 1003, itemName: 'Item 1003', totalProduction: 45, totalConsumption: 45, netProduction: 0 },
+        {
+          itemId: 1003,
+          itemName: "Item 1003",
+          totalProduction: 45,
+          totalConsumption: 45,
+          netProduction: 0,
+        },
       ]);
       (statisticsLib.getFinalProducts as any).mockReturnValue([
-        { itemId: 1001, itemName: 'Electromagnetic Matrix', totalProduction: 60, totalConsumption: 0, netProduction: 60 },
+        {
+          itemId: 1001,
+          itemName: "Electromagnetic Matrix",
+          totalProduction: 60,
+          totalConsumption: 0,
+          netProduction: 60,
+        },
       ]);
-      
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
 
-      expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
+
+      expect(screen.getByText("Electromagnetic Matrix")).toBeInTheDocument();
       expect(screen.getByText(/Item 1002/)).toBeInTheDocument(); // Fallback
       expect(screen.getByText(/Item 1003/)).toBeInTheDocument(); // Fallback
     });
   });
 
-  describe('Edge Cases', () => {
-    it('should handle single item in each category', () => {
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+  describe("Edge Cases", () => {
+    it("should handle single item in each category", () => {
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Each category should render correctly with single item
-      expect(screen.getByText('Iron Ore')).toBeInTheDocument();
-      expect(screen.getByText('Iron Ingot')).toBeInTheDocument();
-      expect(screen.getByText('Electromagnetic Matrix')).toBeInTheDocument();
+      expect(screen.getByText("Iron Ore")).toBeInTheDocument();
+      expect(screen.getByText("Iron Ingot")).toBeInTheDocument();
+      expect(screen.getByText("Electromagnetic Matrix")).toBeInTheDocument();
     });
 
-    it('should handle large numbers correctly', () => {
+    it("should handle large numbers correctly", () => {
       const largeStatistics: ProductionStatistics = {
         items: new Map([
-          [1001, { itemId: 1001, totalProduction: 12345, totalConsumption: 0, netProduction: 12345, isRawMaterial: false }],
+          [
+            1001,
+            {
+              itemId: 1001,
+              totalProduction: 12345,
+              totalConsumption: 0,
+              netProduction: 12345,
+              isRawMaterial: false,
+            },
+          ],
         ]),
         totalMachines: 999.9,
         totalPower: 5000000, // 5000 MW
+        totalMiningMachines: 0,
+        totalMiningPower: 0,
+        totalOrbitalCollectors: 0,
       };
 
-      (statisticsLib.calculateItemStatistics as any).mockReturnValue(largeStatistics);
+      (statisticsLib.calculateItemStatistics as any).mockImplementation(() => largeStatistics);
       (statisticsLib.getFinalProducts as any).mockReturnValue([
-        { itemId: 1001, itemName: 'Electromagnetic Matrix', totalProduction: 12345, totalConsumption: 0, netProduction: 12345 },
+        {
+          itemId: 1001,
+          itemName: "Electromagnetic Matrix",
+          totalProduction: 12345,
+          totalConsumption: 0,
+          netProduction: 12345,
+        },
       ]);
+      (unifiedPowerLib.calculateUnifiedPower as any).mockImplementation(() => ({
+        totalConsumption: 5000000, // 5000.00 MW
+        miningPower: 0,
+        dysonSpherePower: 0,
+      }));
 
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // Large machine count: 999.9 -> 1000 (ceiling)
-      expect(screen.getByText('1000')).toBeInTheDocument();
-      
+      expect(screen.getByText("1000")).toBeInTheDocument();
+
       // Large power: 5000000 kW -> 5000.00 MW
       expect(screen.getByText(/5000\.00 MW/i)).toBeInTheDocument();
-      
+
       // Large production rate
-      expect(screen.getByText('12345.0/s')).toBeInTheDocument();
+      expect(screen.getByText("12345.0/s")).toBeInTheDocument();
     });
 
-    it('複数出力レシピの最終生産物を正しく表示する', () => {
+    it("複数出力レシピの最終生産物を正しく表示する", () => {
       const multiOutputStatistics: ProductionStatistics = {
         items: new Map([
-          [1114, { itemId: 1114, totalProduction: 20, totalConsumption: 0, netProduction: 20, isRawMaterial: false }], // Refined Oil
-          [1120, { itemId: 1120, totalProduction: 10, totalConsumption: 0, netProduction: 10, isRawMaterial: false }], // Hydrogen
+          [
+            1114,
+            {
+              itemId: 1114,
+              totalProduction: 20,
+              totalConsumption: 0,
+              netProduction: 20,
+              isRawMaterial: false,
+            },
+          ], // Refined Oil
+          [
+            1120,
+            {
+              itemId: 1120,
+              totalProduction: 10,
+              totalConsumption: 0,
+              netProduction: 10,
+              isRawMaterial: false,
+            },
+          ], // Hydrogen
         ]),
         totalMachines: 10,
         totalPower: 1000,
@@ -373,8 +530,26 @@ describe('StatisticsView', () => {
 
       const multiOutputGameData = {
         items: new Map([
-          [1114, { id: 1114, name: 'Refined Oil', description: '', gridPos: 0, iconPath: '/icons/1114.png' }],
-          [1120, { id: 1120, name: 'Hydrogen', description: '', gridPos: 0, iconPath: '/icons/1120.png' }],
+          [
+            1114,
+            {
+              id: 1114,
+              name: "Refined Oil",
+              description: "",
+              gridPos: 0,
+              iconPath: "/icons/1114.png",
+            },
+          ],
+          [
+            1120,
+            {
+              id: 1120,
+              name: "Hydrogen",
+              description: "",
+              gridPos: 0,
+              iconPath: "/icons/1120.png",
+            },
+          ],
         ]),
         recipes: new Map(),
         machines: new Map(),
@@ -382,24 +557,36 @@ describe('StatisticsView', () => {
 
       (statisticsLib.calculateItemStatistics as any).mockReturnValue(multiOutputStatistics);
       (statisticsLib.getFinalProducts as any).mockReturnValue([
-        { itemId: 1114, itemName: 'Refined Oil', totalProduction: 20, totalConsumption: 0, netProduction: 20 },
-        { itemId: 1120, itemName: 'Hydrogen', totalProduction: 10, totalConsumption: 0, netProduction: 10 },
+        {
+          itemId: 1114,
+          itemName: "Refined Oil",
+          totalProduction: 20,
+          totalConsumption: 0,
+          netProduction: 20,
+        },
+        {
+          itemId: 1120,
+          itemName: "Hydrogen",
+          totalProduction: 10,
+          totalConsumption: 0,
+          netProduction: 10,
+        },
       ]);
 
       mockUseGameDataStore.mockReturnValue({
         data: multiOutputGameData,
         isLoading: false,
         error: null,
-        locale: 'ja',
+        locale: "ja",
       });
 
-      render(<StatisticsView calculationResult={mockCalculationResult} />);
+      render(<StatisticsView calculationResult={mockCalculationResult} miningCalculation={null} />);
 
       // 両方の最終生産物が表示されるべき
-      expect(screen.getByText('Refined Oil')).toBeInTheDocument();
-      expect(screen.getByText('Hydrogen')).toBeInTheDocument();
-      expect(screen.getByText('20.0/s')).toBeInTheDocument();
-      expect(screen.getByText('10.0/s')).toBeInTheDocument();
+      expect(screen.getByText("Refined Oil")).toBeInTheDocument();
+      expect(screen.getByText("Hydrogen")).toBeInTheDocument();
+      expect(screen.getByText("20.0/s")).toBeInTheDocument();
+      expect(screen.getByText("10.0/s")).toBeInTheDocument();
     });
   });
 });

@@ -26,6 +26,7 @@ npm run test:ui
 ```
 
 ブラウザが開き、以下の機能が利用できます：
+
 - テストの階層表示
 - 個別テストの実行
 - テスト結果の詳細表示
@@ -40,6 +41,7 @@ npm run test:coverage
 ```
 
 結果は以下の形式で出力されます：
+
 - テキスト（ターミナル）
 - HTML（`coverage/index.html`）
 - JSON（`coverage/coverage-final.json`）
@@ -65,16 +67,16 @@ src/
 ### ユニットテスト（純粋関数）
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { formatPower } from '../format';
+import { describe, it, expect } from "vitest";
+import { formatPower } from "../format";
 
-describe('formatPower', () => {
-  it('should format power in kW', () => {
-    expect(formatPower(500)).toBe('500.0 kW');
+describe("formatPower", () => {
+  it("should format power in kW", () => {
+    expect(formatPower(500)).toBe("500.0 kW");
   });
 
-  it('should format power in MW', () => {
-    expect(formatPower(1500)).toBe('1.5 MW');
+  it("should format power in MW", () => {
+    expect(formatPower(1500)).toBe("1.5 MW");
   });
 });
 ```
@@ -97,10 +99,10 @@ describe('MyComponent', () => {
 ### モックの使用
 
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from "vitest";
 
-describe('with mocks', () => {
-  it('should call callback', () => {
+describe("with mocks", () => {
+  it("should call callback", () => {
     const callback = vi.fn();
     // テストコード
     expect(callback).toHaveBeenCalled();
@@ -114,12 +116,12 @@ describe('with mocks', () => {
 
 ```typescript
 // ✅ Good
-it('should add two numbers', () => {
+it("should add two numbers", () => {
   expect(add(1, 2)).toBe(3);
 });
 
 // ❌ Bad
-it('should do everything', () => {
+it("should do everything", () => {
   // 複数の異なることをテスト
 });
 ```
@@ -128,12 +130,12 @@ it('should do everything', () => {
 
 ```typescript
 // ✅ Good
-it('should return 0 when input is empty array', () => {
+it("should return 0 when input is empty array", () => {
   // ...
 });
 
 // ❌ Bad
-it('works', () => {
+it("works", () => {
   // ...
 });
 ```
@@ -141,13 +143,13 @@ it('works', () => {
 ### 3. AAA パターンを使用
 
 ```typescript
-it('should calculate total', () => {
+it("should calculate total", () => {
   // Arrange（準備）
   const items = [1, 2, 3];
-  
+
   // Act（実行）
   const result = sum(items);
-  
+
   // Assert（検証）
   expect(result).toBe(6);
 });
@@ -156,17 +158,17 @@ it('should calculate total', () => {
 ### 4. エッジケースをテスト
 
 ```typescript
-describe('formatPower', () => {
-  it('should handle zero', () => {
-    expect(formatPower(0)).toBe('0.0 kW');
+describe("formatPower", () => {
+  it("should handle zero", () => {
+    expect(formatPower(0)).toBe("0.0 kW");
   });
 
-  it('should handle negative values', () => {
-    expect(formatPower(-100)).toBe('-100.0 kW');
+  it("should handle negative values", () => {
+    expect(formatPower(-100)).toBe("-100.0 kW");
   });
 
-  it('should handle very large values', () => {
-    expect(formatPower(1_000_000_000)).toBe('1000.0 GW');
+  it("should handle very large values", () => {
+    expect(formatPower(1_000_000_000)).toBe("1000.0 GW");
   });
 });
 ```
@@ -177,7 +179,7 @@ describe('formatPower', () => {
 
 ```typescript
 // テストのタイムアウトを延長
-it('slow test', async () => {
+it("slow test", async () => {
   // ...
 }, 10000); // 10秒
 ```
@@ -190,7 +192,7 @@ it('slow test', async () => {
 // vite.config.ts
 export default defineConfig({
   test: {
-    environment: 'happy-dom',
+    environment: "happy-dom",
   },
 });
 ```
@@ -220,7 +222,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: "20"
       - run: npm ci
       - run: npm test -- --run
       - run: npm run test:coverage

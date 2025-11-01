@@ -21,7 +21,7 @@ export interface RecipeItem {
 export interface Recipe {
   SID: number;
   name: string;
-  Type: 'Smelt' | 'Assemble' | 'Chemical' | 'Research' | 'Refine' | 'Particle' | 'PhotonGeneration';
+  Type: "Smelt" | "Assemble" | "Chemical" | "Research" | "Refine" | "Particle" | "PhotonGeneration";
   Explicit: boolean;
   TimeSpend: number; // in game ticks (divide by 60 for seconds)
   Items: RecipeItem[]; // Input items

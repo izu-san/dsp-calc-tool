@@ -1,25 +1,25 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useProductionCalculation } from '../useProductionCalculation';
-import * as calculator from '../../lib/calculator';
-import type { Recipe, GameData, GlobalSettings, NodeOverrideSettings } from '../../types';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useProductionCalculation } from "../useProductionCalculation";
+import * as calculator from "../../lib/calculator";
+import type { Recipe, GameData, GlobalSettings, NodeOverrideSettings } from "../../types";
 
 // calculateProductionChainをモック
-vi.mock('../../lib/calculator', () => ({
+vi.mock("../../lib/calculator", () => ({
   calculateProductionChain: vi.fn(),
 }));
 
-describe('useProductionCalculation', () => {
+describe("useProductionCalculation", () => {
   const mockRecipe: Recipe = {
     SID: 1,
-    name: 'Iron Ingot',
-    Type: 'Smelt',
+    name: "Iron Ingot",
+    Type: "Smelt",
     Explicit: false,
     TimeSpend: 60,
-    Items: [{ id: 1001, name: 'Iron Ore', count: 1 }],
-    Results: [{ id: 1101, name: 'Iron Ingot', count: 1 }],
-    GridIndex: '0101',
-    iconPath: '/path/to/icon.png',
+    Items: [{ id: 1001, name: "Iron Ore", count: 1 }],
+    Results: [{ id: 1101, name: "Iron Ingot", count: 1 }],
+    GridIndex: "0101",
+    iconPath: "/path/to/icon.png",
     productive: false,
   };
 
@@ -32,27 +32,31 @@ describe('useProductionCalculation', () => {
   };
 
   const mockSettings: GlobalSettings = {
-    proliferator: { type: 'none', mode: 'speed' },
-    conveyorBelt: { tier: 'mk3', speed: 30, stackCount: 1 },
+    proliferator: { type: "none", mode: "speed" },
+    conveyorBelt: { tier: "mk3", speed: 30, stackCount: 1 },
     machineRanks: {
-      smelt: 'arc',
-      assemble: 'mk1',
-      chemical: 'standard',
-      research: 'standard',
-      refine: 'standard',
-      particle: 'standard',
+      smelt: "arc",
+      assemble: "mk1",
+      chemical: "standard",
+      research: "standard",
+      refine: "standard",
+      particle: "standard",
     },
     alternativeRecipes: new Map(),
   };
 
   const mockNodeOverrides = new Map<string, NodeOverrideSettings>();
+  const mockMiningSettings = {
+    machineType: "Advanced Mining Machine" as const,
+    workSpeedMultiplier: 100,
+  };
   const mockSetCalculationResult = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('selectedRecipeとdataとtargetQuantityが全て存在する場合、計算を実行する', () => {
+  it("selectedRecipeとdataとtargetQuantityが全て存在する場合、計算を実行する", () => {
     const mockResult = {
       rootNode: {} as any,
       totalMachines: new Map(),
@@ -70,6 +74,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -79,12 +84,13 @@ describe('useProductionCalculation', () => {
       10,
       mockGameData,
       mockSettings,
-      mockNodeOverrides
+      mockNodeOverrides,
+      mockMiningSettings
     );
     expect(mockSetCalculationResult).toHaveBeenCalledWith(mockResult);
   });
 
-  it('selectedRecipeがnullの場合、計算を実行せずnullをセットする', () => {
+  it("selectedRecipeがnullの場合、計算を実行せずnullをセットする", () => {
     renderHook(() =>
       useProductionCalculation(
         null,
@@ -93,6 +99,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -101,7 +108,7 @@ describe('useProductionCalculation', () => {
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
   });
 
-  it('dataがnullの場合、計算を実行せずnullをセットする', () => {
+  it("dataがnullの場合、計算を実行せずnullをセットする", () => {
     renderHook(() =>
       useProductionCalculation(
         mockRecipe,
@@ -110,6 +117,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -118,7 +126,7 @@ describe('useProductionCalculation', () => {
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
   });
 
-  it('targetQuantityが0以下の場合、計算を実行せずnullをセットする', () => {
+  it("targetQuantityが0以下の場合、計算を実行せずnullをセットする", () => {
     renderHook(() =>
       useProductionCalculation(
         mockRecipe,
@@ -127,6 +135,7 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
@@ -135,9 +144,9 @@ describe('useProductionCalculation', () => {
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
   });
 
-  it('計算でエラーが発生した場合、nullをセットしてコンソールエラーを出力する', () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const error = new Error('Calculation failed');
+  it("計算でエラーが発生した場合、nullをセットしてコンソールエラーを出力する", () => {
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const error = new Error("Calculation failed");
 
     vi.mocked(calculator.calculateProductionChain).mockImplementation(() => {
       throw error;
@@ -151,18 +160,22 @@ describe('useProductionCalculation', () => {
         mockSettings,
         mockNodeOverrides,
         1,
+        mockMiningSettings,
         mockSetCalculationResult
       )
     );
 
     expect(calculator.calculateProductionChain).toHaveBeenCalled();
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
-    expect(consoleErrorSpy).toHaveBeenCalledWith('[ERROR] [DSP-Calc] Calculation error: Calculation failed', error);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "[ERROR] [DSP-Calc] Calculation error: Calculation failed",
+      error
+    );
 
     consoleErrorSpy.mockRestore();
   });
 
-  it('依存配列の値が変更されると再計算される', () => {
+  it("依存配列の値が変更されると再計算される", () => {
     const mockResult = {
       rootNode: {} as any,
       totalMachines: new Map(),
@@ -181,6 +194,7 @@ describe('useProductionCalculation', () => {
           mockSettings,
           mockNodeOverrides,
           1,
+          mockMiningSettings,
           mockSetCalculationResult
         ),
       { initialProps: { quantity: 10 } }
@@ -197,11 +211,12 @@ describe('useProductionCalculation', () => {
       20,
       mockGameData,
       mockSettings,
-      mockNodeOverrides
+      mockNodeOverrides,
+      mockMiningSettings
     );
   });
 
-  it('nodeOverridesVersionが変更されると再計算される', () => {
+  it("nodeOverridesVersionが変更されると再計算される", () => {
     const mockResult = {
       rootNode: {} as any,
       totalMachines: new Map(),
@@ -220,6 +235,7 @@ describe('useProductionCalculation', () => {
           mockSettings,
           mockNodeOverrides,
           version,
+          mockMiningSettings,
           mockSetCalculationResult
         ),
       { initialProps: { version: 1 } }
@@ -233,4 +249,3 @@ describe('useProductionCalculation', () => {
     expect(calculator.calculateProductionChain).toHaveBeenCalledTimes(2);
   });
 });
-

@@ -7,14 +7,19 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:staged": "prettier --write",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "convert:webp": "tsx scripts/convert-to-webp.ts"
+    "test": "vitest run",
+    "test:ui": "vitest run --ui --coverage",
+    "test:e2e": "playwright test --project=chromium --project=firefox --project=edge",
+    "test:e2e:ui": "playwright test --project=chromium --project=firefox --project=edge --ui",
+    "test:e2e:debug": "playwright test --project=chromium --project=firefox --project=edge --debug",
+    "convert:webp": "tsx scripts/convert-to-webp.ts",
+    "generate:recipe-sids": "node scripts/generate-recipe-sids.cjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -28,6 +33,7 @@
     "decimal.js": "^10.6.0",
     "dompurify": "^3.3.0",
     "fast-xml-parser": "^5.3.0",
+    "html2canvas": "^1.4.1",
     "i18next": "^25.6.0",
     "js-cookie": "^3.0.5",
     "lz-string": "^1.5.0",
@@ -35,6 +41,7 @@
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.1.1",
     "react-i18next": "^16.2.0",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.12",
     "zustand": "^5.0.8"
   },
@@ -46,6 +53,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/dompurify": "^3.2.0",
+    "@types/html2canvas": "^0.5.35",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^24.9.1",
     "@types/react": "^19.1.16",
@@ -55,11 +63,16 @@
     "@vitest/ui": "^4.0.3",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.4.0",
     "happy-dom": "^20.0.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
     "sharp": "^0.34.4",
     "tailwindcss": "^4.1.16",
     "tsx": "^4.20.6",
@@ -67,5 +80,14 @@
     "typescript-eslint": "^8.46.2",
     "vite": "^7.1.12",
     "vitest": "^4.0.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
   }
 }

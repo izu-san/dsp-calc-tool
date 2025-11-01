@@ -10,11 +10,11 @@ export const RAW_MATERIAL_IDS = new Set([
   1004, // Titanium Ore - Titanium Veins
   1005, // Stone - Stone Veins
   1006, // Coal - Coal Veins
-  
+
   // Plants
   1030, // Log - Tree
   1031, // Plant Fuel - Plant
-  
+
   // Rare veins
   1011, // Fire Ice - Fire ice vein
   1012, // Kimberlite Ore - Kimberlite vein
@@ -22,25 +22,58 @@ export const RAW_MATERIAL_IDS = new Set([
   1014, // Grating Crystal - Grating Crystal vein
   1015, // Stalagmite Crystal - Stalagmite Crystal Vein
   1016, // Unipolar Magnet - Unipolar magnet vein
-  
+
   // Liquids and gases
   1000, // Water - Ocean
   1007, // Crude Oil - Crude Oil Seep
   1116, // Sulfuric Acid - Sulfuric acid ocean
   1120, // Hydrogen - Gas Giant Orbit
   1121, // Deuterium - Gas Giant Orbit
-  
+
   // Special rare materials
   1117, // Organic Crystal - Organic crystal vein
-  
-  // Dark Fog items
-  5201, // Dark Fog Matrix - Dark Fog Debris
-  5202, // Silicon-based Neuron - Dark Fog Debris
-  5203, // Matter Recombinator - Dark Fog Debris
-  5204, // Negentropy Singularity - Dark Fog Debris
-  5205, // Core Element - Dark Fog Debris
-  5206, // Energy Shard - Dark Fog Debris
 ]);
+
+/**
+ * Special mining equipment for liquids
+ * These items use different mining equipment than regular ore veins
+ */
+export const LIQUID_MINING_ITEMS = new Set([
+  1000, // Water - Uses Water Pump (2306)
+  1007, // Crude Oil - Uses Oil Extractor (2307)
+  1116, // Sulfuric Acid - Uses Water Pump (2306)
+]);
+
+/**
+ * Mining equipment mapping for liquid items
+ */
+export const LIQUID_MINING_EQUIPMENT: Record<
+  number,
+  {
+    machineId: number;
+    machineName: string;
+    baseSpeedPerMinute: number; // Base speed per minute (fixed)
+  }
+> = {
+  1000: {
+    // Water
+    machineId: 2306,
+    machineName: "ウォーターポンプ",
+    baseSpeedPerMinute: 50, // 50/min fixed
+  },
+  1007: {
+    // Crude Oil
+    machineId: 2307,
+    machineName: "オイル抽出器",
+    baseSpeedPerMinute: 240, // 4.0/s = 240/min (tool definition)
+  },
+  1116: {
+    // Sulfuric Acid
+    machineId: 2306,
+    machineName: "ウォーターポンプ",
+    baseSpeedPerMinute: 50, // 50/min fixed
+  },
+};
 
 /**
  * Check if an item is a raw material

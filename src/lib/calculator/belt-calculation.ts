@@ -1,4 +1,4 @@
-import type { ConveyorBeltRequirement } from '../../types';
+import type { ConveyorBeltRequirement } from "../../types";
 
 /**
  * Calculate required conveyor belts
@@ -20,15 +20,15 @@ export function calculateConveyorBelts(
       bottleneckType: undefined,
     };
   }
-  
+
   // Calculate output belts (for the main product)
   const outputBelts = Math.ceil(targetOutputRate / beltSpeed);
-  
+
   // Calculate input belts (sum of all input items)
   const inputBelts = inputs.reduce((total, input) => {
     return total + Math.ceil(input.requiredRate / beltSpeed);
   }, 0);
-  
+
   // Calculate saturation (how close we are to belt capacity)
   const outputSaturation = (targetOutputRate / (outputBelts * beltSpeed)) * 100;
   const inputSaturation = inputs.reduce((max, input) => {
@@ -36,10 +36,10 @@ export function calculateConveyorBelts(
     const saturation = (input.requiredRate / (beltsNeeded * beltSpeed)) * 100;
     return Math.max(max, saturation);
   }, 0);
-  
+
   const maxSaturation = Math.max(outputSaturation, inputSaturation);
-  const bottleneckType = outputSaturation > inputSaturation ? 'output' : 'input';
-  
+  const bottleneckType = outputSaturation > inputSaturation ? "output" : "input";
+
   return {
     inputs: inputBelts,
     outputs: outputBelts,
@@ -48,4 +48,3 @@ export function calculateConveyorBelts(
     bottleneckType,
   };
 }
-

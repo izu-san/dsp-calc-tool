@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook, act, waitFor } from '@testing-library/react';
-import { useTreeCollapse } from '../useTreeCollapse';
-import type { CalculationResult, RecipeTreeNode } from '../../types';
+import { describe, it, expect } from "vitest";
+import { renderHook, act, waitFor } from "@testing-library/react";
+import { useTreeCollapse } from "../useTreeCollapse";
+import type { CalculationResult, RecipeTreeNode } from "../../types";
 
-describe('useTreeCollapse', () => {
+describe("useTreeCollapse", () => {
   const createMockNode = (id: number, children?: RecipeTreeNode[]): RecipeTreeNode => ({
     itemId: id,
     itemName: `Item ${id}`,
@@ -11,7 +11,7 @@ describe('useTreeCollapse', () => {
     recipe: { SID: id, name: `Recipe ${id}` } as any,
     machine: {} as any,
     machineCount: 1,
-    proliferator: { type: 'none', mode: 'speed' } as any,
+    proliferator: { type: "none", mode: "speed" } as any,
     proliferatorMultiplier: { production: 1, speed: 1 },
     power: { machines: 0, sorters: 0, total: 0 },
     conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
@@ -26,7 +26,7 @@ describe('useTreeCollapse', () => {
     rawMaterials: [],
   });
 
-  it('初期状態では深さ1以降のノードが折りたたまれる', async () => {
+  it("初期状態では深さ1以降のノードが折りたたまれる", async () => {
     const child1 = createMockNode(2);
     const child2 = createMockNode(3);
     const rootNode = createMockNode(1, [child1, child2]);
@@ -44,14 +44,14 @@ describe('useTreeCollapse', () => {
     expect(result.current.isTreeExpanded).toBe(false);
   });
 
-  it('calculationResultがnullの場合、空のSetを返す', () => {
+  it("calculationResultがnullの場合、空のSetを返す", () => {
     const { result } = renderHook(() => useTreeCollapse(null));
 
     expect(result.current.collapsedNodes.size).toBe(0);
     expect(result.current.isTreeExpanded).toBe(false);
   });
 
-  it('handleToggleCollapseでノードの折りたたみ状態をトグルできる', async () => {
+  it("handleToggleCollapseでノードの折りたたみ状態をトグルできる", async () => {
     const child = createMockNode(2);
     const rootNode = createMockNode(1, [child]);
     const calculationResult = createMockCalculationResult(rootNode);
@@ -64,7 +64,7 @@ describe('useTreeCollapse', () => {
     });
 
     const initialSize = result.current.collapsedNodes.size;
-    const testNodeId = 'test-node-id';
+    const testNodeId = "test-node-id";
 
     // ノードを折りたたむ
     act(() => {
@@ -83,7 +83,7 @@ describe('useTreeCollapse', () => {
     expect(result.current.collapsedNodes.size).toBe(initialSize);
   });
 
-  it('handleToggleAllで全展開できる', async () => {
+  it("handleToggleAllで全展開できる", async () => {
     const child = createMockNode(2);
     const rootNode = createMockNode(1, [child]);
     const calculationResult = createMockCalculationResult(rootNode);
@@ -105,7 +105,7 @@ describe('useTreeCollapse', () => {
     expect(result.current.collapsedNodes.size).toBe(0);
   });
 
-  it('handleToggleAllで全折りたたみできる', async () => {
+  it("handleToggleAllで全折りたたみできる", async () => {
     const child = createMockNode(2);
     const rootNode = createMockNode(1, [child]);
     const calculationResult = createMockCalculationResult(rootNode);
@@ -134,15 +134,14 @@ describe('useTreeCollapse', () => {
     expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
   });
 
-  it('calculationResultが変更されると折りたたみ状態がリセットされる', async () => {
+  it("calculationResultが変更されると折りたたみ状態がリセットされる", async () => {
     const child1 = createMockNode(2);
     const rootNode1 = createMockNode(1, [child1]);
     const calculationResult1 = createMockCalculationResult(rootNode1);
 
-    const { result, rerender } = renderHook(
-      ({ calcResult }) => useTreeCollapse(calcResult),
-      { initialProps: { calcResult: calculationResult1 } }
-    );
+    const { result, rerender } = renderHook(({ calcResult }) => useTreeCollapse(calcResult), {
+      initialProps: { calcResult: calculationResult1 },
+    });
 
     // 全展開
     act(() => {
@@ -166,7 +165,7 @@ describe('useTreeCollapse', () => {
     expect(result.current.isTreeExpanded).toBe(false);
   });
 
-  it('深いネストされたツリーを正しく処理する', async () => {
+  it("深いネストされたツリーを正しく処理する", async () => {
     const grandChild = createMockNode(3);
     const child = createMockNode(2, [grandChild]);
     const rootNode = createMockNode(1, [child]);
@@ -189,15 +188,15 @@ describe('useTreeCollapse', () => {
     expect(result.current.collapsedNodes.size).toBe(0);
   });
 
-  it('原材料ノードを正しく処理する', async () => {
+  it("原材料ノードを正しく処理する", async () => {
     const rawMaterialNode: RecipeTreeNode = {
       itemId: 100,
-      itemName: 'Iron Ore',
+      itemName: "Iron Ore",
       targetOutputRate: 10,
       recipe: null,
       machine: null,
       machineCount: 0,
-      proliferator: { type: 'none', mode: 'speed' } as any,
+      proliferator: { type: "none", mode: "speed" } as any,
       proliferatorMultiplier: { production: 1, speed: 1 },
       power: { machines: 0, sorters: 0, total: 0 },
       conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
@@ -219,4 +218,3 @@ describe('useTreeCollapse', () => {
     expect(result.current.collapsedNodes.size).toBeGreaterThan(0);
   });
 });
-

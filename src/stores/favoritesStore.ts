@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface FavoritesStore {
   favoriteRecipes: Set<number>;
@@ -18,8 +18,8 @@ export const useFavoritesStore = create<FavoritesStore>()(
     (set, get) => ({
       favoriteRecipes: new Set<number>(),
 
-      toggleFavorite: (recipeId) =>
-        set((state) => {
+      toggleFavorite: recipeId =>
+        set(state => {
           const newFavorites = new Set(state.favoriteRecipes);
           if (newFavorites.has(recipeId)) {
             newFavorites.delete(recipeId);
@@ -29,12 +29,12 @@ export const useFavoritesStore = create<FavoritesStore>()(
           return { favoriteRecipes: newFavorites };
         }),
 
-      isFavorite: (recipeId) => get().favoriteRecipes.has(recipeId),
+      isFavorite: recipeId => get().favoriteRecipes.has(recipeId),
 
       clearFavorites: () => set({ favoriteRecipes: new Set() }),
     }),
     {
-      name: 'dsp-calculator-favorites',
+      name: "dsp-calculator-favorites",
       storage: createJSONStorage(() => localStorage),
       // SetをJSON保存用に配列に変換
       partialize: (state): PersistedFavoritesStore => ({
@@ -45,7 +45,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
         const persisted = persistedState as PersistedFavoritesStore | undefined;
         return {
           ...currentState,
-          favoriteRecipes: persisted?.favoriteRecipes 
+          favoriteRecipes: persisted?.favoriteRecipes
             ? new Set(persisted.favoriteRecipes)
             : new Set<number>(),
         };

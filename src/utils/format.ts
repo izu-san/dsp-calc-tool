@@ -34,19 +34,19 @@ export function formatBuildingCount(count: number): string {
  */
 export function formatRate(rate: number): string {
   const perSecond = rate.toFixed(1);
-  
+
   // If rounded to 0.0/s, try per minute or per hour for better readability
-  if (perSecond === '0.0' && rate > 0) {
+  if (perSecond === "0.0" && rate > 0) {
     const perMinute = (rate * 60).toFixed(1);
-    
+
     // If still 0.0/min, show as items per hour
-    if (perMinute === '0.0') {
+    if (perMinute === "0.0") {
       const perHour = (rate * 3600).toFixed(1);
       return `${perHour}/h`;
     }
-    
+
     return `${perMinute}/min`;
   }
-  
+
   return `${perSecond}/s`;
 }
