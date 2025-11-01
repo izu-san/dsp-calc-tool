@@ -145,7 +145,7 @@ export function PlanManager() {
 
       setExportSuccessMessage(t("exported"));
       setExportErrorMessage("");
-      // モーダルは閉じずにメッセージを表示し続ける
+      setShowSaveDialog(false);
       setPlanName("");
     } catch (error) {
       console.error("Export error:", error);

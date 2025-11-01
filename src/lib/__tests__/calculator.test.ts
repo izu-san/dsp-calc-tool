@@ -203,18 +203,19 @@ describe("calculateMachinePower", () => {
     expect(result.total).toBe(54000);
   });
 
-  it("should apply proliferator multiplier to power increase", () => {
+  it("should not apply proliferator multiplier to power increase (power increase is fixed)", () => {
     const proliferator: ProliferatorConfig = {
       ...PROLIFERATOR_DATA.mk3,
       mode: "speed",
     };
 
-    // Power increase = 1.5 * 2 = 3.0
-    // Power = 21,600 * (1 + 3.0) = 21,600 * 4 = 86,400 kW
+    // Power increase is NOT multiplied by custom multiplier (fixed value)
+    // Power increase = 1.5 (not 1.5 * 2 = 3.0)
+    // Power = 21,600 * (1 + 1.5) = 21,600 * 2.5 = 54,000 kW
     const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 2, speed: 2 });
 
-    expect(result.machines).toBe(86400);
-    expect(result.total).toBe(86400);
+    expect(result.machines).toBe(54000);
+    expect(result.total).toBe(54000);
   });
 });
 
@@ -512,13 +513,29 @@ describe("buildRecipeTree", () => {
     proliferatorMultiplier: { production: 1, speed: 1 },
   });
 
+  const defaultMiningSettings = {
+    machineType: "Mining Machine" as const,
+    workSpeedMultiplier: 1,
+  };
+
   it("should build a simple recipe tree with one input", () => {
     const gameData = createMockGameData();
     const recipe = gameData.recipes.get(1)!; // Iron Ingot
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     expect(tree.recipe).toEqual(recipe);
     expect(tree.targetOutputRate).toBe(1);
@@ -534,7 +551,18 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Rate per machine = 1 item/s, so need 10 machines for 10 items/s
     expect(tree.machineCount).toBe(10);
@@ -547,7 +575,18 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "speed" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Recipe is productive, but we respect user's choice of speed mode
     // Speed mode: +25% speed bonus, needs 5 machines (10 / 2.0)
@@ -562,7 +601,18 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "production" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Production mode: 25% bonus means 80% input (1/1.25 = 0.8)
     expect(tree.inputs[0].requiredRate).toBe(8);
@@ -580,7 +630,18 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.mk2, mode: "production" },
     });
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     expect(tree.proliferator.type).toBe("mk2");
     expect(tree.proliferator.mode).toBe("production");
@@ -596,7 +657,18 @@ describe("buildRecipeTree", () => {
       machineRank: "plane", // Plane Smelter (different from default 'arc')
     });
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Machine should be selected based on override
     expect(tree.machine).toBeDefined();
@@ -608,7 +680,18 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     expect(tree.power.machines).toBeGreaterThan(0);
     expect(tree.power.sorters).toBeGreaterThan(0);
@@ -621,7 +704,18 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     expect(tree.conveyorBelts.inputs).toBeGreaterThan(0);
     expect(tree.conveyorBelts.outputs).toBeGreaterThan(0);
@@ -634,7 +728,18 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     const rawNode = tree.children[0];
     expect(rawNode.isRawMaterial).toBe(true);
@@ -659,7 +764,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "custom-path"
+      "custom-path",
+      new Set(),
+      defaultMiningSettings
     );
 
     expect(tree.nodeId).toBe("custom-path");
@@ -673,7 +780,18 @@ describe("buildRecipeTree", () => {
     const nodeOverrides = new Map();
 
     expect(() => {
-      buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides, 25, 20);
+      buildRecipeTree(
+        recipe,
+        1,
+        gameData,
+        settings,
+        nodeOverrides,
+        25,
+        20,
+        `r-${recipe.SID}`,
+        new Set(),
+        defaultMiningSettings
+      );
     }).toThrow("Maximum recursion depth reached");
   });
 
@@ -684,7 +802,18 @@ describe("buildRecipeTree", () => {
     settings.alternativeRecipes.set(1001, -1); // Force mining for Iron Ore
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Should create raw material node even if recipes exist
     expect(tree.children[0].isRawMaterial).toBe(true);
@@ -698,7 +827,18 @@ describe("buildRecipeTree", () => {
     settings.proliferatorMultiplier = { production: 2, speed: 1 }; // 2x multiplier
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 10, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      10,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // With 2x multiplier: 25% * 2 = 50% bonus, input = 1/(1+0.5) = 0.667 ≈ 6.67
     expect(tree.inputs[0].requiredRate).toBeCloseTo(6.67, 1);
@@ -710,7 +850,18 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     expect(tree).toHaveProperty("recipe");
     expect(tree).toHaveProperty("targetOutputRate");
@@ -744,7 +895,18 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk1, mode: "production" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(nonProductiveRecipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      nonProductiveRecipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${nonProductiveRecipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Should automatically switch to speed mode
     expect(tree.proliferator.mode).toBe("speed");
@@ -757,7 +919,18 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk2, mode: "speed" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides);
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      `r-${recipe.SID}`,
+      new Set(),
+      defaultMiningSettings
+    );
 
     // User's choice of speed mode is respected (no auto-switching)
     expect(tree.proliferator.mode).toBe("speed");
@@ -773,7 +946,18 @@ describe("buildRecipeTree", () => {
       machineRank: "arc",
     });
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides, 0, 20, "r-1");
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      "r-1",
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Should use Arc Smelter (id: 2302)
     expect(tree.machine).toBeDefined();
@@ -790,7 +974,18 @@ describe("buildRecipeTree", () => {
       machineRank: "plane",
     });
 
-    const tree = buildRecipeTree(recipe, 1, gameData, settings, nodeOverrides, 0, 20, "r-1");
+    const tree = buildRecipeTree(
+      recipe,
+      1,
+      gameData,
+      settings,
+      nodeOverrides,
+      0,
+      20,
+      "r-1",
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Should use Plane Smelter (id: 2315)
     expect(tree.machine).toBeDefined();
@@ -828,7 +1023,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-2-mk1"
+      "r-2-mk1",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree1.machine).toBeDefined();
     expect(tree1.machine?.id).toBe(2303); // Assembler Mk.I
@@ -846,7 +1043,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-2-mk2"
+      "r-2-mk2",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree2.machine).toBeDefined();
     expect(tree2.machine?.id).toBe(2304); // Assembler Mk.II
@@ -864,7 +1063,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-2-mk3"
+      "r-2-mk3",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree3.machine).toBeDefined();
     expect(tree3.machine?.id).toBe(2305); // Assembler Mk.III
@@ -901,7 +1102,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-3-std"
+      "r-3-std",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree1.machine).toBeDefined();
     expect(tree1.machine?.id).toBe(2309); // Chemical Plant
@@ -919,7 +1122,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-3-quantum"
+      "r-3-quantum",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree2.machine).toBeDefined();
     expect(tree2.machine?.id).toBe(2317); // Quantum Chemical Plant
@@ -956,7 +1161,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-4-std"
+      "r-4-std",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree1.machine).toBeDefined();
     expect(tree1.machine?.id).toBe(2901); // Matrix Lab
@@ -1007,7 +1214,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-1-negentropy"
+      "r-1-negentropy",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree.machine).toBeDefined();
     expect(tree.machine?.id).toBe(2319); // Negentropy Smelter
@@ -1058,7 +1267,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-2-recomp"
+      "r-2-recomp",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree.machine).toBeDefined();
     expect(tree.machine?.id).toBe(2318); // Recomposing Assembler
@@ -1109,7 +1320,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-3-quantum"
+      "r-3-quantum",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree.machine).toBeDefined();
     expect(tree.machine?.id).toBe(2317); // Quantum Chemical Plant
@@ -1160,7 +1373,9 @@ describe("buildRecipeTree", () => {
       nodeOverrides,
       0,
       20,
-      "r-4-selfevo"
+      "r-4-selfevo",
+      new Set(),
+      defaultMiningSettings
     );
     expect(tree.machine).toBeDefined();
     expect(tree.machine?.id).toBe(2902); // Self-Evolution Lab
@@ -1214,7 +1429,18 @@ describe("buildRecipeTree", () => {
     };
     gameData.recipes.set(200, parentRecipe);
 
-    const tree = buildRecipeTree(parentRecipe, 1, gameData, settings, new Map(), 0, 20, "r-200");
+    const tree = buildRecipeTree(
+      parentRecipe,
+      1,
+      gameData,
+      settings,
+      new Map(),
+      0,
+      20,
+      "r-200",
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Should use recipe 102 (preferred)
     expect(tree.children).toHaveLength(1);
@@ -1259,7 +1485,18 @@ describe("buildRecipeTree", () => {
     };
     gameData.recipes.set(200, parentRecipe);
 
-    const tree = buildRecipeTree(parentRecipe, 1, gameData, settings, new Map(), 0, 20, "r-200");
+    const tree = buildRecipeTree(
+      parentRecipe,
+      1,
+      gameData,
+      settings,
+      new Map(),
+      0,
+      20,
+      "r-200",
+      new Set(),
+      defaultMiningSettings
+    );
 
     // Should fallback to recipe 101
     expect(tree.children).toHaveLength(1);
@@ -1392,7 +1629,10 @@ describe("calculateProductionChain", () => {
     const recipe = gameData.recipes.get(1)!; // Iron Ingot
     const settings = createDefaultSettings();
 
-    const result = calculateProductionChain(recipe, 10, gameData, settings);
+    const result = calculateProductionChain(recipe, 10, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     expect(result).toBeDefined();
     expect(result.rootNode).toBeDefined();
@@ -1406,7 +1646,10 @@ describe("calculateProductionChain", () => {
     const gearRecipe = gameData.recipes.get(3)!; // Gear (requires Iron Ingot)
     const settings = createDefaultSettings();
 
-    const result = calculateProductionChain(gearRecipe, 1, gameData, settings);
+    const result = calculateProductionChain(gearRecipe, 1, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     expect(result.totalPower).toBeDefined();
     expect(result.totalPower.machines).toBeGreaterThan(0);
@@ -1419,7 +1662,10 @@ describe("calculateProductionChain", () => {
     const gearRecipe = gameData.recipes.get(3)!; // Gear
     const settings = createDefaultSettings();
 
-    const result = calculateProductionChain(gearRecipe, 10, gameData, settings);
+    const result = calculateProductionChain(gearRecipe, 10, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     expect(result.totalMachines).toBeGreaterThan(0);
     // Should include machines for Gear production + Iron Ingot production
@@ -1431,7 +1677,10 @@ describe("calculateProductionChain", () => {
     const gearRecipe = gameData.recipes.get(3)!; // Gear
     const settings = createDefaultSettings();
 
-    const result = calculateProductionChain(gearRecipe, 1, gameData, settings);
+    const result = calculateProductionChain(gearRecipe, 1, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     expect(result.rawMaterials).toBeInstanceOf(Map);
     expect(result.rawMaterials.size).toBeGreaterThan(0);
@@ -1463,7 +1712,10 @@ describe("calculateProductionChain", () => {
     gameData.recipes.set(99, complexRecipe);
     const settings = createDefaultSettings();
 
-    const result = calculateProductionChain(complexRecipe, 1, gameData, settings);
+    const result = calculateProductionChain(complexRecipe, 1, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     // Should have both Iron Ore and Copper Ore
     expect(result.rawMaterials.has(1001)).toBe(true); // Iron Ore
@@ -1482,7 +1734,10 @@ describe("calculateProductionChain", () => {
       machineRank: "arc",
     });
 
-    const result = calculateProductionChain(recipe, 1, gameData, settings, nodeOverrides);
+    const result = calculateProductionChain(recipe, 1, gameData, settings, nodeOverrides, {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     expect(result.rootNode.proliferator.type).toBe("mk3");
     expect(result.rootNode.proliferator.mode).toBe("production");
@@ -1493,7 +1748,10 @@ describe("calculateProductionChain", () => {
     const gearRecipe = gameData.recipes.get(3)!; // Gear -> Iron Ingot -> Iron Ore
     const settings = createDefaultSettings();
 
-    const result = calculateProductionChain(gearRecipe, 1, gameData, settings);
+    const result = calculateProductionChain(gearRecipe, 1, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     // Root is Gear
     expect(result.rootNode.recipe).toBeDefined();
@@ -1562,7 +1820,10 @@ describe("calculateProductionChain", () => {
     const settings = createDefaultSettings();
 
     // Should not throw "Maximum recursion depth reached"
-    const result = calculateProductionChain(recipes.get(120)!, 1, gameData, settings);
+    const result = calculateProductionChain(recipes.get(120)!, 1, gameData, settings, new Map(), {
+      machineType: "Mining Machine",
+      workSpeedMultiplier: 1,
+    });
 
     expect(result.rootNode.recipe).toBeDefined();
     expect(result.rootNode.recipe!.SID).toBe(120);

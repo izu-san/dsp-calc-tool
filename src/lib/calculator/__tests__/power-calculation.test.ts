@@ -61,18 +61,19 @@ describe("calculateMachinePower", () => {
     expect(result.total).toBe(54000);
   });
 
-  it("should apply proliferator multiplier to power increase", () => {
+  it("should not apply proliferator multiplier to power increase (power increase is fixed)", () => {
     const proliferator: ProliferatorConfig = {
       ...PROLIFERATOR_DATA.mk3,
       mode: "speed",
     };
 
-    // Power increase = 1.5 * 2 = 3.0
-    // Power = 21,600 * (1 + 3.0) = 21,600 * 4 = 86,400 kW
+    // Power increase is NOT multiplied by custom multiplier (fixed value)
+    // Power increase = 1.5 (not 1.5 * 2 = 3.0)
+    // Power = 21,600 * (1 + 1.5) = 21,600 * 2.5 = 54,000 kW
     const result = calculateMachinePower(mockMachine, 1, proliferator, { production: 2, speed: 2 });
 
-    expect(result.machines).toBe(86400);
-    expect(result.total).toBe(86400);
+    expect(result.machines).toBe(54000);
+    expect(result.total).toBe(54000);
   });
 
   describe("PhotonGeneration power calculation", () => {

@@ -92,14 +92,16 @@ describe("ModSettings", () => {
       type: "text/xml",
     });
     await fireEvent.change(input, { target: { files: [badXml] } });
-    await waitFor(() => expect(screen.getByText(/invalidRecipesXML/)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(/ArrayOfRecipe要素が見つかりません/)).toBeInTheDocument()
+    );
   });
 
   it("正しいXMLで loadGameData -> updateData が呼ばれ成功表示", async () => {
     openModal();
     loadGameData.mockResolvedValueOnce({ some: "data" });
     const input = document.getElementById("recipes-upload") as HTMLInputElement;
-    const okXmlText = '<?xml version="1.0"?><RecipeArray><Recipe id="1"/></RecipeArray>';
+    const okXmlText = '<?xml version="1.0"?><ArrayOfRecipe><Recipe id="1"/></ArrayOfRecipe>';
     const okXml = new File([okXmlText], "recipes.xml", { type: "text/xml" });
     await fireEvent.change(input, { target: { files: [okXml] } });
     await waitFor(() => expect(loadGameData).toHaveBeenCalled());
@@ -119,7 +121,7 @@ describe("ModSettings", () => {
 
     await waitFor(() => {
       expect(setProliferatorMultiplier).toHaveBeenCalledWith(2, 3);
-      expect(screen.getByText(/recipesUpdatedSuccessfully/)).toBeInTheDocument();
+      expect(screen.getByText(/proliferatorMultipliersUpdated/)).toBeInTheDocument();
     });
   });
 
@@ -129,7 +131,7 @@ describe("ModSettings", () => {
     loadGameData.mockResolvedValueOnce({ base: "data" });
 
     await actAsync(() => {
-      fireEvent.click(screen.getByText("resetToDefault"));
+      fireEvent.click(screen.getByTestId("mod-settings-reset-to-default-button"));
     });
 
     await waitFor(() => {
@@ -142,7 +144,7 @@ describe("ModSettings", () => {
   it("resetToDefault で confirm がキャンセルされた場合は何もしない", () => {
     openModal();
     confirmMock.mockReturnValueOnce(false);
-    fireEvent.click(screen.getByText("resetToDefault"));
+    fireEvent.click(screen.getByTestId("mod-settings-reset-to-default-button"));
     expect(loadGameData).not.toHaveBeenCalled();
     expect(updateData).not.toHaveBeenCalled();
   });
@@ -160,7 +162,7 @@ describe("ModSettings", () => {
     const input = document.getElementById("recipes-upload") as HTMLInputElement;
     const dangerousXml = new File(
       [
-        '<?xml version="1.0"?><RecipeArray><script>alert("test")</script><Recipe id="1"/></RecipeArray>',
+        '<?xml version="1.0"?><ArrayOfRecipe><script>alert("test")</script><Recipe id="1"/></ArrayOfRecipe>',
       ],
       "dangerous.xml",
       { type: "text/xml" }
@@ -178,7 +180,7 @@ describe("ModSettings", () => {
   it("XMLパースエラーが発生した場合はエラー表示", async () => {
     openModal();
     const input = document.getElementById("recipes-upload") as HTMLInputElement;
-    const badXml = new File(['<?xml version="1.0"?><RecipeArray><Recipe id="1"'], "bad.xml", {
+    const badXml = new File(['<?xml version="1.0"?><ArrayOfRecipe><Recipe id="1"'], "bad.xml", {
       type: "text/xml",
     });
 
@@ -195,7 +197,7 @@ describe("ModSettings", () => {
     openModal();
     const input = document.getElementById("recipes-upload") as HTMLInputElement;
     const noRecipesXml = new File(
-      ['<?xml version="1.0"?><RecipeArray></RecipeArray>'],
+      ['<?xml version="1.0"?><ArrayOfRecipe></ArrayOfRecipe>'],
       "norecipes.xml",
       { type: "text/xml" }
     );
@@ -212,7 +214,7 @@ describe("ModSettings", () => {
   it("loadGameData でエラーが発生した場合はエラー表示", async () => {
     openModal();
     const input = document.getElementById("recipes-upload") as HTMLInputElement;
-    const okXmlText = '<?xml version="1.0"?><RecipeArray><Recipe id="1"/></RecipeArray>';
+    const okXmlText = '<?xml version="1.0"?><ArrayOfRecipe><Recipe id="1"/></ArrayOfRecipe>';
     const okXml = new File([okXmlText], "recipes.xml", { type: "text/xml" });
     loadGameData.mockRejectedValueOnce(new Error("Parse error"));
 
