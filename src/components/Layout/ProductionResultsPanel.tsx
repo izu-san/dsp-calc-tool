@@ -247,17 +247,23 @@ export function ProductionResultsPanel({
             {/* Content */}
             <Suspense fallback={<div className="text-center py-4">{t("loading")}</div>}>
               {showStatistics ? (
-                <StatisticsView
-                  calculationResult={calculationResult}
-                  miningCalculation={miningCalculation}
-                />
+                <div data-testid="statistics-tab-content">
+                  <StatisticsView
+                    calculationResult={calculationResult}
+                    miningCalculation={miningCalculation}
+                  />
+                </div>
               ) : showBuildingCost ? (
-                <BuildingCostView calculationResult={calculationResult} />
+                <div data-testid="building-cost-content">
+                  <BuildingCostView calculationResult={calculationResult} />
+                </div>
               ) : showPowerGeneration ? (
-                <PowerGenerationView
-                  calculationResult={calculationResult}
-                  miningCalculation={miningCalculation}
-                />
+                <div data-testid="power-generation-content">
+                  <PowerGenerationView
+                    calculationResult={calculationResult}
+                    miningCalculation={miningCalculation}
+                  />
+                </div>
               ) : showMiningCalculator ? (
                 <MiningCalculator calculationResult={calculationResult} />
               ) : (

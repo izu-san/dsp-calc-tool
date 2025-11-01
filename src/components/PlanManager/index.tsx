@@ -5,7 +5,9 @@ import { exportToCSV } from "../../lib/export/csvExporter";
 import { transformToExportData } from "../../lib/export/dataTransformer";
 import { exportToExcel } from "../../lib/export/excelExporter";
 import { generateExportFilename } from "../../lib/export/filenameGenerator";
+import { exportToImage, exportMultipleViews } from "../../lib/export/imageExporter";
 import { exportToMarkdown } from "../../lib/export/markdownExporter";
+import type { ImageExportOptions } from "../../types/export";
 import { importPlan } from "../../lib/import";
 import {
   buildSavedPlanFromExportData,
@@ -148,6 +150,69 @@ export function PlanManager() {
       setExportErrorMessage("");
     } catch (error) {
       console.error("Export error:", error);
+      setExportErrorMessage(`${t("exportError")}: ${error}`);
+      setExportSuccessMessage("");
+    }
+  };
+
+  const handleImageExport = async (name: string, options: ImageExportOptions) => {
+    if (!selectedRecipe) {
+      alert(t("pleaseSelectRecipe"));
+      return;
+    }
+
+    if (!calculationResult) {
+      alert(t("pleaseCalculateFirst"));
+      return;
+    }
+
+    try {
+      const selectors: string[] = [];
+
+      // 各ビューに対応するセレクタを追加
+      if (options.includeViews.statistics) {
+        selectors.push('[data-testid="statistics-tab-content"]');
+      }
+      if (options.includeViews.powerGraph) {
+        selectors.push('[data-testid="power-graph-content"]');
+      }
+      if (options.includeViews.buildingCost) {
+        selectors.push('[data-testid="building-cost-content"]');
+      }
+      if (options.includeViews.powerGeneration) {
+        selectors.push('[data-testid="power-generation-content"]');
+      }
+
+      if (selectors.length === 0) {
+        throw new Error("No views selected for export");
+      }
+
+      // 画像をエクスポート
+      let blob: Blob;
+      if (selectors.length === 1) {
+        blob = await exportToImage(selectors[0], options);
+      } else {
+        blob = await exportMultipleViews(selectors, options);
+      }
+
+      // ファイル名を生成
+      const ext = options.format;
+      const filename = generateExportFilename(name, ext);
+
+      // ダウンロード
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setExportSuccessMessage(t("exported"));
+      setExportErrorMessage("");
+    } catch (error) {
+      console.error("Image export error:", error);
       setExportErrorMessage(`${t("exportError")}: ${error}`);
       setExportSuccessMessage("");
     }
@@ -567,6 +632,28 @@ export function PlanManager() {
                     className="px-3 py-2 bg-green-700 text-white rounded hover:bg-green-800 dark:bg-green-800 dark:hover:bg-green-700 text-sm"
                   >
                     Excel
+                  </button>
+                  <button
+                    data-testid="export-image-button"
+                    onClick={() =>
+                      handleImageExport(planName || getDefaultPlanName(), {
+                        resolution: "2x",
+                        format: "png",
+                        quality: 90,
+                        includeViews: {
+                          statistics: true,
+                          powerGraph: false,
+                          buildingCost: false,
+                          powerGeneration: false,
+                        },
+                        customLayout: false,
+                        backgroundColor: "#1a1a1a",
+                        padding: 20,
+                      })
+                    }
+                    className="px-3 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600 text-sm"
+                  >
+                    画像 (PNG)
                   </button>
                 </div>
               </div>

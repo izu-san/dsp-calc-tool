@@ -92,3 +92,29 @@ export interface ExportPowerGeneration {
     }[];
   }[];
 }
+
+/**
+ * 画像エクスポートのオプション
+ */
+export interface ImageExportOptions {
+  resolution: "1x" | "2x" | "4x";
+  format: "png" | "jpeg" | "webp";
+  quality: number; // 0-100
+  includeViews: {
+    statistics: boolean;
+    powerGraph: boolean;
+    buildingCost: boolean;
+    powerGeneration: boolean;
+  };
+  customLayout: boolean;
+  backgroundColor: string;
+  padding: number;
+}
+
+/**
+ * 画像エクスポートのためのDOM要素情報
+ */
+export interface ViewElementInfo {
+  selector: string;
+  name: string;
+}
