@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
 
 # GitHub Pagesへのデプロイ権限を設定
 permissions:
@@ -49,7 +48,7 @@ jobs:
   deploy:
     name: Deploy
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}
+      name: Production
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
