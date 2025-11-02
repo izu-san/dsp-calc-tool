@@ -1,5 +1,11 @@
 import { create } from "zustand";
+import i18n from "../i18n";
 import type { NodeOverrideSettings } from "../types";
+import {
+  generateNodeOverrideDescription,
+  generateNodeOverrideResetDescription,
+} from "../utils/historyDescriptionHelper";
+import { recordHistoryEntry } from "../utils/historyRecorder";
 
 interface NodeOverrideStore {
   nodeOverrides: Map<string, NodeOverrideSettings>;
@@ -21,6 +27,20 @@ export const useNodeOverrideStore = create<NodeOverrideStore>(set => ({
 
   setNodeOverride: (nodeId, settings) =>
     set(state => {
+      const before = state.nodeOverrides.get(nodeId);
+      const after = settings;
+
+      // Record history
+      const t = (key: string) => i18n.t(key);
+      const description = generateNodeOverrideDescription(nodeId, t, i18n.language);
+      recordHistoryEntry(
+        "nodeOverride",
+        description,
+        { [`nodeOverrides.${nodeId}`]: before },
+        { [`nodeOverrides.${nodeId}`]: after },
+        [nodeId]
+      );
+
       const newOverrides = new Map(state.nodeOverrides);
       newOverrides.set(nodeId, settings);
 
@@ -29,6 +49,19 @@ export const useNodeOverrideStore = create<NodeOverrideStore>(set => ({
 
   clearNodeOverride: nodeId =>
     set(state => {
+      const before = state.nodeOverrides.get(nodeId);
+
+      // Record history
+      const t = (key: string) => i18n.t(key);
+      const description = generateNodeOverrideResetDescription(nodeId, t, i18n.language);
+      recordHistoryEntry(
+        "nodeOverride",
+        description,
+        { [`nodeOverrides.${nodeId}`]: before },
+        { [`nodeOverrides.${nodeId}`]: undefined },
+        [nodeId]
+      );
+
       const newOverrides = new Map(state.nodeOverrides);
       newOverrides.delete(nodeId);
       return { nodeOverrides: newOverrides, version: state.version + 1 };

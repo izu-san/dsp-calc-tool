@@ -659,5 +659,55 @@ describe("planExport", () => {
       const savedPlans = JSON.parse(recentPlansCall![1]);
       expect(savedPlans).toHaveLength(10);
     });
+
+    it("同一planIdで保存すると重複が削除される", () => {
+      const existingPlanId = "test-plan-id";
+      const existingPlans = [
+        {
+          key: "plan_1000",
+          name: "Plan A",
+          timestamp: 1000,
+          planId: existingPlanId,
+        },
+        {
+          key: "plan_2000",
+          name: "Plan B",
+          timestamp: 2000,
+        },
+      ];
+
+      (global.localStorage.getItem as ReturnType<typeof vi.fn>).mockReturnValue(
+        JSON.stringify(existingPlans)
+      );
+
+      const updatedPlan: SavedPlan = {
+        name: "Plan A",
+        timestamp: 3000,
+        recipeSID: 100,
+        targetQuantity: 50,
+        settings: mockSettings,
+        alternativeRecipes: {},
+        nodeOverrides: {},
+        planId: existingPlanId,
+      };
+
+      savePlanToLocalStorage(updatedPlan);
+
+      // 古いlocalStorageアイテムが削除される
+      expect(global.localStorage.removeItem).toHaveBeenCalledWith("plan_1000");
+
+      // recent_plansの更新確認
+      const recentPlansCall = (
+        global.localStorage.setItem as ReturnType<typeof vi.fn>
+      ).mock.calls.find(call => call[0] === "recent_plans");
+
+      expect(recentPlansCall).toBeDefined();
+      const savedPlans = JSON.parse(recentPlansCall![1]);
+
+      // Plan Aは1つだけ（最新のものが残る）
+      const planAEntries = savedPlans.filter((p: any) => p.name === "Plan A");
+      expect(planAEntries).toHaveLength(1);
+      expect(planAEntries[0].timestamp).toBe(3000);
+    });
   });
 });

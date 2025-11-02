@@ -12,7 +12,17 @@ export function generateExportFilename(planName: string, format: string): string
   const hours = String(now.getHours()).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
 
-  const sanitizedPlanName = planName.replace(/[^a-zA-Z0-9_ -]/g, "").replace(/ /g, "_");
+  // Remove only invalid filename characters (Windows: < > : " / \ | ? *)
+  // Keep Unicode characters (Japanese, etc.) as modern browsers support them
+  const sanitizedPlanName = planName
+    .replace(/[<>:"/\\|?*]/g, "") // Remove invalid chars
+    .replace(/\s+/g, "_") // Replace spaces with underscores
+    .replace(/\.+$/, ""); // Remove trailing dots
+
+  // If sanitized plan name is empty, use timestamp-based name
+  if (!sanitizedPlanName || sanitizedPlanName.trim() === "") {
+    return `Plan_${year}${month}${day}_${hours}${minutes}.${format}`;
+  }
 
   return `${sanitizedPlanName}_${year}${month}${day}_${hours}${minutes}.${format}`;
 }

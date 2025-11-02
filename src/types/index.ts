@@ -6,3 +6,4 @@ export * from "./saved-plan";
 export * from "./export";
 export * from "./import";
 export * from "./power-generation";
+export * from "./history";

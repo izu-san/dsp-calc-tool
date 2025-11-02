@@ -33,14 +33,19 @@ describe("filenameGenerator", () => {
       expect(filename).toMatch(/^Planwithspecialchars_\d{8}_\d{4}\.json$/);
     });
 
+    it("日本語と英語混合のプラン名が保持される", () => {
+      const filename = generateExportFilename("石材Stone", "json");
+      expect(filename).toMatch(/^石材Stone_\d{8}_\d{4}\.json$/);
+    });
+
     it("スペースがアンダースコアに置換される", () => {
       const filename = generateExportFilename("My Test Plan", "json");
       expect(filename).toMatch(/^My_Test_Plan_\d{8}_\d{4}\.json$/);
     });
 
-    it("日本語文字が除去される", () => {
+    it("日本語文字が保持される", () => {
       const filename = generateExportFilename("テストプラン", "json");
-      expect(filename).toMatch(/^_\d{8}_\d{4}\.json$/);
+      expect(filename).toMatch(/^テストプラン_\d{8}_\d{4}\.json$/);
     });
 
     it("英数字とアンダースコア、ハイフンは保持される", () => {
@@ -50,7 +55,7 @@ describe("filenameGenerator", () => {
 
     it("空のプラン名でもファイル名が生成される", () => {
       const filename = generateExportFilename("", "json");
-      expect(filename).toMatch(/^_\d{8}_\d{4}\.json$/);
+      expect(filename).toMatch(/^Plan_\d{8}_\d{4}\.json$/);
     });
 
     it("日付と時刻が正しいフォーマットで出力される", () => {

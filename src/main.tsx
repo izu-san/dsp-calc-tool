@@ -4,6 +4,7 @@ import "./index.css";
 import "./i18n"; // Initialize i18n
 import App from "./App.tsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
+import { ToastProvider } from "./components/ToastProvider";
 import { preloadSpriteData } from "./hooks/useSpriteData";
 import { initializeImageFormatSupport } from "./utils/imageFormat";
 
@@ -16,7 +17,9 @@ preloadSpriteData()
     createRoot(document.getElementById("root")!).render(
       <StrictMode>
         <ErrorBoundary>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </ErrorBoundary>
       </StrictMode>
     );
@@ -27,7 +30,9 @@ preloadSpriteData()
     createRoot(document.getElementById("root")!).render(
       <StrictMode>
         <ErrorBoundary>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </ErrorBoundary>
       </StrictMode>
     );

@@ -45,6 +45,12 @@ export interface SavedPlan {
 
   /** Optional description */
   description?: string;
+
+  /** Plan ID for version management (optional) */
+  planId?: string;
+
+  /** Version number for version management (optional) */
+  version?: number;
 }
 
 /**

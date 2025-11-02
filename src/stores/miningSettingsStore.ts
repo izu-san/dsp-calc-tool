@@ -1,5 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { recordHistoryEntry } from "../utils/historyRecorder";
+import {
+  generateMiningMachineTypeDescription,
+  generateMiningWorkSpeedDescription,
+  generateMiningSettingsBatchDescription,
+} from "../utils/historyDescriptionHelper";
+import i18n from "../i18n";
 
 export interface MiningSettings {
   machineType: "Mining Machine" | "Advanced Mining Machine";
@@ -21,17 +28,42 @@ export const useMiningSettingsStore = create<MiningSettingsStore>()(
         workSpeedMultiplier: 100,
       },
       setMachineType: machineType =>
-        set(state => ({
-          settings: { ...state.settings, machineType },
-        })),
+        set(state => {
+          const before = { miningSettings: state.settings };
+          const after = { miningSettings: { ...state.settings, machineType } };
+          const t = (key: string) => i18n.t(key);
+          const description = generateMiningMachineTypeDescription(machineType, t, i18n.language);
+          recordHistoryEntry("settings", description, before, after);
+          return {
+            settings: { ...state.settings, machineType },
+          };
+        }),
       setWorkSpeedMultiplier: workSpeedMultiplier =>
-        set(state => ({
-          settings: { ...state.settings, workSpeedMultiplier },
-        })),
+        set(state => {
+          const before = { miningSettings: state.settings };
+          const after = { miningSettings: { ...state.settings, workSpeedMultiplier } };
+          const t = (key: string) => i18n.t(key);
+          const description = generateMiningWorkSpeedDescription(
+            workSpeedMultiplier,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("settings", description, before, after);
+          return {
+            settings: { ...state.settings, workSpeedMultiplier },
+          };
+        }),
       setSettings: newSettings =>
-        set(state => ({
-          settings: { ...state.settings, ...newSettings },
-        })),
+        set(state => {
+          const before = { miningSettings: state.settings };
+          const after = { miningSettings: { ...state.settings, ...newSettings } };
+          const t = (key: string) => i18n.t(key);
+          const description = generateMiningSettingsBatchDescription(t, i18n.language);
+          recordHistoryEntry("settings", description, before, after);
+          return {
+            settings: { ...state.settings, ...newSettings },
+          };
+        }),
     }),
     {
       name: "mining-settings-storage",

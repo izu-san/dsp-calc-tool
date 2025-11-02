@@ -21,6 +21,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
 
   // Get current override or use global settings
   const currentOverride = nodeOverrides.get(node.nodeId);
+  const recipeType = node.recipe?.Type;
 
   const [useOverride, setUseOverride] = useState(!!currentOverride);
   const [proliferatorType, setProliferatorType] = useState<ProliferatorType>(
@@ -29,21 +30,32 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
   const [proliferatorMode, setProliferatorMode] = useState<ProliferatorMode>(
     currentOverride?.proliferator?.mode || settings.proliferator.mode
   );
-  const [machineRank, setMachineRank] = useState<string>(currentOverride?.machineRank || "");
+  const [machineRank, setMachineRank] = useState<string>(
+    currentOverride?.machineRank ||
+      (recipeType && recipeType in settings.machineRank
+        ? settings.machineRank[recipeType as keyof typeof settings.machineRank] || ""
+        : "")
+  );
 
   useEffect(() => {
     if (isOpen) {
       // Sync state when modal opens
       const override = nodeOverrides.get(node.nodeId);
+      const currentRecipeType = node.recipe?.Type;
       // Use queueMicrotask to defer state updates
       queueMicrotask(() => {
         setUseOverride(!!override);
         setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
         setProliferatorMode(override?.proliferator?.mode || settings.proliferator.mode);
-        setMachineRank(override?.machineRank || "");
+        setMachineRank(
+          override?.machineRank ||
+            (currentRecipeType && currentRecipeType in settings.machineRank
+              ? settings.machineRank[currentRecipeType as keyof typeof settings.machineRank] || ""
+              : "")
+        );
       });
     }
-  }, [isOpen, node.nodeId, nodeOverrides, settings]);
+  }, [isOpen, node.nodeId, node.recipe?.Type, nodeOverrides, settings]);
 
   if (!isOpen) return null;
 
@@ -71,12 +83,15 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
     setUseOverride(false);
     setProliferatorType(settings.proliferator.type);
     setProliferatorMode(settings.proliferator.mode);
-    setMachineRank("");
+    setMachineRank(
+      recipeType && recipeType in settings.machineRank
+        ? settings.machineRank[recipeType as keyof typeof settings.machineRank] || ""
+        : ""
+    );
     clearNodeOverride(node.nodeId);
   };
 
   const recipeName = node.recipe?.name || node.itemName || t("unknown");
-  const recipeType = node.recipe?.Type;
   const isProductionAllowed = node.recipe?.productive !== false;
 
   // Machine rank options based on recipe type

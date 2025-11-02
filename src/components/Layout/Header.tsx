@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "../LanguageSwitcher";
+import { HistoryControls } from "../HistoryControls";
 
 // Lazy load heavy components
 const PlanManager = lazy(() => import("../PlanManager").then(m => ({ default: m.PlanManager })));
@@ -26,6 +27,7 @@ export function Header() {
             </h1>
           </div>
           <div className="flex items-center gap-4">
+            <HistoryControls />
             <LanguageSwitcher />
             <Suspense fallback={<div className="w-8 h-8"></div>}>
               <PlanManager />

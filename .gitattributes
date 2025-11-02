@@ -1,0 +1,24 @@
+# すべてのテキストファイルをLFに統一
+* text=auto eol=lf
+
+# バイナリファイルはそのまま
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# アーカイブファイル
+*.zip binary
+*.tar binary
+*.gz binary
+
+# その他のバイナリファイル
+*.pdf binary
+*.xlsx binary
+*.xls binary

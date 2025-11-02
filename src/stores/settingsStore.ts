@@ -17,6 +17,25 @@ import {
   DEFAULT_PHOTON_GENERATION_SETTINGS,
 } from "../types/settings";
 import { serializeSettings, deserializeSettings } from "../utils/storageSerializer";
+import { recordHistoryEntry } from "../utils/historyRecorder";
+import {
+  generateProliferatorDescription,
+  generateMachineRankDescription,
+  generateConveyorBeltDescription,
+  generateSorterDescription,
+  generateAlternativeRecipeDescription,
+  generateMiningSpeedResearchDescription,
+  generateProliferatorMultiplierDescription,
+  generatePhotonGenerationDescription,
+  generateTemplateDescription,
+  generateBatchSettingsDescription,
+  generatePowerGenerationTemplateDescription,
+  generateManualPowerGeneratorDescription,
+  generateManualPowerFuelDescription,
+  generatePowerFuelProliferatorDescription,
+} from "../utils/historyDescriptionHelper";
+import { useGameDataStore } from "./gameDataStore";
+import i18n from "../i18n";
 
 const defaultSettings: GlobalSettings = {
   proliferator: {
@@ -83,95 +102,244 @@ export const useSettingsStore = create<SettingsStore>()(
       powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: "production" as const }, // 初期状態では増産剤なし
 
       setProliferator: (type, mode) =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            proliferator: {
-              ...PROLIFERATOR_DATA[type],
-              mode,
-            },
-          },
-        })),
-
-      setMachineRank: (recipeType, rank) =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            machineRank: {
-              ...state.settings.machineRank,
-              [recipeType]: rank,
-            },
-          },
-        })),
-
-      setConveyorBelt: (tier, stackCount) =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            conveyorBelt: {
-              ...CONVEYOR_BELT_DATA[tier],
-              stackCount:
-                stackCount !== undefined
-                  ? stackCount
-                  : typeof state.settings.conveyorBelt.stackCount === "number"
-                    ? state.settings.conveyorBelt.stackCount
-                    : 1, // Default to 1 if not a valid number
-            },
-          },
-        })),
-
-      setSorter: tier =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            sorter: SORTER_DATA[tier],
-          },
-        })),
-
-      setAlternativeRecipe: (itemId, recipeId) =>
         set(state => {
-          const newMap = new Map(state.settings.alternativeRecipes);
-          newMap.set(itemId, recipeId);
+          const before = state.settings.proliferator;
+          const after = {
+            ...PROLIFERATOR_DATA[type],
+            mode,
+          };
+
+          // Generate description with before/after values
+          const t = (key: string) => i18n.t(key);
+          const description = generateProliferatorDescription(before, after, t, i18n.language);
+
+          // Record history
+          recordHistoryEntry(
+            "settings",
+            description,
+            { settings: { proliferator: before } },
+            { settings: { proliferator: after } }
+          );
+
           return {
             settings: {
               ...state.settings,
-              alternativeRecipes: newMap,
+              proliferator: after,
             },
           };
         }),
 
+      setMachineRank: (recipeType, rank) =>
+        set(state => {
+          const before = state.settings.machineRank[recipeType];
+          const after = rank;
+
+          // Generate description with before/after values
+          const t = (key: string) => i18n.t(key);
+          const description = generateMachineRankDescription(
+            recipeType,
+            before,
+            rank,
+            t,
+            i18n.language
+          );
+
+          // Record history
+          recordHistoryEntry(
+            "settings",
+            description,
+            { settings: { machineRank: { [recipeType]: before } } },
+            { settings: { machineRank: { [recipeType]: after } } }
+          );
+
+          return {
+            settings: {
+              ...state.settings,
+              machineRank: {
+                ...state.settings.machineRank,
+                [recipeType]: rank,
+              },
+            },
+          };
+        }),
+
+      setConveyorBelt: (tier, stackCount) =>
+        set(state => {
+          const before = state.settings.conveyorBelt;
+          const after = {
+            ...CONVEYOR_BELT_DATA[tier],
+            stackCount:
+              stackCount !== undefined
+                ? stackCount
+                : typeof state.settings.conveyorBelt.stackCount === "number"
+                  ? state.settings.conveyorBelt.stackCount
+                  : 1, // Default to 1 if not a valid number
+          };
+
+          // Generate description with before/after values
+          const t = (key: string) => i18n.t(key);
+          const description = generateConveyorBeltDescription(before, after, t, i18n.language);
+
+          // Record history
+          recordHistoryEntry(
+            "settings",
+            description,
+            { settings: { conveyorBelt: before } },
+            { settings: { conveyorBelt: after } }
+          );
+
+          return {
+            settings: {
+              ...state.settings,
+              conveyorBelt: after,
+            },
+          };
+        }),
+
+      setSorter: tier =>
+        set(state => {
+          const before = state.settings.sorter;
+          const after = SORTER_DATA[tier];
+
+          // Generate description with before/after values
+          const t = (key: string) => i18n.t(key);
+          const description = generateSorterDescription(before, after, t, i18n.language);
+
+          // Record history
+          recordHistoryEntry(
+            "settings",
+            description,
+            { settings: { sorter: before } },
+            { settings: { sorter: after } }
+          );
+
+          return {
+            settings: {
+              ...state.settings,
+              sorter: after,
+            },
+          };
+        }),
+
+      setAlternativeRecipe: (itemId, recipeId) =>
+        set(state => {
+          // Create before state - need to wrap in settings object for calculateChanges
+          const before = {
+            settings: {
+              ...state.settings,
+              alternativeRecipes: new Map(state.settings.alternativeRecipes),
+            },
+          };
+
+          // Create after state with modified Map
+          const afterMap = new Map(state.settings.alternativeRecipes);
+          afterMap.set(itemId, recipeId);
+          const after = {
+            settings: {
+              ...state.settings,
+              alternativeRecipes: afterMap,
+            },
+          };
+
+          // Generate description with before/after values
+          const t = (key: string) => i18n.t(key);
+          const data = useGameDataStore.getState().data;
+          const beforeRecipeSID = state.settings.alternativeRecipes.get(itemId);
+          const itemName =
+            data?.items.get(itemId)?.name ||
+            (i18n.language === "ja" ? `アイテム${itemId}` : `Item ${itemId}`);
+          const description = generateAlternativeRecipeDescription(
+            itemId,
+            itemName,
+            beforeRecipeSID,
+            recipeId,
+            data,
+            t,
+            i18n.language
+          );
+
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
+        }),
+
       setMiningSpeedResearch: bonus =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            miningSpeedResearch: bonus,
-          },
-        })),
+        set(state => {
+          const beforeBonus = state.settings.miningSpeedResearch;
+          const before = { settings: state.settings };
+          const after = {
+            settings: {
+              ...state.settings,
+              miningSpeedResearch: bonus,
+            },
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateMiningSpeedResearchDescription(
+            beforeBonus,
+            bonus,
+            t,
+            i18n.language
+          );
+
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
+        }),
 
       setProliferatorMultiplier: (production, speed) =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            proliferatorMultiplier: { production, speed },
-          },
-        })),
+        set(state => {
+          const before = { settings: state.settings };
+          const after = {
+            settings: {
+              ...state.settings,
+              proliferatorMultiplier: { production, speed },
+            },
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateProliferatorMultiplierDescription(
+            production,
+            speed,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
+        }),
 
       setPhotonGenerationSetting: (key, value) =>
-        set(state => ({
-          settings: {
-            ...state.settings,
-            photonGeneration: {
-              ...state.settings.photonGeneration,
-              [key]: value,
+        set(state => {
+          const before = { settings: state.settings };
+          const after = {
+            settings: {
+              ...state.settings,
+              photonGeneration: {
+                ...state.settings.photonGeneration,
+                [key]: value,
+              },
             },
-          },
-        })),
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generatePhotonGenerationDescription(key, t, i18n.language);
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
+        }),
 
       applyTemplate: templateId =>
-        set(() => {
+        set(state => {
+          const before = {
+            settings: state.settings,
+            selectedTemplate: state.selectedTemplate,
+            powerGenerationTemplate: state.powerGenerationTemplate,
+          };
+
           const template = SETTINGS_TEMPLATES[templateId];
           // Deep clone the settings to avoid reference issues
-          return {
+          const after = {
             settings: {
               ...template.settings,
               alternativeRecipes: new Map(template.settings.alternativeRecipes),
@@ -179,10 +347,18 @@ export const useSettingsStore = create<SettingsStore>()(
             selectedTemplate: templateId as GameTemplate, // テンプレート選択状態を保存
             powerGenerationTemplate: templateId as GameTemplate, // 発電設備テンプレートも同じに設定
           };
+
+          // Record history as batch operation
+          const t = (key: string) => i18n.t(key);
+          const description = generateTemplateDescription(templateId, t, i18n.language);
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
         }),
 
       updateSettings: newSettings =>
         set(state => {
+          const before = { settings: state.settings };
           const updatedSettings = { ...state.settings, ...newSettings };
 
           // Convert alternativeRecipes to Map if it's an object
@@ -192,33 +368,128 @@ export const useSettingsStore = create<SettingsStore>()(
             );
           }
 
-          return { settings: updatedSettings };
+          const after = { settings: updatedSettings };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateBatchSettingsDescription(t, i18n.language);
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
         }),
 
       setSelectedTemplate: template => set({ selectedTemplate: template }),
 
-      setPowerGenerationTemplate: template => set({ powerGenerationTemplate: template }),
+      setPowerGenerationTemplate: template =>
+        set(state => {
+          const before = {
+            powerGenerationTemplate: state.powerGenerationTemplate,
+          };
+          const after = {
+            powerGenerationTemplate: template,
+          };
+          const t = (key: string) => i18n.t(key);
+          const description = generatePowerGenerationTemplateDescription(
+            state.powerGenerationTemplate,
+            template,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("powerGeneration", description, before, after);
+          return { powerGenerationTemplate: template };
+        }),
 
-      setManualPowerGenerator: generator => set({ manualPowerGenerator: generator }),
+      setManualPowerGenerator: generator =>
+        set(state => {
+          const before = {
+            manualPowerGenerator: state.manualPowerGenerator,
+          };
+          const after = {
+            manualPowerGenerator: generator,
+          };
+          const t = (key: string) => i18n.t(key);
+          const data = useGameDataStore.getState().data;
+          const description = generateManualPowerGeneratorDescription(
+            state.manualPowerGenerator,
+            generator,
+            t,
+            i18n.language,
+            data
+          );
+          recordHistoryEntry("powerGeneration", description, before, after);
+          return { manualPowerGenerator: generator };
+        }),
 
-      setManualPowerFuel: fuel => set({ manualPowerFuel: fuel }),
+      setManualPowerFuel: fuel =>
+        set(state => {
+          const before = {
+            manualPowerFuel: state.manualPowerFuel,
+          };
+          const after = {
+            manualPowerFuel: fuel,
+          };
+          const t = (key: string) => i18n.t(key);
+          const data = useGameDataStore.getState().data;
+          const description = generateManualPowerFuelDescription(
+            state.manualPowerFuel,
+            fuel,
+            t,
+            i18n.language,
+            data
+          );
+          recordHistoryEntry("powerGeneration", description, before, after);
+          return { manualPowerFuel: fuel };
+        }),
 
       setPowerFuelProliferator: (type, mode) =>
-        set({
-          powerFuelProliferator: {
-            ...PROLIFERATOR_DATA[type],
-            mode,
-          },
+        set(state => {
+          const before = {
+            powerFuelProliferator: state.powerFuelProliferator,
+          };
+          const after = {
+            powerFuelProliferator: {
+              ...PROLIFERATOR_DATA[type],
+              mode,
+            },
+          };
+          const t = (key: string) => i18n.t(key);
+          const description = generatePowerFuelProliferatorDescription(
+            before.powerFuelProliferator,
+            after.powerFuelProliferator,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("powerGeneration", description, before, after);
+          return {
+            powerFuelProliferator: {
+              ...PROLIFERATOR_DATA[type],
+              mode,
+            },
+          };
         }),
 
       resetSettings: () =>
-        set({
-          settings: defaultSettings,
-          selectedTemplate: null,
-          powerGenerationTemplate: "default",
-          manualPowerGenerator: null,
-          manualPowerFuel: null,
-          powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: "production" as const },
+        set(state => {
+          const before = {
+            settings: state.settings,
+            selectedTemplate: state.selectedTemplate,
+            powerGenerationTemplate: state.powerGenerationTemplate,
+            manualPowerGenerator: state.manualPowerGenerator,
+            manualPowerFuel: state.manualPowerFuel,
+            powerFuelProliferator: state.powerFuelProliferator,
+          };
+
+          const after = {
+            settings: defaultSettings,
+            selectedTemplate: null,
+            powerGenerationTemplate: "default" as GameTemplate,
+            manualPowerGenerator: null,
+            manualPowerFuel: null,
+            powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: "production" as const },
+          };
+
+          recordHistoryEntry("settings", "設定をリセット", before, after);
+
+          return after;
         }),
     }),
     {

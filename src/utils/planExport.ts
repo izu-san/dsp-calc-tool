@@ -150,18 +150,34 @@ export function savePlanToLocalStorage(plan: SavedPlan): void {
 
   // Update recent plans list
   const recentPlans = getRecentPlans();
-  recentPlans.unshift({
+
+  // Remove old entries with the same planId to avoid duplicates
+  const filteredPlans = plan.planId
+    ? recentPlans.filter(p => p.planId !== plan.planId)
+    : recentPlans;
+
+  // Also remove old localStorage items for the same planId
+  if (plan.planId && recentPlans.some(p => p.planId === plan.planId)) {
+    recentPlans.forEach(p => {
+      if (p.planId === plan.planId) {
+        localStorage.removeItem(p.key);
+      }
+    });
+  }
+
+  filteredPlans.unshift({
     key,
     name: plan.name,
     timestamp: plan.timestamp,
+    planId: plan.planId,
   });
 
   // Keep only last 10 plans
-  const plansToKeep = recentPlans.slice(0, 10);
+  const plansToKeep = filteredPlans.slice(0, 10);
   localStorage.setItem("recent_plans", JSON.stringify(plansToKeep));
 
   // Remove old plans
-  recentPlans.slice(10).forEach(p => {
+  filteredPlans.slice(10).forEach(p => {
     localStorage.removeItem(p.key);
   });
 }
@@ -169,7 +185,12 @@ export function savePlanToLocalStorage(plan: SavedPlan): void {
 /**
  * Get recent plans from localStorage
  */
-export function getRecentPlans(): Array<{ key: string; name: string; timestamp: number }> {
+export function getRecentPlans(): Array<{
+  key: string;
+  name: string;
+  timestamp: number;
+  planId?: string;
+}> {
   const stored = localStorage.getItem("recent_plans");
   return stored ? JSON.parse(stored) : [];
 }
