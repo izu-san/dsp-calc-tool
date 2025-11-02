@@ -8,6 +8,10 @@ import { useGameDataStore } from "../../../stores/gameDataStore";
 // i18n モック
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (k: string) => k }),
+  initReactI18next: {
+    type: "3rdParty",
+    init: vi.fn(),
+  },
 }));
 
 // 子コンポーネントを簡素化

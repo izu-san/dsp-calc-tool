@@ -13,7 +13,7 @@ interface LoggerConfig {
   prefix?: string;
 }
 
-class Logger {
+export class Logger {
   private config: LoggerConfig;
 
   constructor(config: Partial<LoggerConfig> = {}) {

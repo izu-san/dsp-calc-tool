@@ -30,6 +30,14 @@ vi.mock("../../../stores/settingsStore", () => ({
   useSettingsStore: () => ({
     settings: {
       proliferator: { type: "none", mode: "speed" },
+      machineRank: {
+        Smelt: "arc",
+        Assemble: "mk1",
+        Chemical: "standard",
+        Research: "standard",
+        Refine: "standard",
+        Particle: "standard",
+      },
     },
   }),
 }));

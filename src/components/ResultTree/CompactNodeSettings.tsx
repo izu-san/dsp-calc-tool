@@ -18,6 +18,19 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
 
   // Get current override or use global settings
   const currentOverride = nodeOverrides.get(node.nodeId);
+  const recipeType = node.recipe?.Type;
+
+  // Normalize machineRank: convert "matrixLab" to "standard" for Research type
+  const normalizeMachineRank = (
+    rank: string | undefined,
+    type: string | undefined
+  ): string | undefined => {
+    if (!rank || !type) return rank;
+    if (type === "Research" && rank === "matrixLab") {
+      return "standard";
+    }
+    return rank;
+  };
 
   const [useOverride, setUseOverride] = useState(() => !!currentOverride);
   const [proliferatorType, setProliferatorType] = useState<ProliferatorType>(
@@ -26,7 +39,41 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
   const [proliferatorMode, setProliferatorMode] = useState<ProliferatorMode>(
     () => currentOverride?.proliferator?.mode || settings.proliferator.mode
   );
-  const [machineRank, setMachineRank] = useState<string>(() => currentOverride?.machineRank || "");
+  const [machineRank, setMachineRank] = useState<string>(() => {
+    // Try to get from node.overrideSettings first (from calculation result)
+    const calculatedRank = normalizeMachineRank(node.overrideSettings?.machineRank, recipeType);
+    if (calculatedRank) {
+      return calculatedRank;
+    }
+    // Fallback to nodeOverrides store
+    const overrideRank = normalizeMachineRank(currentOverride?.machineRank, recipeType);
+    if (overrideRank) {
+      return overrideRank;
+    }
+    if (recipeType && recipeType in settings.machineRank) {
+      const globalRank = settings.machineRank[recipeType as keyof typeof settings.machineRank];
+      if (globalRank) {
+        return globalRank;
+      }
+    }
+    // Fallback to first option if available
+    const options = (() => {
+      if (!recipeType) return [];
+      switch (recipeType) {
+        case "Smelt":
+          return ["arc", "plane", "negentropy"];
+        case "Assemble":
+          return ["mk1", "mk2", "mk3"];
+        case "Chemical":
+          return ["standard", "quantum"];
+        case "Research":
+          return ["standard", "self-evolution"];
+        default:
+          return [];
+      }
+    })();
+    return options[0] || "";
+  });
 
   useEffect(() => {
     const override = nodeOverrides.get(node.nodeId);
@@ -37,43 +84,45 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
       setUseOverride(hasOverride);
     }
 
-    // Only update values if we don't have an override
-    if (!hasOverride) {
-      setProliferatorType(settings.proliferator.type);
-      setProliferatorMode(settings.proliferator.mode);
-      setMachineRank("");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [node.nodeId, settings.proliferator.type, settings.proliferator.mode, nodeOverrides]);
+    // If override is enabled, prioritize override store over calculation result
+    if (hasOverride) {
+      const overrideRank = normalizeMachineRank(override?.machineRank, recipeType);
+      if (overrideRank && overrideRank !== machineRank) {
+        setMachineRank(overrideRank);
+      }
+    } else {
+      // When override is disabled, use calculation result or global settings
+      const calculatedRank = normalizeMachineRank(node.overrideSettings?.machineRank, recipeType);
+      const currentRecipeType = node.recipe?.Type;
 
-  // Auto-save when settings change
-  useEffect(() => {
-    if (useOverride) {
-      const overrideSettings: NodeOverrideSettings = {
-        proliferator: {
-          ...PROLIFERATOR_DATA[proliferatorType],
-          mode: proliferatorMode,
-        },
-      };
-
-      // Always include machineRank, even if empty string (which means "none")
-      if (machineRank !== undefined) {
-        overrideSettings.machineRank = machineRank;
+      if (calculatedRank && calculatedRank !== machineRank) {
+        setMachineRank(calculatedRank);
+      } else if (currentRecipeType && currentRecipeType in settings.machineRank) {
+        const globalRank =
+          settings.machineRank[currentRecipeType as keyof typeof settings.machineRank];
+        if (globalRank && globalRank !== machineRank) {
+          setMachineRank(globalRank);
+        }
       }
 
-      setNodeOverride(node.nodeId, overrideSettings);
+      // Update proliferator only if override is disabled
+      if (settings.proliferator.type !== proliferatorType) {
+        setProliferatorType(settings.proliferator.type);
+      }
+      if (settings.proliferator.mode !== proliferatorMode) {
+        setProliferatorMode(settings.proliferator.mode);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    useOverride,
-    proliferatorType,
-    proliferatorMode,
-    machineRank,
     node.nodeId,
-    node.recipe?.SID,
-    setNodeOverride,
+    node.recipe?.Type,
+    settings.proliferator.type,
+    settings.proliferator.mode,
+    settings.machineRank,
+    nodeOverrides,
   ]);
 
-  const recipeType = node.recipe?.Type;
   const isProductionAllowed = node.recipe?.productive !== false;
 
   // Machine rank options based on recipe type
@@ -113,7 +162,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
         break;
       case "Research":
         options.push(
-          { value: "matrixLab", label: t("matrixLab"), iconId: ICONS.machine.research.standard },
+          { value: "standard", label: t("matrixLab"), iconId: ICONS.machine.research.standard },
           {
             value: "self-evolution",
             label: t("selfEvolutionLab"),
@@ -127,6 +176,41 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
   };
 
   const machineOptions = getMachineRankOptions();
+
+  // Ensure machineRank is valid (not empty and exists in options)
+  const validMachineRank =
+    machineRank && machineOptions.some(opt => opt.value === machineRank)
+      ? machineRank
+      : machineOptions.length > 0
+        ? machineOptions[0].value
+        : "";
+
+  // Auto-save when settings change
+  useEffect(() => {
+    if (useOverride) {
+      const overrideSettings: NodeOverrideSettings = {
+        proliferator: {
+          ...PROLIFERATOR_DATA[proliferatorType],
+          mode: proliferatorMode,
+        },
+      };
+
+      // Include machineRank only if it has a valid value
+      if (validMachineRank) {
+        overrideSettings.machineRank = validMachineRank;
+      }
+
+      setNodeOverride(node.nodeId, overrideSettings);
+    }
+  }, [
+    useOverride,
+    proliferatorType,
+    proliferatorMode,
+    validMachineRank,
+    node.nodeId,
+    node.recipe?.SID,
+    setNodeOverride,
+  ]);
 
   return (
     <div
@@ -275,7 +359,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                   {t("machineRank")}
                 </label>
                 <select
-                  value={machineRank}
+                  value={validMachineRank}
                   onChange={e => {
                     setMachineRank(e.target.value);
                   }}
@@ -286,9 +370,6 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                     color: "#FFFFFF",
                   }}
                 >
-                  <option value="" style={{ backgroundColor: "#1E293B", color: "#FFFFFF" }}>
-                    {t("none")}
-                  </option>
                   {machineOptions.map(option => (
                     <option
                       key={option.value}

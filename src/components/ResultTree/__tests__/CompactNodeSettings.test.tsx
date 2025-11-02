@@ -23,7 +23,14 @@ vi.mock("../../../stores/nodeOverrideStore", () => ({
 
 const settingsMock = {
   proliferator: { type: "none", mode: "speed" },
-  machineRank: { Smelt: "arc", Assemble: "mk1" },
+  machineRank: {
+    Smelt: "arc",
+    Assemble: "mk1",
+    Chemical: "standard",
+    Research: "standard",
+    Refine: "standard",
+    Particle: "standard",
+  },
 };
 
 vi.mock("../../../stores/settingsStore", () => ({
@@ -139,11 +146,8 @@ describe("CompactNodeSettings", () => {
     const toggle = screen.getByRole("switch");
     fireEvent.click(toggle);
 
-    // 機械ランクを選択（複数の select があるため、machineRank ラベルのものを特定）
-    const rankSelects = screen.getAllByDisplayValue("none");
-    const rankSelect = rankSelects.find(select =>
-      select.closest("div")?.textContent?.includes("machineRank")
-    )!;
+    // 機械ランクを選択
+    const rankSelect = screen.getByTestId("machine-rank-select");
     fireEvent.change(rankSelect, { target: { value: "mk2" } });
 
     expect(rankSelect).toHaveValue("mk2");
@@ -157,10 +161,7 @@ describe("CompactNodeSettings", () => {
     fireEvent.click(toggle);
 
     // Smelt タイプのオプションが表示される
-    const rankSelects = screen.getAllByDisplayValue("none");
-    const rankSelect = rankSelects.find(select =>
-      select.closest("div")?.textContent?.includes("machineRank")
-    )!;
+    const rankSelect = screen.getByTestId("machine-rank-select");
     expect(rankSelect).toBeInTheDocument();
 
     // オプションを確認
@@ -225,11 +226,8 @@ describe("CompactNodeSettings", () => {
     const toggle = screen.getByRole("switch");
     fireEvent.click(toggle);
 
-    // 機械ランクの初期値は空文字列（none）
-    const rankSelects = screen.getAllByDisplayValue("none");
-    const rankSelect = rankSelects.find(select =>
-      select.closest("div")?.textContent?.includes("machineRank")
-    )!;
-    expect(rankSelect).toHaveValue("");
+    // 機械ランクの初期値はグローバル設定のmk1
+    const rankSelect = screen.getByTestId("machine-rank-select");
+    expect(rankSelect).toHaveValue("mk1");
   });
 });

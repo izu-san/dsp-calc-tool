@@ -17,8 +17,9 @@ import type { CalculationResult } from "@/types";
 import type { PowerGeneratorType } from "@/types/power-generation";
 import type { GameTemplate } from "@/types/settings/templates";
 import { formatNumber, formatPower, formatRate } from "@/utils/format";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { setInternal } from "@/utils/historyRecorder";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<string, number | null> = {
@@ -51,6 +52,9 @@ export function PowerGenerationView({
   const data = useGameDataStore(state => state.data);
   const machines = data?.machines;
   const items = data?.items;
+
+  // Track if this is a mounting effect to skip initial automatic change
+  const isFirstRender = useRef(true);
 
   // 設備名を取得（言語に応じた名前を返す）
   const getGeneratorName = (machineId: number): string => {
@@ -108,10 +112,20 @@ export function PowerGenerationView({
 
   // 発電設備が変更された時に増産剤のモードを自動更新
   useEffect(() => {
+    // Skip on first render (this is a mount effect)
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     if (powerFuelProliferator.type !== "none") {
       const correctMode = isArtificialStar ? "speed" : "production";
       if (powerFuelProliferator.mode !== correctMode) {
+        // Set internal flag to prevent recording this automatic change
+        setInternal(true);
         setPowerFuelProliferator(powerFuelProliferator.type, correctMode);
+        // Clear internal flag after debounce delay
+        setTimeout(() => setInternal(false), 600);
       }
     }
   }, [
@@ -300,7 +314,10 @@ export function PowerGenerationView({
                 data-testid="power-generation-generator-auto-button"
                 onClick={() => {
                   setManualPowerGenerator(null);
+                  // Fuel reset is internal change, skip recording
+                  setInternal(true);
                   setManualPowerFuel(null);
+                  setTimeout(() => setInternal(false), 600);
                 }}
                 className={`
                   px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
@@ -330,7 +347,10 @@ export function PowerGenerationView({
                     data-testid={`power-generation-generator-button-${generatorType}`}
                     onClick={() => {
                       setManualPowerGenerator(generatorType);
+                      // Fuel reset is internal change, skip recording
+                      setInternal(true);
                       setManualPowerFuel(null);
+                      setTimeout(() => setInternal(false), 600);
                     }}
                     className={`
                       px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105

@@ -5,6 +5,10 @@ import userEvent from "@testing-library/user-event";
 // i18n モック
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
+  initReactI18next: {
+    type: "3rdParty",
+    init: vi.fn(),
+  },
 }));
 
 // 計算ロジックをモック（渡された settings に応じて差分を出す）
@@ -141,6 +145,7 @@ vi.mock("../../../utils/format", () => ({
 export const setProliferatorMock = vi.fn();
 export const setConveyorBeltMock = vi.fn();
 export const setMachineRankMock = vi.fn();
+export const updateSettingsMock = vi.fn();
 let currentSettings: any = {
   proliferator: { type: "none", mode: "speed" },
   conveyorBelt: { tier: "mk1", stackCount: 1 },
@@ -153,6 +158,7 @@ vi.mock("../../../stores/settingsStore", () => ({
     setProliferator: (...args: any[]) => setProliferatorMock(...args),
     setConveyorBelt: (...args: any[]) => setConveyorBeltMock(...args),
     setMachineRank: (...args: any[]) => setMachineRankMock(...args),
+    updateSettings: (...args: any[]) => updateSettingsMock(...args),
   }),
 }));
 
@@ -215,7 +221,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setProliferatorMock).toHaveBeenCalledWith("mk3", "speed");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      proliferator: expect.objectContaining({ type: "mk3" }),
+    });
   });
 
   it("ベルトmk3シナリオが適用される", async () => {
@@ -227,7 +235,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setConveyorBeltMock).toHaveBeenCalledWith("mk3", 1);
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      conveyorBelt: expect.objectContaining({ tier: "mk3" }),
+    });
   });
 
   it("スタック4シナリオが適用される", async () => {
@@ -239,7 +249,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setConveyorBeltMock).toHaveBeenCalledWith("mk1", 4);
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      conveyorBelt: expect.objectContaining({ stackCount: 4 }),
+    });
   });
 
   it("クオンタム化学プラントシナリオが適用される", async () => {
@@ -251,7 +263,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setMachineRankMock).toHaveBeenCalledWith("Chemical", "quantum");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      machineRank: expect.objectContaining({ Chemical: "quantum" }),
+    });
   });
 
   it("アセンブラmk3シナリオが適用される", async () => {
@@ -263,7 +277,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setMachineRankMock).toHaveBeenCalledWith("Assemble", "mk3");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      machineRank: expect.objectContaining({ Assemble: "mk3" }),
+    });
   });
 
   it("リコンポーザーアセンブラシナリオが適用される", async () => {
@@ -275,7 +291,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setMachineRankMock).toHaveBeenCalledWith("Assemble", "recomposing");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      machineRank: expect.objectContaining({ Assemble: "recomposing" }),
+    });
   });
 
   it("生産モードシナリオが適用される", async () => {
@@ -287,7 +305,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setProliferatorMock).toHaveBeenCalledWith("none", "production");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      proliferator: expect.objectContaining({ mode: "production" }),
+    });
   });
 
   it("スピードモードシナリオが適用される", async () => {
@@ -304,7 +324,9 @@ describe("WhatIfSimulator", () => {
     const applyBtn = within(cardContainer as HTMLElement).getByText("apply");
     await userEvent.click(applyBtn);
 
-    expect(setProliferatorMock).toHaveBeenCalledWith("none", "speed");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      proliferator: expect.objectContaining({ mode: "speed" }),
+    });
   });
 
   it("既に適用済みのシナリオは Apply が無効化される", async () => {
@@ -413,7 +435,7 @@ describe("WhatIfSimulator", () => {
 
     // シナリオが適用されることを確認
     await waitFor(() => {
-      expect(setProliferatorMock).toHaveBeenCalled();
+      expect(updateSettingsMock).toHaveBeenCalled();
     });
   });
 
@@ -424,7 +446,9 @@ describe("WhatIfSimulator", () => {
     const maxProliferatorButton = screen.getByText("maxProliferator").closest("button");
     await userEvent.click(maxProliferatorButton as HTMLElement);
 
-    expect(setProliferatorMock).toHaveBeenCalledWith("mk3", "speed");
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      proliferator: expect.objectContaining({ type: "mk3" }),
+    });
   });
 
   it("最大ベルトボタンが動作する", async () => {
@@ -433,7 +457,9 @@ describe("WhatIfSimulator", () => {
     const maxBeltsButton = screen.getByText("maxBelts").closest("button");
     await userEvent.click(maxBeltsButton as HTMLElement);
 
-    expect(setConveyorBeltMock).toHaveBeenCalledWith("mk3", 1);
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      conveyorBelt: expect.objectContaining({ tier: "mk3" }),
+    });
   });
 
   it("最大スタックボタンが動作する", async () => {
@@ -442,7 +468,9 @@ describe("WhatIfSimulator", () => {
     const maxStackButton = screen.getByText("maxStack").closest("button");
     await userEvent.click(maxStackButton as HTMLElement);
 
-    expect(setConveyorBeltMock).toHaveBeenCalledWith("mk1", 4);
+    expect(updateSettingsMock).toHaveBeenCalledWith({
+      conveyorBelt: expect.objectContaining({ stackCount: 4 }),
+    });
   });
 
   it("ボトルネック検出とFix All機能が動作する", async () => {
@@ -461,7 +489,7 @@ describe("WhatIfSimulator", () => {
 
       // シナリオが適用されることを確認
       await waitFor(() => {
-        expect(setConveyorBeltMock).toHaveBeenCalled();
+        expect(updateSettingsMock).toHaveBeenCalled();
       });
     }
   });
@@ -479,7 +507,7 @@ describe("WhatIfSimulator", () => {
       await userEvent.click(fixNowButtons[0]);
 
       await waitFor(() => {
-        expect(setProliferatorMock).toHaveBeenCalled();
+        expect(updateSettingsMock).toHaveBeenCalled();
       });
     }
   });

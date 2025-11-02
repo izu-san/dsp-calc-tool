@@ -141,6 +141,12 @@ vi.mock("../../components/WelcomeModal", () => ({
 vi.mock("../../components/LanguageSwitcher", () => ({
   LanguageSwitcher: () => <div data-testid="language-switcher" />,
 }));
+vi.mock("../../components/ToastProvider", () => ({
+  ToastProvider: ({ children }: { children: any }) => children,
+}));
+vi.mock("../../components/ToastProvider/useToast", () => ({
+  useToast: () => ({ showToast: vi.fn() }),
+}));
 
 describe("App smoke", () => {
   beforeEach(() => {

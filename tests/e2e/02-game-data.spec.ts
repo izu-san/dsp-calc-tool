@@ -9,6 +9,9 @@ import path from "path";
 
 test.describe("ゲームデータ読み込みと初期表示", () => {
   test("02-01: ゲームデータの初期表示 - 全SIDが各タブで表示されること", async ({ page }) => {
+    // 大量のレシピボタンをチェックするため、タイムアウトを60秒に設定
+    test.setTimeout(60000);
+
     // 1. アプリにアクセスする
     // waitUntil 'networkidle' to ensure the SPA has finished initial network loading
     await page.goto("http://localhost:5173/", { waitUntil: "networkidle" });

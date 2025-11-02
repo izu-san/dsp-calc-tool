@@ -275,14 +275,16 @@ test.describe("データのエクスポートとインポート", () => {
   });
 
   test("05-10: 画像形式のエクスポート", async ({ page }) => {
-    // 統計タブに切り替える
-    await page.getByTestId("statistics-tab").click();
-    await expect(page.getByTestId("statistics-tab-content")).toBeVisible();
+    // beforeEachでレシピ(デストロイヤー)が既に選択されている
+    // 保存ダイアログを開く前に、ビューが表示されていることを確認
+    await expect(page.getByTestId("recipe-node-1705")).toBeVisible();
 
-    // 3-4. 保存 -> 画像エクスポート
+    // 保存ダイアログを開く
+    await page.getByTestId("save-button").click();
+
+    // 画像エクスポートボタンをクリックしてダウンロードを待つ
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      page.getByTestId("save-button").click(),
       page.getByTestId("export-image-button").click(),
     ]);
 

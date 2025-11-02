@@ -108,7 +108,13 @@ export function resolveMachine(
   override: NodeOverrideSettings | undefined
 ): Machine {
   if (override?.machineRank) {
-    const foundMachine = resolveMachineByRank(recipe, override.machineRank, gameData);
+    // Normalize machineRank: convert "matrixLab" to "standard" for Research type
+    let normalizedRank = override.machineRank;
+    if (recipe.Type === "Research" && normalizedRank === "matrixLab") {
+      normalizedRank = "standard";
+    }
+
+    const foundMachine = resolveMachineByRank(recipe, normalizedRank, gameData);
     if (foundMachine) {
       return foundMachine;
     }
@@ -439,6 +445,14 @@ export function buildRecipeTree(
     miningSettings
   );
 
+  // Build overrideSettings if override exists
+  const overrideSettings = override
+    ? {
+        machineRank: override.machineRank,
+        proliferator: override.proliferator,
+      }
+    : undefined;
+
   return {
     recipe,
     targetOutputRate: targetRate,
@@ -451,5 +465,6 @@ export function buildRecipeTree(
     conveyorBelts,
     nodeId,
     targetItemId, // Which item this recipe is producing (for multi-output recipes)
+    overrideSettings,
   };
 }

@@ -5,6 +5,11 @@ import { PlanManager } from "../index";
 // i18n モック（キーを返す）
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string, _opts?: unknown) => key }),
+  default: { language: "ja" },
+}));
+
+vi.mock("../../../i18n", () => ({
+  default: { language: "ja" },
 }));
 
 // stores モック
@@ -81,6 +86,21 @@ vi.mock("../../../stores/nodeOverrideStore", () => ({
   }),
 }));
 
+const savePlanVersionMock = vi.fn((plan: any) => plan.planId || "test-plan-id");
+const getPlanVersionsMock = vi.fn();
+const loadPlanVersionMock = vi.fn();
+const loadLatestPlanVersionMock = vi.fn();
+const pushEntryMock = vi.fn();
+vi.mock("../../../stores/historyStore", () => ({
+  useHistoryStore: () => ({
+    savePlanVersion: savePlanVersionMock,
+    getPlanVersions: getPlanVersionsMock,
+    loadPlanVersion: loadPlanVersionMock,
+    loadLatestPlanVersion: loadLatestPlanVersionMock,
+    pushEntry: pushEntryMock,
+  }),
+}));
+
 // planExport/urlShare モック（hoisted）
 const planExportMocks = vi.hoisted(() => ({
   restorePlan: vi.fn(),
@@ -104,6 +124,10 @@ const urlShareMocks = vi.hoisted(() => ({
   copyToClipboard: vi.fn(async () => true),
 }));
 vi.mock("../../../utils/urlShare", () => urlShareMocks);
+
+vi.mock("../../../utils/historyRecorder", () => ({
+  setInternal: vi.fn(),
+}));
 
 describe("PlanManager", () => {
   let alertMock: ReturnType<typeof vi.fn>;
@@ -132,7 +156,7 @@ describe("PlanManager", () => {
   it("Save ダイアログで saveToLocalStorage が呼ばれ、アラート表示・ダイアログ閉じる", () => {
     render(<PlanManager />);
     fireEvent.click(screen.getByRole("button", { name: /save$/i }));
-    fireEvent.change(screen.getByPlaceholderText(/Plan_/), { target: { value: "MyPlan" } });
+    fireEvent.change(screen.getByPlaceholderText("Test Recipe"), { target: { value: "MyPlan" } });
     fireEvent.click(screen.getByRole("button", { name: /saveToLocalStorage/i }));
     expect(planExportMocks.savePlanToLocalStorage).toHaveBeenCalled();
     expect(alertMock).toHaveBeenCalledWith("saved");
@@ -152,7 +176,7 @@ describe("PlanManager", () => {
     fireEvent.click(screen.getByRole("button", { name: /load$/i }));
     // ダイアログ内の Recent Plans のロードボタン（見出し load と区別）
     const buttons = screen.getAllByRole("button", { name: /^load$/i });
-    const recentLoad = buttons.find(b => b.className.includes("bg-blue-600"))!;
+    const recentLoad = buttons.find(b => b.className.includes("neon-blue"))!;
     fireEvent.click(recentLoad);
     expect(planExportMocks.loadPlanFromLocalStorage).toHaveBeenCalledWith("k1");
     expect(planExportMocks.restorePlan).toHaveBeenCalled();
@@ -272,7 +296,7 @@ describe("PlanManager", () => {
     fireEvent.click(mergeCb);
     // RecentのLoad押下
     const buttons = screen.getAllByRole("button", { name: /^load$/i });
-    const recentLoad = buttons.find(b => b.className.includes("bg-blue-600"))!;
+    const recentLoad = buttons.find(b => b.className.includes("neon-blue"))!;
     fireEvent.click(recentLoad);
 
     // マージ適用が呼ばれ、両者のキーが含まれること
@@ -320,7 +344,7 @@ describe("PlanManager", () => {
     render(<PlanManager />);
     fireEvent.click(screen.getByRole("button", { name: /load$/i }));
     const buttons = screen.getAllByRole("button", { name: /^load$/i });
-    const recentLoad = buttons.find(b => b.className.includes("bg-blue-600"))!;
+    const recentLoad = buttons.find(b => b.className.includes("neon-blue"))!;
     fireEvent.click(recentLoad);
     expect(alertMock).toHaveBeenCalledWith("planNotFound");
   });
@@ -385,7 +409,7 @@ describe("PlanManager", () => {
     render(<PlanManager />);
     fireEvent.click(screen.getByRole("button", { name: /load$/i }));
     const buttons = screen.getAllByRole("button", { name: /^load$/i });
-    const recentLoad = buttons.find(b => b.className.includes("bg-blue-600"))!;
+    const recentLoad = buttons.find(b => b.className.includes("neon-blue"))!;
     fireEvent.click(recentLoad);
     expect(alertMock).toHaveBeenCalledWith(expect.stringContaining("recipeNotFound"));
   });
@@ -408,7 +432,7 @@ describe("PlanManager", () => {
     expect(planExportMocks.savePlanToLocalStorage).toHaveBeenCalled();
     const calls = planExportMocks.savePlanToLocalStorage.mock.calls as unknown[] as [any[]];
     const arg = calls.length ? calls[0][0] : (undefined as any);
-    expect(arg && (arg as any).name).toMatch(/^Plan_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$/);
+    expect(arg && (arg as any).name).toBe("Test Recipe");
   });
 
   it("Share: プラン名が空の場合はデフォルト名が使用される", () => {
@@ -417,7 +441,7 @@ describe("PlanManager", () => {
     expect(urlShareMocks.generateShareURL).toHaveBeenCalled();
     const calls = urlShareMocks.generateShareURL.mock.calls as unknown[] as [any[]];
     const arg = calls.length ? calls[0][0] : (undefined as any);
-    expect(arg && (arg as any).name).toMatch(/^Plan_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}$/);
+    expect(arg && (arg as any).name).toBe("Test Recipe");
   });
 
   it("Load: recent plans が空の場合は noPlans メッセージが表示される", () => {
@@ -425,5 +449,28 @@ describe("PlanManager", () => {
     render(<PlanManager />);
     fireEvent.click(screen.getByRole("button", { name: /load$/i }));
     expect(screen.getByText("noPlans")).toBeInTheDocument();
+  });
+
+  it("Save: Export to Markdown が成功メッセージを表示", () => {
+    render(<PlanManager />);
+    fireEvent.click(screen.getByRole("button", { name: /save$/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^Markdown$/i }));
+    expect(screen.getByText(/exported/i)).toBeInTheDocument();
+  });
+
+  it("Save: Export to CSV が成功メッセージを表示", () => {
+    render(<PlanManager />);
+    fireEvent.click(screen.getByRole("button", { name: /save$/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^CSV$/i }));
+    expect(screen.getByText(/exported/i)).toBeInTheDocument();
+  });
+
+  it("Save: Export to Excel が成功メッセージを表示", async () => {
+    render(<PlanManager />);
+    fireEvent.click(screen.getByRole("button", { name: /save$/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^Excel$/i }));
+    await waitFor(() => {
+      expect(screen.getByText(/exported/i)).toBeInTheDocument();
+    });
   });
 });

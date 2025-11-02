@@ -85,6 +85,12 @@ vi.mock("../../components/WelcomeModal", () => ({ WelcomeModal: () => null }));
 vi.mock("../../components/LanguageSwitcher", () => ({
   LanguageSwitcher: () => <div data-testid="language-switcher" />,
 }));
+vi.mock("../../components/ToastProvider", () => ({
+  ToastProvider: ({ children }: { children: any }) => children,
+}));
+vi.mock("../../components/ToastProvider/useToast", () => ({
+  useToast: () => ({ showToast: vi.fn() }),
+}));
 
 // calculator returns a minimal tree when called
 vi.mock("../../lib/calculator", () => ({

@@ -31,7 +31,7 @@ export function WhatIfSimulator() {
   const { t } = useTranslation();
   const { data } = useGameDataStore();
   const { selectedRecipe, targetQuantity } = useRecipeSelectionStore();
-  const { settings, setProliferator, setConveyorBelt, setMachineRank } = useSettingsStore();
+  const { settings, updateSettings } = useSettingsStore();
   const { nodeOverrides } = useNodeOverrideStore();
   const { settings: miningSettings } = useMiningSettingsStore();
   const [activeScenarios, setActiveScenarios] = useState<string[]>([]);
@@ -374,22 +374,12 @@ export function WhatIfSimulator() {
   };
 
   const applyScenario = (scenario: Scenario) => {
-    // Apply the scenario settings to global settings
+    // Apply the scenario settings to global settings as a batch operation
+    // This ensures history is recorded as a single entry for proper Undo/Redo
     const scenarioSettings = scenario.settings;
 
-    if (scenarioSettings.proliferator) {
-      setProliferator(scenarioSettings.proliferator.type, scenarioSettings.proliferator.mode);
-    }
-
-    if (scenarioSettings.conveyorBelt) {
-      setConveyorBelt(scenarioSettings.conveyorBelt.tier, scenarioSettings.conveyorBelt.stackCount);
-    }
-
-    if (scenarioSettings.machineRank) {
-      Object.entries(scenarioSettings.machineRank).forEach(([type, rank]) => {
-        setMachineRank(type as keyof GlobalSettings["machineRank"], rank as string);
-      });
-    }
+    // Use updateSettings to apply all changes at once with a single history entry
+    updateSettings(scenarioSettings);
 
     // Show applied state
     setAppliedScenario(scenario.id);

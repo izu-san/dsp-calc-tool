@@ -12,11 +12,20 @@ vi.mock("react-i18next", () => ({
       return translations[key] || key;
     },
   }),
+  initReactI18next: {
+    type: "3rdParty",
+    init: () => {},
+  },
 }));
 
 // LanguageSwitcherをモック
 vi.mock("../../LanguageSwitcher", () => ({
   LanguageSwitcher: () => <div data-testid="language-switcher">Language Switcher</div>,
+}));
+
+// HistoryControlsをモック
+vi.mock("../../HistoryControls", () => ({
+  HistoryControls: () => <div data-testid="history-controls">History Controls</div>,
 }));
 
 describe("Header", () => {
