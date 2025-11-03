@@ -38,6 +38,10 @@ import {
   generateManualPowerGeneratorDescription,
   generateManualPowerFuelDescription,
   generatePowerFuelProliferatorDescription,
+  generateCustomTemplateCreatedDescription,
+  generateCustomTemplateUpdatedDescription,
+  generateCustomTemplateDeletedDescription,
+  generateCustomTemplateAppliedDescription,
 } from "../utils/historyDescriptionHelper";
 import { useGameDataStore } from "./gameDataStore";
 import i18n from "../i18n";
@@ -557,7 +561,11 @@ export const useSettingsStore = create<SettingsStore>()(
           };
 
           const t = (key: string) => i18n.t(key);
-          const description = `${t("customTemplate")}「${name.trim()}」${t("created")}`;
+          const description = generateCustomTemplateCreatedDescription(
+            name.trim(),
+            t,
+            i18n.language
+          );
           recordHistoryEntry("settings", description, before, after);
 
           return after;
@@ -608,7 +616,11 @@ export const useSettingsStore = create<SettingsStore>()(
           };
 
           const t = (key: string) => i18n.t(key);
-          const description = `${t("customTemplate")}「${updatedTemplate.meta.name}」${t("updated")}`;
+          const description = generateCustomTemplateUpdatedDescription(
+            updatedTemplate.meta.name,
+            t,
+            i18n.language
+          );
           recordHistoryEntry("settings", description, before, after);
 
           return after;
@@ -641,7 +653,11 @@ export const useSettingsStore = create<SettingsStore>()(
           };
 
           const t = (key: string) => i18n.t(key);
-          const description = `${t("customTemplate")}「${template.meta.name}」${t("deleted")}`;
+          const description = generateCustomTemplateDeletedDescription(
+            template.meta.name,
+            t,
+            i18n.language
+          );
           recordHistoryEntry("settings", description, before, after);
 
           return after;
@@ -671,7 +687,11 @@ export const useSettingsStore = create<SettingsStore>()(
           };
 
           const t = (key: string) => i18n.t(key);
-          const description = `${t("customTemplate")}「${template.meta.name}」${t("applied")}`;
+          const description = generateCustomTemplateAppliedDescription(
+            template.meta.name,
+            t,
+            i18n.language
+          );
           recordHistoryEntry("settings", description, before, after);
 
           return after;
