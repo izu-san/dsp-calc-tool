@@ -138,14 +138,14 @@ vi.mock("../../components/ModSettings", () => ({
 vi.mock("../../components/WelcomeModal", () => ({
   WelcomeModal: () => null,
 }));
-vi.mock("../../components/LanguageSwitcher", () => ({
-  LanguageSwitcher: () => <div data-testid="language-switcher" />,
+vi.mock("../../components/Layout/Header/LanguageMenu", () => ({
+  LanguageMenu: () => <button data-testid="language-menu-trigger">🌐</button>,
 }));
-vi.mock("../../components/ToastProvider", () => ({
-  ToastProvider: ({ children }: { children: any }) => children,
+vi.mock("../../components/Layout/Header/HistoryToolbar", () => ({
+  HistoryToolbar: () => <div data-testid="history-toolbar">History Toolbar</div>,
 }));
-vi.mock("../../components/ToastProvider/useToast", () => ({
-  useToast: () => ({ showToast: vi.fn() }),
+vi.mock("../../components/Layout/Header/PlanManagerMenu", () => ({
+  PlanManagerMenu: () => <div data-testid="plan-manager-menu">Plan Manager Menu</div>,
 }));
 
 describe("App smoke", () => {
@@ -160,8 +160,14 @@ describe("App smoke", () => {
     // Re-apply minimal always-on mocks that tests rely on
     vi.doMock("../../components/ModSettings", () => ({ ModSettings: () => null }));
     vi.doMock("../../components/WelcomeModal", () => ({ WelcomeModal: () => null }));
-    vi.doMock("../../components/LanguageSwitcher", () => ({
-      LanguageSwitcher: () => <div data-testid="language-switcher" />,
+    vi.doMock("../../components/Layout/Header/LanguageMenu", () => ({
+      LanguageMenu: () => <button data-testid="language-menu-trigger">🌐</button>,
+    }));
+    vi.doMock("../../components/Layout/Header/HistoryToolbar", () => ({
+      HistoryToolbar: () => <div data-testid="history-toolbar">History Toolbar</div>,
+    }));
+    vi.doMock("../../components/Layout/Header/PlanManagerMenu", () => ({
+      PlanManagerMenu: () => <div data-testid="plan-manager-menu">Plan Manager Menu</div>,
     }));
     // Allow caller to apply scenario-specific mocks before importing App
     beforeImport?.();
@@ -173,7 +179,7 @@ describe("App smoke", () => {
     render(<App />);
 
     expect(screen.getByText("Dyson Sphere Program - レシピ計算機")).toBeInTheDocument();
-    expect(screen.getByTestId("language-switcher")).toBeInTheDocument();
+    expect(screen.getByTestId("language-menu-trigger")).toBeInTheDocument();
     // lazy要素はロード待ち
     expect(await screen.findByTestId("recipe-selector")).toBeInTheDocument();
   });

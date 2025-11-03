@@ -15,7 +15,8 @@ test.describe("設定永続化とロケール設定", () => {
     expect(initialLang).toBe("ja");
 
     // 2. 言語を en に切り替える
-    await page.getByTestId("language-switcher-select").selectOption({ value: "en" });
+    await page.getByTestId("language-menu-trigger").click();
+    await page.getByTestId("language-menu-item-en").click();
 
     // 明示的な待機
     await page.waitForTimeout(500);

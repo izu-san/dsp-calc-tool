@@ -1,16 +1,17 @@
 import { useEffect, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistoryStore } from "../../stores/historyStore";
-import { restoreStateFromHistory } from "../../utils/historyRestore";
-import { historyDebouncer } from "../../utils/historyDebouncer";
-import { HistoryDialog } from "../HistoryDialog";
-import { useToast } from "../ToastProvider/useToast";
-import { regenerateHistoryDescription } from "../../utils/historyDescriptionRegenerator";
+import { useHistoryStore } from "../../../stores/historyStore";
+import { restoreStateFromHistory } from "../../../utils/historyRestore";
+import { historyDebouncer } from "../../../utils/historyDebouncer";
+import { HistoryDialog } from "../../HistoryDialog";
+import { useToast } from "../../ToastProvider/useToast";
+import { regenerateHistoryDescription } from "../../../utils/historyDescriptionRegenerator";
 
 /**
- * Undo/Redo controls component
+ * 履歴操作ツールバーコンポーネント
+ * Undo/Redo/History操作を提供
  */
-export function HistoryControls() {
+export function HistoryToolbar() {
   const { t } = useTranslation();
   const { undo, redo, canUndo, canRedo } = useHistoryStore();
   const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);

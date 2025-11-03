@@ -82,8 +82,14 @@ vi.mock("../../components/BuildingCostView", () => ({
 }));
 vi.mock("../../components/ModSettings", () => ({ ModSettings: () => null }));
 vi.mock("../../components/WelcomeModal", () => ({ WelcomeModal: () => null }));
-vi.mock("../../components/LanguageSwitcher", () => ({
-  LanguageSwitcher: () => <div data-testid="language-switcher" />,
+vi.mock("../../components/Layout/Header/LanguageMenu", () => ({
+  LanguageMenu: () => <button data-testid="language-menu-trigger">🌐</button>,
+}));
+vi.mock("../../components/Layout/Header/HistoryToolbar", () => ({
+  HistoryToolbar: () => <div data-testid="history-toolbar">History Toolbar</div>,
+}));
+vi.mock("../../components/Layout/Header/PlanManagerMenu", () => ({
+  PlanManagerMenu: () => <div data-testid="plan-manager-menu">Plan Manager Menu</div>,
 }));
 vi.mock("../../components/ToastProvider", () => ({
   ToastProvider: ({ children }: { children: any }) => children,

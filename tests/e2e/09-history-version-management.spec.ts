@@ -360,10 +360,9 @@ test.describe("履歴・バージョン管理機能", () => {
       await targetInput.press("Enter");
       await page.waitForTimeout(500);
 
-      // 1. 保存ボタンをクリック
-      const saveButton = page.getByRole("button", { name: /💾 保存/ });
-      await expect(saveButton).toBeVisible();
-      await saveButton.click();
+      // 1. 保存メニューを開く
+      await page.getByTestId("plan-manager-menu-trigger").click();
+      await page.getByTestId("plan-menu-save").click();
 
       // 保存ダイアログが表示されることを確認
       const saveHeading = page.getByRole("heading", { name: "保存", level: 2 });
@@ -402,8 +401,8 @@ test.describe("履歴・バージョン管理機能", () => {
       await targetInput.fill("5");
       await page.waitForTimeout(500);
 
-      const saveButton = page.getByRole("button", { name: /💾 保存/ });
-      await saveButton.click();
+      await page.getByTestId("plan-manager-menu-trigger").click();
+      await page.getByTestId("plan-menu-save").click();
 
       const saveHeading = page.getByRole("heading", { name: "保存", level: 2 });
       await expect(saveHeading).toBeVisible();
@@ -427,7 +426,8 @@ test.describe("履歴・バージョン管理機能", () => {
       await page.waitForTimeout(500);
 
       // 再度保存
-      await saveButton.click();
+      await page.getByTestId("plan-manager-menu-trigger").click();
+      await page.getByTestId("plan-menu-save").click();
       await page.waitForTimeout(500);
 
       const browserSaveButton2 = page.getByRole("button", { name: /ブラウザに保存/ });
@@ -462,9 +462,13 @@ test.describe("履歴・バージョン管理機能", () => {
         localStorage.setItem("saved-plan-old", JSON.stringify(oldPlan));
       });
 
+      // まずレシピを選択してボタンを有効化
+      await page.getByTestId("recipe-button-1101").click();
+      await page.waitForTimeout(300);
+
       // 2. プラン読み込みボタンをクリック
-      const loadButton = page.getByRole("button", { name: /📂 読み込み/ });
-      await loadButton.click();
+      await page.getByTestId("plan-manager-menu-trigger").click();
+      await page.getByTestId("plan-menu-load").click();
 
       const loadHeading = page.getByRole("heading", { name: "読み込み", level: 2 });
       await expect(loadHeading).toBeVisible();
@@ -491,8 +495,8 @@ test.describe("履歴・バージョン管理機能", () => {
         }
 
         // 3. 再保存する
-        const saveButton = page.getByRole("button", { name: /💾 保存/ });
-        await saveButton.click();
+        await page.getByTestId("plan-manager-menu-trigger").click();
+        await page.getByTestId("plan-menu-save").click();
 
         const browserSaveButton = page.getByRole("button", { name: /ブラウザに保存/ });
         await browserSaveButton.click();

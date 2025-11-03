@@ -1,10 +1,12 @@
 import { Suspense, lazy } from "react";
 import { useTranslation } from "react-i18next";
-import { LanguageSwitcher } from "../LanguageSwitcher";
-import { HistoryControls } from "../HistoryControls";
+import { HistoryToolbar } from "./Header/HistoryToolbar";
+import { LanguageMenu } from "./Header/LanguageMenu";
 
 // Lazy load heavy components
-const PlanManager = lazy(() => import("../PlanManager").then(m => ({ default: m.PlanManager })));
+const PlanManagerMenu = lazy(() =>
+  import("./Header/PlanManagerMenu").then(m => ({ default: m.PlanManagerMenu }))
+);
 
 /**
  * アプリケーションのヘッダーコンポーネント
@@ -26,12 +28,12 @@ export function Header() {
               {t("title")}
             </h1>
           </div>
-          <div className="flex items-center gap-4">
-            <HistoryControls />
-            <LanguageSwitcher />
+          <div className="flex items-center gap-3">
+            <HistoryToolbar />
             <Suspense fallback={<div className="w-8 h-8"></div>}>
-              <PlanManager />
+              <PlanManagerMenu />
             </Suspense>
+            <LanguageMenu />
           </div>
         </div>
       </div>
