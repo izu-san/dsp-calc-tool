@@ -457,6 +457,70 @@ export function generateNodeOverrideDescription(
 }
 
 /**
+ * Generate description for custom template creation
+ */
+export function generateCustomTemplateCreatedDescription(
+  templateName: string,
+  t: (key: string) => string,
+  locale: string
+): string {
+  const isJa = locale === "ja";
+  if (isJa) {
+    return `${t("customTemplate")}「${templateName}」${t("created")}`;
+  } else {
+    return `${t("customTemplate")} "${templateName}" ${t("created")}`;
+  }
+}
+
+/**
+ * Generate description for custom template update
+ */
+export function generateCustomTemplateUpdatedDescription(
+  templateName: string,
+  t: (key: string) => string,
+  locale: string
+): string {
+  const isJa = locale === "ja";
+  if (isJa) {
+    return `${t("customTemplate")}「${templateName}」${t("updated")}`;
+  } else {
+    return `${t("customTemplate")} "${templateName}" ${t("updated")}`;
+  }
+}
+
+/**
+ * Generate description for custom template deletion
+ */
+export function generateCustomTemplateDeletedDescription(
+  templateName: string,
+  t: (key: string) => string,
+  locale: string
+): string {
+  const isJa = locale === "ja";
+  if (isJa) {
+    return `${t("customTemplate")}「${templateName}」${t("deleted")}`;
+  } else {
+    return `${t("customTemplate")} "${templateName}" ${t("deleted")}`;
+  }
+}
+
+/**
+ * Generate description for custom template application
+ */
+export function generateCustomTemplateAppliedDescription(
+  templateName: string,
+  t: (key: string) => string,
+  locale: string
+): string {
+  const isJa = locale === "ja";
+  if (isJa) {
+    return `${t("customTemplate")}「${templateName}」${t("applied")}`;
+  } else {
+    return `${t("customTemplate")} "${templateName}" ${t("applied")}`;
+  }
+}
+
+/**
  * Generate description for node override reset
  */
 export function generateNodeOverrideResetDescription(

@@ -6,6 +6,8 @@ import type {
   PhotonGenerationSettings,
   GameTemplate,
   ProliferatorConfig,
+  CustomTemplateId,
+  CustomSettingsTemplate,
 } from "../types";
 import type { PowerGeneratorType } from "../types/power-generation";
 import {
@@ -15,9 +17,12 @@ import {
   DEFAULT_ALTERNATIVE_RECIPES,
   SETTINGS_TEMPLATES,
   DEFAULT_PHOTON_GENERATION_SETTINGS,
+  createCustomTemplateId,
+  extractCustomTemplateId,
 } from "../types/settings";
 import { serializeSettings, deserializeSettings } from "../utils/storageSerializer";
 import { recordHistoryEntry } from "../utils/historyRecorder";
+import { generateUUID } from "../utils/historyUtils";
 import {
   generateProliferatorDescription,
   generateMachineRankDescription,
@@ -33,6 +38,10 @@ import {
   generateManualPowerGeneratorDescription,
   generateManualPowerFuelDescription,
   generatePowerFuelProliferatorDescription,
+  generateCustomTemplateCreatedDescription,
+  generateCustomTemplateUpdatedDescription,
+  generateCustomTemplateDeletedDescription,
+  generateCustomTemplateAppliedDescription,
 } from "../utils/historyDescriptionHelper";
 import { useGameDataStore } from "./gameDataStore";
 import i18n from "../i18n";
@@ -62,11 +71,12 @@ const defaultSettings: GlobalSettings = {
 
 interface SettingsStore {
   settings: GlobalSettings;
-  selectedTemplate: GameTemplate | null; // テンプレート適用状態
+  selectedTemplate: GameTemplate | CustomTemplateId | null; // テンプレート適用状態
   powerGenerationTemplate: GameTemplate; // 発電設備専用テンプレート
   manualPowerGenerator: PowerGeneratorType | null; // 手動選択された発電設備
   manualPowerFuel: string | null; // 手動選択された燃料
   powerFuelProliferator: ProliferatorConfig; // 燃料に適用する増産剤
+  customTemplates: Record<string, CustomSettingsTemplate>; // ユーザー定義テンプレート
   setProliferator: (type: keyof typeof PROLIFERATOR_DATA, mode: "production" | "speed") => void;
   setPowerFuelProliferator: (
     type: keyof typeof PROLIFERATOR_DATA,
@@ -82,11 +92,20 @@ interface SettingsStore {
     key: K,
     value: PhotonGenerationSettings[K]
   ) => void;
-  setSelectedTemplate: (template: GameTemplate | null) => void;
+  setSelectedTemplate: (template: GameTemplate | CustomTemplateId | null) => void;
   setPowerGenerationTemplate: (template: GameTemplate) => void;
   setManualPowerGenerator: (generator: PowerGeneratorType | null) => void;
   setManualPowerFuel: (fuel: string | null) => void;
   applyTemplate: (templateId: keyof typeof SETTINGS_TEMPLATES) => void;
+  createCustomTemplate: (name: string, note?: string) => void; // テンプレートを作成（IDはストアから取得）
+  updateCustomTemplate: (
+    id: string,
+    name?: string,
+    note?: string,
+    settings?: GlobalSettings
+  ) => void;
+  deleteCustomTemplate: (id: string) => void;
+  applyCustomTemplate: (id: string) => void;
   updateSettings: (settings: Partial<GlobalSettings>) => void;
   resetSettings: () => void;
 }
@@ -98,6 +117,7 @@ export const useSettingsStore = create<SettingsStore>()(
       selectedTemplate: null, // 初期状態ではテンプレート未選択
       powerGenerationTemplate: "default", // 初期状態ではデフォルトテンプレート
       manualPowerGenerator: null, // 初期状態では手動選択なし（自動選択）
+      customTemplates: {}, // 初期状態ではカスタムテンプレートなし
       manualPowerFuel: null, // 初期状態では手動選択なし（自動選択）
       powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: "production" as const }, // 初期状態では増産剤なし
 
@@ -491,6 +511,269 @@ export const useSettingsStore = create<SettingsStore>()(
 
           return after;
         }),
+
+      createCustomTemplate: (name, note) =>
+        set(state => {
+          // 最大保持数チェック（50件）
+          const currentCount = Object.keys(state.customTemplates).length;
+          if (currentCount >= 50) {
+            throw new Error("Maximum number of custom templates (50) reached");
+          }
+
+          // 重複チェック
+          const existingTemplate = Object.values(state.customTemplates).find(
+            t => t.meta.name === name.trim()
+          );
+          if (existingTemplate) {
+            throw new Error(`Template with name "${name}" already exists`);
+          }
+
+          // UUID生成
+          const uuid = generateUUID();
+          const now = Date.now();
+
+          // 現在の設定をディープコピー
+          const currentSettings: GlobalSettings = {
+            ...state.settings,
+            alternativeRecipes: new Map(state.settings.alternativeRecipes),
+          };
+
+          const template: CustomSettingsTemplate = {
+            meta: {
+              id: uuid,
+              name: name.trim(),
+              note: note?.trim(),
+              createdAt: now,
+              updatedAt: now,
+            },
+            settings: currentSettings,
+          };
+
+          // Serialize customTemplates for history (Map → Array)
+          const serializedBefore: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [id, t] of Object.entries(state.customTemplates)) {
+            serializedBefore[id] = {
+              meta: t.meta,
+              settings: serializeSettings(t.settings),
+            };
+          }
+
+          const serializedAfter: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {
+            ...serializedBefore,
+            [uuid]: {
+              meta: template.meta,
+              settings: serializeSettings(template.settings),
+            },
+          };
+
+          const before = {
+            customTemplates: serializedBefore,
+          };
+
+          const after = {
+            customTemplates: serializedAfter,
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateCustomTemplateCreatedDescription(
+            name.trim(),
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("settings", description, before, after);
+
+          return {
+            customTemplates: {
+              ...state.customTemplates,
+              [uuid]: template,
+            },
+          };
+        }),
+
+      updateCustomTemplate: (id, name, note, settings) =>
+        set(state => {
+          const template = state.customTemplates[id];
+          if (!template) {
+            throw new Error(`Template with id "${id}" not found`);
+          }
+
+          // Serialize customTemplates for history (Map → Array)
+          const serializedBefore: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [templateId, t] of Object.entries(state.customTemplates)) {
+            serializedBefore[templateId] = {
+              meta: t.meta,
+              settings: serializeSettings(t.settings),
+            };
+          }
+
+          const updatedTemplate: CustomSettingsTemplate = {
+            meta: {
+              ...template.meta,
+              name: name !== undefined ? name.trim() : template.meta.name,
+              note: note !== undefined ? note.trim() : template.meta.note,
+              updatedAt: Date.now(),
+            },
+            settings:
+              settings !== undefined
+                ? {
+                    ...settings,
+                    alternativeRecipes: new Map(settings.alternativeRecipes),
+                  }
+                : template.settings,
+          };
+
+          // 名称変更時の重複チェック（自分自身を除外）
+          if (name !== undefined && name.trim() !== template.meta.name) {
+            const existingTemplate = Object.values(state.customTemplates).find(
+              t => t.meta.name === name.trim() && t.meta.id !== id
+            );
+            if (existingTemplate) {
+              throw new Error(`Template with name "${name}" already exists`);
+            }
+          }
+
+          const serializedAfter: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {
+            ...serializedBefore,
+            [id]: {
+              meta: updatedTemplate.meta,
+              settings: serializeSettings(updatedTemplate.settings),
+            },
+          };
+
+          const before = {
+            customTemplates: serializedBefore,
+          };
+
+          const after = {
+            customTemplates: serializedAfter,
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateCustomTemplateUpdatedDescription(
+            updatedTemplate.meta.name,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("settings", description, before, after);
+
+          return {
+            customTemplates: {
+              ...state.customTemplates,
+              [id]: updatedTemplate,
+            },
+          };
+        }),
+
+      deleteCustomTemplate: id =>
+        set(state => {
+          const template = state.customTemplates[id];
+          if (!template) {
+            throw new Error(`Template with id "${id}" not found`);
+          }
+
+          // Serialize customTemplates for history (Map → Array)
+          const serializedBefore: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [templateId, t] of Object.entries(state.customTemplates)) {
+            serializedBefore[templateId] = {
+              meta: t.meta,
+              settings: serializeSettings(t.settings),
+            };
+          }
+
+          const customTemplateId = createCustomTemplateId(id);
+          const isSelected =
+            state.selectedTemplate === customTemplateId ||
+            (typeof state.selectedTemplate === "string" &&
+              state.selectedTemplate.startsWith("custom:") &&
+              extractCustomTemplateId(state.selectedTemplate as CustomTemplateId) === id);
+
+          const serializedAfter: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [templateId, t] of Object.entries(state.customTemplates)) {
+            if (templateId !== id) {
+              serializedAfter[templateId] = {
+                meta: t.meta,
+                settings: serializeSettings(t.settings),
+              };
+            }
+          }
+
+          const before = {
+            customTemplates: serializedBefore,
+            selectedTemplate: state.selectedTemplate,
+          };
+
+          const after = {
+            customTemplates: serializedAfter,
+            selectedTemplate: isSelected ? null : state.selectedTemplate,
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateCustomTemplateDeletedDescription(
+            template.meta.name,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("settings", description, before, after);
+
+          return {
+            customTemplates: Object.fromEntries(
+              Object.entries(state.customTemplates).filter(([key]) => key !== id)
+            ),
+            selectedTemplate: isSelected ? null : state.selectedTemplate,
+          };
+        }),
+
+      applyCustomTemplate: id =>
+        set(state => {
+          const template = state.customTemplates[id];
+          if (!template) {
+            throw new Error(`Template with id "${id}" not found`);
+          }
+
+          const before = {
+            settings: state.settings,
+            selectedTemplate: state.selectedTemplate,
+            powerGenerationTemplate: state.powerGenerationTemplate,
+          };
+
+          const customTemplateId = createCustomTemplateId(id);
+          const after = {
+            settings: {
+              ...template.settings,
+              alternativeRecipes: new Map(template.settings.alternativeRecipes),
+            },
+            selectedTemplate: customTemplateId,
+            powerGenerationTemplate: state.powerGenerationTemplate,
+          };
+
+          const t = (key: string) => i18n.t(key);
+          const description = generateCustomTemplateAppliedDescription(
+            template.meta.name,
+            t,
+            i18n.language
+          );
+          recordHistoryEntry("settings", description, before, after);
+
+          return after;
+        }),
     }),
     {
       name: "dsp-calculator-settings",
@@ -510,6 +793,43 @@ export const useSettingsStore = create<SettingsStore>()(
               }
             }
 
+            // customTemplates のデシリアライズ
+            if (state?.customTemplates && typeof state.customTemplates === "object") {
+              const customTemplates: Record<string, CustomSettingsTemplate> = {};
+              for (const [id, template] of Object.entries(state.customTemplates)) {
+                if (
+                  template &&
+                  typeof template === "object" &&
+                  "meta" in template &&
+                  "settings" in template
+                ) {
+                  const templateObj = template as {
+                    meta: CustomSettingsTemplate["meta"];
+                    settings: unknown;
+                  };
+                  const deserializedSettings = deserializeSettings(templateObj.settings);
+                  if (deserializedSettings) {
+                    customTemplates[id] = {
+                      meta: templateObj.meta,
+                      settings: deserializedSettings,
+                    };
+                  }
+                }
+              }
+              state.customTemplates = customTemplates;
+            } else {
+              // customTemplates が存在しない場合は空オブジェクト
+              state.customTemplates = {};
+            }
+
+            // selectedTemplate の型チェック（custom: 接頭辞の処理）
+            if (state?.selectedTemplate && typeof state.selectedTemplate === "string") {
+              if (state.selectedTemplate.startsWith("custom:")) {
+                // CustomTemplateId として扱う
+                state.selectedTemplate = state.selectedTemplate as CustomTemplateId;
+              }
+            }
+
             return { state };
           } catch (error) {
             console.warn("Failed to deserialize settings from localStorage:", error);
@@ -520,10 +840,31 @@ export const useSettingsStore = create<SettingsStore>()(
           try {
             // 型安全なシリアライズ
             const serialized = serializeSettings(value.state.settings);
+
+            // customTemplates のシリアライズ
+            const serializedCustomTemplates: Record<
+              string,
+              {
+                meta: CustomSettingsTemplate["meta"];
+                settings: ReturnType<typeof serializeSettings>;
+              }
+            > = {};
+            if (value.state.customTemplates && typeof value.state.customTemplates === "object") {
+              for (const [id, template] of Object.entries(value.state.customTemplates)) {
+                if (template && typeof template === "object" && "settings" in template) {
+                  serializedCustomTemplates[id] = {
+                    meta: (template as CustomSettingsTemplate).meta,
+                    settings: serializeSettings((template as CustomSettingsTemplate).settings),
+                  };
+                }
+              }
+            }
+
             const str = JSON.stringify({
               state: {
                 ...value.state,
                 settings: serialized,
+                customTemplates: serializedCustomTemplates,
               },
             });
             localStorage.setItem(name, str);

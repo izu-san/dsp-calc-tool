@@ -1,12 +1,13 @@
-import type { HistoryEntry } from "../types/history";
-import type { NodeOverrideSettings } from "../types";
-import { useSettingsStore } from "../stores/settingsStore";
-import { useNodeOverrideStore } from "../stores/nodeOverrideStore";
-import { useRecipeSelectionStore } from "../stores/recipeSelectionStore";
 import { useGameDataStore } from "../stores/gameDataStore";
 import { useMiningSettingsStore } from "../stores/miningSettingsStore";
+import { useNodeOverrideStore } from "../stores/nodeOverrideStore";
+import { useRecipeSelectionStore } from "../stores/recipeSelectionStore";
+import { useSettingsStore } from "../stores/settingsStore";
+import type { CustomSettingsTemplate, NodeOverrideSettings } from "../types";
+import type { HistoryEntry } from "../types/history";
 import { PROLIFERATOR_DATA } from "../types/settings";
 import { setRestoring } from "./historyRecorder";
+import { deserializeSettings } from "./storageSerializer";
 
 /**
  * Restore state from history entry
@@ -26,6 +27,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
   const setManualPowerGenerator = useSettingsStore.getState().setManualPowerGenerator;
   const setManualPowerFuel = useSettingsStore.getState().setManualPowerFuel;
   const setPowerFuelProliferator = useSettingsStore.getState().setPowerFuelProliferator;
+  const setSelectedTemplate = useSettingsStore.getState().setSelectedTemplate;
   const data = useGameDataStore.getState().data;
 
   // Use previousChanges for undo, changes for redo
@@ -116,6 +118,123 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
         if (typeof value === "number") {
           setTargetQuantity(value);
         }
+      } else if (path === "selectedTemplate") {
+        // Selected template change (includes custom templates)
+        if (value === null || value === undefined) {
+          setSelectedTemplate(null);
+        } else if (typeof value === "string") {
+          // Type assertion: value could be GameTemplate or CustomTemplateId
+          setSelectedTemplate(
+            value as import("../types").GameTemplate | import("../types").CustomTemplateId | null
+          );
+        }
+      } else if (path === "customTemplates") {
+        // Custom templates change - restore entire customTemplates object
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+          // Deserialize customTemplates to ensure proper Map handling
+          const customTemplates: Record<string, CustomSettingsTemplate> = {};
+          for (const [id, template] of Object.entries(value)) {
+            if (
+              template &&
+              typeof template === "object" &&
+              "meta" in template &&
+              "settings" in template
+            ) {
+              const templateObj = template as {
+                meta: CustomSettingsTemplate["meta"];
+                settings: unknown;
+              };
+              const deserializedSettings = deserializeSettings(templateObj.settings);
+              if (deserializedSettings) {
+                customTemplates[id] = {
+                  meta: templateObj.meta,
+                  settings: deserializedSettings,
+                };
+              }
+            }
+          }
+          useSettingsStore.setState({ customTemplates });
+        } else if (value === undefined || value === null) {
+          // Clear custom templates
+          useSettingsStore.setState({ customTemplates: {} });
+        }
+      } else if (path.startsWith("customTemplates.")) {
+        // Custom template change - individual template add/update/delete
+        // Path format: "customTemplates.<id>" or "customTemplates.<id>.meta" or "customTemplates.<id>.settings"
+        const pathAfterPrefix = path.replace("customTemplates.", "");
+        const pathParts = pathAfterPrefix.split(".");
+        const templateId = pathParts[0];
+
+        const currentCustomTemplates = useSettingsStore.getState().customTemplates;
+        const newCustomTemplates = { ...currentCustomTemplates };
+
+        if (pathParts.length === 1) {
+          // Direct template add/update/delete: "customTemplates.<id>"
+          if (value === undefined || value === null) {
+            // Delete template
+            delete newCustomTemplates[templateId];
+          } else if (value && typeof value === "object" && "meta" in value && "settings" in value) {
+            // Add or update template
+            const templateObj = value as {
+              meta: CustomSettingsTemplate["meta"];
+              settings: unknown;
+            };
+            const deserializedSettings = deserializeSettings(templateObj.settings);
+            if (deserializedSettings) {
+              newCustomTemplates[templateId] = {
+                meta: templateObj.meta,
+                settings: deserializedSettings,
+              };
+            }
+          }
+        } else {
+          // Nested property change: "customTemplates.<id>.meta" or "customTemplates.<id>.settings"
+          const existingTemplate = currentCustomTemplates[templateId];
+          if (!existingTemplate) {
+            // Template doesn't exist, skip nested changes
+            // Skip to next iteration
+            continue;
+          }
+
+          const propertyPath = pathParts.slice(1).join(".");
+          if (propertyPath === "meta" || propertyPath.startsWith("meta.")) {
+            // Update meta property
+            const metaObj = { ...existingTemplate.meta } as Record<string, unknown>;
+            const metaPath = propertyPath.replace("meta.", "");
+            applyNestedValue(metaObj, metaPath, value);
+            newCustomTemplates[templateId] = {
+              ...existingTemplate,
+              meta: metaObj as unknown as CustomSettingsTemplate["meta"],
+            };
+          } else if (propertyPath === "settings" || propertyPath.startsWith("settings.")) {
+            // Update settings property
+            if (propertyPath === "settings") {
+              // Replace entire settings object
+              const deserializedSettings = deserializeSettings(value);
+              if (deserializedSettings) {
+                newCustomTemplates[templateId] = {
+                  ...existingTemplate,
+                  settings: deserializedSettings,
+                };
+              }
+            } else {
+              // Nested settings property change
+              const settingPath = propertyPath.replace("settings.", "");
+              const updatedSettings = applySettingsChanges(existingTemplate.settings, {
+                [settingPath]: value,
+              });
+              newCustomTemplates[templateId] = {
+                ...existingTemplate,
+                settings: {
+                  ...existingTemplate.settings,
+                  ...updatedSettings,
+                } as import("../types").GlobalSettings,
+              };
+            }
+          }
+        }
+
+        useSettingsStore.setState({ customTemplates: newCustomTemplates });
       } else if (path === "selectedRecipe.recipeSID") {
         // Recipe selection change via SID
         if (value === undefined || value === null) {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { TemplateSelector } from "../TemplateSelector";
+import { DEFAULT_PHOTON_GENERATION_SETTINGS } from "../../../types/settings/photonGeneration";
 
 // Mock react-i18next
 vi.mock("react-i18next", () => ({
@@ -30,6 +31,21 @@ vi.mock("react-i18next", () => ({
         speedMode: "speedMode",
         cancel: "cancel",
         apply: "apply",
+        customTemplate: "customTemplate",
+        createCustomTemplate: "createCustomTemplate",
+        customTemplateEmptyState: "customTemplateEmptyState",
+        templateName: "templateName",
+        templateNote: "templateNote",
+        save: "save",
+        characters: "characters",
+        currentSettings: "currentSettings",
+        editCustomTemplate: "editCustomTemplate",
+        deleteCustomTemplate: "deleteCustomTemplate",
+        overwrite: "overwrite",
+        overwriteWithCurrentSettings: "overwriteWithCurrentSettings",
+        customTemplateConfirmOverwrite: "customTemplateConfirmOverwrite",
+        delete: "delete",
+        confirmDeletePlan: "confirmDeletePlan",
       };
       return translations[key] || key;
     },
@@ -38,15 +54,52 @@ vi.mock("react-i18next", () => ({
 
 // Mock settingsStore
 const mockApplyTemplate = vi.fn();
+const mockCreateCustomTemplate = vi.fn();
+const mockUpdateCustomTemplate = vi.fn();
+const mockDeleteCustomTemplate = vi.fn();
+const mockApplyCustomTemplate = vi.fn();
+
+const createDefaultSettings = () => ({
+  proliferator: { type: "none", mode: "speed" },
+  machineRank: {
+    Smelt: "arc",
+    Assemble: "mk1",
+    Chemical: "standard",
+    Research: "standard",
+    Refine: "standard",
+    Particle: "standard",
+  },
+  conveyorBelt: { tier: "mk1", speed: 6, stackCount: 1 },
+  sorter: { tier: "mk1", speed: 2 },
+  alternativeRecipes: new Map(),
+  miningSpeedResearch: 100,
+  proliferatorMultiplier: { production: 1, speed: 1 },
+  photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
+});
+
+let customTemplatesMock: Record<string, any> = {};
+let selectedTemplateMock: string | null = null;
+let settingsMock = createDefaultSettings();
+
 vi.mock("../../../stores/settingsStore", () => ({
   useSettingsStore: () => ({
     applyTemplate: mockApplyTemplate,
+    customTemplates: customTemplatesMock,
+    selectedTemplate: selectedTemplateMock,
+    settings: settingsMock,
+    createCustomTemplate: mockCreateCustomTemplate,
+    updateCustomTemplate: mockUpdateCustomTemplate,
+    deleteCustomTemplate: mockDeleteCustomTemplate,
+    applyCustomTemplate: mockApplyCustomTemplate,
   }),
 }));
 
 describe("TemplateSelector", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    customTemplatesMock = {};
+    selectedTemplateMock = null;
+    settingsMock = createDefaultSettings();
   });
 
   describe("Template Buttons", () => {
@@ -288,6 +341,191 @@ describe("TemplateSelector", () => {
 
       expect(labelTexts.some(text => text?.includes("🎮"))).toBe(true);
       expect(labelTexts.some(text => text?.includes("template"))).toBe(true);
+    });
+  });
+
+  describe("Custom Templates", () => {
+    it("カスタムテンプレートの確認モーダルですべての設定が表示される", () => {
+      const templateId = "custom-123";
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Custom Template",
+            note: "Test",
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          },
+          settings: {
+            proliferator: { type: "mk3", mode: "production" },
+            machineRank: {
+              Smelt: "negentropy",
+              Assemble: "recomposing",
+              Chemical: "quantum",
+              Research: "self-evolution",
+              Refine: "standard",
+              Particle: "standard",
+            },
+            conveyorBelt: { tier: "mk3", speed: 45, stackCount: 2 },
+            sorter: { tier: "mk3", speed: 6 },
+            alternativeRecipes: new Map([
+              [1001, 2001],
+              [1002, 2002],
+            ]),
+            miningSpeedResearch: 180,
+            proliferatorMultiplier: { production: 2, speed: 1.5 },
+            photonGeneration: {
+              useGravitonLens: true,
+              rayTransmissionEfficiency: 300,
+              gravitonLensProliferator: { type: "mk2", mode: "speed" },
+            },
+          },
+        },
+      };
+
+      render(<TemplateSelector />);
+
+      const applyButton = screen.getByTestId(`custom-template-apply-button-${templateId}`);
+      fireEvent.click(applyButton);
+
+      const settingsPreview = screen.getByTestId("template-settings-preview");
+      const preview = within(settingsPreview);
+
+      expect(preview.getByText("conveyorBelt:")).toBeInTheDocument();
+      expect(preview.getByText(/\(2 stacks\)/)).toBeInTheDocument();
+      expect(preview.getByText("sorter:")).toBeInTheDocument();
+      expect(preview.getByText(/MK3/)).toBeInTheDocument();
+      expect(preview.getByText("proliferator:")).toBeInTheDocument();
+      expect(preview.getByText(/MK3 \(productionMode\)/)).toBeInTheDocument();
+      expect(preview.getByText("proliferatorMultiplier:")).toBeInTheDocument();
+      expect(preview.getByText("productionMode: 2x, speedMode: 1.5x")).toBeInTheDocument();
+      expect(preview.getByText("negentropySmelter")).toBeInTheDocument();
+      expect(preview.getByText("recomposingAssembler")).toBeInTheDocument();
+      expect(preview.getByText("quantumChemicalPlant")).toBeInTheDocument();
+      expect(preview.getByText("selfEvolutionLab")).toBeInTheDocument();
+      expect(preview.queryByText("oilRefinery")).toBeNull();
+      expect(preview.queryByText("particleCollider")).toBeNull();
+      expect(preview.getByText("miningResearch:")).toBeInTheDocument();
+      expect(preview.getByText("180% (+80%)")).toBeInTheDocument();
+      expect(preview.getByText("alternativeRecipe:")).toBeInTheDocument();
+      expect(preview.getByText("2 items")).toBeInTheDocument();
+      expect(preview.getByText("photonGeneration")).toBeInTheDocument();
+      expect(preview.getByText("useGravitonLens:")).toBeInTheDocument();
+      expect(preview.getByText("yes")).toBeInTheDocument();
+      expect(preview.getByText("3%")).toBeInTheDocument();
+      expect(preview.getByText(/gravitonLens proliferator:/)).toBeInTheDocument();
+      expect(preview.getByText(/MK2 \(speedMode\)/)).toBeInTheDocument();
+    });
+
+    it("1文字のテンプレート名でもエラーにならず保存できる", () => {
+      render(<TemplateSelector />);
+
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "A" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      expect(mockCreateCustomTemplate).toHaveBeenCalledWith("A", undefined);
+      expect(mockCreateCustomTemplate).toHaveBeenCalledTimes(1);
+      expect(screen.queryByTestId("template-name-error")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Data Test IDs", () => {
+    it("カスタムテンプレートセクションと空状態の data-testid が存在する", () => {
+      render(<TemplateSelector />);
+
+      expect(screen.getByTestId("custom-template-section")).toBeInTheDocument();
+      expect(screen.getByTestId("custom-template-empty-state")).toBeInTheDocument();
+    });
+
+    it("作成モーダルの data-testid が利用できる", () => {
+      render(<TemplateSelector />);
+
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const modal = screen.getByTestId("create-template-modal");
+      expect(modal).toBeInTheDocument();
+      expect(screen.getByTestId("template-name-input")).toBeInTheDocument();
+      expect(screen.getByTestId("template-note-input")).toBeInTheDocument();
+      expect(screen.getByTestId("template-settings-preview")).toBeInTheDocument();
+      expect(screen.getByTestId("create-template-cancel-button")).toBeInTheDocument();
+      expect(screen.getByTestId("create-template-save-button")).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId("create-template-cancel-button"));
+    });
+
+    it("編集モーダルと削除モーダルの data-testid が利用できる", () => {
+      const templateId = "custom-edit";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Editable Template",
+            note: "memo",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+
+      fireEvent.click(screen.getByTestId(`edit-custom-template-${templateId}`));
+      expect(screen.getByTestId("edit-template-modal")).toBeInTheDocument();
+      expect(screen.getByTestId("edit-template-name-input")).toBeInTheDocument();
+      expect(screen.getByTestId("edit-template-note-input")).toBeInTheDocument();
+      expect(screen.getByTestId("overwrite-with-current-button")).toBeInTheDocument();
+      expect(screen.getByTestId("overwrite-with-current-button").textContent).toBe(
+        "overwriteWithCurrentSettings"
+      );
+      expect(screen.getByTestId("edit-template-save-button")).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId("edit-template-cancel-button"));
+
+      fireEvent.click(screen.getByTestId(`delete-custom-template-${templateId}`));
+      expect(screen.getByTestId("delete-template-modal")).toBeInTheDocument();
+      expect(screen.getByTestId("delete-template-cancel-button")).toBeInTheDocument();
+      expect(screen.getByTestId("delete-template-confirm-button")).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId("delete-template-cancel-button"));
+    });
+
+    it("上書き確認モーダルの data-testid が利用できる", () => {
+      const templateId = "custom-duplicate";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Duplicate",
+            note: "note",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+      fireEvent.change(screen.getByTestId("template-name-input"), {
+        target: { value: "Duplicate" },
+      });
+      fireEvent.click(screen.getByTestId("create-template-save-button"));
+
+      expect(screen.getByTestId("overwrite-confirm-modal")).toBeInTheDocument();
+      expect(screen.getByTestId("overwrite-confirm-cancel-button")).toBeInTheDocument();
+      expect(screen.getByTestId("overwrite-confirm-button")).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId("overwrite-confirm-cancel-button"));
+      fireEvent.click(screen.getByTestId("create-template-cancel-button"));
     });
   });
 });
