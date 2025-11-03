@@ -38,9 +38,36 @@ vi.mock("react-i18next", () => ({
 
 // Mock settingsStore
 const mockApplyTemplate = vi.fn();
+const mockCreateCustomTemplate = vi.fn();
+const mockUpdateCustomTemplate = vi.fn();
+const mockDeleteCustomTemplate = vi.fn();
+const mockApplyCustomTemplate = vi.fn();
 vi.mock("../../../stores/settingsStore", () => ({
   useSettingsStore: () => ({
     applyTemplate: mockApplyTemplate,
+    customTemplates: {},
+    selectedTemplate: null,
+    settings: {
+      proliferator: { type: "none", mode: "speed" },
+      machineRank: {
+        Smelt: "arc",
+        Assemble: "mk1",
+        Chemical: "standard",
+        Research: "standard",
+        Refine: "standard",
+        Particle: "standard",
+      },
+      conveyorBelt: { tier: "mk1", speed: 6, stackCount: 1 },
+      sorter: { tier: "mk1", speed: 2 },
+      alternativeRecipes: new Map(),
+      miningSpeedResearch: 100,
+      proliferatorMultiplier: { production: 1, speed: 1 },
+      photonGeneration: {},
+    },
+    createCustomTemplate: mockCreateCustomTemplate,
+    updateCustomTemplate: mockUpdateCustomTemplate,
+    deleteCustomTemplate: mockDeleteCustomTemplate,
+    applyCustomTemplate: mockApplyCustomTemplate,
   }),
 }));
 
