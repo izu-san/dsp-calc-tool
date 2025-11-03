@@ -270,10 +270,65 @@ export function TemplateSelector() {
     setSelectedCustomTemplateId(null);
   };
 
+  // 機械ランクの値をフォーマットするヘルパー
+  const formatMachineRank = (recipeType: string, rank: string): string => {
+    const rankMap: Record<string, Record<string, string>> = {
+      Smelt: {
+        arc: "Arc",
+        plane: "Plane",
+        negentropy: "Negentropy",
+      },
+      Assemble: {
+        mk1: "Mk.I",
+        mk2: "Mk.II",
+        mk3: "Mk.III",
+        recomposing: "Recomposing",
+      },
+      Chemical: {
+        standard: "Standard",
+        quantum: "Quantum",
+      },
+      Research: {
+        standard: "Standard",
+        "self-evolution": "Self-Evolution",
+      },
+    };
+
+    return rankMap[recipeType]?.[rank] || rank;
+  };
+
   // テンプレート設定の差分表示用ヘルパー
   const renderTemplateSettings = (templateSettings: typeof settings) => {
+    const machineRankLabels: Record<string, string> = {
+      Smelt: t("smelter"),
+      Assemble: t("assembler"),
+      Chemical: t("chemicalPlant"),
+      Research: t("matrixLab"),
+      Refine: t("oilRefinery"),
+      Particle: t("particleCollider"),
+    };
+
+    const machineRankIcons: Record<string, string> = {
+      Smelt: "🔥",
+      Assemble: "⚙️",
+      Chemical: "🧪",
+      Research: "🔬",
+      Refine: "🛢️",
+      Particle: "⚛️",
+    };
+
+    const hasAlternativeRecipes = templateSettings.alternativeRecipes.size > 0;
+    const hasNonDefaultMultiplier =
+      templateSettings.proliferatorMultiplier.production !== 1 ||
+      templateSettings.proliferatorMultiplier.speed !== 1;
+    const hasPhotonSettings =
+      templateSettings.photonGeneration.useGravitonLens ||
+      templateSettings.photonGeneration.rayTransmissionEfficiency > 0 ||
+      templateSettings.photonGeneration.gravitonLensProliferator.type !== "none";
+
     return (
-      <div className="bg-dark-800/50 border border-neon-blue/30 backdrop-blur-sm rounded-lg p-4 mb-4 space-y-2 text-sm">
+      <div className="bg-dark-800/50 border border-neon-blue/30 backdrop-blur-sm rounded-lg p-4 mb-4 space-y-2 text-sm max-h-96 overflow-y-auto">
+        {/* コンベアベルト */}
         <div className="flex justify-between">
           <span className="text-space-300">{t("conveyorBelt")}:</span>
           <span className="font-medium text-neon-cyan">
@@ -282,6 +337,8 @@ export function TemplateSelector() {
               ` (${templateSettings.conveyorBelt.stackCount} ${t("stacks")})`}
           </span>
         </div>
+
+        {/* ソーター */}
         <div className="flex justify-between">
           <span className="text-space-300">{t("sorter")}:</span>
           <span className="font-medium text-neon-cyan">
@@ -290,6 +347,8 @@ export function TemplateSelector() {
               : `Mk.${templateSettings.sorter.tier.toUpperCase().replace("MK", "")}`}
           </span>
         </div>
+
+        {/* 増産剤 */}
         <div className="flex justify-between">
           <span className="text-space-300">{t("proliferator")}:</span>
           <span className="font-medium text-neon-cyan">
@@ -298,6 +357,35 @@ export function TemplateSelector() {
               : `${templateSettings.proliferator.type.toUpperCase()} (${templateSettings.proliferator.mode === "production" ? t("productionMode") : t("speedMode")})`}
           </span>
         </div>
+
+        {/* 増産剤倍率（デフォルト以外の場合のみ表示） */}
+        {hasNonDefaultMultiplier && (
+          <div className="flex justify-between">
+            <span className="text-space-300">{t("proliferatorMultiplier")}:</span>
+            <span className="font-medium text-neon-cyan">
+              {t("productionMode")}: {templateSettings.proliferatorMultiplier.production}x,{" "}
+              {t("speedMode")}: {templateSettings.proliferatorMultiplier.speed}x
+            </span>
+          </div>
+        )}
+
+        {/* 機械ランク */}
+        {(
+          Object.keys(templateSettings.machineRank) as Array<
+            keyof typeof templateSettings.machineRank
+          >
+        ).map(recipeType => (
+          <div key={recipeType} className="flex justify-between">
+            <span className="text-space-300">
+              {machineRankIcons[recipeType]} {machineRankLabels[recipeType]}:
+            </span>
+            <span className="font-medium text-neon-cyan">
+              {formatMachineRank(recipeType, templateSettings.machineRank[recipeType])}
+            </span>
+          </div>
+        ))}
+
+        {/* 採掘速度研究 */}
         <div className="flex justify-between">
           <span className="text-space-300">{t("miningResearch")}:</span>
           <span className="font-medium text-neon-cyan">
@@ -305,6 +393,55 @@ export function TemplateSelector() {
             {templateSettings.miningSpeedResearch - 100}%)
           </span>
         </div>
+
+        {/* 代替レシピ（設定されている場合のみ表示） */}
+        {hasAlternativeRecipes && (
+          <div className="flex justify-between">
+            <span className="text-space-300">{t("alternativeRecipe")}:</span>
+            <span className="font-medium text-neon-cyan">
+              {templateSettings.alternativeRecipes.size} {t("items")}
+            </span>
+          </div>
+        )}
+
+        {/* 光子生成設定（設定されている場合のみ表示） */}
+        {hasPhotonSettings && (
+          <>
+            <div className="border-t border-neon-blue/20 pt-2 mt-2">
+              <div className="text-xs font-medium text-neon-purple mb-1">
+                {t("photonGeneration")}
+              </div>
+            </div>
+            {templateSettings.photonGeneration.useGravitonLens && (
+              <div className="flex justify-between pl-2">
+                <span className="text-space-300">{t("useGravitonLens")}:</span>
+                <span className="font-medium text-neon-cyan">{t("yes")}</span>
+              </div>
+            )}
+            {templateSettings.photonGeneration.rayTransmissionEfficiency > 0 && (
+              <div className="flex justify-between pl-2">
+                <span className="text-space-300">{t("rayTransmissionEfficiency")}:</span>
+                <span className="font-medium text-neon-cyan">
+                  {templateSettings.photonGeneration.rayTransmissionEfficiency / 100}%
+                </span>
+              </div>
+            )}
+            {templateSettings.photonGeneration.gravitonLensProliferator.type !== "none" && (
+              <div className="flex justify-between pl-2">
+                <span className="text-space-300">
+                  {t("gravitonLens")} {t("proliferator")}:
+                </span>
+                <span className="font-medium text-neon-cyan">
+                  {templateSettings.photonGeneration.gravitonLensProliferator.type.toUpperCase()} (
+                  {templateSettings.photonGeneration.gravitonLensProliferator.mode === "production"
+                    ? t("productionMode")
+                    : t("speedMode")}
+                  )
+                </span>
+              </div>
+            )}
+          </>
+        )}
       </div>
     );
   };
