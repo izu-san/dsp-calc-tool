@@ -274,23 +274,23 @@ export function TemplateSelector() {
   const formatMachineRank = (recipeType: string, rank: string): string => {
     const rankMap: Record<string, Record<string, string>> = {
       Smelt: {
-        arc: "Arc",
-        plane: "Plane",
-        negentropy: "Negentropy",
+        arc: t("arcSmelter"),
+        plane: t("planeSmelter"),
+        negentropy: t("negentropySmelter"),
       },
       Assemble: {
-        mk1: "Mk.I",
-        mk2: "Mk.II",
-        mk3: "Mk.III",
-        recomposing: "Recomposing",
+        mk1: t("mk1"),
+        mk2: t("mk2"),
+        mk3: t("mk3"),
+        recomposing: t("recomposingAssembler"),
       },
       Chemical: {
-        standard: "Standard",
-        quantum: "Quantum",
+        standard: t("chemicalPlantStandard"),
+        quantum: t("quantumChemicalPlant"),
       },
       Research: {
-        standard: "Standard",
-        "self-evolution": "Self-Evolution",
+        standard: t("matrixLabStandard"),
+        "self-evolution": t("selfEvolutionLab"),
       },
     };
 
@@ -374,16 +374,18 @@ export function TemplateSelector() {
           Object.keys(templateSettings.machineRank) as Array<
             keyof typeof templateSettings.machineRank
           >
-        ).map(recipeType => (
-          <div key={recipeType} className="flex justify-between">
-            <span className="text-space-300">
-              {machineRankIcons[recipeType]} {machineRankLabels[recipeType]}:
-            </span>
-            <span className="font-medium text-neon-cyan">
-              {formatMachineRank(recipeType, templateSettings.machineRank[recipeType])}
-            </span>
-          </div>
-        ))}
+        )
+          .filter(recipeType => recipeType !== "Refine" && recipeType !== "Particle")
+          .map(recipeType => (
+            <div key={recipeType} className="flex justify-between">
+              <span className="text-space-300">
+                {machineRankIcons[recipeType]} {machineRankLabels[recipeType]}:
+              </span>
+              <span className="font-medium text-neon-cyan">
+                {formatMachineRank(recipeType, templateSettings.machineRank[recipeType])}
+              </span>
+            </div>
+          ))}
 
         {/* 採掘速度研究 */}
         <div className="flex justify-between">
