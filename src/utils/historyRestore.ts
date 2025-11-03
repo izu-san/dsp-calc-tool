@@ -7,6 +7,8 @@ import { useGameDataStore } from "../stores/gameDataStore";
 import { useMiningSettingsStore } from "../stores/miningSettingsStore";
 import { PROLIFERATOR_DATA } from "../types/settings";
 import { setRestoring } from "./historyRecorder";
+import { deserializeSettings } from "./storageSerializer";
+import type { CustomSettingsTemplate } from "../types";
 
 /**
  * Restore state from history entry
@@ -26,6 +28,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
   const setManualPowerGenerator = useSettingsStore.getState().setManualPowerGenerator;
   const setManualPowerFuel = useSettingsStore.getState().setManualPowerFuel;
   const setPowerFuelProliferator = useSettingsStore.getState().setPowerFuelProliferator;
+  const setSelectedTemplate = useSettingsStore.getState().setSelectedTemplate;
   const data = useGameDataStore.getState().data;
 
   // Use previousChanges for undo, changes for redo
@@ -115,6 +118,46 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
         // Target quantity change
         if (typeof value === "number") {
           setTargetQuantity(value);
+        }
+      } else if (path === "selectedTemplate") {
+        // Selected template change (includes custom templates)
+        if (value === null || value === undefined) {
+          setSelectedTemplate(null);
+        } else if (typeof value === "string") {
+          // Type assertion: value could be GameTemplate or CustomTemplateId
+          setSelectedTemplate(
+            value as import("../types").GameTemplate | import("../types").CustomTemplateId | null
+          );
+        }
+      } else if (path === "customTemplates") {
+        // Custom templates change - restore entire customTemplates object
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+          // Deserialize customTemplates to ensure proper Map handling
+          const customTemplates: Record<string, CustomSettingsTemplate> = {};
+          for (const [id, template] of Object.entries(value)) {
+            if (
+              template &&
+              typeof template === "object" &&
+              "meta" in template &&
+              "settings" in template
+            ) {
+              const templateObj = template as {
+                meta: CustomSettingsTemplate["meta"];
+                settings: unknown;
+              };
+              const deserializedSettings = deserializeSettings(templateObj.settings);
+              if (deserializedSettings) {
+                customTemplates[id] = {
+                  meta: templateObj.meta,
+                  settings: deserializedSettings,
+                };
+              }
+            }
+          }
+          useSettingsStore.setState({ customTemplates });
+        } else if (value === undefined || value === null) {
+          // Clear custom templates
+          useSettingsStore.setState({ customTemplates: {} });
         }
       } else if (path === "selectedRecipe.recipeSID") {
         // Recipe selection change via SID
