@@ -159,31 +159,46 @@ export function createRawMaterialNode(
 
       const material = miningCalc.rawMaterials.find(m => m.itemId === itemId);
       if (material && material.machineType) {
-        // Calculate power consumption
-        let powerPerMachine: number;
-        if (material.machineType === "Water Pump") {
-          powerPerMachine = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
-        } else if (material.machineType === "Oil Extractor") {
-          powerPerMachine = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
-        } else if (material.machineType === "Advanced Mining Machine") {
-          powerPerMachine = 630 * material.powerMultiplier;
-        } else {
-          powerPerMachine = 420 * material.powerMultiplier;
-        }
+        // For Hydrogen (1120) and Deuterium (1121), use orbital collectors if available
+        const isHydrogenOrDeuterium = itemId === 1120 || itemId === 1121;
+        const useOrbitalCollectors =
+          isHydrogenOrDeuterium && material.orbitCollectorsNeeded !== undefined;
 
-        miningEquipment = {
-          machineName:
-            material.machineType === "Water Pump"
-              ? "ウォーターポンプ"
-              : material.machineType === "Oil Extractor"
-                ? "オイル抽出器"
-                : material.machineType === "Advanced Mining Machine"
-                  ? "高度採掘機"
-                  : "採掘機",
-          machineCount: material.minersNeeded,
-          powerConsumption: material.minersNeeded * powerPerMachine,
-          beltOutputs: Math.ceil(requiredRate / totalBeltSpeed),
-        };
+        if (useOrbitalCollectors) {
+          // Orbital collectors: 0 power consumption (they generate power)
+          miningEquipment = {
+            machineName: "軌道採集機",
+            machineCount: material.orbitCollectorsNeeded!,
+            powerConsumption: 0,
+            beltOutputs: Math.ceil(requiredRate / totalBeltSpeed),
+          };
+        } else {
+          // Calculate power consumption for regular mining machines
+          let powerPerMachine: number;
+          if (material.machineType === "Water Pump") {
+            powerPerMachine = 300; // 5000 workEnergyPerTick * 60 / 1000 = 300 kW
+          } else if (material.machineType === "Oil Extractor") {
+            powerPerMachine = 840; // 14000 workEnergyPerTick * 60 / 1000 = 840 kW
+          } else if (material.machineType === "Advanced Mining Machine") {
+            powerPerMachine = 630 * material.powerMultiplier;
+          } else {
+            powerPerMachine = 420 * material.powerMultiplier;
+          }
+
+          miningEquipment = {
+            machineName:
+              material.machineType === "Water Pump"
+                ? "ウォーターポンプ"
+                : material.machineType === "Oil Extractor"
+                  ? "オイル抽出器"
+                  : material.machineType === "Advanced Mining Machine"
+                    ? "高度採掘機"
+                    : "採掘機",
+            machineCount: material.minersNeeded,
+            powerConsumption: material.minersNeeded * powerPerMachine,
+            beltOutputs: Math.ceil(requiredRate / totalBeltSpeed),
+          };
+        }
       }
     } catch (error) {
       // If mining calculation fails, just skip the mining equipment details
@@ -242,7 +257,12 @@ export function buildChildNodes(
     if (!inputItem) continue;
 
     // Check for alternative recipe preference (-1 means mining)
-    const preferredRecipeId = settings.alternativeRecipes.get(input.itemId);
+    // If not set and item can be mined, default to mining (-1)
+    let preferredRecipeId = settings.alternativeRecipes.get(input.itemId);
+    if (preferredRecipeId === undefined && isRawMaterial(input.itemId)) {
+      // Default to mining for raw materials if not explicitly set
+      preferredRecipeId = -1;
+    }
     const forceMining = preferredRecipeId === -1;
     const forceRecipe = preferredRecipeId && preferredRecipeId > 0;
 

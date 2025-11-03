@@ -1,10 +1,12 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect, test } from "@playwright/test";
+import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("What-If分析", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:5173/");
     await page.getByTestId("welcome-skip-button").click();
+    await disableAnimations(page);
   });
 
   test("08-01: ボトルネック検出", async ({ page }) => {
