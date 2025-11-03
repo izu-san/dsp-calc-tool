@@ -6,6 +6,7 @@ export * from "./machine";
 export * from "./conveyor";
 export * from "./templates";
 export * from "./photonGeneration";
+export * from "./customTemplates";
 
 // Import types for GlobalSettings
 import type { ProliferatorConfig } from "./proliferator";
