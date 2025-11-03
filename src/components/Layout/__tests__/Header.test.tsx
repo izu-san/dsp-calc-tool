@@ -18,14 +18,24 @@ vi.mock("react-i18next", () => ({
   },
 }));
 
-// LanguageSwitcherをモック
-vi.mock("../../LanguageSwitcher", () => ({
-  LanguageSwitcher: () => <div data-testid="language-switcher">Language Switcher</div>,
+// LanguageMenuをモック
+vi.mock("../Header/LanguageMenu", () => ({
+  LanguageMenu: () => <button data-testid="language-menu-trigger">Language Menu</button>,
 }));
 
-// HistoryControlsをモック
-vi.mock("../../HistoryControls", () => ({
-  HistoryControls: () => <div data-testid="history-controls">History Controls</div>,
+// HistoryToolbarをモック
+vi.mock("../Header/HistoryToolbar", () => ({
+  HistoryToolbar: () => <div data-testid="history-toolbar">History Toolbar</div>,
+}));
+
+// PlanManagerMenuをモック
+vi.mock("../Header/PlanManagerMenu", () => ({
+  PlanManagerMenu: () => <div data-testid="plan-manager-menu">Plan Manager Menu</div>,
+}));
+
+// ToastProviderをモック（HistoryToolbarがuseToastを使用しているため）
+vi.mock("../../ToastProvider/useToast", () => ({
+  useToast: () => ({ showToast: vi.fn() }),
 }));
 
 describe("Header", () => {
@@ -50,10 +60,10 @@ describe("Header", () => {
     expect(title).toHaveTextContent("Dyson Sphere Program - Production Calculator");
   });
 
-  it("LanguageSwitcherが表示される", () => {
+  it("LanguageMenuが表示される", () => {
     render(<Header />);
 
-    expect(screen.getByTestId("language-switcher")).toBeInTheDocument();
+    expect(screen.getByTestId("language-menu-trigger")).toBeInTheDocument();
   });
 
   it("PlanManagerがSuspenseでラップされている", () => {

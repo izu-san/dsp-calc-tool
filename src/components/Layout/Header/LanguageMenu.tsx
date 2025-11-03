@@ -1,0 +1,59 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useGameDataStore } from "../../../stores/gameDataStore";
+import { useTranslation } from "react-i18next";
+
+/**
+ * 言語切替ドロップダウンメニューコンポーネント
+ */
+export function LanguageMenu() {
+  const { locale, setLocale, isLoading } = useGameDataStore();
+  const { t } = useTranslation();
+
+  const languages = [
+    { code: "ja", label: "日本語", flag: "🇯🇵" },
+    { code: "en", label: "English", flag: "🇺🇸" },
+  ];
+
+  return (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger asChild>
+        <button
+          data-testid="language-menu-trigger"
+          disabled={isLoading}
+          className="px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan hover:shadow-[0_0_15px_rgba(0,217,255,0.4)] disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2"
+          title={t("changeLanguage")}
+        >
+          <span>🌐</span>
+          {isLoading && (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-neon-cyan shadow-[0_0_8px_rgba(0,217,255,0.4)]"></div>
+          )}
+        </button>
+      </DropdownMenu.Trigger>
+
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          className="min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] animate-fadeInScale z-50"
+          align="end"
+          sideOffset={5}
+        >
+          {languages.map(({ code, label, flag }) => (
+            <DropdownMenu.Item
+              key={code}
+              data-testid={`language-menu-item-${code}`}
+              onClick={() => setLocale(code)}
+              className={`px-4 py-2 text-white cursor-pointer outline-none hover:bg-dark-600/50 transition-all ${
+                locale === code ? "bg-neon-cyan/20" : ""
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span>{flag}</span>
+                <span>{label}</span>
+                {locale === code && <span className="ml-auto">✓</span>}
+              </div>
+            </DropdownMenu.Item>
+          ))}
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}

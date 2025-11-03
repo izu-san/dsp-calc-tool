@@ -33,17 +33,14 @@ test.describe("データのエクスポートとインポート", () => {
 
   test("05-01: json形式の正常データ", async ({ page }) => {
     // 3-4. 保存 -> JSONエクスポート
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-export").hover();
+
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      // open save UI then click JSON - depending on UI these may be separate
-      page.getByTestId("save-button").click(),
-      page.getByTestId("export-json-button").click(),
+      page.getByTestId("plan-menu-export-json").click(),
     ]);
-    await expect(page.getByTestId("export-success-message")).toBeVisible();
-    // ダイアログの閉じるボタンはアニメーションの影響を受けやすいので安定化
-    await expect(page.getByTestId("save-dialog-close-button")).toBeVisible();
-    await expect(page.getByTestId("save-dialog-close-button")).toBeEnabled();
-    await page.getByTestId("save-dialog-close-button").click();
+
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     // まず推奨ファイル名を取得して保存先を決める
     const filename = download.suggestedFilename();
@@ -58,8 +55,10 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したJSONをインポート
-    await page.getByTestId("load-button").click();
-    // 直接 input にファイルをセットする（filechooser を使わず安定化）
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
+
+    // ダイアログ内の input にファイルをセットする
     await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
     await expect(page.getByTestId("import-success-message")).toBeVisible();
@@ -73,16 +72,14 @@ test.describe("データのエクスポートとインポート", () => {
 
   test("05-02: Markdown形式の正常データ", async ({ page }) => {
     // 3-4. 保存 -> Markdownエクスポート
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-export").hover();
+
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      // open save UI then click Markdown - depending on UI these may be separate
-      page.getByTestId("save-button").click(),
-      page.getByTestId("export-markdown-button").click(),
+      page.getByTestId("plan-menu-export-markdown").click(),
     ]);
-    await expect(page.getByTestId("export-success-message")).toBeVisible();
-    await expect(page.getByTestId("save-dialog-close-button")).toBeVisible();
-    await expect(page.getByTestId("save-dialog-close-button")).toBeEnabled();
-    await page.getByTestId("save-dialog-close-button").click();
+
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     const filename = download.suggestedFilename();
     expect(filename).toBeTruthy();
@@ -94,7 +91,8 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したMarkdownをインポート
-    await page.getByTestId("load-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
     await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
     await expect(page.getByTestId("import-success-message")).toBeVisible();
@@ -107,16 +105,14 @@ test.describe("データのエクスポートとインポート", () => {
 
   test("05-03: csv形式の正常データ", async ({ page }) => {
     // 3-4. 保存 -> CSVエクスポート
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-export").hover();
+
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      // open save UI then click CSV - depending on UI these may be separate
-      page.getByTestId("save-button").click(),
-      page.getByTestId("export-csv-button").click(),
+      page.getByTestId("plan-menu-export-csv").click(),
     ]);
-    await expect(page.getByTestId("export-success-message")).toBeVisible();
-    await expect(page.getByTestId("save-dialog-close-button")).toBeVisible();
-    await expect(page.getByTestId("save-dialog-close-button")).toBeEnabled();
-    await page.getByTestId("save-dialog-close-button").click();
+
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     const filename = download.suggestedFilename();
     expect(filename).toBeTruthy();
@@ -128,7 +124,8 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したCSVをインポート
-    await page.getByTestId("load-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
     await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
     await expect(page.getByTestId("import-success-message")).toBeVisible();
@@ -141,14 +138,14 @@ test.describe("データのエクスポートとインポート", () => {
 
   test("05-04: Excel形式の正常データ", async ({ page }) => {
     // 3-4. 保存 -> Excelエクスポート
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-export").hover();
+
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      // open save UI then click Excel - depending on UI these may be separate
-      page.getByTestId("save-button").click(),
-      page.getByTestId("export-excel-button").click(),
+      page.getByTestId("plan-menu-export-excel").click(),
     ]);
-    await expect(page.getByTestId("export-success-message")).toBeVisible();
-    await page.getByTestId("save-dialog-close-button").click();
+
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     const filename = download.suggestedFilename();
     expect(filename).toBeTruthy();
@@ -160,7 +157,8 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したExcelをインポート
-    await page.getByTestId("load-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
     await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
     await expect(page.getByTestId("import-success-message")).toBeVisible();
@@ -186,7 +184,8 @@ test.describe("データのエクスポートとインポート", () => {
         );
       }
 
-      await page.getByTestId("load-button").click();
+      await page.getByTestId("plan-manager-menu-trigger").click();
+      await page.getByTestId("plan-menu-load").click();
       // 直接 input にファイルをセット
       await page.setInputFiles('[data-testid="file-import-input"]', filePath);
       // エラー表示を期待
@@ -208,7 +207,8 @@ test.describe("データのエクスポートとインポート", () => {
       );
     }
 
-    await page.getByTestId("load-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
     // 直接 input にファイルをセット
     await page.setInputFiles('[data-testid="file-import-input"]', filePath);
     // エラー表示を期待
@@ -229,7 +229,8 @@ test.describe("データのエクスポートとインポート", () => {
       );
     }
 
-    await page.getByTestId("load-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
     // 直接 input にファイルをセット
     await page.setInputFiles('[data-testid="file-import-input"]', filePath);
     // エラー表示を期待
@@ -250,7 +251,8 @@ test.describe("データのエクスポートとインポート", () => {
       );
     }
 
-    await page.getByTestId("load-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-load").click();
     // 直接 input にファイルをセット
     await page.setInputFiles('[data-testid="file-import-input"]', filePath);
     // エラー表示を期待
@@ -261,7 +263,8 @@ test.describe("データのエクスポートとインポート", () => {
 
   test("05-09: URL共有", async ({ page }) => {
     // 3. URL共有ボタンを押下する
-    await page.getByTestId("url-share-button").click();
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-share-url").click();
 
     // 4. コピーボタンを押下する
     // Grant clipboard permissions so navigator.clipboard.readText can be used in the test environment
@@ -289,17 +292,14 @@ test.describe("データのエクスポートとインポート", () => {
     // 保存ダイアログを開く前に、ビューが表示されていることを確認
     await expect(page.getByTestId("recipe-node-1705")).toBeVisible();
 
-    // 保存ダイアログを開く
-    await page.getByTestId("save-button").click();
+    // 画像エクスポートメニューを開いてダウンロードを待つ
+    await page.getByTestId("plan-manager-menu-trigger").click();
+    await page.getByTestId("plan-menu-export").hover();
 
-    // 画像エクスポートボタンをクリックしてダウンロードを待つ
     const [download] = await Promise.all([
       page.waitForEvent("download"),
-      page.getByTestId("export-image-button").click(),
+      page.getByTestId("plan-menu-export-image").click(),
     ]);
-
-    await expect(page.getByTestId("export-success-message")).toBeVisible();
-    await page.getByTestId("save-dialog-close-button").click();
 
     // ダウンロードされたファイルを確認
     const filename = download.suggestedFilename();

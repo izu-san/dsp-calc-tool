@@ -420,11 +420,13 @@ test.describe("建設ロードマップ機能", () => {
   });
 
   test.describe("7. データ永続化", () => {
-    test.skip("7.1 ローカルストレージへの保存とページリロード後の復元", async ({ page }) => {
-      // TODO: リロード後のウェルカムモーダル表示動作を確認してから有効化
+    test("7.1 ローカルストレージへの保存とページリロード後の復元", async ({ page }) => {
       // 電磁マトリックスを選択
       await page.getByTestId("recipe-button-1801").click();
       await page.getByTestId("roadmap-tab").click();
+
+      // ロードマップの生成を待つ
+      await expect(page.getByRole("button", { name: /☐.*鉄鉱石/ })).toBeVisible();
 
       // ノードをチェック
       await page.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
@@ -440,22 +442,27 @@ test.describe("建設ロードマップ機能", () => {
       const progressMatch = beforeReloadProgress.match(/(\d+)%/);
       const progress = parseInt(progressMatch![1]);
 
+      // 保存のための少し待機 (debounce 500ms)
+      await page.waitForTimeout(600);
+
       // ページをリロード
       await page.reload();
 
-      // ウェルカムモーダルをスキップ
-      await page.getByTestId("welcome-skip-button").click();
+      // ウェルカムモーダルは表示されない（localStorageに保存されているため）
+      await expect(page.getByTestId("welcome-skip-button")).not.toBeVisible();
 
       // 電磁マトリックスを再選択
       await page.getByTestId("recipe-button-1801").click();
       await page.getByTestId("roadmap-tab").click();
 
-      // チェック状態が復元される
+      // ロードマップの読み込みと復元を待つ
       await expect(page.getByRole("button", { name: /☑.*鉄鉱石/ })).toBeVisible();
+
+      // チェック状態が復元される
       await expect(page.getByRole("button", { name: /☑.*銅鉱石/ })).toBeVisible();
 
       // Phase 2を展開して確認
-      await page.getByRole("button", { name: /▼.*Phase 2:/ }).click();
+      await page.getByRole("button", { name: /▶.*Phase 2:/ }).click();
       await expect(page.getByRole("button", { name: /☑.*磁石/ }).first()).toBeVisible();
 
       // 全体進捗が同じ
@@ -463,26 +470,37 @@ test.describe("建設ロードマップ機能", () => {
       expect(afterReloadProgress).toContain(`${progress}%`);
     });
 
-    test.skip("7.2 異なるレシピ間でのデータ独立性", async ({ page }) => {
-      // TODO: タブ切り替え時のチェック状態保持を確認してから有効化
+    test("7.2 異なるレシピ間でのデータ独立性", async ({ page }) => {
       // 電磁マトリックスでチェック
       await page.getByTestId("recipe-button-1801").click();
       await page.getByTestId("roadmap-tab").click();
+
+      // ロードマップの生成を待つ
+      await expect(page.getByRole("button", { name: /☐.*鉄鉱石/ })).toBeVisible();
       await page.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
+
+      // 保存のための少し待機 (debounce 500ms)
+      await page.waitForTimeout(600);
 
       // 構造マトリックスに切り替え
       await page.getByTestId("recipe-button-1803").click();
       await page.getByTestId("roadmap-tab").click();
 
+      // ロードマップの生成を待つ（構造マトリックス用）
+      await page.waitForTimeout(100);
+
       // 構造マトリックスで別のノードをチェック（最初のチェックボックスノード）
       const firstNode = page.getByRole("button", { name: /☐/ }).first();
       await firstNode.click();
+
+      // 保存のための少し待機
+      await page.waitForTimeout(600);
 
       // 電磁マトリックスに戻る
       await page.getByTestId("recipe-button-1801").click();
       await page.getByTestId("roadmap-tab").click();
 
-      // 電磁マトリックスのチェック状態が保持されている
+      // ロードマップの復元を待つ
       await expect(page.getByRole("button", { name: /☑.*鉄鉱石/ })).toBeVisible();
 
       // 構造マトリックスに戻る
@@ -490,6 +508,7 @@ test.describe("建設ロードマップ機能", () => {
       await page.getByTestId("roadmap-tab").click();
 
       // 構造マトリックスのチェック状態も保持されている（最低1つはチェック済み）
+      await page.waitForTimeout(100);
       const checkedNodes = await page.getByRole("button", { name: /☑/ }).count();
       expect(checkedNodes).toBeGreaterThanOrEqual(1);
     });
@@ -619,12 +638,12 @@ test.describe("建設ロードマップ機能", () => {
       await expect(page.getByRole("button", { name: "すべてリセット" })).toBeVisible();
     });
 
-    test.skip("10.2 英語表示", async ({ page }) => {
-      // TODO: 言語セレクターの実装を確認してから有効化
+    test("10.2 英語表示", async ({ page }) => {
       // 言語を英語に切り替え
-      const languageSelector = page.getByTestId("language-selector");
-      await languageSelector.selectOption("en");
+      await page.getByTestId("language-menu-trigger").click();
+      await page.getByTestId("language-menu-item-en").click();
 
+      // レシピを選択して建設ロードマップを開く
       await page.getByTestId("recipe-button-1801").click();
       await page.getByTestId("roadmap-tab").click();
 
@@ -633,7 +652,11 @@ test.describe("建設ロードマップ機能", () => {
       await expect(page.getByText(/Overall Progress/i)).toBeVisible();
 
       // 日本語に戻す
-      await languageSelector.selectOption("ja");
+      await page.getByTestId("language-menu-trigger").click();
+      await page.getByTestId("language-menu-item-ja").click();
+
+      // ロードマップタブを再度開いて確認
+      await page.getByTestId("roadmap-tab").click();
       await expect(page.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
     });
   });
@@ -660,14 +683,19 @@ test.describe("建設ロードマップ機能", () => {
       await expect(page.getByText(/全体進捗/)).toBeVisible();
     });
 
-    test.skip("11.2 タブ切り替え後の状態保持", async ({ page }) => {
-      // TODO: タブ切り替え時のチェック状態保持を確認してから有効化
+    test("11.2 タブ切り替え後の状態保持", async ({ page }) => {
       await page.getByTestId("recipe-button-1801").click();
       await page.getByTestId("roadmap-tab").click();
+
+      // ロードマップの生成を待つ
+      await expect(page.getByRole("button", { name: /☐.*鉄鉱石/ })).toBeVisible();
 
       // ノードをチェック
       await page.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
       await page.getByRole("button", { name: /☐.*銅鉱石/ }).click();
+
+      // 保存のための少し待機 (debounce 500ms)
+      await page.waitForTimeout(600);
 
       // 他のタブに移動
       await page.getByTestId("statistics-tab").click();
