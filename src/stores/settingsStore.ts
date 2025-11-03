@@ -21,7 +21,7 @@ import {
   extractCustomTemplateId,
 } from "../types/settings";
 import { serializeSettings, deserializeSettings } from "../utils/storageSerializer";
-import { recordHistoryEntry } from "../utils/historyRecorder";
+import { recordSettingsHistory, recordPowerGenerationHistory } from "../services/history-recording";
 import { generateUUID } from "../utils/historyUtils";
 import {
   generateProliferatorDescription,
@@ -134,12 +134,11 @@ export const useSettingsStore = create<SettingsStore>()(
           const description = generateProliferatorDescription(before, after, t, i18n.language);
 
           // Record history
-          recordHistoryEntry(
-            "settings",
+          recordSettingsHistory({
             description,
-            { settings: { proliferator: before } },
-            { settings: { proliferator: after } }
-          );
+            before: { settings: { proliferator: before } },
+            after: { settings: { proliferator: after } },
+          });
 
           return {
             settings: {
@@ -165,12 +164,11 @@ export const useSettingsStore = create<SettingsStore>()(
           );
 
           // Record history
-          recordHistoryEntry(
-            "settings",
+          recordSettingsHistory({
             description,
-            { settings: { machineRank: { [recipeType]: before } } },
-            { settings: { machineRank: { [recipeType]: after } } }
-          );
+            before: { settings: { machineRank: { [recipeType]: before } } },
+            after: { settings: { machineRank: { [recipeType]: after } } },
+          });
 
           return {
             settings: {
@@ -201,12 +199,11 @@ export const useSettingsStore = create<SettingsStore>()(
           const description = generateConveyorBeltDescription(before, after, t, i18n.language);
 
           // Record history
-          recordHistoryEntry(
-            "settings",
+          recordSettingsHistory({
             description,
-            { settings: { conveyorBelt: before } },
-            { settings: { conveyorBelt: after } }
-          );
+            before: { settings: { conveyorBelt: before } },
+            after: { settings: { conveyorBelt: after } },
+          });
 
           return {
             settings: {
@@ -226,12 +223,11 @@ export const useSettingsStore = create<SettingsStore>()(
           const description = generateSorterDescription(before, after, t, i18n.language);
 
           // Record history
-          recordHistoryEntry(
-            "settings",
+          recordSettingsHistory({
             description,
-            { settings: { sorter: before } },
-            { settings: { sorter: after } }
-          );
+            before: { settings: { sorter: before } },
+            after: { settings: { sorter: after } },
+          });
 
           return {
             settings: {
@@ -278,7 +274,7 @@ export const useSettingsStore = create<SettingsStore>()(
             i18n.language
           );
 
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),
@@ -302,7 +298,7 @@ export const useSettingsStore = create<SettingsStore>()(
             i18n.language
           );
 
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),
@@ -324,7 +320,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),
@@ -344,7 +340,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
           const t = (key: string) => i18n.t(key);
           const description = generatePhotonGenerationDescription(key, t, i18n.language);
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),
@@ -371,7 +367,7 @@ export const useSettingsStore = create<SettingsStore>()(
           // Record history as batch operation
           const t = (key: string) => i18n.t(key);
           const description = generateTemplateDescription(templateId, t, i18n.language);
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),
@@ -392,7 +388,7 @@ export const useSettingsStore = create<SettingsStore>()(
 
           const t = (key: string) => i18n.t(key);
           const description = generateBatchSettingsDescription(t, i18n.language);
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),
@@ -414,7 +410,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("powerGeneration", description, before, after);
+          recordPowerGenerationHistory({ description, before, after });
           return { powerGenerationTemplate: template };
         }),
 
@@ -435,7 +431,7 @@ export const useSettingsStore = create<SettingsStore>()(
             i18n.language,
             data
           );
-          recordHistoryEntry("powerGeneration", description, before, after);
+          recordPowerGenerationHistory({ description, before, after });
           return { manualPowerGenerator: generator };
         }),
 
@@ -456,7 +452,7 @@ export const useSettingsStore = create<SettingsStore>()(
             i18n.language,
             data
           );
-          recordHistoryEntry("powerGeneration", description, before, after);
+          recordPowerGenerationHistory({ description, before, after });
           return { manualPowerFuel: fuel };
         }),
 
@@ -478,7 +474,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("powerGeneration", description, before, after);
+          recordPowerGenerationHistory({ description, before, after });
           return {
             powerFuelProliferator: {
               ...PROLIFERATOR_DATA[type],
@@ -507,7 +503,7 @@ export const useSettingsStore = create<SettingsStore>()(
             powerFuelProliferator: { ...PROLIFERATOR_DATA.none, mode: "production" as const },
           };
 
-          recordHistoryEntry("settings", "設定をリセット", before, after);
+          recordSettingsHistory({ description: "設定をリセット", before, after });
 
           return after;
         }),
@@ -586,7 +582,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return {
             customTemplates: {
@@ -666,7 +662,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return {
             customTemplates: {
@@ -731,7 +727,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return {
             customTemplates: Object.fromEntries(
@@ -770,7 +766,7 @@ export const useSettingsStore = create<SettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
 
           return after;
         }),

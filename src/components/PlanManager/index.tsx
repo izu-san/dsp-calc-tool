@@ -1,40 +1,26 @@
-import { useRef, useState } from "react";
+import { useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import i18n from "../../i18n";
-import { exportToCSV } from "../../lib/export/csvExporter";
-import { transformToExportData } from "../../lib/export/dataTransformer";
-import { exportToExcel } from "../../lib/export/excelExporter";
-import { generateExportFilename } from "../../lib/export/filenameGenerator";
-import { exportToImage, exportMultipleViews } from "../../lib/export/imageExporter";
-import { exportToMarkdown } from "../../lib/export/markdownExporter";
 import type { ImageExportOptions } from "../../types/export";
-import { importPlan } from "../../lib/import";
-import {
-  buildSavedPlanFromExportData,
-  parseExportDataFromJSON,
-} from "../../lib/import/jsonImporter";
-import { importFromMarkdown } from "../../lib/import/markdownImporter";
-import { buildPlanFromImport } from "../../lib/import/planBuilder";
-import { validatePlanInfo } from "../../lib/import/validation";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useHistoryStore } from "../../stores/historyStore";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import type { SavedPlan } from "../../types";
-import {
-  deletePlanFromLocalStorage,
-  getRecentPlans,
-  loadPlanFromLocalStorage,
-  restorePlan,
-  savePlanToLocalStorage,
-} from "../../utils/planExport";
+import type { SavedPlan, Recipe } from "../../types";
 import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
 import { calculatePlanDiff } from "../../utils/planDiff";
 import { PlanDiffView } from "../PlanDiffView";
-import { setInternal } from "../../utils/historyRecorder";
-import { HISTORY_VERSION } from "../../utils/historyUtils";
+import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
+import { usePlanExport } from "../../hooks/usePlanExport";
+import { usePlanImport } from "../../hooks/usePlanImport";
+import {
+  savePlanWithVersion,
+  getDefaultPlanName,
+  createPlanFromState,
+} from "../../services/plan-management/planSaveService";
+import { getRecentPlans } from "../../services/plan-management/planStorageService";
+import { loadPlanWithHistory } from "../../services/plan-management/planLoadService";
 
 export function PlanManager() {
   const { t } = useTranslation();
@@ -55,703 +41,299 @@ export function PlanManager() {
     powerFuelProliferator,
   } = useSettingsStore();
   const { nodeOverrides, setAllOverrides } = useNodeOverrideStore();
-  const { savePlanVersion, getPlanVersions, loadPlanVersion, loadLatestPlanVersion, pushEntry } =
-    useHistoryStore();
+  const {
+    getPlanVersions,
+    loadPlanVersion: loadPlanVersionFromStore,
+    loadLatestPlanVersion,
+  } = useHistoryStore();
 
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [showLoadDialog, setShowLoadDialog] = useState(false);
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [showVersionDialog, setShowVersionDialog] = useState(false);
-  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
-  const [showDiffDialog, setShowDiffDialog] = useState(false);
-  const [diffBaseVersion, setDiffBaseVersion] = useState<number | null>(null);
-  const [diffCompareVersion, setDiffCompareVersion] = useState<number | null>(null);
-  const [shareURL, setShareURL] = useState("");
-  const [copySuccess, setCopySuccess] = useState(false);
-  const [planName, setPlanName] = useState("");
-  const [importSuccessMessage, setImportSuccessMessage] = useState<string>("");
-  const [importErrorMessage, setImportErrorMessage] = useState<string>("");
-  const [exportSuccessMessage, setExportSuccessMessage] = useState<string>("");
-  const [exportErrorMessage, setExportErrorMessage] = useState<string>("");
-  const [recentPlans, setRecentPlans] = useState(getRecentPlans());
+  // Dialog state management
+  const dialogs = usePlanManagerDialogs();
+
+  // Export functionality
+  const planExport = usePlanExport({
+    selectedRecipe,
+    calculationResult,
+    targetQuantity,
+    settings,
+    powerGenerationTemplate,
+    manualPowerGenerator,
+    manualPowerFuel,
+    powerFuelProliferator,
+    items: data?.items || new Map(),
+  });
+
+  // Import functionality
+  const planImport = usePlanImport({
+    gameData: data,
+    currentSettings: settings,
+    callbacks: {
+      setRecipe: (recipe: Recipe) => {
+        const r = data?.recipes.get(recipe.SID);
+        if (r) setSelectedRecipe(r);
+      },
+      setTargetQuantity,
+      updateSettings,
+      setNodeOverrides: setAllOverrides,
+    },
+    mergeOverrides: dialogs.mergeOverridesOnLoad,
+    currentOverrides: nodeOverrides,
+    onImportSuccess: () => {
+      setTimeout(() => {
+        dialogs.closeDialog();
+      }, 500);
+    },
+  });
+
   const fileInputRef = useRef<HTMLInputElement>(null);
-  // New options for overrides handling
-  const [includeOverridesOnSave, setIncludeOverridesOnSave] = useState(true);
-  const [includeOverridesOnShare, setIncludeOverridesOnShare] = useState(true);
-  const [mergeOverridesOnLoad, setMergeOverridesOnLoad] = useState(false);
 
-  // Generate default plan name
-  const getDefaultPlanName = () => {
-    // Use recipe name as default if available
-    if (selectedRecipe) {
-      return selectedRecipe.name;
-    }
-    // Fallback to timestamp if no recipe selected
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    return `Plan_${year}-${month}-${day}_${hours}-${minutes}`;
-  };
+  // Generate default plan name helper
+  const getDefaultPlanNameValue = useCallback(() => {
+    return getDefaultPlanName(selectedRecipe?.name);
+  }, [selectedRecipe]);
 
-  const handleExport = async (format: "json" | "markdown" | "csv" | "excel", name: string) => {
+  // Handle save to localStorage
+  const handleSaveToLocalStorage = useCallback(() => {
     if (!selectedRecipe) {
       alert(t("pleaseSelectRecipe"));
       return;
     }
 
-    try {
-      if (!calculationResult) {
-        alert(t("pleaseCalculateFirst"));
-        return;
-      }
-
-      const exportData = transformToExportData(
-        calculationResult,
-        selectedRecipe,
-        targetQuantity,
-        settings,
-        name,
-        Date.now(),
-        {
-          template: powerGenerationTemplate,
-          manualGenerator: manualPowerGenerator,
-          manualFuel: manualPowerFuel,
-          powerFuelProliferator: powerFuelProliferator,
-        },
-        { items: data?.items || new Map() }
-      );
-
-      let blob: Blob;
-      let filename: string;
-      let mimeType: string;
-
-      if (format === "json") {
-        // JSON エクスポート
-        filename = generateExportFilename(name, "json");
-        mimeType = "application/json;charset=utf-8";
-        blob = new Blob([JSON.stringify(exportData, null, 2)], { type: mimeType });
-      } else if (format === "markdown") {
-        // Markdown エクスポート
-        const markdown = exportToMarkdown(exportData);
-        filename = generateExportFilename(name, "md");
-        mimeType = "text/markdown;charset=utf-8";
-        blob = new Blob([markdown], { type: mimeType });
-      } else if (format === "csv") {
-        // CSV エクスポート
-        const csv = exportToCSV(exportData);
-        filename = generateExportFilename(name, "csv");
-        mimeType = "text/csv;charset=utf-8";
-        blob = new Blob([csv], { type: mimeType });
-      } else if (format === "excel") {
-        // Excel エクスポート
-        filename = generateExportFilename(name, "xlsx");
-        mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-        blob = await exportToExcel(exportData);
-      } else {
-        throw new Error(`Unsupported format: ${format}`);
-      }
-
-      // ダウンロード
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      setExportSuccessMessage(t("exported"));
-      setExportErrorMessage("");
-    } catch (error) {
-      console.error("Export error:", error);
-      setExportErrorMessage(`${t("exportError")}: ${error}`);
-      setExportSuccessMessage("");
-    }
-  };
-
-  const handleImageExport = async (name: string, options: ImageExportOptions) => {
-    if (!selectedRecipe) {
-      alert(t("pleaseSelectRecipe"));
-      return;
-    }
-
-    if (!calculationResult) {
-      alert(t("pleaseCalculateFirst"));
-      return;
-    }
-
-    try {
-      const selectors: string[] = [];
-
-      // 各ビューに対応するセレクタを追加（表示されている場合のみ）
-      if (options.includeViews.productionTree) {
-        selectors.push("#production-tree-view");
-      }
-      if (options.includeViews.statistics) {
-        selectors.push("#statistics-view");
-      }
-      if (options.includeViews.powerGraph) {
-        selectors.push("#power-graph-view");
-      }
-      if (options.includeViews.buildingCost) {
-        selectors.push("#building-cost-view");
-      }
-      if (options.includeViews.powerGeneration) {
-        selectors.push("#power-generation-view");
-      }
-
-      // 表示されているビューのみをフィルタリング
-      const visibleSelectors = selectors.filter(selector => {
-        const element = document.querySelector(selector);
-        return element !== null && (element as HTMLElement).offsetParent !== null; // 表示されているかチェック
-      });
-
-      if (visibleSelectors.length === 0) {
-        throw new Error(
-          "表示されているビューがありません。生産チェーン、統計、建設コスト、または発電設備のタブを開いてから画像エクスポートしてください。"
-        );
-      }
-
-      // 画像をエクスポート
-      let blob: Blob;
-      if (visibleSelectors.length === 1) {
-        blob = await exportToImage(visibleSelectors[0], options);
-      } else {
-        blob = await exportMultipleViews(visibleSelectors, options);
-      }
-
-      // ファイル名を生成
-      const ext = options.format;
-      const filename = generateExportFilename(name, ext);
-
-      // ダウンロード
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      setExportSuccessMessage(t("exported"));
-      setExportErrorMessage("");
-    } catch (error) {
-      console.error("Image export error:", error);
-      setExportErrorMessage(
-        `${t("exportError")}: ${error instanceof Error ? error.message : String(error)}`
-      );
-      setExportSuccessMessage("");
-    }
-  };
-
-  const handleSaveToLocalStorage = () => {
-    if (!selectedRecipe) {
-      alert(t("pleaseSelectRecipe"));
-      return;
-    }
-
-    const planNameToSave = planName || getDefaultPlanName();
-
-    const plan: SavedPlan = {
-      name: planNameToSave,
-      timestamp: Date.now(),
-      recipeSID: selectedRecipe.SID,
-      targetQuantity,
-      settings,
-      alternativeRecipes: Object.fromEntries(settings.alternativeRecipes),
-      nodeOverrides: includeOverridesOnSave ? Object.fromEntries(nodeOverrides) : {},
-    };
+    const planNameToSave = dialogs.planName || getDefaultPlanNameValue();
 
     // Check if a plan with the same name already exists
     const recentPlansList = getRecentPlans();
     const existingPlan = recentPlansList.find(p => p.name === planNameToSave);
     const existingPlanId = existingPlan?.planId;
 
-    // Save to version management with existing planId if found
-    const planId = savePlanVersion(plan, existingPlanId);
-
-    // Update plan with planId for localStorage storage
-    plan.planId = planId;
-
-    // Also save to localStorage for recent plans (backward compatibility)
-    savePlanToLocalStorage(plan);
-
-    // Remove duplicate plans with the same name but different planId (old data without planId)
-    const updatedRecentPlansList = getRecentPlans();
-    const plansWithSameName = updatedRecentPlansList.filter(p => p.name === planNameToSave);
-    if (plansWithSameName.length > 1) {
-      // Keep only the most recent one
-      const plansToKeep = plansWithSameName.sort((a, b) => b.timestamp - a.timestamp).slice(0, 1);
-      const plansToRemove = plansWithSameName.filter(p => !plansToKeep.includes(p));
-
-      // Remove old plans from localStorage
-      plansToRemove.forEach(p => {
-        localStorage.removeItem(p.key);
-      });
-
-      // Update recent plans list
-      const filteredPlans = updatedRecentPlansList.filter(p => !plansToRemove.includes(p));
-      localStorage.setItem("recent_plans", JSON.stringify(filteredPlans));
-    }
-
-    setRecentPlans(getRecentPlans());
-    setShowSaveDialog(false);
-    setPlanName("");
-    alert(t("saved"));
-  };
-
-  const handleImportFile = async (file: File) => {
-    if (!file) return;
+    // Create plan from current state
+    const plan = createPlanFromState({
+      name: planNameToSave,
+      recipeSID: selectedRecipe.SID,
+      targetQuantity,
+      settings,
+      alternativeRecipes: settings.alternativeRecipes,
+      nodeOverrides,
+      includeOverrides: dialogs.includeOverridesOnSave,
+    });
 
     try {
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      let plan: SavedPlan | null = null;
+      savePlanWithVersion({ plan, existingPlanId });
+      planImport.refreshRecentPlans();
+      dialogs.closeDialogWithReset();
+      dialogs.setPlanName("");
+      alert(t("saved"));
+    } catch (error) {
+      alert(`${t("saveError")}: ${error}`);
+    }
+  }, [
+    selectedRecipe,
+    targetQuantity,
+    settings,
+    nodeOverrides,
+    dialogs,
+    planImport,
+    getDefaultPlanNameValue,
+    t,
+  ]);
 
-      if (fileExtension === "json") {
-        // JSON インポート（新しいExportData形式）
-        if (!data) {
-          setImportErrorMessage(t("gameDataNotLoaded"));
-          setImportSuccessMessage("");
-          return;
-        }
+  // Handle export
+  const handleExport = useCallback(
+    async (format: "json" | "markdown" | "csv" | "excel", name: string) => {
+      await planExport.handleExport(format, name);
+    },
+    [planExport]
+  );
 
-        const text = await file.text();
-        const exportData = parseExportDataFromJSON(text);
-        plan = buildSavedPlanFromExportData(exportData, data, settings);
-      } else if (fileExtension === "md" || fileExtension === "markdown") {
-        // Markdown インポート
-        if (!data) {
-          setImportErrorMessage(t("gameDataNotLoaded"));
-          setImportSuccessMessage("");
-          return;
-        }
+  // Handle image export
+  const handleImageExport = useCallback(
+    async (name: string, options: ImageExportOptions) => {
+      await planExport.handleImageExport(name, options);
+    },
+    [planExport]
+  );
 
-        const text = await file.text();
-        const importResult = importFromMarkdown(text);
+  // Handle file import
+  const handleImportFile = useCallback(
+    async (file: File) => {
+      await planImport.handleImportFile(file);
+    },
+    [planImport]
+  );
 
-        if (!importResult.success) {
-          const errors = importResult.errors.map(e => e.message).join("\n");
-          setImportErrorMessage(`${t("importError")}:\n${errors}`);
-          setImportSuccessMessage("");
-          return;
-        }
-
-        // 部分的なデータから SavedPlan を構築
-        const planInfo = {
-          name: importResult.extractedData.planName || file.name.replace(/\.(md|markdown)$/i, ""),
-          timestamp: importResult.extractedData.timestamp || Date.now(),
-          recipeSID: importResult.extractedData.recipeSID || 0,
-          recipeName: importResult.extractedData.recipeName || "",
-          targetQuantity: importResult.extractedData.targetQuantity || 1,
-        };
-
-        // 検証
-        const validation = validatePlanInfo(planInfo, data);
-        if (!validation.isValid) {
-          const errors = validation.errors.map(e => e.message).join("\n");
-          setImportErrorMessage(`${t("validationError")}:\n${errors}`);
-          setImportSuccessMessage("");
-          return;
-        }
-
-        // SavedPlan を構築（現在の設定をフォールバックとして渡す）
-        plan = buildPlanFromImport(planInfo, data, settings);
-        if (!plan) {
-          setImportErrorMessage(t("planBuildError"));
-          setImportSuccessMessage("");
-          return;
-        }
-
-        // 警告があれば表示
-        if (validation.warnings.length > 0) {
-          const warnings = validation.warnings.map(w => w.message).join("\n");
-          console.warn(`Import warnings:\n${warnings}`);
-        }
-      } else if (fileExtension === "csv" || fileExtension === "xlsx") {
-        // CSV/Excel インポート
-        if (!data) {
-          setImportErrorMessage(t("gameDataNotLoaded"));
-          setImportSuccessMessage("");
-          return;
-        }
-
-        const importResult = await importPlan(file, {
-          validateData: true,
-          strictMode: false,
-          allowPartialImport: true,
-          autoFixErrors: true,
-          checkVersion: true,
-        });
-
-        if (!importResult.success) {
-          const errors =
-            "errors" in importResult
-              ? importResult.errors.map(e => e.message).join("\n")
-              : t("importError");
-          setImportErrorMessage(`${t("importError")}:\n${errors}`);
-          setImportSuccessMessage("");
-          return;
-        }
-
-        if (!("extractedData" in importResult)) {
-          setImportErrorMessage(t("importError"));
-          setImportSuccessMessage("");
-          return;
-        }
-
-        // エラーがあれば警告として表示（部分インポート許可のため）
-        if (importResult.errors.length > 0) {
-          const errors = importResult.errors.map(e => e.message).join("\n");
-          console.warn(`Import errors (continuing anyway):\n${errors}`);
-        }
-
-        // プラン情報を検証
-        const planInfo = {
-          name: importResult.extractedData.planInfo.name,
-          timestamp: importResult.extractedData.planInfo.timestamp,
-          recipeSID: importResult.extractedData.planInfo.recipeSID,
-          recipeName: importResult.extractedData.planInfo.recipeName,
-          targetQuantity: importResult.extractedData.planInfo.targetQuantity,
-        };
-
-        const validation = validatePlanInfo(planInfo, data);
-        if (!validation.isValid) {
-          const errors = validation.errors.map(e => e.message).join("\n");
-          setImportErrorMessage(`${t("validationError")}:\n${errors}`);
-          setImportSuccessMessage("");
-          return;
-        }
-
-        // SavedPlan を構築（現在の設定をフォールバックとして渡す）
-        plan = buildPlanFromImport(planInfo, data, settings);
-        if (!plan) {
-          setImportErrorMessage(t("planBuildError"));
-          setImportSuccessMessage("");
-          return;
-        }
-
-        // 警告があれば表示
-        if (importResult.warnings.length > 0 || validation.warnings.length > 0) {
-          const warnings = [
-            ...importResult.warnings.map(w => w.message),
-            ...validation.warnings.map(w => w.message),
-          ].join("\n");
-          console.warn(`Import warnings:\n${warnings}`);
-        }
-      } else {
-        setImportErrorMessage(t("unsupportedFileFormat"));
-        setImportSuccessMessage("");
-        return;
-      }
-
-      if (!plan) {
-        setImportErrorMessage(t("importError"));
-        setImportSuccessMessage("");
-        return;
-      }
-
-      // Validate recipe exists
+  // Handle load latest plan version
+  const handleLoadLatestPlan = useCallback(
+    (planId: string) => {
       if (!data) {
-        setImportErrorMessage(t("gameDataNotLoaded"));
-        setImportSuccessMessage("");
+        alert(t("gameDataNotLoaded"));
+        return;
+      }
+
+      const plan = loadLatestPlanVersion(planId);
+      if (!plan) {
+        alert(t("planNotFound"));
         return;
       }
 
       const recipe = data.recipes.get(plan.recipeSID);
       if (!recipe) {
-        setImportErrorMessage(`${t("recipeNotFound")}: ${plan.recipeSID}`);
-        setImportSuccessMessage("");
+        alert(`${t("recipeNotFound")}: ${plan.recipeSID}`);
         return;
       }
 
-      // Record detailed history for file import
-      setInternal(true); // Suppress automatic history recording
+      try {
+        loadPlanWithHistory({
+          plan,
+          recipe,
+          callbacks: {
+            setRecipe: setSelectedRecipe,
+            setTargetQuantity,
+            updateSettings,
+            setNodeOverrides: setAllOverrides,
+          },
+          mergeOverrides: dialogs.mergeOverridesOnLoad,
+          currentOverrides: nodeOverrides,
+          historyDescription: t("planLoadedFromBrowser", {
+            planName: plan.name,
+            version: plan.version || 1,
+          }),
+        });
 
-      // Restore plan
-      if (mergeOverridesOnLoad) {
-        // Merge overrides: existing wins or imported wins? Choose imported wins
-        const merged = new Map(nodeOverrides);
-        Object.entries(plan.nodeOverrides).forEach(([k, v]) => merged.set(k, v));
-        restorePlan(
-          plan,
-          () => setSelectedRecipe(recipe),
-          setTargetQuantity,
-          updateSettings,
-          setAllOverrides
-        );
-        // After settings/recipe restored, apply merged overrides
-        setAllOverrides(merged);
-      } else {
-        restorePlan(
-          plan,
-          () => setSelectedRecipe(recipe),
-          setTargetQuantity,
-          updateSettings,
-          setAllOverrides
-        );
+        dialogs.closeDialog();
+        planImport.clearMessages();
+        alert(`${t("planLoaded", { name: plan.name })}`);
+      } catch (error) {
+        alert(`${t("loadError")}: ${error}`);
       }
-
-      // Record detailed import history
-      const historyDescription = t("planLoadedFromFile", { fileName: file.name });
-      pushEntry({
-        id: crypto.randomUUID(),
-        timestamp: Date.now(),
-        type: "plan",
-        description: historyDescription,
-        changes: { fileName: file.name },
-        previousChanges: {},
-        version: HISTORY_VERSION,
-        planSnapshot: plan,
-        locale: i18n.language,
-      });
-
-      setInternal(false); // Re-enable automatic history recording
-
-      setImportSuccessMessage(`${t("planLoaded", { name: plan.name })}`);
-      setImportErrorMessage("");
-      // インポート成功時にモーダルを閉じる
-      setTimeout(() => {
-        setShowLoadDialog(false);
-      }, 500); // 成功メッセージを少し表示してから閉じる
-    } catch (error) {
-      setInternal(false); // Re-enable automatic history recording in case of error
-      console.error("Import error:", error);
-      setImportErrorMessage(`${t("loadError")}: ${error}`);
-      setImportSuccessMessage("");
-    }
-  };
-
-  const handleLoadLatestPlan = (planId: string) => {
-    if (!data) {
-      alert(t("gameDataNotLoaded"));
-      return;
-    }
-
-    const plan = loadLatestPlanVersion(planId);
-    if (!plan) {
-      alert(t("planNotFound"));
-      return;
-    }
-
-    const recipe = data.recipes.get(plan.recipeSID);
-    if (!recipe) {
-      alert(`${t("recipeNotFound")}: ${plan.recipeSID}`);
-      return;
-    }
-
-    // Record detailed history for latest version load
-    setInternal(true); // Suppress automatic history recording
-
-    if (mergeOverridesOnLoad) {
-      const merged = new Map(nodeOverrides);
-      Object.entries(plan.nodeOverrides).forEach(([k, v]) => merged.set(k, v));
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
-        setTargetQuantity,
-        updateSettings,
-        setAllOverrides
-      );
-      setAllOverrides(merged);
-    } else {
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
-        setTargetQuantity,
-        updateSettings,
-        setAllOverrides
-      );
-    }
-
-    // Record detailed load history with latest version
-    const historyDescription = t("planLoadedFromBrowser", {
-      planName: plan.name,
-      version: plan.version,
-    });
-    pushEntry({
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: "plan",
-      description: historyDescription,
-      changes: {},
-      previousChanges: {},
-      version: HISTORY_VERSION,
-      planSnapshot: plan,
-      locale: i18n.language,
-    });
-
-    setInternal(false); // Re-enable automatic history recording
-
-    setShowLoadDialog(false);
-    setImportSuccessMessage("");
-    setImportErrorMessage("");
-    alert(`${t("planLoaded", { name: plan.name })}`);
-  };
-
-  const handleLoadFromLocalStorage = (key: string) => {
-    const plan = loadPlanFromLocalStorage(key);
-    if (!plan) {
-      alert(t("planNotFound"));
-      return;
-    }
-
-    if (!data) {
-      alert(t("gameDataNotLoaded"));
-      return;
-    }
-
-    const recipe = data.recipes.get(plan.recipeSID);
-    if (!recipe) {
-      alert(`${t("recipeNotFound")}: ${plan.recipeSID}`);
-      return;
-    }
-
-    // Record detailed history for browser load
-    setInternal(true); // Suppress automatic history recording
-
-    if (mergeOverridesOnLoad) {
-      const merged = new Map(nodeOverrides);
-      Object.entries(plan.nodeOverrides).forEach(([k, v]) => merged.set(k, v));
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
-        setTargetQuantity,
-        updateSettings,
-        setAllOverrides
-      );
-      setAllOverrides(merged);
-    } else {
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
-        setTargetQuantity,
-        updateSettings,
-        setAllOverrides
-      );
-    }
-
-    // Record detailed load history
-    const historyDescription = t("planLoadedFromBrowser", {
-      planName: plan.name,
-      version: plan.version || 1,
-    });
-    pushEntry({
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: "plan",
-      description: historyDescription,
-      changes: {},
-      previousChanges: {},
-      version: HISTORY_VERSION,
-      planSnapshot: plan,
-      locale: i18n.language,
-    });
-
-    setInternal(false); // Re-enable automatic history recording
-
-    setShowLoadDialog(false);
-    setImportSuccessMessage("");
-    setImportErrorMessage("");
-    alert(`${t("planLoaded", { name: plan.name })}`);
-  };
-
-  const handleDeletePlan = (key: string) => {
-    if (confirm(t("confirmDeletePlan"))) {
-      deletePlanFromLocalStorage(key);
-      setRecentPlans(getRecentPlans());
-    }
-  };
-
-  const handleLoadVersion = (planId: string, version: number) => {
-    if (!data) {
-      alert(t("gameDataNotLoaded"));
-      return;
-    }
-
-    const plan = loadPlanVersion(planId, version);
-    if (!plan) {
-      alert(t("versionNotFound"));
-      return;
-    }
-
-    const recipe = data.recipes.get(plan.recipeSID);
-    if (!recipe) {
-      alert(`${t("recipeNotFound")}: ${plan.recipeSID}`);
-      return;
-    }
-
-    // Record detailed history for version load
-    setInternal(true); // Suppress automatic history recording
-
-    restorePlan(
-      plan,
-      () => setSelectedRecipe(recipe),
+    },
+    [
+      data,
+      dialogs,
+      nodeOverrides,
+      planImport,
+      t,
+      loadLatestPlanVersion,
+      setSelectedRecipe,
       setTargetQuantity,
       updateSettings,
-      setAllOverrides
-    );
+      setAllOverrides,
+    ]
+  );
 
-    // Record detailed version load history
-    const historyDescription = t("planLoadedFromBrowser", { planName: plan.name, version });
-    pushEntry({
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: "plan",
-      description: historyDescription,
-      changes: {},
-      previousChanges: {},
-      version: HISTORY_VERSION,
-      planSnapshot: plan,
-      locale: i18n.language,
-    });
+  // Handle load from localStorage
+  const handleLoadFromLocalStorage = useCallback(
+    (key: string) => {
+      planImport.handleLoadFromStorage(key);
+      dialogs.closeDialog();
+    },
+    [planImport, dialogs]
+  );
 
-    setInternal(false); // Re-enable automatic history recording
+  // Handle delete plan
+  const handleDeletePlan = useCallback(
+    (key: string) => {
+      planImport.handleDeletePlan(key);
+    },
+    [planImport]
+  );
 
-    setShowVersionDialog(false);
-    setShowLoadDialog(false);
-    alert(`${t("versionLoaded", { version })}`);
-  };
+  // Handle load version
+  const handleLoadVersion = useCallback(
+    (planId: string, version: number) => {
+      if (!data) {
+        alert(t("gameDataNotLoaded"));
+        return;
+      }
 
-  const handleShareURL = () => {
+      const plan = loadPlanVersionFromStore(planId, version);
+      if (!plan) {
+        alert(t("versionNotFound"));
+        return;
+      }
+
+      const recipe = data.recipes.get(plan.recipeSID);
+      if (!recipe) {
+        alert(`${t("recipeNotFound")}: ${plan.recipeSID}`);
+        return;
+      }
+
+      try {
+        loadPlanWithHistory({
+          plan,
+          recipe,
+          callbacks: {
+            setRecipe: setSelectedRecipe,
+            setTargetQuantity,
+            updateSettings,
+            setNodeOverrides: setAllOverrides,
+          },
+          historyDescription: t("planLoadedFromBrowser", { planName: plan.name, version }),
+        });
+
+        dialogs.closeDialog();
+        dialogs.setSelectedPlanId(null);
+        alert(`${t("versionLoaded", { version })}`);
+      } catch (error) {
+        alert(`${t("loadError")}: ${error}`);
+      }
+    },
+    [
+      data,
+      dialogs,
+      t,
+      loadPlanVersionFromStore,
+      setSelectedRecipe,
+      setTargetQuantity,
+      updateSettings,
+      setAllOverrides,
+    ]
+  );
+
+  // Handle share URL
+  const handleShareURL = useCallback(() => {
     if (!selectedRecipe) {
       alert(t("pleaseSelectRecipe"));
       return;
     }
 
     const plan: SavedPlan = {
-      name: planName || getDefaultPlanName(),
+      name: dialogs.planName || getDefaultPlanNameValue(),
       timestamp: Date.now(),
       recipeSID: selectedRecipe.SID,
       targetQuantity,
       settings,
       alternativeRecipes: Object.fromEntries(settings.alternativeRecipes),
-      nodeOverrides: includeOverridesOnShare ? Object.fromEntries(nodeOverrides) : {},
+      nodeOverrides: dialogs.includeOverridesOnShare ? Object.fromEntries(nodeOverrides) : {},
     };
 
     try {
       const url = generateShareURL(plan);
-      setShareURL(url);
-      setShowShareDialog(true);
-      setCopySuccess(false);
+      dialogs.setShareURL(url);
+      dialogs.openDialog("share");
+      dialogs.setCopySuccess(false);
     } catch (error) {
       alert(`${t("urlGenerationError")}: ${error}`);
     }
-  };
+  }, [
+    selectedRecipe,
+    targetQuantity,
+    settings,
+    nodeOverrides,
+    dialogs,
+    getDefaultPlanNameValue,
+    t,
+  ]);
 
-  const handleCopyURL = async () => {
-    const success = await copyToClipboard(shareURL);
+  // Handle copy URL
+  const handleCopyURL = useCallback(async () => {
+    const success = await copyToClipboard(dialogs.shareURL);
     if (success) {
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
+      dialogs.setCopySuccess(true);
+      setTimeout(() => dialogs.setCopySuccess(false), 2000);
     } else {
       alert(t("copyFailed"));
     }
-  };
+  }, [dialogs, t]);
 
   return (
     <>
@@ -760,10 +342,10 @@ export function PlanManager() {
         <button
           data-testid="save-button"
           onClick={() => {
-            setPlanName(getDefaultPlanName());
-            setShowSaveDialog(true);
-            setExportSuccessMessage("");
-            setExportErrorMessage("");
+            dialogs.setPlanName(getDefaultPlanNameValue());
+            dialogs.openDialog("save");
+            planExport.setExportSuccessMessage("");
+            planExport.setExportErrorMessage("");
           }}
           disabled={!selectedRecipe}
           className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
@@ -775,9 +357,8 @@ export function PlanManager() {
         <button
           data-testid="load-button"
           onClick={() => {
-            setShowLoadDialog(true);
-            setImportSuccessMessage("");
-            setImportErrorMessage("");
+            dialogs.openDialog("load");
+            planImport.clearMessages();
           }}
           className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)] transition-all ripple-effect"
         >
@@ -796,7 +377,7 @@ export function PlanManager() {
       </div>
 
       {/* Save/Export Dialog */}
-      {showSaveDialog &&
+      {dialogs.activeDialog === "save" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl shadow-[0_0_30px_rgba(0,255,136,0.3)] max-w-md w-full animate-fadeInScale">
@@ -812,9 +393,9 @@ export function PlanManager() {
                   <input
                     data-testid="plan-name-input"
                     type="text"
-                    value={planName}
-                    onChange={e => setPlanName(e.target.value)}
-                    placeholder={getDefaultPlanName()}
+                    value={dialogs.planName}
+                    onChange={e => dialogs.setPlanName(e.target.value)}
+                    placeholder={getDefaultPlanNameValue()}
                     className="w-full px-3 py-2 border-2 border-neon-green/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-green focus:border-neon-green bg-dark-800/50 text-white placeholder-gray-400 backdrop-blur-sm"
                   />
                 </div>
@@ -834,28 +415,36 @@ export function PlanManager() {
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       data-testid="export-json-button"
-                      onClick={() => handleExport("json", planName || getDefaultPlanName())}
+                      onClick={() =>
+                        handleExport("json", dialogs.planName || getDefaultPlanNameValue())
+                      }
                       className="px-3 py-2 bg-green-500/20 border-2 border-green-500/40 text-white rounded-lg hover:bg-green-500/30 hover:border-green-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(34,197,94,0.3)] hover:shadow-[0_0_15px_rgba(34,197,94,0.5)] ripple-effect text-sm font-medium"
                     >
                       JSON
                     </button>
                     <button
                       data-testid="export-markdown-button"
-                      onClick={() => handleExport("markdown", planName || getDefaultPlanName())}
+                      onClick={() =>
+                        handleExport("markdown", dialogs.planName || getDefaultPlanNameValue())
+                      }
                       className="px-3 py-2 bg-purple-500/20 border-2 border-purple-500/40 text-white rounded-lg hover:bg-purple-500/30 hover:border-purple-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(168,85,247,0.3)] hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] ripple-effect text-sm font-medium"
                     >
                       Markdown
                     </button>
                     <button
                       data-testid="export-csv-button"
-                      onClick={() => handleExport("csv", planName || getDefaultPlanName())}
+                      onClick={() =>
+                        handleExport("csv", dialogs.planName || getDefaultPlanNameValue())
+                      }
                       className="px-3 py-2 bg-blue-500/20 border-2 border-blue-500/40 text-white rounded-lg hover:bg-blue-500/30 hover:border-blue-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(59,130,246,0.3)] hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] ripple-effect text-sm font-medium"
                     >
                       CSV
                     </button>
                     <button
                       data-testid="export-excel-button"
-                      onClick={() => handleExport("excel", planName || getDefaultPlanName())}
+                      onClick={() =>
+                        handleExport("excel", dialogs.planName || getDefaultPlanNameValue())
+                      }
                       className="px-3 py-2 bg-green-600/20 border-2 border-green-600/40 text-white rounded-lg hover:bg-green-600/30 hover:border-green-600 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(22,163,74,0.3)] hover:shadow-[0_0_15px_rgba(22,163,74,0.5)] ripple-effect text-sm font-medium"
                     >
                       Excel
@@ -863,7 +452,7 @@ export function PlanManager() {
                     <button
                       data-testid="export-image-button"
                       onClick={() =>
-                        handleImageExport(planName || getDefaultPlanName(), {
+                        handleImageExport(dialogs.planName || getDefaultPlanNameValue(), {
                           resolution: "2x",
                           format: "png",
                           quality: 90,
@@ -892,8 +481,8 @@ export function PlanManager() {
                     data-testid="include-overrides-on-save-checkbox"
                     id="includeOverridesOnSave"
                     type="checkbox"
-                    checked={includeOverridesOnSave}
-                    onChange={e => setIncludeOverridesOnSave(e.target.checked)}
+                    checked={dialogs.includeOverridesOnSave}
+                    onChange={e => dialogs.setIncludeOverridesOnSave(e.target.checked)}
                     className="h-4 w-4 accent-neon-green"
                   />
                   <label htmlFor="includeOverridesOnSave" className="text-sm text-white">
@@ -902,14 +491,14 @@ export function PlanManager() {
                 </div>
 
                 {/* Export Success Message */}
-                {exportSuccessMessage && (
+                {planExport.exportSuccessMessage && (
                   <div
                     data-testid="export-success-message"
                     className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-500/50 rounded-lg text-sm text-green-800 dark:text-green-200 flex items-center justify-between"
                   >
-                    <span>✅ {exportSuccessMessage}</span>
+                    <span>✅ {planExport.exportSuccessMessage}</span>
                     <button
-                      onClick={() => setExportSuccessMessage("")}
+                      onClick={() => planExport.setExportSuccessMessage("")}
                       className="ml-2 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
                     >
                       ✕
@@ -918,14 +507,14 @@ export function PlanManager() {
                 )}
 
                 {/* Export Error Message */}
-                {exportErrorMessage && (
+                {planExport.exportErrorMessage && (
                   <div
                     data-testid="export-error-message"
                     className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/50 rounded-lg text-sm text-red-800 dark:text-red-200 flex items-center justify-between"
                   >
-                    <span>❌ {exportErrorMessage}</span>
+                    <span>❌ {planExport.exportErrorMessage}</span>
                     <button
-                      onClick={() => setExportErrorMessage("")}
+                      onClick={() => planExport.setExportErrorMessage("")}
                       className="ml-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
                     >
                       ✕
@@ -936,10 +525,9 @@ export function PlanManager() {
                 <button
                   data-testid="save-dialog-close-button"
                   onClick={() => {
-                    setShowSaveDialog(false);
-                    setPlanName("");
-                    setExportSuccessMessage("");
-                    setExportErrorMessage("");
+                    dialogs.closeDialogWithReset();
+                    planExport.setExportSuccessMessage("");
+                    planExport.setExportErrorMessage("");
                   }}
                   className="w-full px-4 py-2 bg-dark-800/50 border-2 border-space-500/40 text-white rounded-lg hover:bg-dark-800 hover:border-space-400 hover:scale-105 active:scale-95 transition-all ripple-effect font-medium"
                 >
@@ -952,7 +540,7 @@ export function PlanManager() {
         )}
 
       {/* Load/Import Dialog */}
-      {showLoadDialog &&
+      {dialogs.activeDialog === "load" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
@@ -988,14 +576,14 @@ export function PlanManager() {
                   </p>
 
                   {/* Import Success Message */}
-                  {importSuccessMessage && (
+                  {planImport.importSuccessMessage && (
                     <div
                       data-testid="import-success-message"
                       className="mt-3 p-3 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-500/50 rounded-lg text-sm text-green-800 dark:text-green-200 flex items-center justify-between"
                     >
-                      <span>✅ {importSuccessMessage}</span>
+                      <span>✅ {planImport.importSuccessMessage}</span>
                       <button
-                        onClick={() => setImportSuccessMessage("")}
+                        onClick={() => planImport.setImportSuccessMessage("")}
                         className="ml-2 text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
                       >
                         ✕
@@ -1004,14 +592,14 @@ export function PlanManager() {
                   )}
 
                   {/* Import Error Message */}
-                  {importErrorMessage && (
+                  {planImport.importErrorMessage && (
                     <div
                       data-testid="import-error-message"
                       className="mt-3 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-500/50 rounded-lg text-sm text-red-800 dark:text-red-200 flex items-center justify-between"
                     >
-                      <span>❌ {importErrorMessage}</span>
+                      <span>❌ {planImport.importErrorMessage}</span>
                       <button
-                        onClick={() => setImportErrorMessage("")}
+                        onClick={() => planImport.setImportErrorMessage("")}
                         className="ml-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
                       >
                         ✕
@@ -1029,19 +617,19 @@ export function PlanManager() {
                       data-testid="merge-overrides-on-load-checkbox"
                       id="mergeOverridesOnLoad"
                       type="checkbox"
-                      checked={mergeOverridesOnLoad}
-                      onChange={e => setMergeOverridesOnLoad(e.target.checked)}
+                      checked={dialogs.mergeOverridesOnLoad}
+                      onChange={e => dialogs.setMergeOverridesOnLoad(e.target.checked)}
                       className="h-4 w-4 accent-neon-blue"
                     />
                     <label htmlFor="mergeOverridesOnLoad" className="text-sm text-white">
                       {t("mergeNodeOverridesOnLoad")}
                     </label>
                   </div>
-                  {recentPlans.length === 0 ? (
+                  {planImport.recentPlans.length === 0 ? (
                     <p className="text-space-200 text-sm">{t("noPlans")}</p>
                   ) : (
                     <div className="space-y-2">
-                      {recentPlans.map(plan => (
+                      {planImport.recentPlans.map(plan => (
                         <div
                           key={plan.key}
                           data-testid={`plan-item-${plan.key}`}
@@ -1069,8 +657,8 @@ export function PlanManager() {
                               <button
                                 data-testid={`version-button-${plan.key}`}
                                 onClick={() => {
-                                  setSelectedPlanId(plan.planId || null);
-                                  setShowVersionDialog(true);
+                                  dialogs.setSelectedPlanId(plan.planId || null);
+                                  dialogs.openDialog("version");
                                 }}
                                 className="px-3 py-1 bg-purple-500/20 border-2 border-purple-500/40 text-white rounded-lg hover:bg-purple-500/30 hover:border-purple-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(168,85,247,0.3)] hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] ripple-effect text-sm font-medium"
                               >
@@ -1094,9 +682,8 @@ export function PlanManager() {
                 <button
                   data-testid="load-dialog-close-button"
                   onClick={() => {
-                    setShowLoadDialog(false);
-                    setImportSuccessMessage("");
-                    setImportErrorMessage("");
+                    dialogs.closeDialog();
+                    planImport.clearMessages();
                   }}
                   className="w-full px-4 py-2 bg-dark-800/50 border-2 border-space-500/40 text-white rounded-lg hover:bg-dark-800 hover:border-space-400 hover:scale-105 active:scale-95 transition-all ripple-effect font-medium"
                 >
@@ -1109,7 +696,7 @@ export function PlanManager() {
         )}
 
       {/* Share URL Dialog */}
-      {showShareDialog &&
+      {dialogs.activeDialog === "share" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-2xl w-full p-6 animate-fadeInScale">
@@ -1127,7 +714,7 @@ export function PlanManager() {
                   <input
                     data-testid="share-url-input"
                     type="text"
-                    value={shareURL}
+                    value={dialogs.shareURL}
                     readOnly
                     className="flex-1 px-3 py-2 border-2 border-neon-purple/30 rounded-lg bg-dark-800/50 text-white text-sm font-mono backdrop-blur-sm"
                     onClick={e => e.currentTarget.select()}
@@ -1136,12 +723,12 @@ export function PlanManager() {
                     data-testid="copy-url-button"
                     onClick={handleCopyURL}
                     className={`px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 ${
-                      copySuccess
+                      dialogs.copySuccess
                         ? "bg-green-500/20 border-2 border-green-500/40 shadow-[0_0_15px_rgba(34,197,94,0.5)]"
                         : "bg-neon-blue/20 border-2 border-neon-blue/40 hover:bg-neon-blue/30 hover:border-neon-blue shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)]"
                     } ripple-effect`}
                   >
-                    {copySuccess ? `✓ ${t("copied")}` : `📋 ${t("copy")}`}
+                    {dialogs.copySuccess ? `✓ ${t("copied")}` : `📋 ${t("copy")}`}
                   </button>
                 </div>
               </div>
@@ -1152,8 +739,8 @@ export function PlanManager() {
                   data-testid="include-overrides-on-share-checkbox"
                   id="includeOverridesOnShare"
                   type="checkbox"
-                  checked={includeOverridesOnShare}
-                  onChange={e => setIncludeOverridesOnShare(e.target.checked)}
+                  checked={dialogs.includeOverridesOnShare}
+                  onChange={e => dialogs.setIncludeOverridesOnShare(e.target.checked)}
                   className="h-4 w-4 accent-neon-purple"
                 />
                 <label htmlFor="includeOverridesOnShare" className="text-sm text-white">
@@ -1167,7 +754,7 @@ export function PlanManager() {
 
               <button
                 data-testid="share-dialog-close-button"
-                onClick={() => setShowShareDialog(false)}
+                onClick={() => dialogs.closeDialog()}
                 className="w-full px-4 py-2 bg-dark-800/50 border-2 border-space-500/40 text-white rounded-lg hover:bg-dark-800 hover:border-space-400 hover:scale-105 active:scale-95 transition-all ripple-effect font-medium"
               >
                 {t("close")}
@@ -1178,8 +765,8 @@ export function PlanManager() {
         )}
 
       {/* Version History Dialog */}
-      {showVersionDialog &&
-        selectedPlanId &&
+      {dialogs.activeDialog === "version" &&
+        dialogs.selectedPlanId &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-purple-500/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
@@ -1189,7 +776,7 @@ export function PlanManager() {
 
               <div className="px-6 pb-6 space-y-6">
                 {(() => {
-                  const versions = getPlanVersions(selectedPlanId);
+                  const versions = getPlanVersions(dialogs.selectedPlanId!);
                   return versions.length === 0 ? (
                     <p className="text-space-200 text-sm">{t("noVersions")}</p>
                   ) : (
@@ -1212,9 +799,11 @@ export function PlanManager() {
                               {index > 0 && (
                                 <button
                                   onClick={() => {
-                                    setDiffBaseVersion(versions[index - 1].version);
-                                    setDiffCompareVersion(version.version);
-                                    setShowDiffDialog(true);
+                                    dialogs.setDiffVersions(
+                                      versions[index - 1].version,
+                                      version.version
+                                    );
+                                    dialogs.openDialog("diff");
                                   }}
                                   className="px-3 py-1 bg-yellow-500/20 border-2 border-yellow-500/40 text-white rounded-lg hover:bg-yellow-500/30 hover:border-yellow-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(251,191,36,0.3)] hover:shadow-[0_0_15px_rgba(251,191,36,0.5)] ripple-effect text-sm font-medium"
                                 >
@@ -1222,7 +811,9 @@ export function PlanManager() {
                                 </button>
                               )}
                               <button
-                                onClick={() => handleLoadVersion(selectedPlanId, version.version)}
+                                onClick={() =>
+                                  handleLoadVersion(dialogs.selectedPlanId!, version.version)
+                                }
                                 className="px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect text-sm font-medium"
                               >
                                 {t("load")}
@@ -1244,8 +835,8 @@ export function PlanManager() {
               <div className="px-6 pb-6">
                 <button
                   onClick={() => {
-                    setShowVersionDialog(false);
-                    setSelectedPlanId(null);
+                    dialogs.closeDialog();
+                    dialogs.setSelectedPlanId(null);
                   }}
                   className="w-full px-4 py-2 bg-dark-800/50 border-2 border-space-500/40 text-white rounded-lg hover:bg-dark-800 hover:border-space-400 hover:scale-105 active:scale-95 transition-all ripple-effect font-medium"
                 >
@@ -1258,10 +849,10 @@ export function PlanManager() {
         )}
 
       {/* Diff Dialog */}
-      {showDiffDialog &&
-        selectedPlanId &&
-        diffBaseVersion !== null &&
-        diffCompareVersion !== null &&
+      {dialogs.activeDialog === "diff" &&
+        dialogs.selectedPlanId &&
+        dialogs.diffBaseVersion !== null &&
+        dialogs.diffCompareVersion !== null &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-[#070a10] border-2 border-yellow-500/40 rounded-xl shadow-[0_0_30px_rgba(251,191,36,0.3)] max-w-4xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
@@ -1272,9 +863,8 @@ export function PlanManager() {
                   </h2>
                   <button
                     onClick={() => {
-                      setShowDiffDialog(false);
-                      setDiffBaseVersion(null);
-                      setDiffCompareVersion(null);
+                      dialogs.closeDialog();
+                      dialogs.setDiffVersions(null, null);
                     }}
                     className="px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] ripple-effect text-sm font-medium"
                   >
@@ -1285,8 +875,14 @@ export function PlanManager() {
 
               <div className="px-6 pb-6 space-y-6">
                 {(() => {
-                  const baseVersion = loadPlanVersion(selectedPlanId, diffBaseVersion);
-                  const compareVersion = loadPlanVersion(selectedPlanId, diffCompareVersion);
+                  const baseVersion = loadPlanVersionFromStore(
+                    dialogs.selectedPlanId!,
+                    dialogs.diffBaseVersion!
+                  );
+                  const compareVersion = loadPlanVersionFromStore(
+                    dialogs.selectedPlanId!,
+                    dialogs.diffCompareVersion!
+                  );
 
                   if (!baseVersion || !compareVersion) {
                     return <p className="text-red-300">{t("versionNotFound")}</p>;
@@ -1298,8 +894,8 @@ export function PlanManager() {
                     <>
                       <div className="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-lg p-4">
                         <div className="text-sm text-yellow-200">
-                          {t("comparingVersion")} {diffBaseVersion} → {t("version")}{" "}
-                          {diffCompareVersion}
+                          {t("comparingVersion")} {dialogs.diffBaseVersion} → {t("version")}{" "}
+                          {dialogs.diffCompareVersion}
                         </div>
                       </div>
 

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import * as Tabs from "@radix-ui/react-tabs";
 import type { Recipe } from "../../types";
+import { RecipeSelectorTab } from "../../types/ui-tabs";
 import { RecipeGrid } from "./RecipeGrid";
 import { useFavoritesStore } from "../../stores/favoritesStore";
 import { ItemIcon } from "../ItemIcon";
@@ -23,7 +24,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
     onRecipeSelect(recipe);
   };
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<"1" | "2">("1");
+  const [activeTab, setActiveTab] = useState<RecipeSelectorTab>(RecipeSelectorTab.RecipeList);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
@@ -319,10 +320,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         )}
       </div>
 
-      <Tabs.Root value={activeTab} onValueChange={value => setActiveTab(value as "1" | "2")}>
+      <Tabs.Root
+        value={activeTab}
+        onValueChange={value => setActiveTab(value as RecipeSelectorTab)}
+      >
         <Tabs.List className="flex gap-1 border-b border-neon-blue/20 mb-4">
           <Tabs.Trigger
-            value="1"
+            value={RecipeSelectorTab.RecipeList}
             data-testid="items-tab"
             className="px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect
                        data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]
@@ -331,7 +335,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
             Items
           </Tabs.Trigger>
           <Tabs.Trigger
-            value="2"
+            value={RecipeSelectorTab.Favorites}
             data-testid="buildings-tab"
             className="px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect
                        data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]
@@ -341,7 +345,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           </Tabs.Trigger>
         </Tabs.List>
 
-        <Tabs.Content value="1">
+        <Tabs.Content value={RecipeSelectorTab.RecipeList}>
           <RecipeGrid
             recipes={filteredRecipes}
             tab={1}
@@ -350,7 +354,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           />
         </Tabs.Content>
 
-        <Tabs.Content value="2">
+        <Tabs.Content value={RecipeSelectorTab.Favorites}>
           <RecipeGrid
             recipes={filteredRecipes}
             tab={2}

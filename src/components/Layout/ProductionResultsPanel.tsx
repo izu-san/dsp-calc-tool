@@ -5,6 +5,7 @@ import { useGameDataStore } from "../../stores/gameDataStore";
 import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { CalculationResult, Recipe } from "../../types";
+import { ProductionResultsTab } from "../../types/ui-tabs";
 import { cn } from "../../utils/classNames";
 import { formatNumber } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
@@ -49,11 +50,9 @@ export function ProductionResultsPanel({
   handleToggleAll,
 }: ProductionResultsPanelProps) {
   const { t } = useTranslation();
-  const [showStatistics, setShowStatistics] = useState(false);
-  const [showBuildingCost, setShowBuildingCost] = useState(false);
-  const [showPowerGeneration, setShowPowerGeneration] = useState(false);
-  const [showMiningCalculator, setShowMiningCalculator] = useState(false);
-  const [showRoadmap, setShowRoadmap] = useState(false);
+  const [activeTab, setActiveTab] = useState<ProductionResultsTab>(
+    ProductionResultsTab.ProductionTree
+  );
   const { settings } = useSettingsStore();
   const { settings: miningSettings } = useMiningSettingsStore();
   const { data: gameData } = useGameDataStore();
@@ -118,28 +117,14 @@ export function ProductionResultsPanel({
             <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">
               <button
                 data-testid="production-chain-tab"
-                onClick={() => {
-                  setShowStatistics(false);
-                  setShowBuildingCost(false);
-                  setShowPowerGeneration(false);
-                  setShowMiningCalculator(false);
-                  setShowRoadmap(false);
-                }}
+                onClick={() => setActiveTab(ProductionResultsTab.ProductionTree)}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
                   {
                     "border-neon-blue text-neon-cyan shadow-neon-blue":
-                      !showStatistics &&
-                      !showBuildingCost &&
-                      !showPowerGeneration &&
-                      !showMiningCalculator &&
-                      !showRoadmap,
+                      activeTab === ProductionResultsTab.ProductionTree,
                     "border-transparent text-space-300 hover:text-neon-cyan":
-                      showStatistics ||
-                      showBuildingCost ||
-                      showPowerGeneration ||
-                      showMiningCalculator ||
-                      showRoadmap,
+                      activeTab !== ProductionResultsTab.ProductionTree,
                   }
                 )}
               >
@@ -147,18 +132,14 @@ export function ProductionResultsPanel({
               </button>
               <button
                 data-testid="statistics-tab"
-                onClick={() => {
-                  setShowStatistics(true);
-                  setShowBuildingCost(false);
-                  setShowPowerGeneration(false);
-                  setShowMiningCalculator(false);
-                  setShowRoadmap(false);
-                }}
+                onClick={() => setActiveTab(ProductionResultsTab.Statistics)}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue": showStatistics,
-                    "border-transparent text-space-300 hover:text-neon-cyan": !showStatistics,
+                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                      activeTab === ProductionResultsTab.Statistics,
+                    "border-transparent text-space-300 hover:text-neon-cyan":
+                      activeTab !== ProductionResultsTab.Statistics,
                   }
                 )}
               >
@@ -166,18 +147,14 @@ export function ProductionResultsPanel({
               </button>
               <button
                 data-testid="building-cost-tab"
-                onClick={() => {
-                  setShowStatistics(false);
-                  setShowBuildingCost(true);
-                  setShowPowerGeneration(false);
-                  setShowMiningCalculator(false);
-                  setShowRoadmap(false);
-                }}
+                onClick={() => setActiveTab(ProductionResultsTab.BuildingCost)}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue": showBuildingCost,
-                    "border-transparent text-space-300 hover:text-neon-cyan": !showBuildingCost,
+                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                      activeTab === ProductionResultsTab.BuildingCost,
+                    "border-transparent text-space-300 hover:text-neon-cyan":
+                      activeTab !== ProductionResultsTab.BuildingCost,
                   }
                 )}
               >
@@ -185,18 +162,14 @@ export function ProductionResultsPanel({
               </button>
               <button
                 data-testid="power-generation-tab"
-                onClick={() => {
-                  setShowStatistics(false);
-                  setShowBuildingCost(false);
-                  setShowPowerGeneration(true);
-                  setShowMiningCalculator(false);
-                  setShowRoadmap(false);
-                }}
+                onClick={() => setActiveTab(ProductionResultsTab.PowerGeneration)}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue": showPowerGeneration,
-                    "border-transparent text-space-300 hover:text-neon-cyan": !showPowerGeneration,
+                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                      activeTab === ProductionResultsTab.PowerGeneration,
+                    "border-transparent text-space-300 hover:text-neon-cyan":
+                      activeTab !== ProductionResultsTab.PowerGeneration,
                   }
                 )}
               >
@@ -204,18 +177,14 @@ export function ProductionResultsPanel({
               </button>
               <button
                 data-testid="mining-calculator-tab"
-                onClick={() => {
-                  setShowStatistics(false);
-                  setShowBuildingCost(false);
-                  setShowPowerGeneration(false);
-                  setShowMiningCalculator(true);
-                  setShowRoadmap(false);
-                }}
+                onClick={() => setActiveTab(ProductionResultsTab.MiningCalculator)}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue": showMiningCalculator,
-                    "border-transparent text-space-300 hover:text-neon-cyan": !showMiningCalculator,
+                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                      activeTab === ProductionResultsTab.MiningCalculator,
+                    "border-transparent text-space-300 hover:text-neon-cyan":
+                      activeTab !== ProductionResultsTab.MiningCalculator,
                   }
                 )}
               >
@@ -223,18 +192,14 @@ export function ProductionResultsPanel({
               </button>
               <button
                 data-testid="roadmap-tab"
-                onClick={() => {
-                  setShowStatistics(false);
-                  setShowBuildingCost(false);
-                  setShowPowerGeneration(false);
-                  setShowMiningCalculator(false);
-                  setShowRoadmap(true);
-                }}
+                onClick={() => setActiveTab(ProductionResultsTab.Roadmap)}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue": showRoadmap,
-                    "border-transparent text-space-300 hover:text-neon-cyan": !showRoadmap,
+                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                      activeTab === ProductionResultsTab.Roadmap,
+                    "border-transparent text-space-300 hover:text-neon-cyan":
+                      activeTab !== ProductionResultsTab.Roadmap,
                   }
                 )}
               >
@@ -242,62 +207,58 @@ export function ProductionResultsPanel({
               </button>
 
               {/* Expand/Collapse All button */}
-              {!showStatistics &&
-                !showBuildingCost &&
-                !showPowerGeneration &&
-                !showMiningCalculator &&
-                !showRoadmap && (
-                  <button
-                    data-testid="expand-collapse-all-button"
-                    onClick={handleToggleAll}
-                    className={cn(
-                      "ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect",
-                      {
-                        "bg-neon-blue/20 text-neon-cyan border-neon-blue shadow-neon-blue hover:bg-neon-blue/30":
-                          isTreeExpanded,
-                        "bg-dark-700/50 text-space-200 border-neon-blue/30 hover:bg-dark-600 hover:border-neon-blue/50 hover:text-neon-cyan":
-                          !isTreeExpanded,
-                      }
-                    )}
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      <span
-                        className={cn("transition-transform duration-300", {
-                          "rotate-180": isTreeExpanded,
-                          "rotate-0": !isTreeExpanded,
-                        })}
-                      >
-                        ▼
-                      </span>
-                      <span>{isTreeExpanded ? t("collapseAll") : t("expandAll")}</span>
+              {activeTab === ProductionResultsTab.ProductionTree && (
+                <button
+                  data-testid="expand-collapse-all-button"
+                  onClick={handleToggleAll}
+                  className={cn(
+                    "ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect",
+                    {
+                      "bg-neon-blue/20 text-neon-cyan border-neon-blue shadow-neon-blue hover:bg-neon-blue/30":
+                        isTreeExpanded,
+                      "bg-dark-700/50 text-space-200 border-neon-blue/30 hover:bg-dark-600 hover:border-neon-blue/50 hover:text-neon-cyan":
+                        !isTreeExpanded,
+                    }
+                  )}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <span
+                      className={cn("transition-transform duration-300", {
+                        "rotate-180": isTreeExpanded,
+                        "rotate-0": !isTreeExpanded,
+                      })}
+                    >
+                      ▼
                     </span>
-                  </button>
-                )}
+                    <span>{isTreeExpanded ? t("collapseAll") : t("expandAll")}</span>
+                  </span>
+                </button>
+              )}
             </div>
 
             {/* Content */}
             <Suspense fallback={<div className="text-center py-4">{t("loading")}</div>}>
-              {showStatistics ? (
+              {activeTab === ProductionResultsTab.Statistics ? (
                 <div id="statistics-view" data-testid="statistics-tab-content">
                   <StatisticsView
                     calculationResult={calculationResult}
                     miningCalculation={miningCalculation}
                   />
                 </div>
-              ) : showBuildingCost ? (
+              ) : activeTab === ProductionResultsTab.BuildingCost ? (
                 <div id="building-cost-view" data-testid="building-cost-content">
                   <BuildingCostView calculationResult={calculationResult} />
                 </div>
-              ) : showPowerGeneration ? (
+              ) : activeTab === ProductionResultsTab.PowerGeneration ? (
                 <div id="power-generation-view" data-testid="power-generation-content">
                   <PowerGenerationView
                     calculationResult={calculationResult}
                     miningCalculation={miningCalculation}
                   />
                 </div>
-              ) : showMiningCalculator ? (
+              ) : activeTab === ProductionResultsTab.MiningCalculator ? (
                 <MiningCalculator calculationResult={calculationResult} />
-              ) : showRoadmap ? (
+              ) : activeTab === ProductionResultsTab.Roadmap ? (
                 <BuildingRoadmapView
                   calculationResult={calculationResult}
                   miningCalculation={miningCalculation}
