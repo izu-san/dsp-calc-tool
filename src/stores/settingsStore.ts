@@ -549,15 +549,35 @@ export const useSettingsStore = create<SettingsStore>()(
             settings: currentSettings,
           };
 
+          // Serialize customTemplates for history (Map → Array)
+          const serializedBefore: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [id, t] of Object.entries(state.customTemplates)) {
+            serializedBefore[id] = {
+              meta: t.meta,
+              settings: serializeSettings(t.settings),
+            };
+          }
+
+          const serializedAfter: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {
+            ...serializedBefore,
+            [uuid]: {
+              meta: template.meta,
+              settings: serializeSettings(template.settings),
+            },
+          };
+
           const before = {
-            customTemplates: { ...state.customTemplates },
+            customTemplates: serializedBefore,
           };
 
           const after = {
-            customTemplates: {
-              ...state.customTemplates,
-              [uuid]: template,
-            },
+            customTemplates: serializedAfter,
           };
 
           const t = (key: string) => i18n.t(key);
@@ -568,7 +588,12 @@ export const useSettingsStore = create<SettingsStore>()(
           );
           recordHistoryEntry("settings", description, before, after);
 
-          return after;
+          return {
+            customTemplates: {
+              ...state.customTemplates,
+              [uuid]: template,
+            },
+          };
         }),
 
       updateCustomTemplate: (id, name, note, settings) =>
@@ -578,9 +603,17 @@ export const useSettingsStore = create<SettingsStore>()(
             throw new Error(`Template with id "${id}" not found`);
           }
 
-          const before = {
-            customTemplates: { ...state.customTemplates },
-          };
+          // Serialize customTemplates for history (Map → Array)
+          const serializedBefore: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [templateId, t] of Object.entries(state.customTemplates)) {
+            serializedBefore[templateId] = {
+              meta: t.meta,
+              settings: serializeSettings(t.settings),
+            };
+          }
 
           const updatedTemplate: CustomSettingsTemplate = {
             meta: {
@@ -608,11 +641,23 @@ export const useSettingsStore = create<SettingsStore>()(
             }
           }
 
-          const after = {
-            customTemplates: {
-              ...state.customTemplates,
-              [id]: updatedTemplate,
+          const serializedAfter: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {
+            ...serializedBefore,
+            [id]: {
+              meta: updatedTemplate.meta,
+              settings: serializeSettings(updatedTemplate.settings),
             },
+          };
+
+          const before = {
+            customTemplates: serializedBefore,
+          };
+
+          const after = {
+            customTemplates: serializedAfter,
           };
 
           const t = (key: string) => i18n.t(key);
@@ -623,7 +668,12 @@ export const useSettingsStore = create<SettingsStore>()(
           );
           recordHistoryEntry("settings", description, before, after);
 
-          return after;
+          return {
+            customTemplates: {
+              ...state.customTemplates,
+              [id]: updatedTemplate,
+            },
+          };
         }),
 
       deleteCustomTemplate: id =>
@@ -633,10 +683,17 @@ export const useSettingsStore = create<SettingsStore>()(
             throw new Error(`Template with id "${id}" not found`);
           }
 
-          const before = {
-            customTemplates: { ...state.customTemplates },
-            selectedTemplate: state.selectedTemplate,
-          };
+          // Serialize customTemplates for history (Map → Array)
+          const serializedBefore: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [templateId, t] of Object.entries(state.customTemplates)) {
+            serializedBefore[templateId] = {
+              meta: t.meta,
+              settings: serializeSettings(t.settings),
+            };
+          }
 
           const customTemplateId = createCustomTemplateId(id);
           const isSelected =
@@ -645,10 +702,26 @@ export const useSettingsStore = create<SettingsStore>()(
               state.selectedTemplate.startsWith("custom:") &&
               extractCustomTemplateId(state.selectedTemplate as CustomTemplateId) === id);
 
+          const serializedAfter: Record<
+            string,
+            { meta: CustomSettingsTemplate["meta"]; settings: ReturnType<typeof serializeSettings> }
+          > = {};
+          for (const [templateId, t] of Object.entries(state.customTemplates)) {
+            if (templateId !== id) {
+              serializedAfter[templateId] = {
+                meta: t.meta,
+                settings: serializeSettings(t.settings),
+              };
+            }
+          }
+
+          const before = {
+            customTemplates: serializedBefore,
+            selectedTemplate: state.selectedTemplate,
+          };
+
           const after = {
-            customTemplates: Object.fromEntries(
-              Object.entries(state.customTemplates).filter(([key]) => key !== id)
-            ),
+            customTemplates: serializedAfter,
             selectedTemplate: isSelected ? null : state.selectedTemplate,
           };
 
@@ -660,7 +733,12 @@ export const useSettingsStore = create<SettingsStore>()(
           );
           recordHistoryEntry("settings", description, before, after);
 
-          return after;
+          return {
+            customTemplates: Object.fromEntries(
+              Object.entries(state.customTemplates).filter(([key]) => key !== id)
+            ),
+            selectedTemplate: isSelected ? null : state.selectedTemplate,
+          };
         }),
 
       applyCustomTemplate: id =>

@@ -80,7 +80,16 @@
 
 - デフォルトと同様に確認モーダルを表示する。
 - 確認モーダルではテンプレートカテゴリー (デフォルト/カスタム)、最終更新日時、主要設定の差分を表示。
-- 差分表示の形式は既存の `TemplateSelector` コンポーネントの確認モーダルと同じ形式を使用する（増産剤、機械ランク、コンベアベルト、ソーター、採掘速度研究など）。
+- 差分表示では以下の設定をすべて表示する:
+  - コンベアベルト (階層、積載数)
+  - ソーター (階層)
+  - 増産剤 (種類、モード)
+  - 増産剤倍率 (デフォルト以外の場合のみ: 生産倍率、速度倍率)
+  - 機械ランク (製錬設備、組立機、化学プラント、マトリックスラボ) - Refine（精油所）とParticle（小型粒子衝突型加速器）は固定ランクのため表示しない
+  - 採掘速度研究 (ボーナス値)
+  - 代替レシピ (設定されている場合のみ: 件数)
+  - 光子生成設定 (設定されている場合のみ: 重力レンズ使用、レイ伝送効率、重力レンズ増産剤)
+- 機械ランクのラベルはi18n対応（例: "アーク溶鉱炉"、"再構成式組立機"など）。
 - 適用後は履歴ログにテンプレート ID と名称を含める。
 
 ### 操作ガード
@@ -170,7 +179,12 @@ interface SettingsPersistedState {
   - 更新: `{ action: "updateTemplate", templateId, name }`
   - 削除: `{ action: "deleteTemplate", templateId, name }`
   - 適用: `{ action: "applyTemplate", templateId, name, source: "custom" | "default" }`
-- 履歴記録の `description` は既存の `historyDescriptionHelper.ts` のパターンに従い、`generateCustomTemplateDescription` などのヘルパー関数を作成する。
+- 履歴記録の `description` は既存の `historyDescriptionHelper.ts` のパターンに従い、以下のヘルパー関数を使用:
+  - `generateCustomTemplateCreatedDescription`: 作成時の説明文を生成
+  - `generateCustomTemplateUpdatedDescription`: 更新時の説明文を生成
+  - `generateCustomTemplateDeletedDescription`: 削除時の説明文を生成
+  - `generateCustomTemplateAppliedDescription`: 適用時の説明文を生成
+- 履歴復元機能: `historyRestore.ts` で `customTemplates` と `selectedTemplate` の復元をサポート。`customTemplates.<id>` 形式のパスで個別テンプレートの追加・更新・削除を正しく復元できる。
 
 ### フロントエンド状態
 
@@ -179,7 +193,7 @@ interface SettingsPersistedState {
 
 ## バリデーション・制約
 
-- テンプレート名: 1〜40 文字、重複禁止、`/^[^\s].*[^\s]$/` を満たす。
+- テンプレート名: 1〜40 文字、重複禁止、前後空白はトリムして検証（`templateName !== trimmedName` で前後空白の有無を確認）。
 - 編集時の重複チェック: 自分自身を除外した重複チェックを実施（同じテンプレートの名称変更時は同じ名前でもOK）。
 - メモ: 0〜120 文字、複数行可。
 - 設定差分がゼロでも保存を許可 (ユーザーが状態を記録しておきたいケースを想定)。
@@ -198,14 +212,72 @@ interface SettingsPersistedState {
 - **ユニットテスト**
   - ストアの CRUD アクション (作成・編集・削除・適用) の state 遷移を検証。
   - シリアライズ/デシリアライズで Map が正しく復元されるか確認。
+  - 履歴復元機能 (`historyRestore.ts`) でカスタムテンプレートが正しく復元されるか確認。
 - **コンポーネントテスト** (`@testing-library/react`)
   - テンプレート一覧のレンダリング、空状態からの作成フロー。
   - バリデーションエラー時のトースト/メッセージ表示。
   - 適用モーダルで差分が表示されるか。
+  - `data-testid` 属性を使用した要素の特定と操作。
 - **E2E テスト** (Playwright)
   - 作成 → 適用 → ページ再読み込み後も反映されるか。
   - 編集 → 再適用 → 履歴が記録されているか。
   - 削除 → 適用状態リセットの挙動。
+  - 履歴の undo/redo でカスタムテンプレートが正しく復元されるか。
+
+### テスト用識別子 (`data-testid`) 一覧
+
+以下の `data-testid` 属性が実装されており、テストで使用可能：
+
+#### デフォルトテンプレート
+
+- `template-button-${templateId}` - デフォルトテンプレートボタン（例: `template-button-earlyGame`）
+- `template-button-powerSaver` - Power Saverテンプレートボタン
+- `template-confirm-cancel-button` - デフォルトテンプレート適用確認モーダルのキャンセルボタン
+- `template-confirm-apply-button` - デフォルトテンプレート適用確認モーダルの適用ボタン
+
+#### カスタムテンプレート
+
+- `custom-template-section` - カスタムテンプレートセクション全体
+- `create-custom-template-button` - テンプレート作成ボタン
+- `custom-template-empty-state` - カスタムテンプレートが空の場合のメッセージ
+- `custom-template-card-${id}` - カスタムテンプレートカード（`id` はテンプレートのUUID）
+- `custom-template-apply-button-${id}` - カスタムテンプレートカード内の適用ボタン
+- `edit-custom-template-${id}` - カスタムテンプレートの編集ボタン
+- `delete-custom-template-${id}` - カスタムテンプレートの削除ボタン
+- `custom-template-confirm-cancel-button` - カスタムテンプレート適用確認モーダルのキャンセルボタン
+- `custom-template-confirm-apply-button` - カスタムテンプレート適用確認モーダルの適用ボタン
+
+#### 作成モーダル
+
+- `create-template-modal` - 作成モーダル全体
+- `template-name-input` - テンプレート名入力フィールド
+- `template-name-error` - テンプレート名エラーメッセージ
+- `template-note-input` - テンプレートメモ入力フィールド
+- `template-settings-preview` - 設定プレビューコンテナ（作成・編集・確認モーダルで共通）
+- `create-template-cancel-button` - 作成モーダルのキャンセルボタン
+- `create-template-save-button` - 作成モーダルの保存ボタン
+
+#### 編集モーダル
+
+- `edit-template-modal` - 編集モーダル全体
+- `edit-template-name-input` - テンプレート名入力フィールド
+- `edit-template-name-error` - テンプレート名エラーメッセージ
+- `edit-template-note-input` - テンプレートメモ入力フィールド
+- `overwrite-with-current-button` - 「現在の設定で上書き」ボタン
+- `edit-template-cancel-button` - 編集モーダルのキャンセルボタン
+- `edit-template-save-button` - 編集モーダルの保存ボタン
+
+#### 削除確認モーダル
+
+- `delete-template-modal` - 削除確認モーダル全体
+- `delete-template-cancel-button` - 削除確認モーダルのキャンセルボタン
+- `delete-template-confirm-button` - 削除確認モーダルの削除ボタン
+
+#### 上書き確認モーダル
+
+- `overwrite-confirm-modal` - 上書き確認モーダル全体
+- `overwrite-confirm-cancel-button` - 上書き確認モーダルのキャンセルボタン
+- `overwrite-confirm-button` - 上書き確認モーダルの上書きボタン
 
 ## マイグレーション指針
 
@@ -215,14 +287,17 @@ interface SettingsPersistedState {
 
 ## 実装 Phase 分け
 
-### Phase 1（初回実装）
+### Phase 1（初回実装・完了）
 
-- テンプレート作成（現在の設定を保存）
-- テンプレート一覧表示
-- テンプレート適用（確認モーダル付き）
-- テンプレート編集（名称・メモ変更、現在の設定で上書き）
-- テンプレート削除
-- 同名テンプレートの差分表示と上書き確認
+- ✅ テンプレート作成（現在の設定を保存）
+- ✅ テンプレート一覧表示
+- ✅ テンプレート適用（確認モーダル付き）
+- ✅ テンプレート編集（名称・メモ変更、現在の設定で上書き）
+- ✅ テンプレート削除
+- ✅ 同名テンプレートの差分表示と上書き確認
+- ✅ 履歴復元機能（undo/redo でカスタムテンプレートが正しく復元される）
+- ✅ テスト用識別子 (`data-testid`) の追加
+- ✅ テンプレート設定の差分表示拡張（すべての設定項目を表示）
 
 ### Phase 2（将来的な拡張）
 
@@ -230,6 +305,7 @@ interface SettingsPersistedState {
 - テンプレートのエクスポート/インポートとの統合
 - テンプレートごとの統計サマリ表示
 - 複数ユーザープロファイルへの切り替え
+- E2Eテストの追加
 
 ## 今後の拡張余地 (情報のみ)
 

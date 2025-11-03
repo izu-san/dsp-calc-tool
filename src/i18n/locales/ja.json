@@ -147,6 +147,7 @@
   "comparisonBasedOnProducing": "生産比較基準",
   "itemPerSecond": "アイテム/s",
   "withCurrentSettings": "現在の設定で",
+  "overwriteWithCurrentSettings": "現在の設定で上書き",
   "characters": "文字",
   "currentSettings": "現在の設定",
   "method": "方法",

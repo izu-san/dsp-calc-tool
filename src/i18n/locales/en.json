@@ -147,6 +147,7 @@
   "comparisonBasedOnProducing": "Comparison based on producing",
   "itemPerSecond": "item/s",
   "withCurrentSettings": "with current settings",
+  "overwriteWithCurrentSettings": "Overwrite with current settings",
   "characters": "characters",
   "currentSettings": "Current Settings",
   "method": "Method",

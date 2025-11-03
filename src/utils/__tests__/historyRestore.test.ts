@@ -9,6 +9,7 @@ import { PROLIFERATOR_DATA } from "../../types/settings";
 import type { HistoryEntry } from "../../types/history";
 import { generateUUID, HISTORY_VERSION } from "../historyUtils";
 import { setRestoring } from "../historyRecorder";
+import { serializeSettings } from "../storageSerializer";
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -634,6 +635,208 @@ describe("historyRestore", () => {
 
       const calculationResult = useRecipeSelectionStore.getState().calculationResult;
       expect(calculationResult).toBeNull();
+    });
+  });
+
+  describe("restoreStateFromHistory - customTemplates", () => {
+    beforeEach(() => {
+      // Clear custom templates before each test
+      useSettingsStore.setState({ customTemplates: {} });
+    });
+
+    it("should restore customTemplates when template is created", () => {
+      const templateId = "test-template-id";
+      const templateSettings = {
+        proliferator: { ...PROLIFERATOR_DATA.mk3, mode: "production" as const },
+        machineRank: {
+          Smelt: "arc",
+          Assemble: "mk1",
+          Chemical: "standard",
+          Research: "standard",
+          Refine: "standard",
+          Particle: "standard",
+        },
+        conveyorBelt: { tier: "mk3", speed: 30, stackCount: 1 },
+        sorter: { tier: "mk3", powerConsumption: 72 },
+        alternativeRecipes: new Map([[1001, 2001]]),
+        miningSpeedResearch: 150,
+        proliferatorMultiplier: { production: 1, speed: 1 },
+        photonGeneration: {
+          useGravitonLens: false,
+          rayTransmissionEfficiency: 0,
+          gravitonLensProliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" as const },
+        },
+      };
+
+      const template = {
+        meta: {
+          id: templateId,
+          name: "Test Template",
+          note: "Test Note",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+        settings: serializeSettings(templateSettings), // Serialize settings (Map → Array)
+      };
+
+      const entry: HistoryEntry = {
+        id: generateUUID(),
+        timestamp: Date.now(),
+        type: "settings",
+        description: "カスタムテンプレート作成",
+        changes: {
+          customTemplates: {
+            [templateId]: template,
+          },
+        },
+        previousChanges: {
+          customTemplates: {},
+        },
+        version: HISTORY_VERSION,
+      };
+
+      restoreStateFromHistory(entry, false);
+
+      const customTemplates = useSettingsStore.getState().customTemplates;
+      expect(Object.keys(customTemplates).length).toBe(1);
+      expect(customTemplates[templateId]).toBeDefined();
+      expect(customTemplates[templateId].meta.name).toBe("Test Template");
+      expect(customTemplates[templateId].settings.proliferator.type).toBe("mk3");
+      expect(customTemplates[templateId].settings.alternativeRecipes.get(1001)).toBe(2001);
+    });
+
+    it("should restore customTemplates when template is deleted", () => {
+      const templateId = "test-template-id";
+      const templateSettings = {
+        proliferator: { ...PROLIFERATOR_DATA.mk3, mode: "production" as const },
+        machineRank: {
+          Smelt: "arc",
+          Assemble: "mk1",
+          Chemical: "standard",
+          Research: "standard",
+          Refine: "standard",
+          Particle: "standard",
+        },
+        conveyorBelt: { tier: "mk3", speed: 30, stackCount: 1 },
+        sorter: { tier: "mk3", powerConsumption: 72 },
+        alternativeRecipes: new Map([[1001, 2001]]),
+        miningSpeedResearch: 150,
+        proliferatorMultiplier: { production: 1, speed: 1 },
+        photonGeneration: {
+          useGravitonLens: false,
+          rayTransmissionEfficiency: 0,
+          gravitonLensProliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" as const },
+        },
+      };
+
+      const template = {
+        meta: {
+          id: templateId,
+          name: "Test Template",
+          note: "Test Note",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+        settings: serializeSettings(templateSettings), // Serialize settings (Map → Array)
+      };
+
+      // First create template
+      useSettingsStore.setState({
+        customTemplates: { [templateId]: { meta: template.meta, settings: templateSettings } },
+      });
+
+      const entry: HistoryEntry = {
+        id: generateUUID(),
+        timestamp: Date.now(),
+        type: "settings",
+        description: "カスタムテンプレート削除",
+        changes: {
+          customTemplates: {},
+        },
+        previousChanges: {
+          customTemplates: {
+            [templateId]: template,
+          },
+        },
+        version: HISTORY_VERSION,
+      };
+
+      // Undo deletion (restore template)
+      restoreStateFromHistory(entry, true);
+
+      const customTemplates = useSettingsStore.getState().customTemplates;
+      expect(Object.keys(customTemplates).length).toBe(1);
+      expect(customTemplates[templateId]).toBeDefined();
+      expect(customTemplates[templateId].meta.name).toBe("Test Template");
+      expect(customTemplates[templateId].settings.proliferator.type).toBe("mk3");
+      expect(customTemplates[templateId].settings.alternativeRecipes.get(1001)).toBe(2001);
+    });
+
+    it("should restore selectedTemplate when custom template is deleted", () => {
+      const templateId = "test-template-id";
+      const template = {
+        meta: {
+          id: templateId,
+          name: "Test Template",
+          note: "Test Note",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+        settings: {
+          proliferator: { ...PROLIFERATOR_DATA.mk3, mode: "production" as const },
+          machineRank: {
+            Smelt: "arc",
+            Assemble: "mk1",
+            Chemical: "standard",
+            Research: "standard",
+            Refine: "standard",
+            Particle: "standard",
+          },
+          conveyorBelt: { tier: "mk3", speed: 30, stackCount: 1 },
+          sorter: { tier: "mk3", powerConsumption: 72 },
+          alternativeRecipes: new Map(),
+          miningSpeedResearch: 100,
+          proliferatorMultiplier: { production: 1, speed: 1 },
+          photonGeneration: {
+            useGravitonLens: false,
+            rayTransmissionEfficiency: 0,
+            gravitonLensProliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" as const },
+          },
+        },
+      };
+
+      // First create template and select it
+      useSettingsStore.setState({
+        customTemplates: { [templateId]: template },
+        selectedTemplate: `custom:${templateId}` as import("../../types").CustomTemplateId,
+      });
+
+      const entry: HistoryEntry = {
+        id: generateUUID(),
+        timestamp: Date.now(),
+        type: "settings",
+        description: "カスタムテンプレート削除",
+        changes: {
+          customTemplates: {},
+          selectedTemplate: null,
+        },
+        previousChanges: {
+          customTemplates: {
+            [templateId]: template,
+          },
+          selectedTemplate: `custom:${templateId}`,
+        },
+        version: HISTORY_VERSION,
+      };
+
+      // Undo deletion (restore template and selectedTemplate)
+      restoreStateFromHistory(entry, true);
+
+      const customTemplates = useSettingsStore.getState().customTemplates;
+      const selectedTemplate = useSettingsStore.getState().selectedTemplate;
+      expect(Object.keys(customTemplates).length).toBe(1);
+      expect(customTemplates[templateId]).toBeDefined();
+      expect(selectedTemplate).toBe(`custom:${templateId}`);
     });
   });
 });

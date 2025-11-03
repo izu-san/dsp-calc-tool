@@ -100,11 +100,17 @@ export function TemplateSelector() {
       setNameError(t("templateName") + " は必須です");
       return;
     }
+    // 全角スペースのみのチェック（trim()では削除されないため）
+    // eslint-disable-next-line no-irregular-whitespace
+    if (trimmedName.replace(/　/g, "") === "") {
+      setNameError(t("templateName") + " は必須です");
+      return;
+    }
     if (trimmedName.length < 1 || trimmedName.length > 40) {
       setNameError(t("templateName") + " は1〜40文字で入力してください");
       return;
     }
-    if (!/^[^\s].*[^\s]$/.test(trimmedName)) {
+    if (templateName !== trimmedName) {
       setNameError(t("templateName") + " の前後には空白を含めないでください");
       return;
     }
@@ -195,11 +201,17 @@ export function TemplateSelector() {
       setNameError(t("templateName") + " は必須です");
       return;
     }
+    // 全角スペースのみのチェック（trim()では削除されないため）
+    // eslint-disable-next-line no-irregular-whitespace
+    if (trimmedName.replace(/　/g, "") === "") {
+      setNameError(t("templateName") + " は必須です");
+      return;
+    }
     if (trimmedName.length < 1 || trimmedName.length > 40) {
       setNameError(t("templateName") + " は1〜40文字で入力してください");
       return;
     }
-    if (!/^[^\s].*[^\s]$/.test(trimmedName)) {
+    if (templateName !== trimmedName) {
       setNameError(t("templateName") + " の前後には空白を含めないでください");
       return;
     }
@@ -327,7 +339,10 @@ export function TemplateSelector() {
       templateSettings.photonGeneration.gravitonLensProliferator.type !== "none";
 
     return (
-      <div className="bg-dark-800/50 border border-neon-blue/30 backdrop-blur-sm rounded-lg p-4 mb-4 space-y-2 text-sm max-h-96 overflow-y-auto">
+      <div
+        className="bg-dark-800/50 border border-neon-blue/30 backdrop-blur-sm rounded-lg p-4 mb-4 space-y-2 text-sm max-h-96 overflow-y-auto"
+        data-testid="template-settings-preview"
+      >
         {/* コンベアベルト */}
         <div className="flex justify-between">
           <span className="text-space-300">{t("conveyorBelt")}:</span>
@@ -521,7 +536,10 @@ export function TemplateSelector() {
       </button>
 
       {/* カスタムテンプレートセクション */}
-      <div className="border-t border-neon-purple/30 pt-4 mt-4">
+      <div
+        className="border-t border-neon-purple/30 pt-4 mt-4"
+        data-testid="custom-template-section"
+      >
         <div className="flex items-center justify-between mb-3">
           <label className="block text-sm font-medium text-neon-purple flex items-center gap-2">
             <span className="text-lg">⭐</span>
@@ -549,7 +567,10 @@ export function TemplateSelector() {
 
         {/* カスタムテンプレート一覧 */}
         {customTemplateList.length === 0 ? (
-          <div className="text-center py-8 text-space-300 text-sm">
+          <div
+            className="text-center py-8 text-space-300 text-sm"
+            data-testid="custom-template-empty-state"
+          >
             {t("customTemplateEmptyState")}
           </div>
         ) : (
@@ -570,6 +591,7 @@ export function TemplateSelector() {
                 >
                   <div className="flex items-center justify-between">
                     <button
+                      data-testid={`custom-template-apply-button-${id}`}
                       onClick={() => handleCustomTemplateClick(id)}
                       className="flex-1 text-left"
                     >
@@ -709,7 +731,10 @@ export function TemplateSelector() {
       {/* 作成モーダル */}
       {showCreateModal &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+            data-testid="create-template-modal"
+          >
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
@@ -744,7 +769,11 @@ export function TemplateSelector() {
                     placeholder={t("templateName")}
                     data-testid="template-name-input"
                   />
-                  {nameError && <p className="text-red-400 text-xs mt-1">{nameError}</p>}
+                  {nameError && (
+                    <p className="text-red-400 text-xs mt-1" data-testid="template-name-error">
+                      {nameError}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -813,7 +842,10 @@ export function TemplateSelector() {
         editingTemplateId &&
         customTemplates?.[editingTemplateId] &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+            data-testid="edit-template-modal"
+          >
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
@@ -850,7 +882,11 @@ export function TemplateSelector() {
                     placeholder={t("templateName")}
                     data-testid="edit-template-name-input"
                   />
-                  {nameError && <p className="text-red-400 text-xs mt-1">{nameError}</p>}
+                  {nameError && (
+                    <p className="text-red-400 text-xs mt-1" data-testid="edit-template-name-error">
+                      {nameError}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -886,7 +922,7 @@ export function TemplateSelector() {
                     "hover:border-neon-yellow hover:bg-neon-yellow/30 transition-all ripple-effect"
                   )}
                 >
-                  {t("overwrite")} {t("withCurrentSettings")}
+                  {t("overwriteWithCurrentSettings")}
                 </button>
               </div>
 
@@ -923,7 +959,10 @@ export function TemplateSelector() {
         selectedCustomTemplateId &&
         customTemplates?.[selectedCustomTemplateId] &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+            data-testid="delete-template-modal"
+          >
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-red/40 rounded-xl shadow-[0_0_30px_rgba(255,0,0,0.3)] max-w-md w-full p-6 animate-fadeInScale">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-3xl p-2 bg-neon-red/20 border border-neon-red/50 rounded-lg shadow-[0_0_15px_rgba(255,0,0,0.3)]">
@@ -973,7 +1012,10 @@ export function TemplateSelector() {
         overwriteTargetId &&
         customTemplates?.[overwriteTargetId] &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+            data-testid="overwrite-confirm-modal"
+          >
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-yellow/40 rounded-xl shadow-[0_0_30px_rgba(255,255,0,0.3)] max-w-md w-full p-6 animate-fadeInScale">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-3xl p-2 bg-neon-yellow/20 border border-neon-yellow/50 rounded-lg shadow-[0_0_15px_rgba(255,255,0,0.3)]">
