@@ -30,6 +30,8 @@ describe("settingsStore", () => {
   beforeEach(() => {
     // Reset store to initial state
     useSettingsStore.getState().resetSettings();
+    // Clear customTemplates explicitly
+    useSettingsStore.setState({ customTemplates: {} });
     localStorage.clear();
   });
 
@@ -708,6 +710,253 @@ describe("settingsStore", () => {
       // Bonuses should remain the same (mode affects usage, not values)
       expect(powerFuelProliferator.speedBonus).toBe(PROLIFERATOR_DATA.mk2.speedBonus);
       expect(powerFuelProliferator.productionBonus).toBe(PROLIFERATOR_DATA.mk2.productionBonus);
+    });
+  });
+
+  describe("Custom Templates", () => {
+    it("should have empty customTemplates initially", () => {
+      const { customTemplates } = useSettingsStore.getState();
+
+      expect(customTemplates).toEqual({});
+      expect(Object.keys(customTemplates).length).toBe(0);
+    });
+
+    it("should create custom template with current settings", () => {
+      const { createCustomTemplate, setProliferator } = useSettingsStore.getState();
+
+      // Set some settings
+      setProliferator("mk3", "production");
+
+      // Create template
+      createCustomTemplate("Test Template", "Test Note");
+
+      const { customTemplates } = useSettingsStore.getState();
+      const templateIds = Object.keys(customTemplates);
+      expect(templateIds.length).toBe(1);
+
+      const template = customTemplates[templateIds[0]];
+      expect(template.meta.name).toBe("Test Template");
+      expect(template.meta.note).toBe("Test Note");
+      expect(template.settings.proliferator.type).toBe("mk3");
+      expect(template.settings.proliferator.mode).toBe("production");
+    });
+
+    it("should throw error when creating template with duplicate name", () => {
+      const { createCustomTemplate } = useSettingsStore.getState();
+
+      createCustomTemplate("Duplicate Template");
+
+      expect(() => {
+        createCustomTemplate("Duplicate Template");
+      }).toThrow("already exists");
+    });
+
+    it("should throw error when exceeding maximum count", () => {
+      const { createCustomTemplate } = useSettingsStore.getState();
+
+      // Create 50 templates
+      for (let i = 0; i < 50; i++) {
+        createCustomTemplate(`Template ${i}`);
+      }
+
+      expect(() => {
+        createCustomTemplate("Template 51");
+      }).toThrow("Maximum number");
+    });
+
+    it("should update custom template name and note", async () => {
+      const { createCustomTemplate, updateCustomTemplate } = useSettingsStore.getState();
+
+      createCustomTemplate("Original Name", "Original Note");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+      const createdAt = useSettingsStore.getState().customTemplates[templateId].meta.createdAt;
+
+      // Wait a bit to ensure updatedAt is different
+      await new Promise(resolve => setTimeout(resolve, 1));
+
+      updateCustomTemplate(templateId, "Updated Name", "Updated Note");
+
+      const { customTemplates } = useSettingsStore.getState();
+      const template = customTemplates[templateId];
+      expect(template.meta.name).toBe("Updated Name");
+      expect(template.meta.note).toBe("Updated Note");
+      expect(template.meta.updatedAt).toBeGreaterThanOrEqual(createdAt);
+    });
+
+    it("should update custom template settings", () => {
+      const { createCustomTemplate, updateCustomTemplate, setProliferator } =
+        useSettingsStore.getState();
+
+      createCustomTemplate("Template");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      // Change settings
+      setProliferator("mk2", "speed");
+      const newSettings = useSettingsStore.getState().settings;
+
+      updateCustomTemplate(templateId, undefined, undefined, newSettings);
+
+      const { customTemplates } = useSettingsStore.getState();
+      const template = customTemplates[templateId];
+      expect(template.settings.proliferator.type).toBe("mk2");
+      expect(template.settings.proliferator.mode).toBe("speed");
+    });
+
+    it("should delete custom template", () => {
+      const { createCustomTemplate, deleteCustomTemplate } = useSettingsStore.getState();
+
+      createCustomTemplate("Template to Delete");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      deleteCustomTemplate(templateId);
+
+      const { customTemplates } = useSettingsStore.getState();
+      expect(customTemplates[templateId]).toBeUndefined();
+      expect(Object.keys(customTemplates).length).toBe(0);
+    });
+
+    it("should reset selectedTemplate when deleting selected custom template", () => {
+      const { createCustomTemplate, applyCustomTemplate, deleteCustomTemplate } =
+        useSettingsStore.getState();
+
+      createCustomTemplate("Template");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      applyCustomTemplate(templateId);
+      expect(useSettingsStore.getState().selectedTemplate).toBeTruthy();
+
+      deleteCustomTemplate(templateId);
+      expect(useSettingsStore.getState().selectedTemplate).toBeNull();
+    });
+
+    it("should apply custom template settings", () => {
+      const { createCustomTemplate, applyCustomTemplate, setProliferator, setMachineRank } =
+        useSettingsStore.getState();
+
+      // Set some settings
+      setProliferator("mk3", "production");
+      setMachineRank("Assemble", "mk3");
+
+      createCustomTemplate("Template to Apply");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      // Change settings
+      setProliferator("mk1", "speed");
+      setMachineRank("Assemble", "mk1");
+
+      // Apply template
+      applyCustomTemplate(templateId);
+
+      const { settings, selectedTemplate } = useSettingsStore.getState();
+      expect(settings.proliferator.type).toBe("mk3");
+      expect(settings.proliferator.mode).toBe("production");
+      expect(settings.machineRank.Assemble).toBe("mk3");
+      expect(selectedTemplate).toContain("custom:");
+    });
+
+    it("should trim template name and note", () => {
+      const { createCustomTemplate, updateCustomTemplate } = useSettingsStore.getState();
+
+      createCustomTemplate("  Trimmed Name  ", "  Trimmed Note  ");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      const { customTemplates } = useSettingsStore.getState();
+      const template = customTemplates[templateId];
+      expect(template.meta.name).toBe("Trimmed Name");
+      expect(template.meta.note).toBe("Trimmed Note");
+
+      updateCustomTemplate(templateId, "  Updated Name  ", "  Updated Note  ");
+      const updatedTemplate = useSettingsStore.getState().customTemplates[templateId];
+      expect(updatedTemplate.meta.name).toBe("Updated Name");
+      expect(updatedTemplate.meta.note).toBe("Updated Note");
+    });
+
+    it("should handle undefined note in createCustomTemplate", () => {
+      const { createCustomTemplate } = useSettingsStore.getState();
+
+      createCustomTemplate("Template Without Note");
+
+      const { customTemplates } = useSettingsStore.getState();
+      const templateId = Object.keys(customTemplates)[0];
+      const template = customTemplates[templateId];
+      expect(template.meta.note).toBeUndefined();
+    });
+
+    it("should handle undefined note in updateCustomTemplate", () => {
+      const { createCustomTemplate, updateCustomTemplate } = useSettingsStore.getState();
+
+      createCustomTemplate("Template", "Note");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      // Update only name, note should remain unchanged
+      updateCustomTemplate(templateId, "Updated Template", undefined);
+
+      const { customTemplates } = useSettingsStore.getState();
+      const template = customTemplates[templateId];
+      expect(template.meta.name).toBe("Updated Template");
+      expect(template.meta.note).toBe("Note"); // Should remain unchanged
+    });
+
+    it("should clone alternativeRecipes Map when creating template", () => {
+      const { createCustomTemplate, setAlternativeRecipe } = useSettingsStore.getState();
+
+      setAlternativeRecipe(1001, 2001);
+      createCustomTemplate("Template");
+      const templateId = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      const { customTemplates } = useSettingsStore.getState();
+      const template = customTemplates[templateId];
+      const templateMap = template.settings.alternativeRecipes;
+      const currentMap = useSettingsStore.getState().settings.alternativeRecipes;
+
+      expect(templateMap).toBeInstanceOf(Map);
+      expect(templateMap).not.toBe(currentMap);
+      expect(templateMap.get(1001)).toBe(2001);
+    });
+
+    it("should throw error when updating non-existent template", () => {
+      const { updateCustomTemplate } = useSettingsStore.getState();
+
+      expect(() => {
+        updateCustomTemplate("non-existent-id", "New Name");
+      }).toThrow("not found");
+    });
+
+    it("should throw error when deleting non-existent template", () => {
+      const { deleteCustomTemplate } = useSettingsStore.getState();
+
+      expect(() => {
+        deleteCustomTemplate("non-existent-id");
+      }).toThrow("not found");
+    });
+
+    it("should throw error when applying non-existent template", () => {
+      const { applyCustomTemplate } = useSettingsStore.getState();
+
+      expect(() => {
+        applyCustomTemplate("non-existent-id");
+      }).toThrow("not found");
+    });
+
+    it("should preserve selectedTemplate when deleting non-selected custom template", () => {
+      const { createCustomTemplate, applyCustomTemplate, deleteCustomTemplate } =
+        useSettingsStore.getState();
+
+      createCustomTemplate("Template 1");
+      const template1Id = Object.keys(useSettingsStore.getState().customTemplates)[0];
+
+      createCustomTemplate("Template 2");
+      const template2Id = Object.keys(useSettingsStore.getState().customTemplates).find(
+        id => id !== template1Id
+      )!;
+
+      applyCustomTemplate(template1Id);
+      const selectedBefore = useSettingsStore.getState().selectedTemplate;
+
+      deleteCustomTemplate(template2Id);
+      const selectedAfter = useSettingsStore.getState().selectedTemplate;
+
+      expect(selectedAfter).toBe(selectedBefore);
     });
   });
 });
