@@ -1,11 +1,14 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect, test } from "@playwright/test";
 import { expectNumberChange } from "./helpers/numeric-asserts";
+import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("発電設備機能", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:5173/");
     await page.getByTestId("welcome-skip-button").click();
+    // Stabilize UI interactions
+    await disableAnimations(page);
   });
 
   test("04-01: 発電テンプレートの設備と燃料確認", async ({ page }) => {
@@ -77,8 +80,10 @@ test.describe("発電設備機能", () => {
 
     // mappingをforループで回して、設備と燃料の組み合わせをテスト
     for (const [plant, { name, fuels }] of Object.entries(mapping)) {
-      // 発電設備を選択
-      await page.getByTestId(`power-generation-generator-button-${plant}`).click();
+      // 発電設備を選択（確実にビュー内にスクロールしてからクリック）
+      const genBtn = page.getByTestId(`power-generation-generator-button-${plant}`);
+      await genBtn.scrollIntoViewIfNeeded();
+      await genBtn.click();
 
       const genName = await page.getByTestId("power-generator-name").innerText();
       expect(genName).toContain(name);
@@ -94,7 +99,9 @@ test.describe("発電設備機能", () => {
       } else {
         // 燃料を順番に選択して確認
         for (const [fuel, fuelName] of Object.entries(fuels)) {
-          await page.getByTestId(`power-generation-fuel-button-${fuel}`).click();
+          const fuelBtn = page.getByTestId(`power-generation-fuel-button-${fuel}`);
+          await fuelBtn.scrollIntoViewIfNeeded();
+          await fuelBtn.click();
 
           await expect(fuelLocator).toBeVisible();
           const selectedFuelName = await fuelLocator.innerText();

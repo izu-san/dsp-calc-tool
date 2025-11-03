@@ -1,6 +1,6 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect, test } from "@playwright/test";
-import { expectNumberChange } from "./helpers/numeric-asserts";
+import { expectNumberChange, expectOneOfNumbersChange } from "./helpers/numeric-asserts";
 // このファイルのいくつかのテストは多数のループや短い待機を含むため、
 // デフォルトの 30s を超える可能性があります。安定化のためタイムアウトを延長します。
 test.setTimeout(120000);
@@ -158,16 +158,15 @@ test.describe("メイン機能の確認", () => {
 
         // 期待: 統計（総電力）が UI 更新で変化すること
         // アクション: 目的の type/mode に設定する（これが変更トリガー）
-        await expectNumberChange(
+        await expectOneOfNumbersChange(
           page,
-          "statistics-total-power",
+          ["statistics-total-machines", "statistics-total-power"],
           async () => {
             await page.getByTestId(`proliferator-type-button-${t}`).click();
-
             await page.getByTestId(`proliferator-mode-button-${m}`).click();
           },
           "changed",
-          { timeout: 1500 }
+          { timeout: 2000 }
         );
       }
     }

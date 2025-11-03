@@ -2,10 +2,12 @@
 // 履歴・バージョン管理機能 E2E テスト
 
 import { expect, test } from "@playwright/test";
+import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("履歴・バージョン管理機能", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:5173/");
+    await disableAnimations(page);
 
     // localStorage をクリア（但しWelcomeモーダルのスキップ状態は保持）
     await page.evaluate(() => {
@@ -19,6 +21,8 @@ test.describe("履歴・バージョン管理機能", () => {
     });
 
     await page.reload();
+    // Re-inject styles after reload since document changed
+    await disableAnimations(page);
   }); // ========================================
   // シナリオ 1: 履歴基本挙動
   // ========================================

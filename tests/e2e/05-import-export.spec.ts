@@ -3,11 +3,14 @@ import { expect, test } from "@playwright/test";
 import * as fs from "fs/promises";
 import * as os from "os";
 import * as nodePath from "path";
+import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("データのエクスポートとインポート", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:5173/");
     await page.getByTestId("welcome-skip-button").click();
+    // Stabilize UI interactions
+    await disableAnimations(page);
 
     // 1. `デストロイヤー` を選択する
     await page.getByTestId("recipe-button-1705").click();
@@ -37,6 +40,9 @@ test.describe("データのエクスポートとインポート", () => {
       page.getByTestId("export-json-button").click(),
     ]);
     await expect(page.getByTestId("export-success-message")).toBeVisible();
+    // ダイアログの閉じるボタンはアニメーションの影響を受けやすいので安定化
+    await expect(page.getByTestId("save-dialog-close-button")).toBeVisible();
+    await expect(page.getByTestId("save-dialog-close-button")).toBeEnabled();
     await page.getByTestId("save-dialog-close-button").click();
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     // まず推奨ファイル名を取得して保存先を決める
@@ -74,6 +80,8 @@ test.describe("データのエクスポートとインポート", () => {
       page.getByTestId("export-markdown-button").click(),
     ]);
     await expect(page.getByTestId("export-success-message")).toBeVisible();
+    await expect(page.getByTestId("save-dialog-close-button")).toBeVisible();
+    await expect(page.getByTestId("save-dialog-close-button")).toBeEnabled();
     await page.getByTestId("save-dialog-close-button").click();
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     const filename = download.suggestedFilename();
@@ -106,6 +114,8 @@ test.describe("データのエクスポートとインポート", () => {
       page.getByTestId("export-csv-button").click(),
     ]);
     await expect(page.getByTestId("export-success-message")).toBeVisible();
+    await expect(page.getByTestId("save-dialog-close-button")).toBeVisible();
+    await expect(page.getByTestId("save-dialog-close-button")).toBeEnabled();
     await page.getByTestId("save-dialog-close-button").click();
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
     const filename = download.suggestedFilename();

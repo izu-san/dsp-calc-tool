@@ -1,10 +1,12 @@
 // spec: docs/testing/TEST_PLAN.md
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("Welcome モーダル", () => {
   test("01-01: モーダルの基本操作", async ({ page }) => {
     // 1. アプリにアクセスする
     await page.goto("http://localhost:5173/");
+    await disableAnimations(page);
 
     // 2. Dyson Sphere Program Production Calculator へようこそ！ モーダルが表示されていることを確認する
     await expect(page.getByTestId("welcome-modal")).toBeVisible();
@@ -41,6 +43,7 @@ test.describe("Welcome モーダル", () => {
   test("01-02: モーダルをスキップ", async ({ page }) => {
     // 1. アプリにアクセスする
     await page.goto("http://localhost:5173/");
+    await disableAnimations(page);
 
     // 2. モーダルが表示されていることを確認する
     await expect(page.getByTestId("welcome-modal")).toBeVisible();
@@ -55,11 +58,13 @@ test.describe("Welcome モーダル", () => {
   test("01-03: モーダルが再表示されない", async ({ page }) => {
     // 1-4. アクセスしてスキップを押す
     await page.goto("http://localhost:5173/");
+    await disableAnimations(page);
     await page.getByTestId("welcome-skip-button").click();
     await expect(page.getByTestId("welcome-modal")).toBeHidden();
 
     // 5. ページをリロード
     await page.reload();
+    await disableAnimations(page);
 
     // 6. モーダルが表示されないことを確認する
     await expect(page.getByTestId("welcome-modal")).toBeHidden();

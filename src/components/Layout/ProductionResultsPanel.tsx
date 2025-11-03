@@ -24,6 +24,9 @@ const PowerGenerationView = lazy(() =>
 const MiningCalculator = lazy(() =>
   import("../MiningCalculator").then(m => ({ default: m.MiningCalculator }))
 );
+const BuildingRoadmapView = lazy(() =>
+  import("../BuildingRoadmapView").then(m => ({ default: m.BuildingRoadmapView }))
+);
 
 interface ProductionResultsPanelProps {
   calculationResult: CalculationResult | null;
@@ -50,6 +53,7 @@ export function ProductionResultsPanel({
   const [showBuildingCost, setShowBuildingCost] = useState(false);
   const [showPowerGeneration, setShowPowerGeneration] = useState(false);
   const [showMiningCalculator, setShowMiningCalculator] = useState(false);
+  const [showRoadmap, setShowRoadmap] = useState(false);
   const { settings } = useSettingsStore();
   const { settings: miningSettings } = useMiningSettingsStore();
   const { data: gameData } = useGameDataStore();
@@ -119,6 +123,7 @@ export function ProductionResultsPanel({
                   setShowBuildingCost(false);
                   setShowPowerGeneration(false);
                   setShowMiningCalculator(false);
+                  setShowRoadmap(false);
                 }}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
@@ -127,12 +132,14 @@ export function ProductionResultsPanel({
                       !showStatistics &&
                       !showBuildingCost &&
                       !showPowerGeneration &&
-                      !showMiningCalculator,
+                      !showMiningCalculator &&
+                      !showRoadmap,
                     "border-transparent text-space-300 hover:text-neon-cyan":
                       showStatistics ||
                       showBuildingCost ||
                       showPowerGeneration ||
-                      showMiningCalculator,
+                      showMiningCalculator ||
+                      showRoadmap,
                   }
                 )}
               >
@@ -145,6 +152,7 @@ export function ProductionResultsPanel({
                   setShowBuildingCost(false);
                   setShowPowerGeneration(false);
                   setShowMiningCalculator(false);
+                  setShowRoadmap(false);
                 }}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
@@ -163,6 +171,7 @@ export function ProductionResultsPanel({
                   setShowBuildingCost(true);
                   setShowPowerGeneration(false);
                   setShowMiningCalculator(false);
+                  setShowRoadmap(false);
                 }}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
@@ -181,6 +190,7 @@ export function ProductionResultsPanel({
                   setShowBuildingCost(false);
                   setShowPowerGeneration(true);
                   setShowMiningCalculator(false);
+                  setShowRoadmap(false);
                 }}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
@@ -199,6 +209,7 @@ export function ProductionResultsPanel({
                   setShowBuildingCost(false);
                   setShowPowerGeneration(false);
                   setShowMiningCalculator(true);
+                  setShowRoadmap(false);
                 }}
                 className={cn(
                   "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
@@ -210,12 +221,32 @@ export function ProductionResultsPanel({
               >
                 {t("miningCalculator")}
               </button>
+              <button
+                data-testid="roadmap-tab"
+                onClick={() => {
+                  setShowStatistics(false);
+                  setShowBuildingCost(false);
+                  setShowPowerGeneration(false);
+                  setShowMiningCalculator(false);
+                  setShowRoadmap(true);
+                }}
+                className={cn(
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  {
+                    "border-neon-blue text-neon-cyan shadow-neon-blue": showRoadmap,
+                    "border-transparent text-space-300 hover:text-neon-cyan": !showRoadmap,
+                  }
+                )}
+              >
+                {t("roadmap.title")}
+              </button>
 
               {/* Expand/Collapse All button */}
               {!showStatistics &&
                 !showBuildingCost &&
                 !showPowerGeneration &&
-                !showMiningCalculator && (
+                !showMiningCalculator &&
+                !showRoadmap && (
                   <button
                     data-testid="expand-collapse-all-button"
                     onClick={handleToggleAll}
@@ -266,6 +297,11 @@ export function ProductionResultsPanel({
                 </div>
               ) : showMiningCalculator ? (
                 <MiningCalculator calculationResult={calculationResult} />
+              ) : showRoadmap ? (
+                <BuildingRoadmapView
+                  calculationResult={calculationResult}
+                  miningCalculation={miningCalculation}
+                />
               ) : (
                 <div id="production-tree-view" data-testid="production-tree-content">
                   <ProductionTree

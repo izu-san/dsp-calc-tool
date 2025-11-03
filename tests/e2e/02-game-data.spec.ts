@@ -2,6 +2,7 @@
 import { expect, test } from "@playwright/test";
 import fs from "fs";
 import path from "path";
+import { disableAnimations } from "./helpers/ui-stability";
 
 // spec: docs/testing/TEST_PLAN.md
 // このテストは `docs/testing/RECIPE_SIDS.md` を参照して
@@ -15,6 +16,7 @@ test.describe("ゲームデータ読み込みと初期表示", () => {
     // 1. アプリにアクセスする
     // waitUntil 'networkidle' to ensure the SPA has finished initial network loading
     await page.goto("http://localhost:5173/", { waitUntil: "networkidle" });
+    await disableAnimations(page);
 
     // Welcome モーダルを閉じる（存在すれば）
     const skipBtn = page.getByTestId("welcome-skip-button");

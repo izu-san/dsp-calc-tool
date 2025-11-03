@@ -2,11 +2,13 @@
 import { expect, test } from "@playwright/test";
 import * as nodePath from "path";
 import { acceptDialogDuring } from "./helpers/dialogs";
+import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("ModSettings とカスタム XML アップロード", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:5173/");
     await page.getByTestId("welcome-skip-button").click();
+    await disableAnimations(page);
   });
 
   test("07-01: MOD設定画面の表示 (Ctrl+Shift+M)", async ({ page }) => {
