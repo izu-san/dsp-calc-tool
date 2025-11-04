@@ -48,3 +48,6 @@ test-results/
 # Deployment
 .vercel
 .netlify
+
+# Documentation
+docs/
