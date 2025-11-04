@@ -1,44 +1,39 @@
 // spec: docs/testing/TEST_PLAN.md
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "./fixtures";
 import * as fs from "fs/promises";
 import * as os from "os";
 import * as nodePath from "path";
-import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("データのエクスポートとインポート", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:5173/");
-    await page.getByTestId("welcome-skip-button").click();
-    // Stabilize UI interactions
-    await disableAnimations(page);
-
+  test.beforeEach(async ({ appPage }) => {
     // 1. `デストロイヤー` を選択する
-    await page.getByTestId("recipe-button-1705").click();
+    await appPage.getByTestId("recipe-button-1705").click();
 
     // 2. 増産剤、生産設備を任意に設定する
-    await page.getByTestId("target-quantity-input").fill("2");
-    await page.getByTestId("proliferator-type-button-mk2").click();
-    await page.getByTestId("machine-rank-button-smelt-plane").click();
-    await page.getByTestId("machine-rank-button-assemble-mk3").click();
-    await page.getByTestId("machine-rank-button-chemical-quantum").click();
-    await page.getByTestId("machine-rank-button-research-self-evolution").click();
-    await page.getByTestId("conveyor-belt-button-mk3").click();
-    await page.getByTestId("conveyor-belt-stack-button-4").click();
-    await page.getByTestId("sorter-button-pile").click();
+    await appPage.getByTestId("target-quantity-input").fill("2");
+    await appPage.getByTestId("proliferator-type-button-mk2").click();
+    await appPage.getByTestId("machine-rank-button-smelt-plane").click();
+    await appPage.getByTestId("machine-rank-button-assemble-mk3").click();
+    await appPage.getByTestId("machine-rank-button-chemical-quantum").click();
+    await appPage.getByTestId("machine-rank-button-research-self-evolution").click();
+    await appPage.getByTestId("conveyor-belt-button-mk3").click();
+    await appPage.getByTestId("conveyor-belt-stack-button-4").click();
+    await appPage.getByTestId("sorter-button-pile").click();
 
     // 代替レシピを設定
-    await page.getByTestId("alternative-recipe-compare-button-1124").click();
-    await page.getByTestId("recipe-comparison-select-button-1508").click();
+    await appPage.getByTestId("alternative-recipe-compare-button-1124").click();
+    await appPage.getByTestId("recipe-comparison-select-button-1508").click();
   });
 
-  test("05-01: json形式の正常データ", async ({ page }) => {
+  test("05-01: json形式の正常データ", async ({ appPage }) => {
     // 3-4. 保存 -> JSONエクスポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-export").hover();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-export").hover();
 
     const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page.getByTestId("plan-menu-export-json").click(),
+      appPage.waitForEvent("download"),
+      appPage.getByTestId("plan-menu-export-json").click(),
     ]);
 
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
@@ -55,13 +50,13 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したJSONをインポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
 
     // ダイアログ内の input にファイルをセットする
-    await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
+    await appPage.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
-    await expect(page.getByTestId("import-success-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-success-message")).toBeVisible();
     // テスト終了時に一時ファイルを削除
     try {
       await fs.unlink(savedPath);
@@ -70,14 +65,14 @@ test.describe("データのエクスポートとインポート", () => {
     }
   });
 
-  test("05-02: Markdown形式の正常データ", async ({ page }) => {
+  test("05-02: Markdown形式の正常データ", async ({ appPage }) => {
     // 3-4. 保存 -> Markdownエクスポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-export").hover();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-export").hover();
 
     const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page.getByTestId("plan-menu-export-markdown").click(),
+      appPage.waitForEvent("download"),
+      appPage.getByTestId("plan-menu-export-markdown").click(),
     ]);
 
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
@@ -91,11 +86,11 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したMarkdownをインポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
-    await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
+    await appPage.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
-    await expect(page.getByTestId("import-success-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-success-message")).toBeVisible();
     try {
       await fs.unlink(savedPath);
     } catch {
@@ -103,14 +98,14 @@ test.describe("データのエクスポートとインポート", () => {
     }
   });
 
-  test("05-03: csv形式の正常データ", async ({ page }) => {
+  test("05-03: csv形式の正常データ", async ({ appPage }) => {
     // 3-4. 保存 -> CSVエクスポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-export").hover();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-export").hover();
 
     const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page.getByTestId("plan-menu-export-csv").click(),
+      appPage.waitForEvent("download"),
+      appPage.getByTestId("plan-menu-export-csv").click(),
     ]);
 
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
@@ -124,11 +119,11 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したCSVをインポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
-    await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
+    await appPage.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
-    await expect(page.getByTestId("import-success-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-success-message")).toBeVisible();
     try {
       await fs.unlink(savedPath);
     } catch {
@@ -136,14 +131,14 @@ test.describe("データのエクスポートとインポート", () => {
     }
   });
 
-  test("05-04: Excel形式の正常データ", async ({ page }) => {
+  test("05-04: Excel形式の正常データ", async ({ appPage }) => {
     // 3-4. 保存 -> Excelエクスポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-export").hover();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-export").hover();
 
     const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page.getByTestId("plan-menu-export-excel").click(),
+      appPage.waitForEvent("download"),
+      appPage.getByTestId("plan-menu-export-excel").click(),
     ]);
 
     // ダウンロードされたファイルを確実に拡張子付きで保存してから読み込む
@@ -157,11 +152,11 @@ test.describe("データのエクスポートとインポート", () => {
     await download.saveAs(savedPath);
 
     // 5-6. 読み込みボタンを押下して保存したExcelをインポート
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
-    await page.setInputFiles('[data-testid="file-import-input"]', savedPath);
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
+    await appPage.setInputFiles('[data-testid="file-import-input"]', savedPath);
     // 簡易期待: 読み込み完了メッセージが表示される
-    await expect(page.getByTestId("import-success-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-success-message")).toBeVisible();
     try {
       await fs.unlink(savedPath);
     } catch {
@@ -169,7 +164,7 @@ test.describe("データのエクスポートとインポート", () => {
     }
   });
 
-  test("05-05: json形式の異常データ", async ({ page }) => {
+  test("05-05: json形式の異常データ", async ({ appPage }) => {
     const fixtureDir = nodePath.join(process.cwd(), "tests", "fixtures", "05-import-export");
     const fixtures = ["invalid-json.json", "missing-fields.json", "wrong-types.json"];
 
@@ -184,18 +179,18 @@ test.describe("データのエクスポートとインポート", () => {
         );
       }
 
-      await page.getByTestId("plan-manager-menu-trigger").click();
-      await page.getByTestId("plan-menu-load").click();
+      await appPage.getByTestId("plan-manager-menu-trigger").click();
+      await appPage.getByTestId("plan-menu-load").click();
       // 直接 input にファイルをセット
-      await page.setInputFiles('[data-testid="file-import-input"]', filePath);
+      await appPage.setInputFiles('[data-testid="file-import-input"]', filePath);
       // エラー表示を期待
-      await expect(page.getByTestId("import-error-message")).toBeVisible();
+      await expect(appPage.getByTestId("import-error-message")).toBeVisible();
       // 閉じる等の UI があればここで閉じる（保存されている場合のため）
-      await page.getByTestId("load-dialog-close-button").click();
+      await appPage.getByTestId("load-dialog-close-button").click();
     }
   });
 
-  test("05-06: Markdown形式の異常データ", async ({ page }) => {
+  test("05-06: Markdown形式の異常データ", async ({ appPage }) => {
     const fixtureDir = nodePath.join(process.cwd(), "tests", "fixtures", "05-import-export");
     const filePath = nodePath.join(fixtureDir, "malformed.md");
     // 存在確認してわかりやすいエラーにする
@@ -207,17 +202,17 @@ test.describe("データのエクスポートとインポート", () => {
       );
     }
 
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
     // 直接 input にファイルをセット
-    await page.setInputFiles('[data-testid="file-import-input"]', filePath);
+    await appPage.setInputFiles('[data-testid="file-import-input"]', filePath);
     // エラー表示を期待
-    await expect(page.getByTestId("import-error-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-error-message")).toBeVisible();
     // 閉じる等の UI があればここで閉じる（保存されている場合のため）
-    await page.getByTestId("load-dialog-close-button").click();
+    await appPage.getByTestId("load-dialog-close-button").click();
   });
 
-  test("05-07: csv形式の異常データ", async ({ page }) => {
+  test("05-07: csv形式の異常データ", async ({ appPage }) => {
     const fixtureDir = nodePath.join(process.cwd(), "tests", "fixtures", "05-import-export");
     const filePath = nodePath.join(fixtureDir, "invalid-csv.csv");
     // 存在確認してわかりやすいエラーにする
@@ -229,17 +224,17 @@ test.describe("データのエクスポートとインポート", () => {
       );
     }
 
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
     // 直接 input にファイルをセット
-    await page.setInputFiles('[data-testid="file-import-input"]', filePath);
+    await appPage.setInputFiles('[data-testid="file-import-input"]', filePath);
     // エラー表示を期待
-    await expect(page.getByTestId("import-error-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-error-message")).toBeVisible();
     // 閉じる等の UI があればここで閉じる（保存されている場合のため）
-    await page.getByTestId("load-dialog-close-button").click();
+    await appPage.getByTestId("load-dialog-close-button").click();
   });
 
-  test("05-08: Excel形式の異常データ", async ({ page }) => {
+  test("05-08: Excel形式の異常データ", async ({ appPage }) => {
     const fixtureDir = nodePath.join(process.cwd(), "tests", "fixtures", "05-import-export");
     const filePath = nodePath.join(fixtureDir, "invalid-excel.xlsx");
     // 存在確認してわかりやすいエラーにする
@@ -251,54 +246,54 @@ test.describe("データのエクスポートとインポート", () => {
       );
     }
 
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-load").click();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-load").click();
     // 直接 input にファイルをセット
-    await page.setInputFiles('[data-testid="file-import-input"]', filePath);
+    await appPage.setInputFiles('[data-testid="file-import-input"]', filePath);
     // エラー表示を期待
-    await expect(page.getByTestId("import-error-message")).toBeVisible();
+    await expect(appPage.getByTestId("import-error-message")).toBeVisible();
     // 閉じる等の UI があればここで閉じる（保存されている場合のため）
-    await page.getByTestId("load-dialog-close-button").click();
+    await appPage.getByTestId("load-dialog-close-button").click();
   });
 
-  test("05-09: URL共有", async ({ page }) => {
+  test("05-09: URL共有", async ({ appPage, newPage }) => {
     // 3. URL共有ボタンを押下する
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-share-url").click();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-share-url").click();
 
     // 4. コピーボタンを押下する
     // Grant clipboard permissions so navigator.clipboard.readText can be used in the test environment
     try {
-      await page
+      await appPage
         .context()
-        .grantPermissions(["clipboard-read", "clipboard-write"], { origin: page.url() });
+        .grantPermissions(["clipboard-read", "clipboard-write"], { origin: appPage.url() });
     } catch {
       // ignore if grantPermissions is not supported in the environment
     }
-    await page.getByTestId("copy-url-button").click();
+    await appPage.getByTestId("copy-url-button").click();
 
     // 5. コピーしたURLにアクセスする (clipboard read via page.evaluate)
-    const clipboard = await page.evaluate(() => navigator.clipboard?.readText?.());
+    const clipboard = await appPage.evaluate(() => navigator.clipboard?.readText?.());
     if (clipboard) {
-      const newPage = await page.context().newPage();
-      await newPage.goto(clipboard);
+      const newPageInstance = await newPage();
+      await newPageInstance.goto(clipboard);
       // 期待値: レシピが復元されていること (保存されたレシピに基づきチェック)
-      await expect(newPage.getByTestId("recipe-node-1705")).toBeVisible();
+      await expect(newPageInstance.getByTestId("recipe-node-1705")).toBeVisible();
     }
   });
 
-  test("05-10: 画像形式のエクスポート", async ({ page }) => {
+  test("05-10: 画像形式のエクスポート", async ({ appPage }) => {
     // beforeEachでレシピ(デストロイヤー)が既に選択されている
     // 保存ダイアログを開く前に、ビューが表示されていることを確認
-    await expect(page.getByTestId("recipe-node-1705")).toBeVisible();
+    await expect(appPage.getByTestId("recipe-node-1705")).toBeVisible();
 
     // 画像エクスポートメニューを開いてダウンロードを待つ
-    await page.getByTestId("plan-manager-menu-trigger").click();
-    await page.getByTestId("plan-menu-export").hover();
+    await appPage.getByTestId("plan-manager-menu-trigger").click();
+    await appPage.getByTestId("plan-menu-export").hover();
 
     const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page.getByTestId("plan-menu-export-image").click(),
+      appPage.waitForEvent("download"),
+      appPage.getByTestId("plan-menu-export-image").click(),
     ]);
 
     // ダウンロードされたファイルを確認

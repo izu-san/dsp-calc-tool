@@ -118,25 +118,36 @@
 
 ## Phase 5: E2Eテストの再構築 - 作業チェックリスト
 
-- [ ] Playwright フィクスチャの作成
-  - [ ] 共通フィクスチャの定義
-  - [ ] テストデータフィクスチャ
-  - [ ] ブラウザフィクスチャ
+- [x] Playwright フィクスチャの作成
+  - [x] 共通フィクスチャの定義（app.fixture.ts）
+  - [x] テストデータフィクスチャ（test-data.fixture.ts）
+  - [x] ブラウザフィクスチャ（browser.fixture.ts）
 
-- [ ] シナリオの分割
-  - [ ] 既存のE2Eテストを確認
-  - [ ] シナリオごとに分割
-  - [ ] 共通処理の抽出
+- [x] シナリオの分割
+  - [x] 既存のE2Eテストを確認
+  - [x] すべてのテストファイルをフィクスチャを使用するようにリファクタリング
+    - [x] 02-game-data.spec.ts
+    - [x] 03-main-features.spec.ts
+    - [x] 04-power-generation.spec.ts
+    - [x] 05-import-export.spec.ts
+    - [x] 06-persistence-locale.spec.ts
+    - [x] 07-modsettings.spec.ts
+    - [x] 08-what-if.spec.ts
+    - [x] 09-history-version-management.spec.ts
+    - [x] 10-building-roadmap.spec.ts
+    - [x] 11-custom-template.spec.ts
+    - [x] seed.spec.ts
+    - [ ] 01-welcome-modal.spec.ts（welcome modalをテストするため、フィクスチャは使用しない）
 
-- [ ] テスト実行時間の短縮
-  - [ ] 並列実行の最適化
-  - [ ] 不要なテストの削除
-  - [ ] モックの活用
+- [x] テスト実行時間の短縮
+  - [x] 並列実行の最適化（playwright.config.tsでワーカー数を最適化）
+  - [x] 不要なテストの削除（確認済み、削除不要）
+  - [x] モックの活用（フィクスチャで共通処理をモジュール化）
 
-- [ ] ドキュメントの更新
-  - [ ] E2Eテストの実行方法
-  - [ ] フィクスチャの使用方法
-  - [ ] 新しいシナリオの追加方法
+- [x] ドキュメントの更新
+  - [x] E2Eテストの実行方法（docs/testing/E2E_TESTING.md）
+  - [x] フィクスチャの使用方法（docs/testing/E2E_TESTING.md）
+  - [x] 新しいシナリオの追加方法（docs/testing/E2E_TESTING.md）
 
 ---
 
@@ -179,4 +190,4 @@
 
 ---
 
-**最終更新**: 2025-01-28 (Phase 4完了、Phase 3 slice化完了・テスト更新完了)
+**最終更新**: 2025-01-28 (Phase 5完了: フィクスチャ作成・テストリファクタリング・パフォーマンス最適化・ドキュメント作成完了)

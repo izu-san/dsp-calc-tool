@@ -75,15 +75,19 @@
 
 ### ✅ Phase 4: lib テストのモジュール単位への再編成とビルダー/モックの統一
 
-**ステータス**: 主要ファイル完了
+**ステータス**: 完了
 **詳細**: `refactoring-progress.md` の Phase 4 セクションを参照
-**残作業**: `refactoring-checklist.md` の Phase 4 セクションを参照
 
-### ⏳ Phase 5: Playwright フィクスチャ導入とシナリオ分割でE2Eを再構築
+### ✅ Phase 5: Playwright フィクスチャ導入とシナリオ分割でE2Eを再構築
 
-**ステータス**: 未着手
+**ステータス**: 完了
 **詳細**: `refactoring-progress.md` の Phase 5 セクションを参照
-**作業項目**: `refactoring-checklist.md` の Phase 5 セクションを参照
+**成果**:
+
+- Playwrightフィクスチャの作成（app.fixture.ts, test-data.fixture.ts, browser.fixture.ts）
+- 全E2Eテストファイルのリファクタリング（11ファイル）
+- パフォーマンス最適化（並列実行の最適化）
+- ドキュメント作成（docs/testing/E2E_TESTING.md）
 
 ## 関連ファイル
 
@@ -111,6 +115,10 @@
 
 ## 更新履歴
 
+- **2025-01-28**: Phase 5完了
+  - E2Eテストの再構築完了（フィクスチャ作成・テストリファクタリング・パフォーマンス最適化・ドキュメント作成）
+  - Phase 4完了（テストリファクタリング完了）
+  - Phase 3完了（settingsStoreのslice化完了）
 - **2025-01-28**: 初期ドキュメント作成
   - Phase 1-4 の進捗を記録
   - パターン集とチェックリストを作成
