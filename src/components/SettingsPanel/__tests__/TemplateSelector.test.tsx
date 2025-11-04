@@ -528,4 +528,356 @@ describe("TemplateSelector", () => {
       fireEvent.click(screen.getByTestId("create-template-cancel-button"));
     });
   });
+
+  describe("バリデーションエラーテスト", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      customTemplatesMock = {};
+    });
+
+    it("作成: 空文字の場合エラーメッセージを表示", async () => {
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("template-name-error").textContent).toContain("必須");
+      });
+    });
+
+    it("作成: 全角スペースのみの場合エラーメッセージを表示", async () => {
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+
+      fireEvent.change(nameInput, { target: { value: "　　" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("template-name-error").textContent).toContain("必須");
+      });
+    });
+
+    it("作成: 41文字以上の場合エラーメッセージを表示", async () => {
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "A".repeat(41) } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("template-name-error").textContent).toContain("1〜40文字");
+      });
+    });
+
+    it("作成: 名前の前後に空白がある場合エラーメッセージを表示", async () => {
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: " Test Template " } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("template-name-error").textContent).toContain("前後には空白");
+      });
+    });
+
+    it("作成: 名前が重複している場合上書き確認モーダルを表示", async () => {
+      const templateId = "existing-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Duplicate Name",
+            note: "note",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "Duplicate Name" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("overwrite-confirm-modal")).toBeInTheDocument();
+      });
+    });
+
+    it("作成: 最大数到達時にボタンがdisabledになり、モーダルが開かない", async () => {
+      // 最大数（50個）のカスタムテンプレートを作成
+      const maxTemplates = 50;
+      customTemplatesMock = {};
+      for (let i = 0; i < maxTemplates; i++) {
+        const templateId = `template-${i}`;
+        const now = Date.now();
+        customTemplatesMock[templateId] = {
+          meta: {
+            id: templateId,
+            name: `Template ${i}`,
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        };
+      }
+
+      render(<TemplateSelector />);
+      const createButton = screen.getByTestId("create-custom-template-button");
+
+      // ボタンがdisabledになっていることを確認
+      expect(createButton).toBeDisabled();
+
+      // クリックしてもモーダルが開かないことを確認（モーダル内の要素が見つからない）
+      fireEvent.click(createButton);
+      expect(screen.queryByTestId("template-name-input")).not.toBeInTheDocument();
+    });
+
+    it("編集: 空文字の場合エラーメッセージを表示", async () => {
+      const templateId = "edit-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Editable Template",
+            note: "note",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`edit-custom-template-${templateId}`));
+
+      const nameInput = screen.getByTestId("edit-template-name-input");
+      fireEvent.change(nameInput, { target: { value: "" } });
+
+      const saveButton = screen.getByTestId("edit-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("edit-template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("edit-template-name-error").textContent).toContain("必須");
+      });
+    });
+
+    it("編集: メモが121文字以上の場合エラーメッセージを表示", async () => {
+      const templateId = "edit-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Editable Template",
+            note: "note",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`edit-custom-template-${templateId}`));
+
+      const noteInput = screen.getByTestId("edit-template-note-input");
+      fireEvent.change(noteInput, { target: { value: "A".repeat(121) } });
+
+      const saveButton = screen.getByTestId("edit-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("edit-template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("edit-template-name-error").textContent).toContain("120文字以内");
+      });
+    });
+
+    it("編集: 名前が重複している場合エラーメッセージを表示", async () => {
+      const templateId1 = "edit-id-1";
+      const templateId2 = "edit-id-2";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId1]: {
+          meta: {
+            id: templateId1,
+            name: "Template 1",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+        [templateId2]: {
+          meta: {
+            id: templateId2,
+            name: "Template 2",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      mockUpdateCustomTemplate.mockImplementationOnce(() => {
+        throw new Error("Template with this name already exists");
+      });
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`edit-custom-template-${templateId1}`));
+
+      const nameInput = screen.getByTestId("edit-template-name-input");
+      fireEvent.change(nameInput, { target: { value: "Template 2" } });
+
+      const saveButton = screen.getByTestId("edit-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("edit-template-name-error")).toBeInTheDocument();
+        expect(screen.getByTestId("edit-template-name-error").textContent).toContain(
+          "customTemplateDuplicateName"
+        );
+      });
+    });
+
+    it("編集: 現在の設定で上書きボタンが動作する", async () => {
+      const templateId = "edit-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Editable Template",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`edit-custom-template-${templateId}`));
+
+      const overwriteButton = screen.getByTestId("overwrite-with-current-button");
+      fireEvent.click(overwriteButton);
+
+      expect(mockUpdateCustomTemplate).toHaveBeenCalledWith(
+        templateId,
+        undefined,
+        undefined,
+        settingsMock
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("edit-template-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("作成: 上書き確認モーダルで上書きを実行", async () => {
+      const templateId = "existing-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Duplicate Name",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "Duplicate Name" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("overwrite-confirm-modal")).toBeInTheDocument();
+      });
+
+      const overwriteConfirmButton = screen.getByTestId("overwrite-confirm-button");
+      fireEvent.click(overwriteConfirmButton);
+
+      expect(mockUpdateCustomTemplate).toHaveBeenCalledWith(
+        templateId,
+        "Duplicate Name",
+        undefined,
+        settingsMock
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("create-template-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("作成: 上書き確認モーダルでキャンセル", async () => {
+      const templateId = "existing-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Duplicate Name",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "Duplicate Name" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("overwrite-confirm-modal")).toBeInTheDocument();
+      });
+
+      const overwriteCancelButton = screen.getByTestId("overwrite-confirm-cancel-button");
+      fireEvent.click(overwriteCancelButton);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("overwrite-confirm-modal")).not.toBeInTheDocument();
+        expect(screen.getByTestId("create-template-modal")).toBeInTheDocument();
+      });
+    });
+  });
 });

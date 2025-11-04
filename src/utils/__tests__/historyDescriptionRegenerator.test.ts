@@ -365,4 +365,111 @@ describe("historyDescriptionRegenerator", () => {
       expect(result).toBeTruthy();
     });
   });
+
+  describe("例外フォールバック", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("useGameDataStore.getStateでエラーが発生した場合は元の説明を返す", () => {
+      const entry: HistoryEntry = {
+        id: "test",
+        timestamp: Date.now(),
+        type: "settings",
+        description: "Original description",
+        locale: "ja",
+        changes: {
+          "settings.alternativeRecipes": { "1101": 2 },
+        },
+      };
+
+      vi.mocked(useGameDataStore.getState).mockImplementationOnce(() => {
+        throw new Error("Store error");
+      });
+
+      const result = regenerateHistoryDescription(entry);
+      expect(result).toBe("Original description");
+      expect(console.warn).toHaveBeenCalledWith(
+        "Failed to regenerate history description:",
+        expect.any(Error)
+      );
+    });
+
+    it("i18n.tでエラーが発生した場合は元の説明を返す", () => {
+      const entry: HistoryEntry = {
+        id: "test",
+        timestamp: Date.now(),
+        type: "settings",
+        description: "Original description",
+        locale: "ja",
+        changes: {
+          "settings.proliferator": { type: "mk1", mode: "speed" },
+        },
+      };
+
+      // i18n.tをモックしてエラーを発生させる
+      const originalT = i18n.t;
+      i18n.t = vi.fn(() => {
+        throw new Error("Translation error");
+      });
+
+      const result = regenerateHistoryDescription(entry);
+      expect(result).toBe("Original description");
+      expect(console.warn).toHaveBeenCalled();
+
+      // 復元
+      i18n.t = originalT;
+    });
+
+    it("generateDescription関数でエラーが発生した場合は元の説明を返す", () => {
+      const entry: HistoryEntry = {
+        id: "test",
+        timestamp: Date.now(),
+        type: "settings",
+        description: "Original description",
+        locale: "ja",
+        changes: {
+          "settings.invalid": "value",
+        },
+      };
+
+      const result = regenerateHistoryDescription(entry);
+      expect(result).toBe("Original description");
+    });
+
+    it("planタイプでplanSnapshotが不正な形式の場合は元の説明を返す", () => {
+      const entry: HistoryEntry = {
+        id: "test",
+        timestamp: Date.now(),
+        type: "plan",
+        description: "Original description",
+        locale: "ja",
+        changes: {},
+        planSnapshot: null as any, // 不正な形式
+      };
+
+      const result = regenerateHistoryDescription(entry);
+      expect(result).toBeTruthy();
+    });
+
+    it("nodeOverrideタイプでaffectedNodesが空の場合は元の説明を返す", () => {
+      const entry: HistoryEntry = {
+        id: "test",
+        timestamp: Date.now(),
+        type: "nodeOverride",
+        description: "Original description",
+        locale: "ja",
+        affectedNodes: [],
+        changes: {},
+      };
+
+      const result = regenerateHistoryDescription(entry);
+      expect(result).toBe("Original description");
+    });
+  });
 });
