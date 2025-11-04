@@ -5,19 +5,13 @@ on:
     workflows: ["CI"]
     types:
       - completed
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
 
 jobs:
   auto-merge:
     name: Auto-merge Dependabot PRs
     runs-on: ubuntu-latest
-    if: |
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
-      (github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'dependabot/') && github.event.pull_request.base.ref == 'develop')
+    # CIワークフローが成功した場合のみ実行
+    if: github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: write
       pull-requests: write
@@ -26,63 +20,72 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Get PR number
-        id: pr_number
+      - name: Get PR number from workflow_run
+        id: pr_info
         run: |
-          if [ "${{ github.event_name }}" == "workflow_run" ]; then
-            # workflow_run イベントの場合、関連する PR を取得
-            # workflow_run には pull_requests 配列が含まれる
-            PR_NUMBER=$(echo '${{ toJSON(github.event.workflow_run.pull_requests) }}' | jq -r '.[0].number // empty')
+          # workflow_run イベントから関連する PR を取得
+          PR_NUMBER=$(echo '${{ toJSON(github.event.workflow_run.pull_requests) }}' | jq -r '.[0].number // empty')
 
-            if [ -z "$PR_NUMBER" ]; then
-              echo "No PR found in workflow_run event"
-              exit 0
-            fi
-
-            # dependabot の PR かどうかを確認
-            PR_HEAD=$(gh pr view $PR_NUMBER --json headRefName --jq '.headRefName' || echo "")
-            if [ -z "$PR_HEAD" ] || [[ ! "$PR_HEAD" =~ ^dependabot/ ]]; then
-              echo "Not a Dependabot PR"
-              exit 0
-            fi
-
-            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-          else
-            # pull_request イベントの場合
-            echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR found in workflow_run event"
+            exit 0
           fi
 
-      - name: Check if all status checks passed
-        if: steps.pr_number.outputs.pr_number != ''
-        id: status_checks
-        run: |
-          PR_NUMBER=${{ steps.pr_number.outputs.pr_number }}
+          # PR の詳細を取得
+          PR_HEAD=$(gh pr view $PR_NUMBER --json headRefName --jq '.headRefName' || echo "")
+          PR_BASE=$(gh pr view $PR_NUMBER --json baseRefName --jq '.baseRefName' || echo "")
 
-          # すべてのステータスチェックが成功しているか確認
-          FAILED=$(gh pr checks $PR_NUMBER --json conclusion --jq '.[] | select(.conclusion == "failure") | .conclusion' | head -1)
-
-          if [ -z "$FAILED" ]; then
-            # すべてのチェックが完了しているか確認
-            PENDING=$(gh pr checks $PR_NUMBER --json status --jq '.[] | select(.status == "in_progress" or .status == "queued") | .status' | head -1)
-
-            if [ -z "$PENDING" ]; then
-              echo "all_passed=true" >> $GITHUB_OUTPUT
-              echo "All status checks passed"
-            else
-              echo "all_passed=false" >> $GITHUB_OUTPUT
-              echo "Some checks are still pending"
-            fi
-          else
-            echo "all_passed=false" >> $GITHUB_OUTPUT
-            echo "Some checks failed"
+          # dependabot の PR で、develop ブランチへの PR かどうかを確認
+          if [ -z "$PR_HEAD" ] || [[ ! "$PR_HEAD" =~ ^dependabot/ ]]; then
+            echo "Not a Dependabot PR"
+            exit 0
           fi
+
+          if [ "$PR_BASE" != "develop" ]; then
+            echo "Not targeting develop branch"
+            exit 0
+          fi
+
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          echo "PR #$PR_NUMBER is a Dependabot PR targeting develop branch"
+
+      - name: Verify CI workflow status
+        if: steps.pr_info.outputs.pr_number != ''
+        id: verify_ci
+        run: |
+          PR_NUMBER=${{ steps.pr_info.outputs.pr_number }}
+
+          # CIワークフローの実行結果を確認
+          # workflow_run イベントから既に success が確認されているが、
+          # 念のため PR の status check も確認
+          FAILED_CHECKS=$(gh pr checks $PR_NUMBER --json conclusion --jq '.[] | select(.conclusion == "failure")' || echo "")
+
+          if [ -n "$FAILED_CHECKS" ]; then
+            echo "Some status checks failed"
+            echo "$FAILED_CHECKS" | jq '.'
+            exit 1
+          fi
+
+          # すべてのチェックが完了しているか確認
+          PENDING_CHECKS=$(gh pr checks $PR_NUMBER --json status --jq '.[] | select(.status == "in_progress" or .status == "queued")' || echo "")
+
+          if [ -n "$PENDING_CHECKS" ]; then
+            echo "Some checks are still pending"
+            echo "$PENDING_CHECKS" | jq '.'
+            exit 1
+          fi
+
+          echo "All CI checks passed"
+          echo "ci_verified=true" >> $GITHUB_OUTPUT
 
       - name: Auto-merge PR
-        if: steps.pr_number.outputs.pr_number != '' && steps.status_checks.outputs.all_passed == 'true'
+        if: steps.pr_info.outputs.pr_number != '' && steps.verify_ci.outputs.ci_verified == 'true'
         run: |
-          PR_NUMBER=${{ steps.pr_number.outputs.pr_number }}
+          PR_NUMBER=${{ steps.pr_info.outputs.pr_number }}
 
-          # PR をマージ
+          echo "Merging PR #$PR_NUMBER..."
+
+          # PR をマージ（squash マージ、ブランチ削除）
           gh pr merge $PR_NUMBER --squash --delete-branch
 
-          echo "PR #$PR_NUMBER merged successfully"
+          echo "✅ PR #$PR_NUMBER merged successfully"
