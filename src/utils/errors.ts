@@ -1,6 +1,6 @@
 /**
  * カスタムエラークラス
- * 
+ *
  * アプリケーション全体で統一されたエラーハンドリングを提供する。
  * 各エラーには `code` と `details` を持たせることで、エラーの種類と詳細情報を明確にする。
  */
@@ -17,13 +17,9 @@ export class DSPCalculatorError extends Error {
    * @param code - エラーコード（例: DATA_LOAD_ERROR）
    * @param details - エラーの詳細情報（オプション）
    */
-  constructor(
-    message: string,
-    code: string,
-    details?: unknown
-  ) {
+  constructor(message: string, code: string, details?: unknown) {
     super(message);
-    this.name = 'DSPCalculatorError';
+    this.name = "DSPCalculatorError";
     this.code = code;
     this.details = details;
   }
@@ -35,8 +31,8 @@ export class DSPCalculatorError extends Error {
  */
 export class DataLoadError extends DSPCalculatorError {
   constructor(message: string, details?: unknown) {
-    super(message, 'DATA_LOAD_ERROR', details);
-    this.name = 'DataLoadError';
+    super(message, "DATA_LOAD_ERROR", details);
+    this.name = "DataLoadError";
   }
 }
 
@@ -46,8 +42,8 @@ export class DataLoadError extends DSPCalculatorError {
  */
 export class CalculationError extends DSPCalculatorError {
   constructor(message: string, details?: unknown) {
-    super(message, 'CALCULATION_ERROR', details);
-    this.name = 'CalculationError';
+    super(message, "CALCULATION_ERROR", details);
+    this.name = "CalculationError";
   }
 }
 
@@ -57,8 +53,8 @@ export class CalculationError extends DSPCalculatorError {
  */
 export class ValidationError extends DSPCalculatorError {
   constructor(message: string, details?: unknown) {
-    super(message, 'VALIDATION_ERROR', details);
-    this.name = 'ValidationError';
+    super(message, "VALIDATION_ERROR", details);
+    this.name = "ValidationError";
   }
 }
 
@@ -68,8 +64,8 @@ export class ValidationError extends DSPCalculatorError {
  */
 export class ParseError extends DSPCalculatorError {
   constructor(message: string, details?: unknown) {
-    super(message, 'PARSE_ERROR', details);
-    this.name = 'ParseError';
+    super(message, "PARSE_ERROR", details);
+    this.name = "ParseError";
   }
 }
 
@@ -79,8 +75,7 @@ export class ParseError extends DSPCalculatorError {
  */
 export class StorageError extends DSPCalculatorError {
   constructor(message: string, details?: unknown) {
-    super(message, 'STORAGE_ERROR', details);
-    this.name = 'StorageError';
+    super(message, "STORAGE_ERROR", details);
+    this.name = "StorageError";
   }
 }
-

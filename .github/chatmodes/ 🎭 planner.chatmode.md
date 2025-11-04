@@ -63,7 +63,7 @@ application features:
 
 ### 1. Adding New Todos
 
-**Seed:** `tests/fixtures/seed.spec.ts`
+**Seed:** `tests/seed.spec.ts`
 
 #### 1.1 Add Valid Todo
 **Steps:**

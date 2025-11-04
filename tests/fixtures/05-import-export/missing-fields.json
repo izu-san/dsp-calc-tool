@@ -1,0 +1,441 @@
+{
+  "version": "1.0.0",
+  "exportDate": 1761716475547,
+  "planInfo": {
+    "planName": "Plan_2025-10-29_14-41",
+    "targetQuantity": 1
+  },
+  "settings": {
+    "proliferator": {
+      "type": "none",
+      "productionBonus": 0,
+      "speedBonus": 0,
+      "powerIncrease": 0,
+      "mode": "speed"
+    },
+    "machineRank": {
+      "Smelt": "arc",
+      "Assemble": "mk1",
+      "Chemical": "standard",
+      "Research": "standard",
+      "Refine": "standard",
+      "Particle": "standard"
+    },
+    "conveyorBelt": {
+      "tier": "mk3",
+      "speed": 30,
+      "stackCount": 4
+    },
+    "sorter": {
+      "tier": "pile",
+      "powerConsumption": 144
+    },
+    "alternativeRecipes": {},
+    "miningSpeedResearch": 100,
+    "proliferatorMultiplier": {
+      "production": 1,
+      "speed": 1
+    },
+    "photonGeneration": {
+      "useGravitonLens": false,
+      "gravitonLensProliferator": {
+        "type": "none",
+        "mode": "speed",
+        "speedBonus": 0,
+        "productionBonus": 0,
+        "powerIncrease": 0
+      },
+      "rayTransmissionEfficiency": 0,
+      "continuousReception": 100
+    }
+  },
+  "statistics": {
+    "totalMachines": 8049,
+    "totalPower": 9336180,
+    "rawMaterialCount": 7,
+    "itemCount": 27
+  },
+  "rawMaterials": [
+    {
+      "itemId": 1006,
+      "itemName": "石炭",
+      "consumptionRate": 372,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1007,
+      "itemName": "原油",
+      "consumptionRate": 2426,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1005,
+      "itemName": "石",
+      "consumptionRate": 1004,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1000,
+      "itemName": "水",
+      "consumptionRate": 142,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1004,
+      "itemName": "チタン鉱石",
+      "consumptionRate": 160,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1001,
+      "itemName": "鉄鉱石",
+      "consumptionRate": 370,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1002,
+      "itemName": "銅鉱石",
+      "consumptionRate": 64,
+      "unit": "/s"
+    }
+  ],
+  "products": [
+    {
+      "itemId": 5112,
+      "itemName": "デストロイヤー",
+      "productionRate": 1,
+      "consumptionRate": 0,
+      "netProduction": 1,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1125,
+      "itemName": "フレーム材料",
+      "productionRate": 20,
+      "consumptionRate": 20,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1406,
+      "itemName": "強化スラスター",
+      "productionRate": 4,
+      "consumptionRate": 4,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1303,
+      "itemName": "プロセッサー",
+      "productionRate": 4,
+      "consumptionRate": 4,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1127,
+      "itemName": "ストレンジ物質",
+      "productionRate": 1,
+      "consumptionRate": 1,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1124,
+      "itemName": "カーボンナノチューブ",
+      "productionRate": 160,
+      "consumptionRate": 80,
+      "netProduction": 80,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1107,
+      "itemName": "チタン合金",
+      "productionRate": 160,
+      "consumptionRate": 40,
+      "netProduction": 120,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1105,
+      "itemName": "高純度シリコン",
+      "productionRate": 36,
+      "consumptionRate": 36,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1123,
+      "itemName": "グラフェン",
+      "productionRate": 248,
+      "consumptionRate": 124,
+      "netProduction": 124,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1106,
+      "itemName": "チタンインゴット",
+      "productionRate": 80,
+      "consumptionRate": 80,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1109,
+      "itemName": "高エネルギーグラファイト",
+      "productionRate": 186,
+      "consumptionRate": 186,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1116,
+      "itemName": "硫酸",
+      "productionRate": 568,
+      "consumptionRate": 142,
+      "netProduction": 426,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1114,
+      "itemName": "精製油",
+      "productionRate": 2426,
+      "consumptionRate": 213,
+      "netProduction": 2213,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1120,
+      "itemName": "水素",
+      "productionRate": 1213,
+      "consumptionRate": 1000,
+      "netProduction": 213,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1103,
+      "itemName": "鋼鉄",
+      "productionRate": 40,
+      "consumptionRate": 40,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1101,
+      "itemName": "鉄インゴット",
+      "productionRate": 274,
+      "consumptionRate": 274,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1003,
+      "itemName": "シリコン鉱石",
+      "productionRate": 72,
+      "consumptionRate": 72,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1204,
+      "itemName": "電磁タービン",
+      "productionRate": 24,
+      "consumptionRate": 24,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1203,
+      "itemName": "電動モーター",
+      "productionRate": 48,
+      "consumptionRate": 48,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1202,
+      "itemName": "磁気コイル",
+      "productionRate": 192,
+      "consumptionRate": 96,
+      "netProduction": 96,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1201,
+      "itemName": "歯車",
+      "productionRate": 48,
+      "consumptionRate": 48,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1102,
+      "itemName": "磁石",
+      "productionRate": 96,
+      "consumptionRate": 96,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1104,
+      "itemName": "銅インゴット",
+      "productionRate": 64,
+      "consumptionRate": 64,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1301,
+      "itemName": "回路基板",
+      "productionRate": 16,
+      "consumptionRate": 8,
+      "netProduction": 8,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1302,
+      "itemName": "微晶質素子",
+      "productionRate": 8,
+      "consumptionRate": 8,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1206,
+      "itemName": "粒子コンテナ",
+      "productionRate": 2,
+      "consumptionRate": 2,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1121,
+      "itemName": "重水素",
+      "productionRate": 10,
+      "consumptionRate": 10,
+      "netProduction": 0,
+      "unit": "/s"
+    }
+  ],
+  "machines": [
+    {
+      "machineId": 2303,
+      "machineName": "組立機 Mk.I",
+      "count": 583,
+      "powerPerMachine": 270,
+      "totalPower": 157410
+    },
+    {
+      "machineId": 2309,
+      "machineName": "化学プラント",
+      "count": 559,
+      "powerPerMachine": 720,
+      "totalPower": 402480
+    },
+    {
+      "machineId": 2302,
+      "machineName": "アーク製錬所",
+      "count": 2046,
+      "powerPerMachine": 360,
+      "totalPower": 736560
+    },
+    {
+      "machineId": 2308,
+      "machineName": "製油所",
+      "count": 4852,
+      "powerPerMachine": 960,
+      "totalPower": 4657920
+    },
+    {
+      "machineId": 2310,
+      "machineName": "小型粒子衝突型加速器",
+      "count": 8,
+      "powerPerMachine": 12000,
+      "totalPower": 96000
+    },
+    {
+      "machineId": 2011,
+      "machineName": "ソーターMK.I",
+      "count": 1,
+      "powerPerMachine": 18,
+      "totalPower": 18
+    }
+  ],
+  "powerConsumption": {
+    "machines": 6050388,
+    "sorters": 3285792,
+    "dysonSphere": 0,
+    "total": 9336180,
+    "breakdown": [
+      {
+        "machineId": 2303,
+        "machineName": "組立機 Mk.I",
+        "count": 583,
+        "powerPerMachine": 270,
+        "totalPower": 157410
+      },
+      {
+        "machineId": 2309,
+        "machineName": "化学プラント",
+        "count": 559,
+        "powerPerMachine": 720,
+        "totalPower": 402480
+      },
+      {
+        "machineId": 2302,
+        "machineName": "アーク製錬所",
+        "count": 2046,
+        "powerPerMachine": 360,
+        "totalPower": 736560
+      },
+      {
+        "machineId": 2308,
+        "machineName": "製油所",
+        "count": 4852,
+        "powerPerMachine": 960,
+        "totalPower": 4657920
+      },
+      {
+        "machineId": 2310,
+        "machineName": "小型粒子衝突型加速器",
+        "count": 8,
+        "powerPerMachine": 12000,
+        "totalPower": 96000
+      },
+      {
+        "machineId": 2011,
+        "machineName": "ソーターMK.I",
+        "count": 1,
+        "powerPerMachine": 18,
+        "totalPower": 18
+      }
+    ]
+  },
+  "conveyorBelts": {
+    "totalBelts": 5,
+    "totalLength": 0,
+    "maxSaturation": 16.666666666666664,
+    "bottleneckType": "input"
+  },
+  "powerGeneration": {
+    "totalRequiredPower": 9336180,
+    "totalGeneratedPower": 9360000,
+    "generators": [
+      {
+        "generatorId": 2210,
+        "generatorName": "人工恒星",
+        "count": 130,
+        "powerPerGenerator": 72000,
+        "totalPower": 9360000,
+        "fuel": [
+          {
+            "itemId": 1803,
+            "itemName": "反物質燃料棒",
+            "consumptionRate": 1.3,
+            "unit": "/s"
+          }
+        ]
+      }
+    ]
+  }
+}

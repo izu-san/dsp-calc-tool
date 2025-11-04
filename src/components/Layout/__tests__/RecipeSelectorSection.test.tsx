@@ -1,52 +1,55 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { RecipeSelectorSection } from '../RecipeSelectorSection';
-import type { Recipe } from '../../../types';
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { RecipeSelectorSection } from "../RecipeSelectorSection";
+import type { Recipe } from "../../../types";
+import { createSingleOutputRecipe } from "../../../test/factories/testDataFactory";
 
 // i18nextをモック
-vi.mock('react-i18next', () => ({
+vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
-        selectRecipe: 'Select Recipe',
-        loading: 'Loading...',
+        selectRecipe: "Select Recipe",
+        loading: "Loading...",
       };
       return translations[key] || key;
     },
   }),
 }));
 
-describe('RecipeSelectorSection', () => {
+describe("RecipeSelectorSection", () => {
   const mockRecipes: Recipe[] = [
-    {
+    createSingleOutputRecipe({
       SID: 1,
-      name: 'Iron Ingot',
-      Type: 'Smelt',
-      Explicit: false,
-      TimeSpend: 60,
-      Items: [],
-      Results: [{ id: 1101, name: 'Iron Ingot', count: 1 }],
-      GridIndex: '0101',
-      iconPath: '/path/to/icon.png',
-      productive: false,
-    },
-    {
+      name: "Iron Ingot",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1001,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      outputId: 1101,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+      gridIndex: "0101",
+    }),
+    createSingleOutputRecipe({
       SID: 2,
-      name: 'Copper Ingot',
-      Type: 'Smelt',
-      Explicit: false,
-      TimeSpend: 60,
-      Items: [],
-      Results: [{ id: 1104, name: 'Copper Ingot', count: 1 }],
-      GridIndex: '0102',
-      iconPath: '/path/to/icon2.png',
-      productive: false,
-    },
+      name: "Copper Ingot",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1002,
+      inputName: "Copper Ore",
+      inputCount: 1,
+      outputId: 1104,
+      outputName: "Copper Ingot",
+      outputCount: 1,
+      gridIndex: "0102",
+    }),
   ];
 
   const mockOnRecipeSelect = vi.fn();
 
-  it('正しくレンダリングされる', () => {
+  it("正しくレンダリングされる", () => {
     render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -55,10 +58,10 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    expect(screen.getByText('Select Recipe')).toBeInTheDocument();
+    expect(screen.getByText("Select Recipe")).toBeInTheDocument();
   });
 
-  it('タイトルが表示される', () => {
+  it("タイトルが表示される", () => {
     render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -67,11 +70,11 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    const title = screen.getByRole('heading', { level: 2 });
-    expect(title).toHaveTextContent('Select Recipe');
+    const title = screen.getByRole("heading", { level: 2 });
+    expect(title).toHaveTextContent("Select Recipe");
   });
 
-  it('recipesプロパティが正しく渡される', () => {
+  it("recipesプロパティが正しく渡される", () => {
     const { container } = render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -83,7 +86,7 @@ describe('RecipeSelectorSection', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('selectedRecipeIdが渡される', () => {
+  it("selectedRecipeIdが渡される", () => {
     render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -92,10 +95,10 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    expect(screen.getByText('Select Recipe')).toBeInTheDocument();
+    expect(screen.getByText("Select Recipe")).toBeInTheDocument();
   });
 
-  it('onRecipeSelectコールバックが渡される', () => {
+  it("onRecipeSelectコールバックが渡される", () => {
     render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -104,10 +107,10 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    expect(screen.getByText('Select Recipe')).toBeInTheDocument();
+    expect(screen.getByText("Select Recipe")).toBeInTheDocument();
   });
 
-  it('hologram-panelクラスが適用されている', () => {
+  it("hologram-panelクラスが適用されている", () => {
     const { container } = render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -116,11 +119,11 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    const panel = container.querySelector('.hologram-panel');
+    const panel = container.querySelector(".hologram-panel");
     expect(panel).toBeInTheDocument();
   });
 
-  it('正しいCSSクラスが適用されている', () => {
+  it("正しいCSSクラスが適用されている", () => {
     const { container } = render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -129,11 +132,11 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    const panel = container.querySelector('.rounded-lg.shadow-panel.p-6');
+    const panel = container.querySelector(".rounded-lg.shadow-panel.p-6");
     expect(panel).toBeInTheDocument();
   });
 
-  it('空のレシピリストでもレンダリングできる', () => {
+  it("空のレシピリストでもレンダリングできる", () => {
     render(
       <RecipeSelectorSection
         recipes={[]}
@@ -142,10 +145,10 @@ describe('RecipeSelectorSection', () => {
       />
     );
 
-    expect(screen.getByText('Select Recipe')).toBeInTheDocument();
+    expect(screen.getByText("Select Recipe")).toBeInTheDocument();
   });
 
-  it('Suspenseフォールバックが設定されている', () => {
+  it("Suspenseフォールバックが設定されている", () => {
     const { container } = render(
       <RecipeSelectorSection
         recipes={mockRecipes}
@@ -158,4 +161,3 @@ describe('RecipeSelectorSection', () => {
     expect(container).toBeInTheDocument();
   });
 });
-

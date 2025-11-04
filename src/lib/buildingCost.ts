@@ -1,4 +1,4 @@
-import type { RecipeTreeNode } from '../types/calculation';
+import type { RecipeTreeNode } from "../types/calculation";
 
 export interface BuildingRequirement {
   machineId: number;
@@ -22,7 +22,7 @@ export function calculateBuildingCost(rootNode: RecipeTreeNode): BuildingCost {
 
   function traverse(node: RecipeTreeNode) {
     // Add machines (exclude logistics machines like sorters)
-    if (node.machine && node.machineCount > 0 && node.machine.Type !== 'Logistics') {
+    if (node.machine && node.machineCount > 0 && node.machine.Type !== "Logistics") {
       const existing = machineMap.get(node.machine.id);
       if (existing) {
         existing.count += Math.ceil(node.machineCount);
@@ -56,12 +56,10 @@ export function calculateBuildingCost(rootNode: RecipeTreeNode): BuildingCost {
   traverse(rootNode);
 
   const result = {
-    machines: Array.from(machineMap.values()).sort((a, b) => 
-      a.machineId - b.machineId
-    ),
+    machines: Array.from(machineMap.values()).sort((a, b) => a.machineId - b.machineId),
     sorters: totalSorters,
     belts: totalBelts,
   };
-  
+
   return result;
 }

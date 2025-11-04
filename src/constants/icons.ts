@@ -8,6 +8,14 @@ export const ICONS = {
     mk3: 2003,
   },
 
+  // Sorters
+  sorter: {
+    mk1: 2011,
+    mk2: 2012,
+    mk3: 2013,
+    pile: 2014,
+  },
+
   // Machines
   machine: {
     smelter: {
@@ -27,11 +35,9 @@ export const ICONS = {
     },
     research: {
       standard: 2901,
-      'self-evolution': 2902,
+      "self-evolution": 2902,
     },
   },
 } as const;
 
 export type IconId = number;
-
-

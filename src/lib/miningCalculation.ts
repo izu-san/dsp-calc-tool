@@ -1,5 +1,6 @@
-import type { CalculationResult } from '../types/calculation';
-import { useGameDataStore } from '../stores/gameDataStore';
+import type { CalculationResult } from "../types/calculation";
+import type { GameData } from "../types/game-data";
+import { LIQUID_MINING_ITEMS, LIQUID_MINING_EQUIPMENT } from "../constants/rawMaterials";
 
 export interface MiningRequirement {
   itemId: number;
@@ -13,6 +14,7 @@ export interface MiningRequirement {
   veinsNeeded: number; // Total number of veins needed to cover
   orbitCollectorsNeeded?: number; // Alternative: orbital collectors (Hydrogen/Deuterium only)
   orbitalCollectorSpeed?: number; // Speed per orbital collector (if applicable)
+  machineType: "Mining Machine" | "Advanced Mining Machine" | "Water Pump" | "Oil Extractor"; // Type of mining machine used
 }
 
 export interface MiningCalculation {
@@ -22,27 +24,27 @@ export interface MiningCalculation {
 }
 
 // Base mining speed per vein (items per second) - VERIFIED GAME DATA
-// 
+//
 // 【ゲーム内検証済み】
 // Mining Machine: 0.5 items/s per vein
 // Advanced Mining Machine: 1.0 items/s per vein (100% Work Speed時)
-// 
+//
 const BASE_MINING_SPEED_PER_VEIN = {
-  'Mining Machine': 0.5,  // 0.5 items/s per vein
-  'Advanced Mining Machine': 1.0,  // 1.0 items/s per vein (base)
+  "Mining Machine": 0.5, // 0.5 items/s per vein
+  "Advanced Mining Machine": 1.0, // 1.0 items/s per vein (base)
 };
 
 // Orbital collector speeds (items per second per collector)
 // Different for each gas type and varies by planet
 const ORBITAL_COLLECTOR_SPEEDS: Record<number, number> = {
-  1120: 0.84,  // Hydrogen: 0.84/s per collector
-  1121: 0.03,  // Deuterium: 0.03/s per collector
+  1120: 0.84, // Hydrogen: 0.84/s per collector
+  1121: 0.03, // Deuterium: 0.03/s per collector
 };
 
 // Power consumption multipliers for Advanced Mining Machine speed settings
 // ゲーム内検証済み: 消費電力は速度の2乗に比例
 // Formula: powerMultiplier = (speedPercent / 100) ^ 2
-// 
+//
 // 【検証済みデータ】
 // 100% speed → 100% power (1.0x)
 // 150% speed → 225% power (2.25x)
@@ -50,16 +52,16 @@ const ORBITAL_COLLECTOR_SPEEDS: Record<number, number> = {
 // 250% speed → 625% power (6.25x)
 // 300% speed → 900% power (9.0x)
 export const POWER_MULTIPLIER_BY_SPEED: Record<number, number> = {
-  100: 1.0,    // (100/100)^2 = 1.0
-  150: 2.25,   // (150/100)^2 = 2.25
-  200: 4.0,    // (200/100)^2 = 4.0
-  250: 6.25,   // (250/100)^2 = 6.25
-  300: 9.0,    // (300/100)^2 = 9.0
+  100: 1.0, // (100/100)^2 = 1.0
+  150: 2.25, // (150/100)^2 = 2.25
+  200: 4.0, // (200/100)^2 = 4.0
+  250: 6.25, // (250/100)^2 = 6.25
+  300: 9.0, // (300/100)^2 = 9.0
 };
 
 /**
  * Calculate mining machine requirements for raw materials
- * 
+ *
  * @param calculationResult - The production calculation result
  * @param miningSpeedBonus - Mining speed research bonus (1.0 = +0%, 2.0 = +100%)
  * @param machineType - Type of mining machine
@@ -68,8 +70,9 @@ export const POWER_MULTIPLIER_BY_SPEED: Record<number, number> = {
 export function calculateMiningRequirements(
   calculationResult: CalculationResult | null,
   miningSpeedBonus: number = 1.0,
-  machineType: 'Mining Machine' | 'Advanced Mining Machine' = 'Advanced Mining Machine',
-  workSpeedMultiplier: number = 100
+  machineType: "Mining Machine" | "Advanced Mining Machine" = "Advanced Mining Machine",
+  workSpeedMultiplier: number = 100,
+  gameData?: GameData | null
 ): MiningCalculation {
   if (!calculationResult) {
     return {
@@ -79,7 +82,6 @@ export function calculateMiningRequirements(
     };
   }
 
-  const gameData = useGameDataStore.getState().data;
   if (!gameData) {
     return {
       rawMaterials: [],
@@ -94,23 +96,69 @@ export function calculateMiningRequirements(
   let totalOrbitalCollectors = 0;
 
   // Process each raw material
+  if (!calculationResult.rawMaterials) {
+    return {
+      rawMaterials: [],
+      totalMiners: 0,
+      totalOrbitalCollectors: 0,
+    };
+  }
+
   calculationResult.rawMaterials.forEach((rate, itemId) => {
     const item = gameData.items.get(itemId);
     if (!item) return;
 
+    // Check if this is a liquid mining item (Water, Crude Oil, Sulfuric Acid)
+    if (LIQUID_MINING_ITEMS.has(itemId)) {
+      const liquidEquipment = LIQUID_MINING_EQUIPMENT[itemId];
+      if (!liquidEquipment) return;
+
+      // Convert base speed from per minute to per second
+      const baseSpeedPerSecond = liquidEquipment.baseSpeedPerMinute / 60;
+
+      // Apply mining speed research bonus
+      const outputPerSecond = baseSpeedPerSecond * miningSpeedBonus;
+
+      // Calculate machines needed
+      const machinesNeeded = Math.ceil(rate / outputPerSecond);
+
+      // Determine machine type for display
+      const displayMachineType =
+        liquidEquipment.machineId === 2306 ? "Water Pump" : "Oil Extractor";
+
+      rawMaterials.push({
+        itemId,
+        itemName: item.name,
+        requiredRate: rate,
+        miningSpeedBonus,
+        workSpeedMultiplier: 100, // Liquid equipment has fixed speed
+        powerMultiplier: 1.0, // Fixed power consumption
+        outputPerSecond,
+        minersNeeded: machinesNeeded,
+        veinsNeeded: machinesNeeded, // For liquid equipment, machines = "veins"
+        orbitCollectorsNeeded: undefined,
+        orbitalCollectorSpeed: undefined,
+        machineType: displayMachineType,
+      });
+
+      totalMiners += machinesNeeded;
+      return;
+    }
+
+    // Regular ore vein mining calculation
     // Calculate output per vein
     // Formula: baseMiningSpeedPerVein × miningSpeedBonus × (workSpeedMultiplier / 100)
     let outputPerVeinPerSecond = baseMiningSpeedPerVein * miningSpeedBonus;
-    
+
     // Advanced Mining Machine can have speed multiplier
-    const actualWorkSpeed = machineType === 'Advanced Mining Machine' ? workSpeedMultiplier : 100;
-    if (machineType === 'Advanced Mining Machine') {
-      outputPerVeinPerSecond *= (workSpeedMultiplier / 100);
+    const actualWorkSpeed = machineType === "Advanced Mining Machine" ? workSpeedMultiplier : 100;
+    if (machineType === "Advanced Mining Machine") {
+      outputPerVeinPerSecond *= workSpeedMultiplier / 100;
     }
 
     // Calculate total veins needed
     const veinsNeeded = Math.ceil(rate / outputPerVeinPerSecond);
-    
+
     // Calculate miners needed (assume ~6 veins per miner on average)
     const averageVeinsPerMiner = 6;
     const minersNeeded = Math.ceil(veinsNeeded / averageVeinsPerMiner);
@@ -119,14 +167,15 @@ export function calculateMiningRequirements(
     const outputPerSecond = outputPerVeinPerSecond * averageVeinsPerMiner;
 
     // Calculate power multiplier (Advanced Mining Machine only)
-    const powerMultiplier = machineType === 'Advanced Mining Machine' 
-      ? POWER_MULTIPLIER_BY_SPEED[workSpeedMultiplier] || 1.0
-      : 1.0;
+    const powerMultiplier =
+      machineType === "Advanced Mining Machine"
+        ? Math.pow(workSpeedMultiplier / 100, 2) // Dynamic calculation: (speed/100)^2
+        : 1.0;
 
     // Calculate orbital collectors for Hydrogen and Deuterium only
     let orbitCollectorsNeeded: number | undefined;
     let orbitalCollectorSpeed: number | undefined;
-    
+
     if (ORBITAL_COLLECTOR_SPEEDS[itemId]) {
       // Orbital collector speed with research bonus
       orbitalCollectorSpeed = ORBITAL_COLLECTOR_SPEEDS[itemId] * miningSpeedBonus;
@@ -145,6 +194,7 @@ export function calculateMiningRequirements(
       veinsNeeded,
       orbitCollectorsNeeded,
       orbitalCollectorSpeed,
+      machineType, // Add machine type to the result
     });
 
     totalMiners += minersNeeded;

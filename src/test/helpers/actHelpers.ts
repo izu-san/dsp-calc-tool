@@ -3,8 +3,8 @@
  * 非同期状態更新を適切にラップし、警告を削減
  */
 
-import { act } from 'react';
-import { waitFor } from '@testing-library/react';
+import { act } from "react";
+import { waitFor } from "@testing-library/react";
 
 /**
  * 非同期状態更新を適切にラップするヘルパー関数
@@ -21,10 +21,7 @@ export const actAsync = async (callback: () => void | Promise<void>) => {
  * @param eventCallback イベント発火のコールバック
  * @param assertionCallback アサーションのコールバック
  */
-export const actAndWaitFor = async (
-  eventCallback: () => void,
-  assertionCallback: () => void
-) => {
+export const actAndWaitFor = async (eventCallback: () => void, assertionCallback: () => void) => {
   await act(async () => {
     eventCallback();
   });
@@ -46,17 +43,14 @@ export const actSequence = async (operations: (() => void | Promise<void>)[]) =>
  * @param callback 実行するコールバック関数
  * @param timeout タイムアウト時間（ミリ秒）
  */
-export const actWithTimeout = async (
-  callback: () => void | Promise<void>,
-  timeout = 1000
-) => {
+export const actWithTimeout = async (callback: () => void | Promise<void>, timeout = 1000) => {
   await act(async () => {
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Timeout')), timeout);
+      setTimeout(() => reject(new Error("Timeout")), timeout);
     });
-    
+
     const operationPromise = Promise.resolve(callback());
-    
+
     await Promise.race([operationPromise, timeoutPromise]);
   });
 };
@@ -66,10 +60,7 @@ export const actWithTimeout = async (
  * @param condition 完了条件
  * @param timeout タイムアウト時間（ミリ秒）
  */
-export const waitForStateUpdate = async (
-  condition: () => boolean,
-  timeout = 1000
-) => {
+export const waitForStateUpdate = async (condition: () => boolean, timeout = 1000) => {
   await act(async () => {
     await waitFor(condition, { timeout });
   });
@@ -80,14 +71,14 @@ export const waitForStateUpdate = async (
  * @param mockFunction モック関数
  * @param timeout タイムアウト時間（ミリ秒）
  */
-export const waitForMockCall = async (
-  mockFunction: any,
-  timeout = 1000
-) => {
+export const waitForMockCall = async (mockFunction: any, timeout = 1000) => {
   await act(async () => {
-    await waitFor(() => {
-      expect(mockFunction).toHaveBeenCalled();
-    }, { timeout });
+    await waitFor(
+      () => {
+        expect(mockFunction).toHaveBeenCalled();
+      },
+      { timeout }
+    );
   });
 };
 
@@ -96,12 +87,9 @@ export const waitForMockCall = async (
  * @param callback 実行するコールバック関数
  * @param label デバッグラベル
  */
-export const actWithDebug = async (
-  callback: () => void | Promise<void>,
-  label = 'act'
-) => {
+export const actWithDebug = async (callback: () => void | Promise<void>, label = "act") => {
   console.log(`[DEBUG] Starting ${label}`);
-  
+
   await act(async () => {
     try {
       await callback();
@@ -128,10 +116,7 @@ export const actBatch = async (updates: (() => void | Promise<void>)[]) => {
  * @param condition 実行条件
  * @param callback 実行するコールバック関数
  */
-export const actIf = async (
-  condition: boolean,
-  callback: () => void | Promise<void>
-) => {
+export const actIf = async (condition: boolean, callback: () => void | Promise<void>) => {
   if (condition) {
     await actAsync(callback);
   }
@@ -149,7 +134,7 @@ export const actWithRetry = async (
   delay = 100
 ) => {
   let retries = 0;
-  
+
   while (retries < maxRetries) {
     try {
       await actAsync(callback);

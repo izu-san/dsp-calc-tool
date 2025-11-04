@@ -12,8 +12,11 @@
     <workEnergyPerTick>300</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2012</id>
@@ -27,8 +30,11 @@
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2013</id>
@@ -42,8 +48,11 @@
     <workEnergyPerTick>1200</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2014</id>
@@ -57,8 +66,11 @@
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2040</id>
@@ -72,8 +84,11 @@
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2030</id>
@@ -87,8 +102,11 @@
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2313</id>
@@ -102,8 +120,11 @@
     <workEnergyPerTick>1500</workEnergyPerTick>
     <idleEnergyPerTick>75</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2107</id>
@@ -117,8 +138,11 @@
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2303</id>
@@ -132,8 +156,11 @@
     <workEnergyPerTick>4500</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2304</id>
@@ -147,8 +174,11 @@
     <workEnergyPerTick>9000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2305</id>
@@ -162,8 +192,11 @@
     <workEnergyPerTick>18000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2318</id>
@@ -177,8 +210,83 @@
     <workEnergyPerTick>45000</workEnergyPerTick>
     <idleEnergyPerTick>900</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2203</id>
+    <name>Wind Turbine</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>5000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2204</id>
+    <name>Thermal Power Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>36000</genEnergyPerTick>
+    <useFuelPerTick>45000</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2211</id>
+    <name>Mini Fusion Power Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>250000</genEnergyPerTick>
+    <useFuelPerTick>250000</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2213</id>
+    <name>Geothermal Power Station</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>80000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2301</id>
@@ -192,8 +300,11 @@
     <workEnergyPerTick>7000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2316</id>
@@ -207,8 +318,11 @@
     <workEnergyPerTick>49000</workEnergyPerTick>
     <idleEnergyPerTick>2800</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2306</id>
@@ -222,8 +336,11 @@
     <workEnergyPerTick>5000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2302</id>
@@ -237,8 +354,11 @@
     <workEnergyPerTick>6000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2315</id>
@@ -252,8 +372,11 @@
     <workEnergyPerTick>24000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2319</id>
@@ -267,8 +390,11 @@
     <workEnergyPerTick>48000</workEnergyPerTick>
     <idleEnergyPerTick>1600</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2307</id>
@@ -282,8 +408,11 @@
     <workEnergyPerTick>14000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2308</id>
@@ -297,8 +426,11 @@
     <workEnergyPerTick>16000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2309</id>
@@ -312,8 +444,11 @@
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2317</id>
@@ -327,8 +462,11 @@
     <workEnergyPerTick>36000</workEnergyPerTick>
     <idleEnergyPerTick>600</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2314</id>
@@ -342,8 +480,29 @@
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2205</id>
+    <name>Solar Panel</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>6000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2311</id>
@@ -357,8 +516,29 @@
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2208</id>
+    <name>Ray Receiver</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>100000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2312</id>
@@ -372,8 +552,11 @@
     <workEnergyPerTick>300000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2209</id>
@@ -387,8 +570,11 @@
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
     <exchangeEnergyPerTick>900000</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>false</isPowerConsumer>
     <isPowerExchanger>true</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2310</id>
@@ -402,8 +588,29 @@
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2210</id>
+    <name>Artificial Star</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>1200000</genEnergyPerTick>
+    <useFuelPerTick>1200000</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2103</id>
@@ -417,8 +624,11 @@
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2104</id>
@@ -432,8 +642,11 @@
     <workEnergyPerTick>1000000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2901</id>
@@ -443,12 +656,15 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
-    <assemblerSpeed>10000</assemblerSpeed>
+    <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>8000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2902</id>
@@ -458,12 +674,15 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
-    <assemblerSpeed>30000</assemblerSpeed>
+    <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>32000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3001</id>
@@ -477,8 +696,11 @@
     <workEnergyPerTick>3500</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3002</id>
@@ -492,8 +714,11 @@
     <workEnergyPerTick>50000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3003</id>
@@ -507,8 +732,11 @@
     <workEnergyPerTick>12500</workEnergyPerTick>
     <idleEnergyPerTick>500</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3004</id>
@@ -522,8 +750,11 @@
     <workEnergyPerTick>28000</workEnergyPerTick>
     <idleEnergyPerTick>1400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3005</id>
@@ -537,8 +768,11 @@
     <workEnergyPerTick>10000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3006</id>
@@ -552,8 +786,11 @@
     <workEnergyPerTick>20000</workEnergyPerTick>
     <idleEnergyPerTick>1500</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3008</id>
@@ -567,8 +804,11 @@
     <workEnergyPerTick>400000</workEnergyPerTick>
     <idleEnergyPerTick>200000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3009</id>
@@ -582,8 +822,11 @@
     <workEnergyPerTick>40000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3010</id>
@@ -597,7 +840,10 @@
     <workEnergyPerTick>70000</workEnergyPerTick>
     <idleEnergyPerTick>35000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
 </ArrayOfMachine>

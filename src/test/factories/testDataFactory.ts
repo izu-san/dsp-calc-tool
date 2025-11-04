@@ -3,100 +3,144 @@
  * テスト用のモックデータを一元的に管理し、重複を削減
  */
 
-import type { GameData, Recipe, Machine, Item } from '../../types/game-data';
+import type { GameData, Item, Machine, Recipe } from "../../types/game-data";
+
+// 新しいビルダーを再エクスポート
+export * from "./machineBuilder";
+export * from "./nodeBuilder";
+export * from "./recipeBuilder";
 
 // 基本テストデータ
 export const createMockItem = (id: number, name: string): Item => ({
   id,
   name,
-  iconPath: `/icons/item_${id}.png`,
-  stackSize: 100,
-  canBeMined: false,
-  miningSpeedBonus: 0
+  Type: "Item",
+  isRaw: id <= 10, // 最初の10個を原材料とする
+  count: 0,
 });
 
 export const createMockMachine = (id: string, name: string): Machine => ({
-  id,
+  id: parseInt(id.replace(/\D/g, "") || "1"),
   name,
-  iconPath: `/icons/machine_${id}.png`,
-  type: 'Assemble',
+  Type: "Assemble",
+  isRaw: false,
+  count: 0,
+  assemblerSpeed: 10000,
   workEnergyPerTick: 100,
-  workSpeedMultiplier: 1,
-  powerMultiplier: 1
+  idleEnergyPerTick: 10,
+  exchangeEnergyPerTick: 0,
+  isPowerConsumer: true,
+  isPowerExchanger: false,
 });
 
 export const createMockRecipe = (id: number, name: string): Recipe => ({
-  id,
+  SID: id,
   name,
-  type: 'Assemble',
-  timeSpand: 1,
-  inputs: [{ id: 1, count: 1 }],
-  results: [{ id: 2, count: 1 }],
-  explicit: false,
-  firstResultId: 2
+  Type: "Assemble",
+  Explicit: false,
+  TimeSpend: 1,
+  Items: [{ id: 1, name: "Iron Ore", count: 1, Type: "Item", isRaw: true }],
+  Results: [{ id: 2, name: "Iron Ingot", count: 1, Type: "Item", isRaw: false }],
+  GridIndex: "1101",
+  productive: true,
 });
 
 // 完全なゲームデータセット
-export const createMockGameData = (): GameData => ({
-  items: new Map([
-    [1, createMockItem(1, 'Iron Ore')],
-    [2, createMockItem(2, 'Iron Ingot')],
-    [3, createMockItem(3, 'Copper Ore')],
-    [4, createMockItem(4, 'Copper Ingot')]
-  ]),
-  recipes: new Map([
-    [1, createMockRecipe(1, 'Smelt Iron Ingot')],
-    [2, createMockRecipe(2, 'Smelt Copper Ingot')]
-  ]),
-  machines: new Map([
-    ['arc', createMockMachine('arc', 'Arc Smelter')],
-    ['mk1', createMockMachine('mk1', 'Assembling Machine Mk.I')]
-  ])
-});
+export const createMockGameData = (): GameData => {
+  const items = new Map([
+    [1, createMockItem(1, "Iron Ore")],
+    [2, createMockItem(2, "Iron Ingot")],
+    [3, createMockItem(3, "Copper Ore")],
+    [4, createMockItem(4, "Copper Ingot")],
+    [1007, createMockItem(1007, "Crude Oil")],
+    [1120, createMockItem(1120, "Hydrogen")],
+    [1114, createMockItem(1114, "Refined Oil")],
+    [1109, createMockItem(1109, "High-Energy Graphite")],
+    [1208, createMockItem(1208, "Graphene")],
+    [1123, createMockItem(1123, "Graphene")],
+    [1122, createMockItem(1122, "Antimatter")],
+    [1209, createMockItem(1209, "Graviton Lens")],
+  ]);
+
+  const recipes = new Map([
+    [1, createMockRecipe(1, "Smelt Iron Ingot")],
+    [2, createMockRecipe(2, "Smelt Copper Ingot")],
+  ]);
+
+  // recipesByItemIdプロパティを追加
+  const recipesByItemId = new Map<number, Recipe[]>();
+  recipes.forEach(recipe => {
+    recipe.Results.forEach(result => {
+      if (!recipesByItemId.has(result.id)) {
+        recipesByItemId.set(result.id, []);
+      }
+      recipesByItemId.get(result.id)!.push(recipe);
+    });
+  });
+
+  const machines = new Map<number, Machine>();
+  machines.set(2302, createMockMachine("2302", "Arc Smelter"));
+  machines.set(2303, createMockMachine("2303", "Assembling Machine Mk.I"));
+
+  return {
+    items,
+    allItems: items,
+    recipes,
+    recipesByItemId,
+    machines,
+  };
+};
 
 // 計算結果用のモックデータ
 export const createMockCalculationResult = () => ({
   rootNode: {
-    nodeId: 'root',
-    itemName: 'Test Item',
+    nodeId: "root",
+    itemName: "Test Item",
     itemId: 1,
     targetCount: 60,
     productionRate: 60,
     consumptionRate: 0,
     netRate: 60,
     machineCount: 1,
-    machineId: 'mk1',
+    machineId: "mk1",
     powerConsumption: 100,
-    children: []
+    children: [],
   },
   totalPower: 100,
   totalMachines: 1,
-  rawMaterials: new Map([
-    [1, { production: 0, consumption: 60, net: -60 }]
-  ])
+  rawMaterials: new Map([[1, { production: 0, consumption: 60, net: -60 }]]),
 });
 
 // 設定用のモックデータ
 export const createMockSettings = () => ({
-  proliferator: { type: 'none', mode: 'speed' },
-  conveyorBelt: { tier: 'mk1', stackCount: 1 },
-  machineRank: { 
-    Smelt: 'arc', 
-    Assemble: 'mk1', 
-    Chemical: 'standard',
-    Research: 'standard',
-    Refine: 'standard',
-    Particle: 'standard'
+  proliferator: {
+    type: "none",
+    mode: "speed",
+    productionBonus: 0,
+    speedBonus: 0,
+    powerIncrease: 0,
   },
+  proliferatorMultiplier: { production: 1, speed: 1 },
+  machineRank: {
+    Smelt: "arc",
+    Assemble: "mk1",
+    Chemical: "standard",
+    Research: "standard",
+    Refine: "standard",
+    Particle: "standard",
+  },
+  conveyorBelt: { tier: "mk1", speed: 6, stackCount: 4 },
+  sorter: { tier: "mk1", powerConsumption: 0.27 },
+  photonGeneration: { useGravitonLens: false, energyLoss: 0 },
+  mining: { miningSpeed: 1, veinUtilization: 1 },
   alternativeRecipes: new Map<number, number>(),
-  miningSpeedResearch: 0,
-  proliferatorMultiplier: { production: 1, speed: 1 }
+  locale: "en",
 });
 
 // ノードオーバーライド用のモックデータ
 export const createMockNodeOverride = () => ({
-  proliferator: { type: 'mk1', mode: 'speed' },
-  machineRank: 'mk2'
+  proliferator: { type: "mk1", mode: "speed" },
+  machineRank: "mk2",
 });
 
 // ストア用のモックデータ
@@ -105,25 +149,25 @@ export const createMockStoreStates = () => ({
     data: createMockGameData(),
     isLoading: false,
     error: null,
-    locale: 'ja'
+    locale: "ja",
   },
   settingsStore: {
-    settings: createMockSettings()
+    settings: createMockSettings(),
   },
   nodeOverrideStore: {
     nodeOverrides: new Map(),
-    version: 0
+    version: 0,
   },
   recipeSelectionStore: {
     selectedRecipe: null,
-    targetCount: 60
-  }
+    targetCount: 60,
+  },
 });
 
 // テスト用のユーティリティ関数
 export const createMockFile = (name: string, content: string): File => {
-  const blob = new Blob([content], { type: 'text/xml' });
-  return new File([blob], name, { type: 'text/xml' });
+  const blob = new Blob([content], { type: "text/xml" });
+  return new File([blob], name, { type: "text/xml" });
 };
 
 export const createMockURL = (planData: string): string => {
@@ -134,7 +178,7 @@ export const createMockURL = (planData: string): string => {
 export const createLargeMockGameData = (): GameData => {
   const items = new Map<number, Item>();
   const recipes = new Map<number, Recipe>();
-  const machines = new Map<string, Machine>();
+  const machines = new Map<number, Machine>();
 
   // 1000個のアイテム
   for (let i = 1; i <= 1000; i++) {
@@ -147,11 +191,20 @@ export const createLargeMockGameData = (): GameData => {
   }
 
   // 50個の機械
-  const machineTypes = ['mk1', 'mk2', 'mk3', 'arc', 'plane'];
-  for (let i = 0; i < 50; i++) {
-    const type = machineTypes[i % machineTypes.length];
-    machines.set(`${type}_${i}`, createMockMachine(`${type}_${i}`, `Machine ${i}`));
+  for (let i = 2300; i < 2350; i++) {
+    machines.set(i, createMockMachine(i.toString(), `Machine ${i}`));
   }
 
-  return { items, recipes, machines };
+  // recipesByItemIdプロパティを追加
+  const recipesByItemId = new Map<number, Recipe[]>();
+  recipes.forEach(recipe => {
+    recipe.Results.forEach(result => {
+      if (!recipesByItemId.has(result.id)) {
+        recipesByItemId.set(result.id, []);
+      }
+      recipesByItemId.get(result.id)!.push(recipe);
+    });
+  });
+
+  return { items, allItems: items, recipes, recipesByItemId, machines };
 };

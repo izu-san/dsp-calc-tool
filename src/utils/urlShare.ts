@@ -1,7 +1,7 @@
-import type { SavedPlan } from '../types/saved-plan';
-import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
-import { ParseError, ValidationError } from './errors';
-import { handleError } from './errorHandler';
+import type { SavedPlan } from "../types/saved-plan";
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
+import { ParseError, ValidationError } from "./errors";
+import { handleError } from "./errorHandler";
 
 /**
  * Encode a plan to URL-safe base64 string
@@ -13,8 +13,8 @@ export function encodePlanToURL(plan: SavedPlan): string {
     const compressed = compressToEncodedURIComponent(json);
     return compressed;
   } catch (error) {
-    handleError(error, 'Failed to encode plan');
-    throw new ParseError('Failed to encode plan for sharing', error);
+    handleError(error, "Failed to encode plan");
+    throw new ParseError("Failed to encode plan for sharing", error);
   }
 }
 
@@ -24,21 +24,21 @@ export function encodePlanToURL(plan: SavedPlan): string {
 export function decodePlanFromURL(encoded: string): SavedPlan | null {
   try {
     const decompressed = decompressFromEncodedURIComponent(encoded);
-    
+
     if (!decompressed) {
-      throw new ParseError('Failed to decompress plan data');
+      throw new ParseError("Failed to decompress plan data");
     }
-    
+
     const plan = JSON.parse(decompressed) as SavedPlan;
-    
+
     // Basic validation
     if (!plan.name || !plan.settings || !plan.recipeSID) {
-      throw new ValidationError('Invalid plan data structure');
+      throw new ValidationError("Invalid plan data structure");
     }
-    
+
     return plan;
   } catch (error) {
-    handleError(error, 'Failed to decode plan');
+    handleError(error, "Failed to decode plan");
     return null;
   }
 }
@@ -57,12 +57,12 @@ export function generateShareURL(plan: SavedPlan): string {
  */
 export function getPlanFromURL(): SavedPlan | null {
   const params = new URLSearchParams(window.location.search);
-  const planParam = params.get('plan');
-  
+  const planParam = params.get("plan");
+
   if (!planParam) {
     return null;
   }
-  
+
   return decodePlanFromURL(planParam);
 }
 
@@ -75,15 +75,15 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return true;
   } catch {
     // Fallback method
-    const textArea = document.createElement('textarea');
+    const textArea = document.createElement("textarea");
     textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
     document.body.appendChild(textArea);
     textArea.select();
-    
+
     try {
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textArea);
       return true;
     } catch {

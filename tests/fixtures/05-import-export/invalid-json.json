@@ -1,0 +1,168 @@
+{
+  "version": "1.0.0",
+  "exportDate": 1761716475547,
+  "planInfo": {
+    "planName": "Plan_2025-10-29_14-41",
+    "recipeSID": 1705,
+    "recipeName": "デストロイヤー",
+    "targetQuantity": 1
+  },
+  "settings": {
+    "proliferator": {
+      "type": "none",
+      "productionBonus": 0,
+      "speedBonus": 0,
+      "powerIncrease": 0,
+      "mode": "speed"
+    },
+    "machineRank": {
+      "Smelt": "arc",
+      "Assemble": "mk1",
+      "Chemical": "standard",
+      "Research": "standard",
+      "Refine": "standard",
+      "Particle": "standard"
+    },
+    "conveyorBelt": {
+      "tier": "mk3",
+      "speed": 30,
+      "stackCount": 4
+    },
+    "sorter": {
+      "tier": "pile",
+      "powerConsumption": 144
+    },
+    "alternativeRecipes": {},
+    "miningSpeedResearch": 100,
+    "proliferatorMultiplier": {
+      "production": 1,
+      "speed": 1
+    },
+    "photonGeneration": {
+      "useGravitonLens": false,
+      "gravitonLensProliferator": {
+        "type": "none",
+        "mode": "speed",
+        "speedBonus": 0,
+        "productionBonus": 0,
+        "powerIncrease": 0
+      },
+      "rayTransmissionEfficiency": 0,
+      "continuousReception": 100
+    }
+  },
+  "statistics": {
+    "totalMachines": 8049,
+    "totalPower": 9336180,
+    "rawMaterialCount": 7,
+    "itemCount": 27
+  },
+  "rawMaterials": [
+    {
+      "itemId": 1006,
+      "itemName": "石炭",
+      "consumptionRate": 372,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1007,
+      "itemName": "原油",
+      "consumptionRate": 2426,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1005,
+      "itemName": "石",
+      "consumptionRate": 1004,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1000,
+      "itemName": "水",
+      "consumptionRate": 142,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1004,
+      "itemName": "チタン鉱石",
+      "consumptionRate": 160,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1001,
+      "itemName": "鉄鉱石",
+      "consumptionRate": 370,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1002,
+      "itemName": "銅鉱石",
+      "consumptionRate": 64,
+      "unit": "/s"
+    }
+  ],
+  "products": [
+    {
+      "itemId": 5112,
+      "itemName": "デストロイヤー",
+      "productionRate": 1,
+      "consumptionRate": 0,
+      "netProduction": 1,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1125,
+      "itemName": "フレーム材料",
+      "productionRate": 20,
+      "consumptionRate": 20,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1406,
+      "itemName": "強化スラスター",
+      "productionRate": 4,
+      "consumptionRate": 4,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1303,
+      "itemName": "プロセッサー",
+      "productionRate": 4,
+      "consumptionRate": 4,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1127,
+      "itemName": "ストレンジ物質",
+      "productionRate": 1,
+      "consumptionRate": 1,
+      "netProduction": 0,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1124,
+      "itemName": "カーボンナノチューブ",
+      "productionRate": 160,
+      "consumptionRate": 80,
+      "netProduction": 80,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1107,
+      "itemName": "チタン合金",
+      "productionRate": 160,
+      "consumptionRate": 40,
+      "netProduction": 120,
+      "unit": "/s"
+    },
+    {
+      "itemId": 1105,
+      "itemName": "高純度シリコン",
+      "productionRate": 36,
+      "consumptionRate": 36,
+      "netProduction": 0,
+      "unit": "/s"
+}

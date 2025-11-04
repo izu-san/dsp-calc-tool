@@ -20,9 +20,33 @@ export function formatNumber(num: number): string {
 }
 
 /**
+ * Format building count as integer (ceiling)
+ * Used for displaying machine counts in game context where fractional buildings don't exist
+ */
+export function formatBuildingCount(count: number): string {
+  return Math.ceil(count).toString();
+}
+
+/**
  * Format rate (items per second)
+ * If the rate rounds to 0.0/s, show as items per minute or per hour instead
  * Always shows 1 decimal place with rounding
  */
 export function formatRate(rate: number): string {
-  return `${rate.toFixed(1)}/s`;
+  const perSecond = rate.toFixed(1);
+
+  // If rounded to 0.0/s, try per minute or per hour for better readability
+  if (perSecond === "0.0" && rate > 0) {
+    const perMinute = (rate * 60).toFixed(1);
+
+    // If still 0.0/min, show as items per hour
+    if (perMinute === "0.0") {
+      const perHour = (rate * 3600).toFixed(1);
+      return `${perHour}/h`;
+    }
+
+    return `${perMinute}/min`;
+  }
+
+  return `${perSecond}/s`;
 }
