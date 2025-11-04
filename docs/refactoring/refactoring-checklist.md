@@ -98,19 +98,21 @@
 
 ## Phase 3: settingsStore の slice 化 - 残作業チェックリスト
 
-- [ ] `src/stores/settingsSlice.ts` の実装
-  - [ ] 増産剤設定slice
-  - [ ] 機械ランク設定slice
-  - [ ] コンベアベルト設定slice
-  - [ ] ソーター設定slice
-  - [ ] 代替レシピ設定slice
-  - [ ] 採掘速度研究設定slice
-  - [ ] 光子生成設定slice
-  - [ ] カスタムテンプレートslice
+- [x] `src/stores/settingsSlice.ts` の実装
+  - [x] 増産剤設定slice（SettingsSlice）
+  - [x] 機械ランク設定slice（SettingsSlice）
+  - [x] コンベアベルト設定slice（SettingsSlice）
+  - [x] ソーター設定slice（SettingsSlice）
+  - [x] 代替レシピ設定slice（SettingsSlice）
+  - [x] 採掘速度研究設定slice（SettingsSlice）
+  - [x] 光子生成設定slice（SettingsSlice）
+  - [x] テンプレート関連slice（TemplateSlice）
+  - [x] 発電設備関連slice（PowerGenerationSlice）
+  - [x] カスタムテンプレートslice（CustomTemplateSlice）
 
-- [ ] `src/stores/settingsStore.ts` の更新
-  - [ ] sliceを使用するように変更
-  - [ ] テストの更新
+- [x] `src/stores/settingsStore.ts` の更新
+  - [x] sliceを使用するように変更
+  - [x] テストの更新（すべて通過: 65テスト成功）
 
 ---
 
@@ -166,7 +168,7 @@
 
 ### 🟡 中優先度（近日中に実施）
 
-3. settingsStore の slice 化
+3. ~~settingsStore の slice 化~~ ✅ 完了（テスト更新は別途実施）
 4. Phase 5: E2Eテストの再構築
 
 ### 🟢 低優先度（時間があるときに実施）
@@ -177,4 +179,4 @@
 
 ---
 
-**最終更新**: 2025-01-28 (Phase 4: テストリファクタリング完了)
+**最終更新**: 2025-01-28 (Phase 4完了、Phase 3 slice化完了・テスト更新完了)
