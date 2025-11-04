@@ -1,40 +1,31 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  calculateProductionRate,
-  calculateMachinePower,
-  calculateSorterPower,
-  calculateConveyorBelts,
+  createMachineByType,
+  createMockGameData,
+  createMockItem,
+  createSingleOutputRecipe,
+  machinePresets,
+  recipePresets,
+} from "../../test/factories/testDataFactory";
+import type { GameData, GlobalSettings, Machine, ProliferatorConfig, Recipe } from "../../types";
+import {
+  CONVEYOR_BELT_DATA,
+  DEFAULT_PHOTON_GENERATION_SETTINGS,
+  PROLIFERATOR_DATA,
+  SORTER_DATA,
+} from "../../types/settings";
+import {
   buildRecipeTree,
+  calculateConveyorBelts,
+  calculateMachinePower,
   calculateProductionChain,
+  calculateProductionRate,
+  calculateSorterPower,
 } from "../calculator";
-import type { Recipe, Machine, ProliferatorConfig, GameData, GlobalSettings } from "../../types";
-import { PROLIFERATOR_DATA, CONVEYOR_BELT_DATA, SORTER_DATA } from "../../types/settings";
 
 describe("calculateProductionRate", () => {
-  const mockRecipe: Recipe = {
-    SID: 1,
-    name: "Iron Ingot",
-    TimeSpend: 60, // 1 second (60 ticks)
-    Results: [{ id: 1001, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-    Items: [{ id: 1101, name: "Iron Ore", count: 1, Type: "0", isRaw: true }],
-    Type: "Smelt",
-    Explicit: false,
-    GridIndex: "1101",
-    productive: true,
-  };
-
-  const mockMachine: Machine = {
-    id: 2302,
-    name: "Arc Smelter",
-    Type: "Smelt",
-    assemblerSpeed: 10000, // 100% (10000 = 100%)
-    workEnergyPerTick: 360000, // 360kW per tick
-    idleEnergyPerTick: 18000,
-    exchangeEnergyPerTick: 0,
-    isPowerConsumer: true,
-    isPowerExchanger: false,
-    isRaw: false,
-  };
+  const mockRecipe = recipePresets.ironIngot();
+  const mockMachine = machinePresets.arcSmelter();
 
   it("should calculate basic production rate without proliferator", () => {
     const proliferator: ProliferatorConfig = {
@@ -87,10 +78,7 @@ describe("calculateProductionRate", () => {
   });
 
   it("should handle machines with zero assemblerSpeed", () => {
-    const labMachine: Machine = {
-      ...mockMachine,
-      assemblerSpeed: 0, // Matrix Lab has 0
-    };
+    const labMachine = machinePresets.matrixLab();
 
     const proliferator: ProliferatorConfig = {
       ...PROLIFERATOR_DATA.none,
@@ -146,18 +134,7 @@ describe("calculateProductionRate", () => {
 });
 
 describe("calculateMachinePower", () => {
-  const mockMachine: Machine = {
-    id: 2302,
-    name: "Arc Smelter",
-    Type: "Smelt",
-    assemblerSpeed: 10000,
-    workEnergyPerTick: 360000, // 360,000 ticks * 60 / 1000 = 21,600 kW
-    idleEnergyPerTick: 18000,
-    exchangeEnergyPerTick: 0,
-    isPowerConsumer: true,
-    isPowerExchanger: false,
-    isRaw: false,
-  };
+  const mockMachine = machinePresets.arcSmelter();
 
   it("should calculate basic machine power consumption", () => {
     const proliferator: ProliferatorConfig = {
@@ -221,20 +198,23 @@ describe("calculateMachinePower", () => {
 
 describe("calculateSorterPower", () => {
   it("should calculate sorter power based on input/output types", () => {
-    const mockRecipe: Recipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "Test",
-      TimeSpend: 60,
-      Items: [
-        { id: 1, name: "Iron Ore", count: 1, Type: "0", isRaw: true },
-        { id: 2, name: "Copper Ore", count: 1, Type: "0", isRaw: true },
-      ],
-      Results: [{ id: 3, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-      Type: "Assemble",
-      Explicit: false,
-      GridIndex: "1101",
+      type: "Assemble",
+      timeSpend: 60,
+      inputId: 1,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 3,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+      gridIndex: "1101",
       productive: true,
-    };
+    });
+    // 複数入力のため追加
+    mockRecipe.Items.push({ id: 2, name: "Copper Ore", count: 1, Type: "Resource", isRaw: true });
 
     const machineCount = 10;
     const sorterPowerPerUnit = 0.03; // 30W = 0.03kW
@@ -248,17 +228,22 @@ describe("calculateSorterPower", () => {
   });
 
   it("should handle recipes with no inputs", () => {
-    const mockRecipe: Recipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "Mining",
-      TimeSpend: 60,
-      Items: [],
-      Results: [{ id: 1, name: "Iron Ore", count: 1, Type: "0", isRaw: true }],
-      Type: "Smelt",
-      Explicit: false,
-      GridIndex: "1101",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 0,
+      inputName: "",
+      inputCount: 0,
+      outputId: 1,
+      outputName: "Iron Ore",
+      outputCount: 1,
+      isRawOutput: true,
+      gridIndex: "1101",
       productive: false,
-    };
+    });
+    mockRecipe.Items = [];
 
     // Sorters = 0 inputs + 1 output = 1
     const power = calculateSorterPower(mockRecipe, 5, 0.03);
@@ -341,159 +326,158 @@ describe("calculateConveyorBelts", () => {
 });
 
 describe("buildRecipeTree", () => {
-  // Create comprehensive mock data
-  const createMockGameData = (): GameData => {
-    const machines = new Map<number, Machine>();
-    machines.set(2302, {
+  // Create comprehensive mock data using builders
+  const createTestGameData = (): GameData => {
+    const baseGameData = createMockGameData();
+
+    const arcSmelter = createMachineByType({
       id: 2302,
       name: "Arc Smelter",
-      Type: "Smelt",
+      type: "Smelt",
       assemblerSpeed: 10000,
       workEnergyPerTick: 360000,
       idleEnergyPerTick: 18000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2315, {
+    baseGameData.machines.set(2302, arcSmelter);
+
+    const planeSmelter = createMachineByType({
       id: 2315,
       name: "Plane Smelter",
-      Type: "Smelt",
+      type: "Smelt",
       assemblerSpeed: 15000,
       workEnergyPerTick: 540000,
       idleEnergyPerTick: 27000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2303, {
+    baseGameData.machines.set(2315, planeSmelter);
+
+    const assemblerMk1 = createMachineByType({
       id: 2303,
       name: "Assembling Machine Mk.I",
-      Type: "Assemble",
+      type: "Assemble",
       assemblerSpeed: 7500,
       workEnergyPerTick: 270000,
       idleEnergyPerTick: 18000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2304, {
+    baseGameData.machines.set(2303, assemblerMk1);
+
+    const assemblerMk2 = createMachineByType({
       id: 2304,
       name: "Assembling Machine Mk.II",
-      Type: "Assemble",
+      type: "Assemble",
       assemblerSpeed: 10000,
       workEnergyPerTick: 360000,
       idleEnergyPerTick: 24000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2305, {
+    baseGameData.machines.set(2304, assemblerMk2);
+
+    const assemblerMk3 = createMachineByType({
       id: 2305,
       name: "Assembling Machine Mk.III",
-      Type: "Assemble",
+      type: "Assemble",
       assemblerSpeed: 15000,
       workEnergyPerTick: 540000,
       idleEnergyPerTick: 36000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2309, {
+    baseGameData.machines.set(2305, assemblerMk3);
+
+    const chemicalPlant = createMachineByType({
       id: 2309,
       name: "Chemical Plant",
-      Type: "Chemical",
+      type: "Chemical",
       assemblerSpeed: 10000,
       workEnergyPerTick: 720000,
       idleEnergyPerTick: 36000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2317, {
+    baseGameData.machines.set(2309, chemicalPlant);
+
+    const quantumChemicalPlant = createMachineByType({
       id: 2317,
       name: "Quantum Chemical Plant",
-      Type: "Chemical",
+      type: "Chemical",
       assemblerSpeed: 20000,
       workEnergyPerTick: 1440000,
       idleEnergyPerTick: 72000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2901, {
+    baseGameData.machines.set(2317, quantumChemicalPlant);
+
+    const matrixLab = createMachineByType({
       id: 2901,
       name: "Matrix Lab",
-      Type: "Research",
+      type: "Research",
       assemblerSpeed: 10000,
       workEnergyPerTick: 480000,
       idleEnergyPerTick: 24000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
+    baseGameData.machines.set(2901, matrixLab);
 
-    const items = new Map();
-    items.set(1104, { id: 1104, name: "Iron Ingot", Type: "0", isRaw: false });
-    items.set(1001, {
-      id: 1001,
-      name: "Iron Ore",
-      Type: "0",
+    // Add items
+    baseGameData.items.set(1104, createMockItem(1104, "Iron Ingot"));
+    baseGameData.items.set(1001, {
+      ...createMockItem(1001, "Iron Ore"),
       isRaw: true,
       miningFrom: "Iron Vein",
     });
-    items.set(1105, { id: 1105, name: "Copper Ingot", Type: "0", isRaw: false });
-    items.set(1002, {
-      id: 1002,
-      name: "Copper Ore",
-      Type: "0",
+    baseGameData.items.set(1105, createMockItem(1105, "Copper Ingot"));
+    baseGameData.items.set(1002, {
+      ...createMockItem(1002, "Copper Ore"),
       isRaw: true,
       miningFrom: "Copper Vein",
     });
-    items.set(1005, { id: 1005, name: "Stone", Type: "0", isRaw: true, miningFrom: "Stone Vein" });
+    baseGameData.items.set(1005, {
+      ...createMockItem(1005, "Stone"),
+      isRaw: true,
+      miningFrom: "Stone Vein",
+    });
+    baseGameData.allItems.set(1104, baseGameData.items.get(1104)!);
+    baseGameData.allItems.set(1001, baseGameData.items.get(1001)!);
+    baseGameData.allItems.set(1105, baseGameData.items.get(1105)!);
+    baseGameData.allItems.set(1002, baseGameData.items.get(1002)!);
+    baseGameData.allItems.set(1005, baseGameData.items.get(1005)!);
 
-    const recipes = new Map<number, Recipe>();
-    recipes.set(1, {
+    // Add recipes using builders
+    const ironIngotRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "Iron Ingot",
-      TimeSpend: 60,
-      Results: [{ id: 1104, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-      Items: [{ id: 1001, name: "Iron Ore", count: 1, Type: "0", isRaw: true }],
-      Type: "Smelt",
-      Explicit: false,
-      GridIndex: "1001",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1001,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1104,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+      isRawOutput: false,
+      explicit: false,
+      gridIndex: "1001",
       productive: true,
     });
-    recipes.set(2, {
+    baseGameData.recipes.set(1, ironIngotRecipe);
+
+    const copperIngotRecipe = createSingleOutputRecipe({
       SID: 2,
       name: "Copper Ingot",
-      TimeSpend: 60,
-      Results: [{ id: 1105, name: "Copper Ingot", count: 1, Type: "0", isRaw: false }],
-      Items: [{ id: 1002, name: "Copper Ore", count: 1, Type: "0", isRaw: true }],
-      Type: "Smelt",
-      Explicit: false,
-      GridIndex: "1002",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1002,
+      inputName: "Copper Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1105,
+      outputName: "Copper Ingot",
+      outputCount: 1,
+      isRawOutput: false,
+      explicit: false,
+      gridIndex: "1002",
       productive: true,
     });
+    baseGameData.recipes.set(2, copperIngotRecipe);
 
-    return {
-      recipes,
-      machines,
-      items,
-      allItems: items,
-      recipesByItemId: new Map([
-        [1104, [recipes.get(1)!]],
-        [1105, [recipes.get(2)!]],
-      ]),
-    };
+    // Update recipesByItemId
+    baseGameData.recipesByItemId.set(1104, [ironIngotRecipe]);
+    baseGameData.recipesByItemId.set(1105, [copperIngotRecipe]);
+
+    return baseGameData;
   };
 
   const createDefaultSettings = (): GlobalSettings => ({
@@ -511,6 +495,7 @@ describe("buildRecipeTree", () => {
     alternativeRecipes: new Map(),
     miningSpeedResearch: 100,
     proliferatorMultiplier: { production: 1, speed: 1 },
+    photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
   });
 
   const defaultMiningSettings = {
@@ -519,7 +504,7 @@ describe("buildRecipeTree", () => {
   };
 
   it("should build a simple recipe tree with one input", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!; // Iron Ingot
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -546,7 +531,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should calculate machine count correctly", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -569,7 +554,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply proliferator speed bonus", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "speed" };
@@ -595,7 +580,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply proliferator production bonus and reduce inputs", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "production" };
@@ -620,7 +605,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should respect node overrides for proliferator", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     settings.proliferator = { ...PROLIFERATOR_DATA.none, mode: "speed" };
@@ -648,7 +633,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should respect node overrides for machine rank", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
 
@@ -675,7 +660,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should calculate power consumption correctly", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -699,7 +684,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should calculate conveyor belts", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -723,7 +708,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should handle raw material leaf nodes", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -751,7 +736,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should generate unique node IDs based on path", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -774,7 +759,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should throw error when max depth is exceeded", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -796,7 +781,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should handle alternative recipe preferences", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     settings.alternativeRecipes.set(1001, -1); // Force mining for Iron Ore
@@ -820,7 +805,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply proliferator multiplier to production bonus", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "production" };
@@ -845,7 +830,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should create stable node structure", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -876,7 +861,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should switch to speed mode when production mode is not supported", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     // Create a recipe that doesn't support production mode (productive: false)
     const nonProductiveRecipe: Recipe = {
       SID: 999,
@@ -913,7 +898,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should switch to production mode when recipe supports it and global is speed mode", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!; // productive: true
     const settings = createDefaultSettings();
     settings.proliferator = { ...PROLIFERATOR_DATA.mk2, mode: "speed" };
@@ -937,7 +922,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Smelt type (arc)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!; // Smelt type
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -965,7 +950,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Smelt type (plane)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!; // Smelt type
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
@@ -993,7 +978,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Assemble type (mk1, mk2, mk3)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const assembleRecipe: Recipe = {
       SID: 2,
       name: "Gear",
@@ -1072,7 +1057,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Chemical type", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const chemicalRecipe: Recipe = {
       SID: 3,
       name: "Plastic",
@@ -1131,7 +1116,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Research type", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const researchRecipe: Recipe = {
       SID: 4,
       name: "Matrix Lab",
@@ -1170,7 +1155,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Smelt type (negentropy)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     // Add Negentropy Smelter (ID 2319 based on MACHINE_IDS_BY_RECIPE_TYPE)
     gameData.machines.set(2319, {
@@ -1223,7 +1208,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Assemble type (recomposing)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     // Add Recomposing Assembler
     gameData.machines.set(2318, {
@@ -1276,7 +1261,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Chemical type (quantum)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     // Add Quantum Chemical Plant
     gameData.machines.set(2317, {
@@ -1329,7 +1314,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should apply machineRank override for Research type (self-evolution)", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     // Add Self-Evolution Lab
     gameData.machines.set(2902, {
@@ -1382,7 +1367,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should use preferred recipe when specified in alternativeRecipes", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     // Create two recipes for the same output
     const recipe1: Recipe = {
@@ -1452,7 +1437,7 @@ describe("buildRecipeTree", () => {
   });
 
   it("should fallback to first recipe when preferred recipe not found", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     const recipe1: Recipe = {
       SID: 101,
@@ -1507,104 +1492,114 @@ describe("buildRecipeTree", () => {
 });
 
 describe("calculateProductionChain", () => {
-  const createMockGameData = (): GameData => {
-    const machines = new Map<number, Machine>();
-    machines.set(2302, {
+  const createTestGameData = (): GameData => {
+    const baseGameData = createMockGameData();
+
+    // Add machines using builders
+    const arcSmelter = createMachineByType({
       id: 2302,
       name: "Arc Smelter",
-      Type: "Smelt",
+      type: "Smelt",
       assemblerSpeed: 10000,
       workEnergyPerTick: 360000,
       idleEnergyPerTick: 18000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
-    machines.set(2303, {
+    baseGameData.machines.set(2302, arcSmelter);
+
+    const assemblerMk1 = createMachineByType({
       id: 2303,
       name: "Assembling Machine Mk.I",
-      Type: "Assemble",
+      type: "Assemble",
       assemblerSpeed: 7500,
       workEnergyPerTick: 270000,
       idleEnergyPerTick: 18000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
     });
+    baseGameData.machines.set(2303, assemblerMk1);
 
-    const items = new Map();
-    items.set(1104, { id: 1104, name: "Iron Ingot", Type: "0", isRaw: false });
-    items.set(1001, {
-      id: 1001,
-      name: "Iron Ore",
-      Type: "0",
+    // Add items
+    baseGameData.items.set(1104, createMockItem(1104, "Iron Ingot"));
+    baseGameData.items.set(1001, {
+      ...createMockItem(1001, "Iron Ore"),
       isRaw: true,
       miningFrom: "Iron Vein",
     });
-    items.set(1105, { id: 1105, name: "Copper Ingot", Type: "0", isRaw: false });
-    items.set(1002, {
-      id: 1002,
-      name: "Copper Ore",
-      Type: "0",
+    baseGameData.items.set(1105, createMockItem(1105, "Copper Ingot"));
+    baseGameData.items.set(1002, {
+      ...createMockItem(1002, "Copper Ore"),
       isRaw: true,
       miningFrom: "Copper Vein",
     });
-    items.set(1201, { id: 1201, name: "Gear", Type: "0", isRaw: false });
+    baseGameData.items.set(1201, createMockItem(1201, "Gear"));
+    baseGameData.allItems.set(1104, baseGameData.items.get(1104)!);
+    baseGameData.allItems.set(1001, baseGameData.items.get(1001)!);
+    baseGameData.allItems.set(1105, baseGameData.items.get(1105)!);
+    baseGameData.allItems.set(1002, baseGameData.items.get(1002)!);
+    baseGameData.allItems.set(1201, baseGameData.items.get(1201)!);
 
-    const recipes = new Map<number, Recipe>();
-
-    // Iron Ingot recipe
-    recipes.set(1, {
+    // Add recipes using builders
+    const ironIngotRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "Iron Ingot",
-      TimeSpend: 60,
-      Results: [{ id: 1104, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-      Items: [{ id: 1001, name: "Iron Ore", count: 1, Type: "0", isRaw: true }],
-      Type: "Smelt",
-      Explicit: false,
-      GridIndex: "1104",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1001,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1104,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+      isRawOutput: false,
+      explicit: false,
+      gridIndex: "1104",
       productive: true,
     });
+    baseGameData.recipes.set(1, ironIngotRecipe);
 
-    // Copper Ingot recipe
-    recipes.set(2, {
+    const copperIngotRecipe = createSingleOutputRecipe({
       SID: 2,
       name: "Copper Ingot",
-      TimeSpend: 60,
-      Results: [{ id: 1105, name: "Copper Ingot", count: 1, Type: "0", isRaw: false }],
-      Items: [{ id: 1002, name: "Copper Ore", count: 1, Type: "0", isRaw: true }],
-      Type: "Smelt",
-      Explicit: false,
-      GridIndex: "1105",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1002,
+      inputName: "Copper Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1105,
+      outputName: "Copper Ingot",
+      outputCount: 1,
+      isRawOutput: false,
+      explicit: false,
+      gridIndex: "1105",
       productive: true,
     });
+    baseGameData.recipes.set(2, copperIngotRecipe);
 
-    // Gear recipe (requires iron ingot)
-    recipes.set(3, {
+    const gearRecipe = createSingleOutputRecipe({
       SID: 3,
       name: "Gear",
-      TimeSpend: 60,
-      Results: [{ id: 1201, name: "Gear", count: 1, Type: "0", isRaw: false }],
-      Items: [{ id: 1104, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-      Type: "Assemble",
-      Explicit: false,
-      GridIndex: "1201",
+      type: "Assemble",
+      timeSpend: 60,
+      inputId: 1104,
+      inputName: "Iron Ingot",
+      inputCount: 1,
+      isRawInput: false,
+      outputId: 1201,
+      outputName: "Gear",
+      outputCount: 1,
+      isRawOutput: false,
+      explicit: false,
+      gridIndex: "1201",
       productive: true,
     });
+    baseGameData.recipes.set(3, gearRecipe);
 
-    return {
-      recipes,
-      machines,
-      items,
-      allItems: items,
-      recipesByItemId: new Map([
-        [1104, [recipes.get(1)!]],
-        [1105, [recipes.get(2)!]],
-        [1201, [recipes.get(3)!]],
-      ]),
-    };
+    // Update recipesByItemId
+    baseGameData.recipesByItemId.set(1104, [ironIngotRecipe]);
+    baseGameData.recipesByItemId.set(1105, [copperIngotRecipe]);
+    baseGameData.recipesByItemId.set(1201, [gearRecipe]);
+
+    return baseGameData;
   };
 
   const createDefaultSettings = (): GlobalSettings => ({
@@ -1617,15 +1612,16 @@ describe("calculateProductionChain", () => {
       Refine: "standard",
       Particle: "standard",
     },
-    conveyorBelt: { ...CONVEYOR_BELT_DATA.mk1 },
-    sorter: { ...SORTER_DATA.mk1 },
+    conveyorBelt: CONVEYOR_BELT_DATA.mk1,
+    sorter: SORTER_DATA.mk1,
     alternativeRecipes: new Map(),
     miningSpeedResearch: 100,
     proliferatorMultiplier: { production: 1, speed: 1 },
+    photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
   });
 
   it("should calculate complete production chain", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!; // Iron Ingot
     const settings = createDefaultSettings();
 
@@ -1642,7 +1638,7 @@ describe("calculateProductionChain", () => {
   });
 
   it("should calculate total power consumption across tree", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const gearRecipe = gameData.recipes.get(3)!; // Gear (requires Iron Ingot)
     const settings = createDefaultSettings();
 
@@ -1658,7 +1654,7 @@ describe("calculateProductionChain", () => {
   });
 
   it("should calculate total machine count across tree", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const gearRecipe = gameData.recipes.get(3)!; // Gear
     const settings = createDefaultSettings();
 
@@ -1673,7 +1669,7 @@ describe("calculateProductionChain", () => {
   });
 
   it("should collect raw materials from entire tree", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const gearRecipe = gameData.recipes.get(3)!; // Gear
     const settings = createDefaultSettings();
 
@@ -1691,7 +1687,7 @@ describe("calculateProductionChain", () => {
   });
 
   it("should handle multiple raw material types", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
 
     // Create a recipe that needs both iron and copper
     const complexRecipe: Recipe = {
@@ -1724,7 +1720,7 @@ describe("calculateProductionChain", () => {
   });
 
   it("should respect node overrides in production chain", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const recipe = gameData.recipes.get(1)!;
     const settings = createDefaultSettings();
 
@@ -1744,7 +1740,7 @@ describe("calculateProductionChain", () => {
   });
 
   it("should calculate deep production chains correctly", () => {
-    const gameData = createMockGameData();
+    const gameData = createTestGameData();
     const gearRecipe = gameData.recipes.get(3)!; // Gear -> Iron Ingot -> Iron Ore
     const settings = createDefaultSettings();
 

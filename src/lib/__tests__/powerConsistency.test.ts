@@ -4,6 +4,12 @@ import { calculateTotalPower } from "../calculator/aggregations";
 import type { MiningCalculation } from "../miningCalculation";
 import { calculateItemStatistics } from "../statistics";
 import { calculateUnifiedPower } from "../unifiedPowerCalculation";
+import { PROLIFERATOR_DATA } from "../../types/settings";
+import {
+  createRecipeNode,
+  machinePresets,
+  recipePresets,
+} from "../../test/factories/testDataFactory";
 
 /**
  * 電力計算の一貫性をテストする
@@ -11,45 +17,19 @@ import { calculateUnifiedPower } from "../unifiedPowerCalculation";
  */
 describe("Power Consistency Tests", () => {
   // テスト用のノードを作成
-  const createMockNode = (power: PowerConsumption, machineCount: number = 1): RecipeTreeNode => ({
-    targetOutputRate: 1,
-    machineCount,
-    proliferator: {
-      type: "none",
-      mode: "production",
-      productionBonus: 0,
-      speedBonus: 0,
-      powerIncrease: 0,
-    },
-    power,
-    inputs: [],
-    children: [],
-    conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
-    nodeId: "test-node",
-    recipe: {
-      SID: 1,
-      name: "Test Recipe",
-      TimeSpend: 60,
-      Results: [{ id: 1001, name: "Test Item", count: 1, Type: "0", isRaw: false }],
-      Items: [{ id: 1101, name: "Test Input", count: 1, Type: "0", isRaw: true }],
-      Type: "Assemble",
-      Explicit: false,
-      GridIndex: "1001",
-      productive: true,
-    },
-    machine: {
-      id: 2303,
-      name: "Assembling Machine Mk.I",
-      Type: "Assemble",
-      assemblerSpeed: 10000,
-      workEnergyPerTick: 270000, // 270kW
-      idleEnergyPerTick: 13500,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true,
-      isPowerExchanger: false,
-      isRaw: false,
-    },
-  });
+  const createMockNode = (power: PowerConsumption, machineCount: number = 1): RecipeTreeNode =>
+    createRecipeNode({
+      recipe: recipePresets.gear(),
+      machine: machinePresets.assemblerMk1(),
+      targetOutputRate: 1,
+      machineCount,
+      proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+      power,
+      inputs: [],
+      children: [],
+      conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
+      nodeId: "test-node",
+    });
 
   // テスト用の採掘計算を作成
   const createMockMiningCalculation = (miningPower: number): MiningCalculation => {

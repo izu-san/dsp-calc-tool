@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import os from "os";
 
 // Resolve __dirname in ESM environment so testDir is an absolute path.
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -23,7 +24,9 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Local: Use 50% of CPU cores for parallel execution to balance speed and stability */
+  /* CI: Use 1 worker to ensure stability */
+  workers: process.env.CI ? 1 : Math.max(1, Math.floor(os.cpus().length * 0.5)),
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

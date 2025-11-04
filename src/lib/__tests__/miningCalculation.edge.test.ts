@@ -1,13 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { calculateMiningRequirements } from "../miningCalculation";
+import { createMockGameData, createMockItem } from "../../test/factories/testDataFactory";
 
 // Mock game data
-const mockGameData = {
-  items: new Map<number, any>([
-    [1001, { id: 1001, name: "Iron Ore" }],
-    [1120, { id: 1120, name: "Hydrogen" }],
-  ]),
-};
+const mockGameData = (() => {
+  const gameData = createMockGameData();
+  // 必要なアイテムを追加
+  gameData.items.set(1001, createMockItem(1001, "Iron Ore"));
+  gameData.items.set(1120, createMockItem(1120, "Hydrogen"));
+  // allItemsも更新
+  gameData.allItems.set(1001, gameData.items.get(1001)!);
+  gameData.allItems.set(1120, gameData.items.get(1120)!);
+  return gameData;
+})();
 
 describe("miningCalculation edge cases", () => {
   beforeEach(() => {

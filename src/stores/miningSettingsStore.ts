@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { recordHistoryEntry } from "../utils/historyRecorder";
+import { recordSettingsHistory } from "../services/history-recording";
 import {
   generateMiningMachineTypeDescription,
   generateMiningWorkSpeedDescription,
@@ -33,7 +33,7 @@ export const useMiningSettingsStore = create<MiningSettingsStore>()(
           const after = { miningSettings: { ...state.settings, machineType } };
           const t = (key: string) => i18n.t(key);
           const description = generateMiningMachineTypeDescription(machineType, t, i18n.language);
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
           return {
             settings: { ...state.settings, machineType },
           };
@@ -48,7 +48,7 @@ export const useMiningSettingsStore = create<MiningSettingsStore>()(
             t,
             i18n.language
           );
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
           return {
             settings: { ...state.settings, workSpeedMultiplier },
           };
@@ -59,7 +59,7 @@ export const useMiningSettingsStore = create<MiningSettingsStore>()(
           const after = { miningSettings: { ...state.settings, ...newSettings } };
           const t = (key: string) => i18n.t(key);
           const description = generateMiningSettingsBatchDescription(t, i18n.language);
-          recordHistoryEntry("settings", description, before, after);
+          recordSettingsHistory({ description, before, after });
           return {
             settings: { ...state.settings, ...newSettings },
           };

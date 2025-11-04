@@ -1,21 +1,14 @@
 // spec: docs/testing/TEST_PLAN.md
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "./fixtures";
 import { expectNumberChange } from "./helpers/numeric-asserts";
-import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("発電設備機能", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:5173/");
-    await page.getByTestId("welcome-skip-button").click();
-    // Stabilize UI interactions
-    await disableAnimations(page);
-  });
-
-  test("04-01: 発電テンプレートの設備と燃料確認", async ({ page }) => {
+  test("04-01: 発電テンプレートの設備と燃料確認", async ({ appPage }) => {
     // 電磁タービンを選択して発電タブを開く
-    await page.getByTestId("recipe-button-1402").click();
-    await page.getByTestId("target-quantity-input").fill("6");
-    await page.getByTestId("power-generation-tab").click();
+    await appPage.getByTestId("recipe-button-1402").click();
+    await appPage.getByTestId("target-quantity-input").fill("6");
+    await appPage.getByTestId("power-generation-tab").click();
 
     const mapping: Record<string, { generator: string; fuel: string | null }> = {
       default: { generator: "人工恒星", fuel: "反物質燃料棒" },
@@ -25,18 +18,18 @@ test.describe("発電設備機能", () => {
       endGame: { generator: "人工恒星", fuel: "ストレンジ物質対消滅燃料棒" },
     };
 
-    const select = page.getByTestId("power-generation-template-select");
+    const select = appPage.getByTestId("power-generation-template-select");
 
     for (const [tpl, expected] of Object.entries(mapping)) {
       // apply template
       await select.selectOption({ value: tpl });
       // wait for UI to update
-      await page.waitForTimeout(200);
+      await appPage.waitForTimeout(200);
 
-      const genName = await page.getByTestId("power-generator-name").innerText();
+      const genName = await appPage.getByTestId("power-generator-name").innerText();
       expect(genName).toContain(expected.generator);
 
-      const fuelLocator = page.getByTestId("power-fuel-name");
+      const fuelLocator = appPage.getByTestId("power-fuel-name");
       if (expected.fuel === null) {
         // fuel should not be shown
         expect(await fuelLocator.count()).toBe(0);
@@ -49,10 +42,10 @@ test.describe("発電設備機能", () => {
     }
   });
 
-  test("04-02: 設備を手動で設定", async ({ page }) => {
+  test("04-02: 設備を手動で設定", async ({ appPage }) => {
     // 1-2. デストロイヤー選択と発電設備タブ
-    await page.getByTestId("recipe-button-1705").click();
-    await page.getByTestId("power-generation-tab").click();
+    await appPage.getByTestId("recipe-button-1705").click();
+    await appPage.getByTestId("power-generation-tab").click();
 
     const thermalFuels: Record<string, string> = {
       coal: "石炭",
@@ -81,14 +74,14 @@ test.describe("発電設備機能", () => {
     // mappingをforループで回して、設備と燃料の組み合わせをテスト
     for (const [plant, { name, fuels }] of Object.entries(mapping)) {
       // 発電設備を選択（確実にビュー内にスクロールしてからクリック）
-      const genBtn = page.getByTestId(`power-generation-generator-button-${plant}`);
+      const genBtn = appPage.getByTestId(`power-generation-generator-button-${plant}`);
       await genBtn.scrollIntoViewIfNeeded();
       await genBtn.click();
 
-      const genName = await page.getByTestId("power-generator-name").innerText();
+      const genName = await appPage.getByTestId("power-generator-name").innerText();
       expect(genName).toContain(name);
 
-      const fuelLocator = page.getByTestId("power-fuel-name");
+      const fuelLocator = appPage.getByTestId("power-fuel-name");
       if (fuels === null) {
         if (plant === "miniFusion") {
           const selectedFuelName = await fuelLocator.innerText();
@@ -99,7 +92,7 @@ test.describe("発電設備機能", () => {
       } else {
         // 燃料を順番に選択して確認
         for (const [fuel, fuelName] of Object.entries(fuels)) {
-          const fuelBtn = page.getByTestId(`power-generation-fuel-button-${fuel}`);
+          const fuelBtn = appPage.getByTestId(`power-generation-fuel-button-${fuel}`);
           await fuelBtn.scrollIntoViewIfNeeded();
           await fuelBtn.click();
 
@@ -111,27 +104,27 @@ test.describe("発電設備機能", () => {
     }
   });
 
-  test("04-03: 増産剤を設定（火力発電所）", async ({ page }) => {
+  test("04-03: 増産剤を設定（火力発電所）", async ({ appPage }) => {
     // 1-2. デストロイヤー選択/タブ
-    await page.getByTestId("recipe-search-input").fill("デストロイヤー");
-    await page.getByTestId("recipe-button-1705").click();
-    await page.getByTestId("power-generation-tab").click();
+    await appPage.getByTestId("recipe-search-input").fill("デストロイヤー");
+    await appPage.getByTestId("recipe-button-1705").click();
+    await appPage.getByTestId("power-generation-tab").click();
 
     // 3. 火力発電所を選択
-    await page.getByTestId("power-generation-generator-button-thermalPlant").click();
+    await appPage.getByTestId("power-generation-generator-button-thermalPlant").click();
 
     // 4. 燃料を選択
-    await page.getByTestId("power-generation-fuel-button-hydrogenFuelRod").click();
+    await appPage.getByTestId("power-generation-fuel-button-hydrogenFuelRod").click();
 
     // 5. 増産剤の設定を切り替える
     // 数値チェック: 発電所の出力や消費が変化すること
     const proliferators = ["mk1", "mk2", "mk3"];
     for (const p of proliferators) {
       await expectNumberChange(
-        page,
+        appPage,
         "power-fuel-consumption",
         async () => {
-          await page.getByTestId(`power-generation-proliferator-button-${p}`).click();
+          await appPage.getByTestId(`power-generation-proliferator-button-${p}`).click();
         },
         "changed",
         { timeout: 800 }
@@ -139,26 +132,26 @@ test.describe("発電設備機能", () => {
     }
   });
 
-  test("04-04: 増産剤を設定（人工恒星）", async ({ page }) => {
+  test("04-04: 増産剤を設定（人工恒星）", async ({ appPage }) => {
     // 1-2. デストロイヤー選択/タブ
-    await page.getByTestId("recipe-search-input").fill("デストロイヤー");
-    await page.getByTestId("recipe-button-1705").click();
-    await page.getByTestId("power-generation-tab").click();
+    await appPage.getByTestId("recipe-search-input").fill("デストロイヤー");
+    await appPage.getByTestId("recipe-button-1705").click();
+    await appPage.getByTestId("power-generation-tab").click();
 
     // 3. 人工恒星を選択
-    await page.getByTestId("power-generation-generator-button-artificialStar").click();
+    await appPage.getByTestId("power-generation-generator-button-artificialStar").click();
 
     // 4. 反物質燃料棒を選択
-    await page.getByTestId("power-generation-fuel-button-antimatterFuelRod").click();
+    await appPage.getByTestId("power-generation-fuel-button-antimatterFuelRod").click();
 
     // 数値チェック: 人工恒星の台数や消費が変化することを簡易検証
     const proliferators = ["mk1", "mk2", "mk3"];
     for (const p of proliferators) {
       await expectNumberChange(
-        page,
+        appPage,
         "power-generator-count",
         async () => {
-          await page.getByTestId(`power-generation-proliferator-button-${p}`).click();
+          await appPage.getByTestId(`power-generation-proliferator-button-${p}`).click();
         },
         "changed",
         { timeout: 800 }

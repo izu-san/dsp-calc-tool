@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Recipe, CalculationResult } from "../types";
-import { recordHistoryEntry } from "../utils/historyRecorder";
+import { recordPlanHistory } from "../services/history-recording";
 import {
   generateRecipeSelectionDescription,
   generateTargetQuantityDescription,
@@ -34,12 +34,11 @@ export const useRecipeSelectionStore = create<RecipeSelectionStore>()(
           const description = generateRecipeSelectionDescription(before, after, t, i18n.language);
 
           // Record history (immediate, no debounce)
-          recordHistoryEntry(
-            "plan",
+          recordPlanHistory({
             description,
-            { "selectedRecipe.recipeSID": before?.SID },
-            { "selectedRecipe.recipeSID": after?.SID }
-          );
+            before: { "selectedRecipe.recipeSID": before?.SID },
+            after: { "selectedRecipe.recipeSID": after?.SID },
+          });
 
           return { selectedRecipe: recipe, calculationResult: null };
         }),
@@ -55,12 +54,11 @@ export const useRecipeSelectionStore = create<RecipeSelectionStore>()(
           const description = generateTargetQuantityDescription(before, after, t, i18n.language);
 
           // Record history (immediate, no debounce)
-          recordHistoryEntry(
-            "plan",
+          recordPlanHistory({
             description,
-            { targetQuantity: before },
-            { targetQuantity: after }
-          );
+            before: { targetQuantity: before },
+            after: { targetQuantity: after },
+          });
 
           return { targetQuantity: actualQuantity };
         });

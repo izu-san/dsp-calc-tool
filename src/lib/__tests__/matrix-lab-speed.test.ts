@@ -1,54 +1,59 @@
 import { describe, it, expect } from "vitest";
 import { calculateProductionChain } from "../calculator";
-import { createMockGameData, createMockSettings } from "../../test/factories/testDataFactory";
+import {
+  createMockGameData,
+  createMockSettings,
+  createMachineByType,
+  createMultiOutputRecipe,
+} from "../../test/factories/testDataFactory";
 
 describe("Matrix Lab Speed Calculation", () => {
   it("should use different machine counts for Matrix Lab vs Self-evolution Lab", () => {
     const gameData = createMockGameData();
 
     // Add Matrix Lab (1x speed)
-    gameData.machines.set(2901, {
+    const matrixLab = createMachineByType({
       id: 2901,
       name: "Matrix Lab",
-      Type: "Research",
+      type: "Research",
       assemblerSpeed: 10000, // 1.0x speed
       workEnergyPerTick: 8000,
       idleEnergyPerTick: 200,
       exchangeEnergyPerTick: 0,
       isPowerConsumer: true,
       isPowerExchanger: false,
-      isRaw: false,
     });
+    gameData.machines.set(2901, matrixLab);
 
     // Add Self-evolution Lab (3x speed)
-    gameData.machines.set(2902, {
+    const selfEvolutionLab = createMachineByType({
       id: 2902,
       name: "Self-evolution Lab",
-      Type: "Research",
+      type: "Research",
       assemblerSpeed: 30000, // 3.0x speed
       workEnergyPerTick: 32000,
       idleEnergyPerTick: 800,
       exchangeEnergyPerTick: 0,
       isPowerConsumer: true,
       isPowerExchanger: false,
-      isRaw: false,
     });
+    gameData.machines.set(2902, selfEvolutionLab);
 
     // Create EM Matrix recipe
-    const emMatrixRecipe = {
+    const emMatrixRecipe = createMultiOutputRecipe({
       SID: 4,
       name: "EM Matrix",
-      TimeSpend: 180, // 3 seconds
-      Results: [{ id: 6001, name: "EM Matrix", count: 1, Type: "0", isRaw: false }],
-      Items: [
-        { id: 1201, name: "Magnetic Coil", count: 1, Type: "0", isRaw: false },
-        { id: 1301, name: "Circuit Board", count: 1, Type: "0", isRaw: false },
+      type: "Research",
+      timeSpend: 180, // 3 seconds
+      inputs: [
+        { id: 1201, name: "Magnetic Coil", count: 1, isRaw: false },
+        { id: 1301, name: "Circuit Board", count: 1, isRaw: false },
       ],
-      Type: "Research" as const,
-      Explicit: false,
-      GridIndex: "6001",
+      outputs: [{ id: 6001, name: "EM Matrix", count: 1, isRaw: false }],
+      explicit: false,
+      gridIndex: "6001",
       productive: false,
-    };
+    });
     gameData.recipes.set(4, emMatrixRecipe);
 
     const targetRate = 1; // 1 EM Matrix per second

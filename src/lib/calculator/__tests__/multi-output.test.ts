@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { calculateProductionChain } from "../index";
-import { createMockGameData, createMockSettings } from "../../../test/factories/testDataFactory";
-import type { Recipe } from "../../../types";
+import {
+  createMockGameData,
+  createMockSettings,
+  createMultiOutputRecipe,
+  createSingleOutputRecipe,
+} from "../../../test/factories/testDataFactory";
 
 describe("Multi-output recipes", () => {
   const gameData = createMockGameData();
@@ -13,20 +17,20 @@ describe("Multi-output recipes", () => {
 
   it("should calculate multi-output results for recipes with multiple outputs", () => {
     // プラズマ精製レシピ（水素×1 + 精製油×2）
-    const plasmaRefiningRecipe: Recipe = {
+    const plasmaRefiningRecipe = createMultiOutputRecipe({
       SID: 1107,
       name: "プラズマ精製",
-      Type: "Refine",
-      Explicit: true,
-      TimeSpend: 240,
-      Items: [{ id: 1007, name: "原油", count: 2, Type: "Unknown", isRaw: true }],
-      Results: [
-        { id: 1120, name: "水素", count: 1, Type: "Unknown", isRaw: true },
-        { id: 1114, name: "精製油", count: 2, Type: "Unknown", isRaw: true },
+      type: "Refine",
+      explicit: true,
+      timeSpend: 240,
+      inputs: [{ id: 1007, name: "原油", count: 2, isRaw: true }],
+      outputs: [
+        { id: 1120, name: "水素", count: 1, isRaw: true },
+        { id: 1114, name: "精製油", count: 2, isRaw: true },
       ],
-      GridIndex: "1107",
+      gridIndex: "1107",
       productive: true,
-    };
+    });
 
     const result = calculateProductionChain(
       plasmaRefiningRecipe,
@@ -56,17 +60,22 @@ describe("Multi-output recipes", () => {
 
   it("should not include multiOutputResults for single-output recipes", () => {
     // 単一出力レシピ
-    const singleOutputRecipe: Recipe = {
+    const singleOutputRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "鉄インゴット",
-      Type: "Smelt",
-      Explicit: false,
-      TimeSpend: 60,
-      Items: [{ id: 1001, name: "鉄鉱石", count: 1, Type: "Unknown", isRaw: true }],
-      Results: [{ id: 1101, name: "鉄インゴット", count: 1, Type: "Unknown", isRaw: false }],
-      GridIndex: "1101",
+      type: "Smelt",
+      explicit: false,
+      timeSpend: 60,
+      inputId: 1001,
+      inputName: "鉄鉱石",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1101,
+      outputName: "鉄インゴット",
+      outputCount: 1,
+      gridIndex: "1101",
       productive: false,
-    };
+    });
 
     const result = calculateProductionChain(
       singleOutputRecipe,
@@ -83,23 +92,23 @@ describe("Multi-output recipes", () => {
 
   it("should calculate correct production rates for X-ray cracking recipe", () => {
     // X線クラッキングレシピ（水素×3 + 高エネルギーグラファイト×1）
-    const xrayCrackingRecipe: Recipe = {
+    const xrayCrackingRecipe = createMultiOutputRecipe({
       SID: 1207,
       name: "X線クラッキング",
-      Type: "Refine",
-      Explicit: true,
-      TimeSpend: 240,
-      Items: [
-        { id: 1114, name: "精製油", count: 1, Type: "Unknown", isRaw: true },
-        { id: 1120, name: "水素", count: 2, Type: "Unknown", isRaw: true },
+      type: "Refine",
+      explicit: true,
+      timeSpend: 240,
+      inputs: [
+        { id: 1114, name: "精製油", count: 1, isRaw: true },
+        { id: 1120, name: "水素", count: 2, isRaw: true },
       ],
-      Results: [
-        { id: 1120, name: "水素", count: 3, Type: "Unknown", isRaw: true },
-        { id: 1109, name: "高エネルギーグラファイト", count: 1, Type: "Unknown", isRaw: false },
+      outputs: [
+        { id: 1120, name: "水素", count: 3, isRaw: true },
+        { id: 1109, name: "高エネルギーグラファイト", count: 1, isRaw: false },
       ],
-      GridIndex: "1207",
+      gridIndex: "1207",
       productive: false,
-    };
+    });
 
     const result = calculateProductionChain(
       xrayCrackingRecipe,

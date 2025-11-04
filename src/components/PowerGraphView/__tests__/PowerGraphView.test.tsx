@@ -6,6 +6,7 @@ import {
 } from "../../../lib/unifiedPowerCalculation";
 import type { CalculationResult, RecipeTreeNode } from "../../../types/calculation";
 import { formatNumber, formatPower } from "../../../utils/format";
+import { createRecipeNode } from "../../../test/factories/testDataFactory";
 import { PowerGraphView } from "../index";
 
 // Mock dependencies
@@ -55,7 +56,7 @@ describe("PowerGraphView", () => {
     ],
   };
 
-  const mockRootNode: RecipeTreeNode = {
+  const mockRootNode = createRecipeNode({
     targetOutputRate: 1,
     machineCount: 10,
     proliferator: {
@@ -68,13 +69,14 @@ describe("PowerGraphView", () => {
     power: {
       machines: 1000,
       sorters: 100,
+      dysonSphere: 0,
       total: 1100,
     },
     inputs: [],
     children: [],
-    conveyorBelts: { inputs: 0, outputs: 0, totalConsumption: 0 },
+    conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
     nodeId: "test-node-1",
-  };
+  });
 
   const mockCalculationResult: CalculationResult = {
     rootNode: mockRootNode,

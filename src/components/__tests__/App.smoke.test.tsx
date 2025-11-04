@@ -1,7 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { act } from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "../../App";
+import { createSingleOutputRecipe } from "../../test/factories/testDataFactory";
 
 // Mock i18n
 vi.mock("../../i18n", () => ({
@@ -36,6 +37,22 @@ vi.mock("react-i18next", () => ({
 // URL復元経路で利用
 vi.mock("../../utils/urlShare", () => ({
   getPlanFromURL: vi.fn(() => null),
+}));
+
+// Mock logger
+vi.mock("../../utils/logger", () => ({
+  logger: {
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  },
+  createLogger: () => ({
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  }),
 }));
 
 vi.mock("../../stores/gameDataStore", () => {
@@ -304,11 +321,17 @@ describe("App smoke", () => {
   });
 
   it("レシピが選択された場合にターゲット数量入力が表示される", async () => {
-    const mockRecipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 2001,
       name: "Test Recipe",
-      Results: [{ id: 1001, name: "Test Item" }],
-    };
+      type: "Smelt",
+      inputId: 1000,
+      inputName: "Input",
+      inputCount: 1,
+      outputId: 1001,
+      outputName: "Test Item",
+      outputCount: 1,
+    });
 
     await renderFreshApp(() => {
       vi.doMock("../../stores/gameDataStore", () => ({
@@ -346,11 +369,17 @@ describe("App smoke", () => {
   });
 
   it("ターゲット数量の変更が正しく処理される", async () => {
-    const mockRecipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 2001,
       name: "Test Recipe",
-      Results: [{ id: 1001, name: "Test Item" }],
-    };
+      type: "Smelt",
+      inputId: 1000,
+      inputName: "Input",
+      inputCount: 1,
+      outputId: 1001,
+      outputName: "Test Item",
+      outputCount: 1,
+    });
     const setTargetQuantity = vi.fn();
 
     await renderFreshApp(() => {
@@ -701,11 +730,17 @@ describe("App smoke", () => {
     // このテストは言語切り替えのロジックが存在することを確認するためのもの
     // 実際の動作確認はE2Eテスト（scenario-11-settings-locale.spec.ts）で行う
 
-    const mockRecipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 2001,
       name: "テストレシピ",
-      Results: [{ id: 1001, name: "テストアイテム" }],
-    };
+      type: "Smelt",
+      inputId: 1000,
+      inputName: "入力",
+      inputCount: 1,
+      outputId: 1001,
+      outputName: "テストアイテム",
+      outputCount: 1,
+    });
 
     await renderFreshApp(() => {
       vi.doMock("../../stores/gameDataStore", () => ({

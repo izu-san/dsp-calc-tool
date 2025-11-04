@@ -3,7 +3,12 @@
  * テスト用のモックデータを一元的に管理し、重複を削減
  */
 
-import type { GameData, Recipe, Machine, Item } from "../../types/game-data";
+import type { GameData, Item, Machine, Recipe } from "../../types/game-data";
+
+// 新しいビルダーを再エクスポート
+export * from "./machineBuilder";
+export * from "./nodeBuilder";
+export * from "./recipeBuilder";
 
 // 基本テストデータ
 export const createMockItem = (id: number, name: string): Item => ({
@@ -73,15 +78,16 @@ export const createMockGameData = (): GameData => {
     });
   });
 
+  const machines = new Map<number, Machine>();
+  machines.set(2302, createMockMachine("2302", "Arc Smelter"));
+  machines.set(2303, createMockMachine("2303", "Assembling Machine Mk.I"));
+
   return {
     items,
     allItems: items,
     recipes,
     recipesByItemId,
-    machines: new Map([
-      ["arc", createMockMachine("arc", "Arc Smelter")],
-      ["mk1", createMockMachine("mk1", "Assembling Machine Mk.I")],
-    ]),
+    machines,
   };
 };
 
@@ -172,7 +178,7 @@ export const createMockURL = (planData: string): string => {
 export const createLargeMockGameData = (): GameData => {
   const items = new Map<number, Item>();
   const recipes = new Map<number, Recipe>();
-  const machines = new Map<string, Machine>();
+  const machines = new Map<number, Machine>();
 
   // 1000個のアイテム
   for (let i = 1; i <= 1000; i++) {
@@ -185,11 +191,20 @@ export const createLargeMockGameData = (): GameData => {
   }
 
   // 50個の機械
-  const machineTypes = ["mk1", "mk2", "mk3", "arc", "plane"];
-  for (let i = 0; i < 50; i++) {
-    const type = machineTypes[i % machineTypes.length];
-    machines.set(`${type}_${i}`, createMockMachine(`${type}_${i}`, `Machine ${i}`));
+  for (let i = 2300; i < 2350; i++) {
+    machines.set(i, createMockMachine(i.toString(), `Machine ${i}`));
   }
 
-  return { items, recipes, machines };
+  // recipesByItemIdプロパティを追加
+  const recipesByItemId = new Map<number, Recipe[]>();
+  recipes.forEach(recipe => {
+    recipe.Results.forEach(result => {
+      if (!recipesByItemId.has(result.id)) {
+        recipesByItemId.set(result.id, []);
+      }
+      recipesByItemId.get(result.id)!.push(recipe);
+    });
+  });
+
+  return { items, allItems: items, recipes, recipesByItemId, machines };
 };

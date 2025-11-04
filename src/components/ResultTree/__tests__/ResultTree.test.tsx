@@ -2,6 +2,12 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProductionTree } from "../index";
+import {
+  createRawMaterialNode,
+  createRecipeNode,
+  machinePresets,
+  recipePresets,
+} from "../../../test/factories/testDataFactory";
 
 // i18n モック（キーをそのまま返す）
 vi.mock("react-i18next", () => ({
@@ -77,23 +83,11 @@ describe("ProductionTree", () => {
     vi.restoreAllMocks();
   });
 
-  const mockRawMaterialNode = {
-    nodeId: "raw-1001-0",
-    isRawMaterial: true,
+  const mockRawMaterialNode = createRawMaterialNode({
     itemId: 1001,
     itemName: "Iron Ore",
     targetOutputRate: 60,
-    machineCount: 0,
-    proliferator: {
-      type: "none" as const,
-      mode: "speed" as const,
-      productionBonus: 0,
-      speedBonus: 0,
-      powerIncrease: 0,
-    },
-    power: { total: 0, machines: 0, sorters: 0 },
-    conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-    inputs: [],
+    nodeId: "raw-1001-0",
     miningFrom: "Iron Vein",
     miningEquipment: {
       machineId: 2302,
@@ -101,12 +95,18 @@ describe("ProductionTree", () => {
       machineCount: 1,
       powerConsumption: 0,
     },
-    children: [],
-  };
+    proliferator: {
+      type: "none" as const,
+      mode: "speed" as const,
+      productionBonus: 0,
+      speedBonus: 0,
+      powerIncrease: 0,
+    },
+    power: { total: 0, machines: 0, sorters: 0, dysonSphere: 0 },
+    conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
+  });
 
-  const mockRecipeNode = {
-    nodeId: "recipe-2001-0",
-    isRawMaterial: false,
+  const mockRecipeNode = createRecipeNode({
     recipe: {
       SID: 2001,
       name: "Iron Ingot",
@@ -131,9 +131,10 @@ describe("ProductionTree", () => {
       isPowerConsumer: true,
       isPowerExchanger: false,
     },
-    machineCount: 1,
     targetOutputRate: 60,
-    power: { total: 120, machines: 120, sorters: 0 },
+    machineCount: 1,
+    nodeId: "recipe-2001-0",
+    power: { total: 120, machines: 120, sorters: 0, dysonSphere: 0 },
     conveyorBelts: {
       inputs: 1,
       outputs: 1,
@@ -150,7 +151,7 @@ describe("ProductionTree", () => {
     },
     inputs: [{ itemId: 1001, itemName: "Iron Ore", requiredRate: 60 }],
     children: [mockRawMaterialNode],
-  };
+  });
 
   it("原料ノードの場合、採掘情報とベルト情報が表示される", () => {
     render(<ProductionTree node={mockRawMaterialNode} />);
@@ -470,7 +471,7 @@ describe("ProductionTree", () => {
         speedBonus: 0,
         powerIncrease: 0,
       },
-      power: { total: 0, machines: 0, sorters: 0 },
+      power: { total: 0, machines: 0, sorters: 0, dysonSphere: 0 },
       conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
       inputs: [],
       sourceRecipe: {

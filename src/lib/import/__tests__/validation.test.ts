@@ -1,39 +1,46 @@
 import { describe, it, expect } from "vitest";
 import { validatePlanInfo } from "../validation";
-import type { GameData, Recipe, RecipeItem } from "../../../types/game-data";
+import type { GameData } from "../../../types/game-data";
 import type { PlanInfoForValidation } from "../../../types/import";
+import {
+  createMockGameData,
+  createSingleOutputRecipe,
+} from "../../../test/factories/testDataFactory";
 
 describe("validation", () => {
   describe("validatePlanInfo", () => {
-    const createMockRecipeItem = (id: number, name: string, count: number = 1): RecipeItem => ({
-      id,
-      name,
-      count,
-    });
-
-    const createMockRecipe = (sid: number, name: string): Recipe => ({
-      SID: sid,
-      id: sid,
-      name,
-      Type: 1,
-      Handcraft: false,
-      Explicit: true,
-      TimeSpend: 60,
-      Items: [createMockRecipeItem(1001, "Iron Ore", 2)],
-      Results: [createMockRecipeItem(1101, "Iron Ingot", 1)],
-      GridIndex: 0,
-      IconPath: "",
-      Description: "",
-    });
-
-    const createMockGameData = (): GameData => ({
-      items: new Map(),
-      recipes: new Map([
-        [1, createMockRecipe(1, "Iron Ingot")],
-        [2, createMockRecipe(2, "Steel")],
-      ]),
-      machines: new Map(),
-    });
+    const createTestGameData = (): GameData => {
+      const gameData = createMockGameData();
+      gameData.recipes.set(
+        1,
+        createSingleOutputRecipe({
+          SID: 1,
+          name: "Iron Ingot",
+          type: "Smelt",
+          inputId: 1001,
+          inputName: "Iron Ore",
+          inputCount: 2,
+          outputId: 1101,
+          outputName: "Iron Ingot",
+          outputCount: 1,
+        })
+      );
+      gameData.recipes.set(
+        2,
+        createSingleOutputRecipe({
+          SID: 2,
+          name: "Steel",
+          type: "Smelt",
+          inputId: 1101,
+          inputName: "Iron Ingot",
+          inputCount: 1,
+          outputId: 1102,
+          outputName: "Steel",
+          outputCount: 1,
+        })
+      );
+      return gameData;
+    };
 
     it("有効なプラン情報の検証成功", () => {
       const planInfo: PlanInfoForValidation = {
@@ -43,7 +50,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -57,7 +64,7 @@ describe("validation", () => {
         timestamp: Date.now(),
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -75,7 +82,7 @@ describe("validation", () => {
         recipeName: "Unknown Recipe",
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -93,7 +100,7 @@ describe("validation", () => {
         recipeName: "Wrong Name",
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -113,7 +120,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: 0,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -132,7 +139,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: -10,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -149,7 +156,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: undefined as any,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -165,7 +172,7 @@ describe("validation", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -181,7 +188,7 @@ describe("validation", () => {
         recipeName: "Unknown",
         targetQuantity: -5, // Invalid
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -198,7 +205,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: 120,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -215,7 +222,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: 45.5,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 
@@ -231,7 +238,7 @@ describe("validation", () => {
         recipeName: "Iron Ingot",
         targetQuantity: 1e6,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
 
       const result = validatePlanInfo(planInfo, gameData);
 

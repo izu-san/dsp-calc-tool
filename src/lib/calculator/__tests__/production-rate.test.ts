@@ -1,33 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { calculateProductionRate } from "../production-rate";
-import type { Recipe, Machine, ProliferatorConfig } from "../../../types";
+import type { ProliferatorConfig } from "../../../types";
 import { PROLIFERATOR_DATA } from "../../../types/settings";
+import { machinePresets, recipePresets } from "../../../test/factories/testDataFactory";
 
 describe("calculateProductionRate", () => {
-  const mockRecipe: Recipe = {
-    SID: 1,
-    name: "Iron Ingot",
-    TimeSpend: 60, // 1 second (60 ticks)
-    Results: [{ id: 1001, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-    Items: [{ id: 1101, name: "Iron Ore", count: 1, Type: "0", isRaw: true }],
-    Type: "Smelt",
-    Explicit: false,
-    GridIndex: "1101",
-    productive: true,
-  };
-
-  const mockMachine: Machine = {
-    id: 2302,
-    name: "Arc Smelter",
-    Type: "Smelt",
-    assemblerSpeed: 10000, // 100% (10000 = 100%)
-    workEnergyPerTick: 360000, // 360kW per tick
-    idleEnergyPerTick: 18000,
-    exchangeEnergyPerTick: 0,
-    isPowerConsumer: true,
-    isPowerExchanger: false,
-    isRaw: false,
-  };
+  const mockRecipe = recipePresets.ironIngot();
+  const mockMachine = machinePresets.arcSmelter();
 
   it("should calculate basic production rate without proliferator", () => {
     const proliferator: ProliferatorConfig = {

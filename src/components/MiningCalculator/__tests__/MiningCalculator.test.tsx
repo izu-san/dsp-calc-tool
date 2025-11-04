@@ -6,6 +6,7 @@ import type {
   RecipeTreeNode,
   PowerConsumption,
 } from "../../../types/calculation";
+import { createRecipeNode } from "../../../test/factories/testDataFactory";
 
 // Mock dependencies
 vi.mock("../../../lib/miningCalculation");
@@ -55,10 +56,11 @@ describe("MiningCalculator", () => {
   const mockPower: PowerConsumption = {
     machines: 1000,
     sorters: 100,
+    dysonSphere: 0,
     total: 1100,
   };
 
-  const mockRootNode: RecipeTreeNode = {
+  const mockRootNode = createRecipeNode({
     targetOutputRate: 1,
     machineCount: 10,
     proliferator: {
@@ -73,7 +75,7 @@ describe("MiningCalculator", () => {
     children: [],
     conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
     nodeId: "test-node-1",
-  };
+  });
 
   const mockCalculationResult: CalculationResult = {
     rootNode: mockRootNode,

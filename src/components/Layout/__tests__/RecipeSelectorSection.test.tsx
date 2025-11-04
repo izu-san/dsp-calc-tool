@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { RecipeSelectorSection } from "../RecipeSelectorSection";
 import type { Recipe } from "../../../types";
+import { createSingleOutputRecipe } from "../../../test/factories/testDataFactory";
 
 // i18nextをモック
 vi.mock("react-i18next", () => ({
@@ -18,30 +19,32 @@ vi.mock("react-i18next", () => ({
 
 describe("RecipeSelectorSection", () => {
   const mockRecipes: Recipe[] = [
-    {
+    createSingleOutputRecipe({
       SID: 1,
       name: "Iron Ingot",
-      Type: "Smelt",
-      Explicit: false,
-      TimeSpend: 60,
-      Items: [],
-      Results: [{ id: 1101, name: "Iron Ingot", count: 1 }],
-      GridIndex: "0101",
-      iconPath: "/path/to/icon.png",
-      productive: false,
-    },
-    {
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1001,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      outputId: 1101,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+      gridIndex: "0101",
+    }),
+    createSingleOutputRecipe({
       SID: 2,
       name: "Copper Ingot",
-      Type: "Smelt",
-      Explicit: false,
-      TimeSpend: 60,
-      Items: [],
-      Results: [{ id: 1104, name: "Copper Ingot", count: 1 }],
-      GridIndex: "0102",
-      iconPath: "/path/to/icon2.png",
-      productive: false,
-    },
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 1002,
+      inputName: "Copper Ore",
+      inputCount: 1,
+      outputId: 1104,
+      outputName: "Copper Ingot",
+      outputCount: 1,
+      gridIndex: "0102",
+    }),
   ];
 
   const mockOnRecipeSelect = vi.fn();

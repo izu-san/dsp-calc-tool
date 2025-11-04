@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../logger");
 import {
   exportPlan,
   importPlan,
@@ -7,6 +10,7 @@ import {
   getRecentPlans,
   loadPlanFromLocalStorage,
   deletePlanFromLocalStorage,
+  logger,
 } from "../planExport";
 import type { SavedPlan, GlobalSettings, NodeOverrideSettings } from "../../types";
 
@@ -279,7 +283,7 @@ describe("planExport", () => {
     });
 
     it("バージョン検証とwarning", async () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const loggerWarnSpy = vi.spyOn(logger, "warn").mockImplementation(() => {});
 
       const planWithDifferentVersion = {
         version: "2.0.0", // 異なるバージョン
@@ -300,11 +304,11 @@ describe("planExport", () => {
       const result = await importPlan(mockFile);
 
       expect(result.name).toBe("Future Plan");
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Plan version mismatch: 2.0.0 vs 1.0.0")
       );
 
-      consoleWarnSpy.mockRestore();
+      loggerWarnSpy.mockRestore();
     });
 
     it("無効なJSON処理（エラーthrow）", async () => {

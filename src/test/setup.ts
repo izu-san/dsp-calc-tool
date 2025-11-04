@@ -8,6 +8,33 @@ vi.mock("react-i18next", () => ({
   initReactI18next: { type: "3rdParty", init: () => {} },
 }));
 
+// Mock history recording services
+vi.mock("../services/history-recording", () => ({
+  recordSettingsHistory: vi.fn(),
+  recordPlanHistory: vi.fn(),
+  recordPowerGenerationHistory: vi.fn(),
+  recordNodeOverrideHistory: vi.fn(),
+}));
+
+// Mock historyRecorder utility
+vi.mock("../utils/historyRecorder", () => ({
+  recordHistoryEntry: vi.fn(),
+  isRestoring: vi.fn(() => false),
+  setRestoring: vi.fn(),
+  isInternal: vi.fn(() => false),
+  setInternal: vi.fn(),
+}));
+
+// Mock logger
+vi.mock("../utils/logger", () => ({
+  createLogger: () => ({
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+  }),
+}));
+
 // Mock fetch to prevent network requests during tests
 global.fetch = vi.fn(() =>
   Promise.resolve({

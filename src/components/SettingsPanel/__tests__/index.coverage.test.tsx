@@ -4,6 +4,7 @@ import { SettingsPanel } from "../index";
 import type { RecipeTreeNode } from "../../../types";
 import { useRecipeSelectionStore } from "../../../stores/recipeSelectionStore";
 import { useGameDataStore } from "../../../stores/gameDataStore";
+import { createRecipeNode } from "../../../test/factories/testDataFactory";
 
 // i18n モック
 vi.mock("react-i18next", () => ({
@@ -85,32 +86,34 @@ describe("SettingsPanel coverage additions", () => {
 
   it("ツリー走査で子ノードのアイテムが代替持ちの場合に AlternativeRecipeSelector を表示", () => {
     // ルート: item 1001（単一）、子: item 2002（複数レシピあり）
-    const child: RecipeTreeNode = {
-      nodeId: "child",
+    const child = createRecipeNode({
       recipe: { SID: 3001, name: "ChildR", Items: [{ id: 2002, quantity: 1 }] } as any,
+      machine: { id: 2303, name: "Assembler", Type: "Assemble" } as any,
       itemName: "Child",
       itemId: 2002,
       isRawMaterial: false,
       targetOutputRate: 1,
       inputs: [],
-      power: { total: 0, machines: 0, sorters: 0 },
+      power: { total: 0, machines: 0, sorters: 0, dysonSphere: 0 },
       conveyorBelts: { inputs: 0, outputs: 0, total: 0, saturation: 0 },
       proliferator: { type: "none", mode: "speed" },
       children: [],
-    };
-    const root: RecipeTreeNode = {
-      nodeId: "root",
+      nodeId: "child",
+    });
+    const root = createRecipeNode({
       recipe: { SID: 2001, name: "RootR", Items: [{ id: 1001, quantity: 1 }] } as any,
+      machine: { id: 2303, name: "Assembler", Type: "Assemble" } as any,
       itemName: "Root",
       itemId: 1001,
       isRawMaterial: false,
       targetOutputRate: 1,
       inputs: [],
-      power: { total: 0, machines: 0, sorters: 0 },
+      power: { total: 0, machines: 0, sorters: 0, dysonSphere: 0 },
       conveyorBelts: { inputs: 0, outputs: 0, total: 0, saturation: 0 },
       proliferator: { type: "none", mode: "speed" },
       children: [child],
-    };
+      nodeId: "root",
+    });
 
     (useRecipeSelectionStore as ReturnType<typeof vi.fn>).mockReturnValue({
       selectedRecipe: { SID: 2001, name: "R", Results: [{ id: 1001, quantity: 1 }] },

@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { loadGameData } from "../parser";
+
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../utils/logger");
+import { loadGameData, logger } from "../parser";
 
 // Mock fetch globally
 global.fetch = vi.fn();
@@ -200,7 +203,7 @@ describe("parser", () => {
     });
 
     it("ロケールファイルがない場合デフォルトにフォールバック", async () => {
-      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const loggerWarnSpy = vi.spyOn(logger, "warn").mockImplementation(() => {});
 
       // Promise.allで並列実行されるため、すべてのfetchをセットアップ
       let callCount = 0;
@@ -236,13 +239,12 @@ describe("parser", () => {
 
       const gameData = await loadGameData(undefined, "fr");
 
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Items_fr.xml not found")
-      );
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
+      // logger.warnが呼ばれることを確認
+      expect(loggerWarnSpy).toHaveBeenCalledWith(expect.stringContaining("Items_fr.xml not found"));
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Recipes_fr.xml not found")
       );
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
         expect.stringContaining("Machines_fr.xml not found")
       );
 
@@ -258,7 +260,7 @@ describe("parser", () => {
       expect(gameData.recipes.size).toBe(3); // Critical Photonレシピが追加されているため
       expect(gameData.machines.size).toBe(3); // Ray Receiverが追加されているため
 
-      consoleWarnSpy.mockRestore();
+      loggerWarnSpy.mockRestore();
     });
 
     it("カスタムRecipes XMLを使用できる", async () => {
