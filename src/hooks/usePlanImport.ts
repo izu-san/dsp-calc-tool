@@ -5,9 +5,9 @@
 
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { SavedPlan } from "../../types";
-import type { GameData } from "../../types/game-data";
-import type { GlobalSettings } from "../../types/settings";
+import type { SavedPlan, NodeOverrideSettings } from "../types";
+import type { GameData } from "../types/game-data";
+import type { GlobalSettings } from "../types/settings";
 import { importPlanFromFile } from "../services/plan-management/planImportService";
 import {
   loadPlanFromStorage,
@@ -23,7 +23,7 @@ export interface UsePlanImportParams {
   currentSettings: GlobalSettings;
   callbacks?: PlanRestorationCallbacks;
   mergeOverrides?: boolean;
-  currentOverrides?: Map<string, unknown>;
+  currentOverrides?: Map<string, NodeOverrideSettings>;
   onImportSuccess?: () => void;
 }
 

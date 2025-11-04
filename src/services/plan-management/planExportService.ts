@@ -9,7 +9,14 @@ import { exportToExcel } from "../../lib/export/excelExporter";
 import { generateExportFilename } from "../../lib/export/filenameGenerator";
 import { exportMultipleViews, exportToImage } from "../../lib/export/imageExporter";
 import { exportToMarkdown } from "../../lib/export/markdownExporter";
-import type { CalculationResult, GlobalSettings, Recipe } from "../../types";
+import type {
+  CalculationResult,
+  GlobalSettings,
+  Recipe,
+  GameTemplate,
+  PowerGeneratorType,
+  ProliferatorConfig,
+} from "../../types";
 import type { ImageExportOptions } from "../../types/export";
 import { createLogger } from "../../utils/logger";
 import type { ExportResult } from "./types";
@@ -23,12 +30,12 @@ export interface PlanExportParams {
   settings: GlobalSettings;
   planName: string;
   powerGenerationSettings: {
-    template: string;
-    manualGenerator: string | null;
+    template: GameTemplate;
+    manualGenerator: PowerGeneratorType | null;
     manualFuel: string | null;
-    powerFuelProliferator: unknown;
+    powerFuelProliferator: ProliferatorConfig;
   };
-  items: Map<number, unknown>;
+  items: Map<number, { name: string }>;
 }
 
 export interface PlanImageExportParams extends PlanExportParams {

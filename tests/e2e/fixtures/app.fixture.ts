@@ -1,5 +1,5 @@
-import { test as base } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import { test as base } from "@playwright/test";
 import { disableAnimations } from "../helpers/ui-stability";
 
 /**
@@ -11,12 +11,24 @@ export const appFixture = base.extend<{
   appPage: async ({ page }, use) => {
     await page.goto("/");
     await disableAnimations(page);
-    // Skip welcome modal if it exists
+
+    // Wait for welcome modal and skip it
     const welcomeModal = page.getByTestId("welcome-modal");
-    if (await welcomeModal.isVisible().catch(() => false)) {
+    try {
+      // Wait for the modal to appear (with timeout)
+      await welcomeModal.waitFor({ state: "visible", timeout: 5000 });
       await page.getByTestId("welcome-skip-button").click();
       await welcomeModal.waitFor({ state: "hidden" });
+    } catch {
+      // Modal might not appear if tutorial was already seen
+      console.log("Welcome modal not found or already hidden");
     }
+
+    // Ensure tutorial flag is set to prevent modal from appearing again
+    await page.evaluate(() => {
+      localStorage.setItem("dsp_calc_tutorial_seen", "true");
+    });
+
     await use(page);
   },
 });

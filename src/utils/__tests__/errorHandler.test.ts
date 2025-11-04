@@ -1,4 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../logger");
 import { handleError, isErrorType, getErrorMessage } from "../errorHandler";
 import { DSPCalculatorError, DataLoadError, CalculationError } from "../errors";
 

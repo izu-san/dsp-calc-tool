@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../../utils/logger");
 import { useGameDataStore, getMachineById } from "../gameDataStore";
 import type { GameData } from "../../types";
+import { createMockGameData, createMachineByType } from "../../test/factories/testDataFactory";
 
 // Mock i18n
 vi.mock("../../i18n", () => ({
@@ -32,15 +36,6 @@ const localStorageMock = (() => {
 })();
 
 global.localStorage = localStorageMock as Storage;
-
-// Create mock game data
-const createMockGameData = (): GameData => ({
-  recipes: new Map(),
-  machines: new Map(),
-  items: new Map(),
-  recipesByItemId: new Map(),
-  allItems: new Map(),
-});
 
 describe("gameDataStore", () => {
   beforeEach(() => {
@@ -301,18 +296,14 @@ describe("gameDataStore", () => {
 
   describe("getMachineById", () => {
     it("should return machine when found", () => {
-      const mockMachine = {
+      const mockMachine = createMachineByType({
         id: 2303,
         name: "Assembling Machine Mk.I",
-        Type: "Assemble" as const,
+        type: "Assemble",
         assemblerSpeed: 7500,
         workEnergyPerTick: 270000,
         idleEnergyPerTick: 18000,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-        isRaw: false,
-      };
+      });
 
       const gameData = createMockGameData();
       gameData.machines.set(2303, mockMachine);

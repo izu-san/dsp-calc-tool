@@ -2,22 +2,55 @@ import { describe, it, expect } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useTreeCollapse } from "../useTreeCollapse";
 import type { CalculationResult, RecipeTreeNode } from "../../types";
+import {
+  createRecipeNode,
+  createRawMaterialNode,
+  createSingleOutputRecipe,
+  createMachineByType,
+  createDefaultPowerConsumption,
+  createDefaultConveyorBelts,
+} from "../../test/factories/testDataFactory";
 
 describe("useTreeCollapse", () => {
-  const createMockNode = (id: number, children?: RecipeTreeNode[]): RecipeTreeNode => ({
-    itemId: id,
-    itemName: `Item ${id}`,
-    targetOutputRate: 1,
-    recipe: { SID: id, name: `Recipe ${id}` } as any,
-    machine: {} as any,
-    machineCount: 1,
-    proliferator: { type: "none", mode: "speed" } as any,
-    proliferatorMultiplier: { production: 1, speed: 1 },
-    power: { machines: 0, sorters: 0, total: 0 },
-    conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
-    children: children || [],
-    isRawMaterial: false,
-  });
+  const createMockNode = (id: number, children?: RecipeTreeNode[]): RecipeTreeNode => {
+    const recipe = createSingleOutputRecipe({
+      SID: id,
+      name: `Recipe ${id}`,
+      type: "Assemble",
+      inputId: id * 100,
+      inputName: `Input ${id}`,
+      inputCount: 1,
+      outputId: id,
+      outputName: `Item ${id}`,
+      outputCount: 1,
+    });
+
+    return createRecipeNode({
+      recipe,
+      machine: createMachineByType({
+        id: 2301,
+        name: "Assembler Mk.I",
+        type: "Assemble",
+      }),
+      nodeId: `node-${id}`,
+      targetOutputRate: 1,
+      machineCount: 1,
+      power: createDefaultPowerConsumption({
+        machines: 0,
+        sorters: 0,
+        dysonSphere: 0,
+        total: 0,
+      }),
+      conveyorBelts: createDefaultConveyorBelts({
+        inputs: 0,
+        outputs: 0,
+        total: 0,
+      }),
+      children: children || [],
+      itemId: id,
+      itemName: `Item ${id}`,
+    });
+  };
 
   const createMockCalculationResult = (rootNode: RecipeTreeNode): CalculationResult => ({
     rootNode,
@@ -189,20 +222,12 @@ describe("useTreeCollapse", () => {
   });
 
   it("原材料ノードを正しく処理する", async () => {
-    const rawMaterialNode: RecipeTreeNode = {
+    const rawMaterialNode = createRawMaterialNode({
       itemId: 100,
       itemName: "Iron Ore",
       targetOutputRate: 10,
-      recipe: null,
-      machine: null,
-      machineCount: 0,
-      proliferator: { type: "none", mode: "speed" } as any,
-      proliferatorMultiplier: { production: 1, speed: 1 },
-      power: { machines: 0, sorters: 0, total: 0 },
-      conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
-      children: [],
-      isRawMaterial: true,
-    };
+      nodeId: "raw-100",
+    });
 
     const rootNode = createMockNode(1, [rawMaterialNode]);
     const calculationResult = createMockCalculationResult(rootNode);

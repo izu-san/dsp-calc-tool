@@ -1,56 +1,48 @@
 import { describe, it, expect } from "vitest";
 import { buildPlanFromImport } from "../planBuilder";
-import type { GameData, Recipe, RecipeItem } from "../../../types/game-data";
+import type { GameData } from "../../../types/game-data";
 import type { PlanInfoForValidation } from "../../../types/import";
 import type { GlobalSettings } from "../../../types/settings";
+import {
+  createMockGameData,
+  createSingleOutputRecipe,
+  createMockSettings,
+} from "../../../test/factories/testDataFactory";
 
 describe("planBuilder", () => {
   describe("buildPlanFromImport", () => {
-    const createMockRecipeItem = (id: number, name: string, count: number = 1): RecipeItem => ({
-      id,
-      name,
-      count,
-    });
-
-    const createMockRecipe = (sid: number, name: string): Recipe => ({
-      SID: sid,
-      id: sid,
-      name,
-      Type: 1,
-      Handcraft: false,
-      Explicit: true,
-      TimeSpend: 60,
-      Items: [createMockRecipeItem(1001, "Iron Ore", 2)],
-      Results: [createMockRecipeItem(1101, "Iron Ingot", 1)],
-      GridIndex: 0,
-      IconPath: "",
-      Description: "",
-    });
-
-    const createMockGameData = (): GameData => ({
-      items: new Map(),
-      recipes: new Map([
-        [1, createMockRecipe(1, "Iron Ingot")],
-        [2, createMockRecipe(2, "Steel")],
-      ]),
-      machines: new Map(),
-    });
-
-    const createMockSettings = (): GlobalSettings => ({
-      gameData: createMockGameData(),
-      language: "en",
-      proliferator: { type: "none", mode: "speed", speedBonus: 1, productionBonus: 1 },
-      alternativeRecipes: new Map(),
-      beltType: "mk3",
-      sorterType: "mk3",
-      miningSpeed: 1.0,
-      proliferatorForMining: { type: "none", mode: "speed", speedBonus: 1, productionBonus: 1 },
-      powerGeneration: {
-        template: "auto",
-        totalPowerGenerated: 0,
-        generators: [],
-      },
-    });
+    const createTestGameData = (): GameData => {
+      const gameData = createMockGameData();
+      gameData.recipes.set(
+        1,
+        createSingleOutputRecipe({
+          SID: 1,
+          name: "Iron Ingot",
+          type: "Smelt",
+          inputId: 1001,
+          inputName: "Iron Ore",
+          inputCount: 2,
+          outputId: 1101,
+          outputName: "Iron Ingot",
+          outputCount: 1,
+        })
+      );
+      gameData.recipes.set(
+        2,
+        createSingleOutputRecipe({
+          SID: 2,
+          name: "Steel",
+          type: "Smelt",
+          inputId: 1101,
+          inputName: "Iron Ingot",
+          inputCount: 1,
+          outputId: 1102,
+          outputName: "Steel",
+          outputCount: 1,
+        })
+      );
+      return gameData;
+    };
 
     it("有効なプラン情報からSavedPlanを構築", () => {
       const planInfo: PlanInfoForValidation = {
@@ -60,7 +52,7 @@ describe("planBuilder", () => {
         recipeName: "Iron Ingot",
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -81,7 +73,7 @@ describe("planBuilder", () => {
         timestamp: Date.now(),
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -97,7 +89,7 @@ describe("planBuilder", () => {
         recipeName: "Unknown Recipe",
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -112,7 +104,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
       currentSettings.beltType = "mk2";
       currentSettings.sorterType = "mk1";
@@ -131,7 +123,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 120,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -148,7 +140,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -164,7 +156,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -180,7 +172,7 @@ describe("planBuilder", () => {
         recipeSID: 2,
         targetQuantity: 1,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -198,7 +190,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
       currentSettings.powerGeneration = {
         template: "manual",
@@ -220,7 +212,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 45.7,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -236,7 +228,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);
@@ -252,7 +244,7 @@ describe("planBuilder", () => {
         recipeSID: 1,
         targetQuantity: 60,
       };
-      const gameData = createMockGameData();
+      const gameData = createTestGameData();
       const currentSettings = createMockSettings();
 
       const result = buildPlanFromImport(planInfo, gameData, currentSettings);

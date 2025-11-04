@@ -3,9 +3,9 @@
  * Centralizes history recording logic extracted from stores
  */
 
-import type { HistoryEntryType } from "../types/history";
-import { recordHistoryEntry as recordHistoryEntryUtil } from "../utils/historyRecorder";
-import { createLogger } from "../utils/logger";
+import type { HistoryEntryType } from "../../types/history";
+import { recordHistoryEntry as recordHistoryEntryUtil } from "../../utils/historyRecorder";
+import { createLogger } from "../../utils/logger";
 
 const logger = createLogger("HistoryRecordingService");
 
@@ -88,5 +88,25 @@ export function recordPowerGenerationHistory(params: PowerGenerationHistoryParam
     description: params.description,
     before: params.before,
     after: params.after,
+  });
+}
+
+/**
+ * Node override history recording helper
+ */
+export interface NodeOverrideHistoryParams {
+  description: string;
+  before: unknown;
+  after: unknown;
+  affectedNodes?: string[];
+}
+
+export function recordNodeOverrideHistory(params: NodeOverrideHistoryParams): void {
+  recordHistoryEntry({
+    type: "nodeOverride",
+    description: params.description,
+    before: params.before,
+    after: params.after,
+    affectedNodes: params.affectedNodes,
   });
 }

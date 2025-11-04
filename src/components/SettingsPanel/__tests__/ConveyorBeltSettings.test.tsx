@@ -3,6 +3,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ConveyorBeltSettings } from "../ConveyorBeltSettings";
 import { useSettingsStore } from "../../../stores/settingsStore";
 
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../../../utils/logger");
+import * as loggerModule from "../../../utils/logger";
+
 // i18nextのモック
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -320,8 +324,9 @@ describe("ConveyorBeltSettings", () => {
 
       // totalSpeed = 0 * 2 = 0
       expect(screen.getByText("0")).toBeInTheDocument();
+      // loggerが実際に呼ばれるため、console.warn経由で確認
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "[WARN] [DSP-Calc:ConveyorBeltSettings] Invalid values detected",
+        expect.stringContaining("[WARN] [DSP-Calc:ConveyorBeltSettings] Invalid values detected"),
         expect.objectContaining({
           speed: "invalid",
           stackCount: 2,

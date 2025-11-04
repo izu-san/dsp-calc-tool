@@ -4,13 +4,13 @@ import type { GameData } from "../../../types/game-data";
 import { calculatePhases } from "../phaseCalculation";
 import {
   createMockGameData,
-  createMockRecipe,
   createMockItem,
   createRawMaterialNode,
   createRecipeNode,
   createMachineByType,
   createDefaultPowerConsumption,
   createDefaultConveyorBelts,
+  createSingleOutputRecipe,
 } from "../../../test/factories/testDataFactory";
 import { PROLIFERATOR_DATA } from "../../../types/settings";
 import i18n from "../../../i18n";
@@ -22,7 +22,7 @@ function createRecipeTreeNode(
   itemId: number,
   itemName: string,
   isRawMaterial: boolean,
-  recipe?: ReturnType<typeof createMockRecipe>,
+  recipe?: ReturnType<typeof createSingleOutputRecipe>,
   children: RecipeTreeNode[] = []
 ): RecipeTreeNode {
   if (isRawMaterial) {
@@ -122,7 +122,17 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
       // Create a root node that uses Hydrogen (mined)
       const hydrogenNode = createRecipeTreeNode(HYDROGEN_ID, "水素", true);
       const rootNode = createRecipeNode({
-        recipe: createMockRecipe(1, "Test Recipe"),
+        recipe: createSingleOutputRecipe({
+          SID: 1,
+          name: "Test Recipe",
+          type: "Assemble",
+          inputId: 1001,
+          inputName: "Input",
+          inputCount: 1,
+          outputId: 1002,
+          outputName: "Output",
+          outputCount: 1,
+        }),
         machine: createMachineByType({
           id: 2301,
           name: "Assembler Mk.I",
@@ -164,15 +174,32 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
 
     it("should appear ONLY in Phase 2+ when produced via recipe (isRawMaterial === false)", () => {
       // Create a root node that uses Hydrogen (produced via recipe)
-      const hydrogenRecipe = createMockRecipe(100, "水素精製");
-      hydrogenRecipe.Results = [
-        { id: HYDROGEN_ID, name: "水素", count: 1, Type: "Item", isRaw: true },
-      ];
-      hydrogenRecipe.Type = "Refine";
+      const hydrogenRecipe = createSingleOutputRecipe({
+        SID: 100,
+        name: "水素精製",
+        type: "Refine",
+        inputId: 1000,
+        inputName: "Input",
+        inputCount: 1,
+        outputId: HYDROGEN_ID,
+        outputName: "水素",
+        outputCount: 1,
+        isRawOutput: true,
+      });
 
       const hydrogenNode = createRecipeTreeNode(HYDROGEN_ID, "水素", false, hydrogenRecipe);
       const rootNode = createRecipeNode({
-        recipe: createMockRecipe(1, "Test Recipe"),
+        recipe: createSingleOutputRecipe({
+          SID: 1,
+          name: "Test Recipe",
+          type: "Assemble",
+          inputId: 1001,
+          inputName: "Input",
+          inputCount: 1,
+          outputId: 1002,
+          outputName: "Output",
+          outputCount: 1,
+        }),
         machine: createMachineByType({
           id: 2301,
           name: "Assembler Mk.I",
@@ -219,7 +246,17 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
       // Create a root node that uses Deuterium (mined)
       const deuteriumNode = createRecipeTreeNode(DEUTERIUM_ID, "重水素", true);
       const rootNode = createRecipeNode({
-        recipe: createMockRecipe(1, "Test Recipe"),
+        recipe: createSingleOutputRecipe({
+          SID: 1,
+          name: "Test Recipe",
+          type: "Assemble",
+          inputId: 1001,
+          inputName: "Input",
+          inputCount: 1,
+          outputId: 1002,
+          outputName: "Output",
+          outputCount: 1,
+        }),
         machine: createMachineByType({
           id: 2301,
           name: "Assembler Mk.I",
@@ -261,11 +298,18 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
 
     it("should appear ONLY in Phase 2+ when produced via recipe (isRawMaterial === false)", () => {
       // Create a root node that uses Deuterium (produced via recipe)
-      const deuteriumRecipe = createMockRecipe(101, "重水素分離");
-      deuteriumRecipe.Results = [
-        { id: DEUTERIUM_ID, name: "重水素", count: 1, Type: "Item", isRaw: true },
-      ];
-      deuteriumRecipe.Type = "Fractionate";
+      const deuteriumRecipe = createSingleOutputRecipe({
+        SID: 101,
+        name: "重水素分離",
+        type: "Fractionate",
+        inputId: HYDROGEN_ID,
+        inputName: "水素",
+        inputCount: 1,
+        outputId: DEUTERIUM_ID,
+        outputName: "重水素",
+        outputCount: 1,
+        isRawOutput: true,
+      });
 
       // Deuterium is produced from Hydrogen
       const hydrogenNode = createRecipeTreeNode(HYDROGEN_ID, "水素", true);
@@ -274,7 +318,17 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
       ]);
 
       const rootNode = createRecipeNode({
-        recipe: createMockRecipe(1, "Test Recipe"),
+        recipe: createSingleOutputRecipe({
+          SID: 1,
+          name: "Test Recipe",
+          type: "Assemble",
+          inputId: 1001,
+          inputName: "Input",
+          inputCount: 1,
+          outputId: 1002,
+          outputName: "Output",
+          outputCount: 1,
+        }),
         machine: createMachineByType({
           id: 2301,
           name: "Assembler Mk.I",
@@ -322,17 +376,34 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
       const hydrogenNode = createRecipeTreeNode(HYDROGEN_ID, "水素", true);
 
       // Deuterium is produced from Hydrogen via recipe
-      const deuteriumRecipe = createMockRecipe(101, "重水素分離");
-      deuteriumRecipe.Results = [
-        { id: DEUTERIUM_ID, name: "重水素", count: 1, Type: "Item", isRaw: true },
-      ];
-      deuteriumRecipe.Type = "Fractionate";
+      const deuteriumRecipe = createSingleOutputRecipe({
+        SID: 101,
+        name: "重水素分離",
+        type: "Fractionate",
+        inputId: HYDROGEN_ID,
+        inputName: "水素",
+        inputCount: 1,
+        outputId: DEUTERIUM_ID,
+        outputName: "重水素",
+        outputCount: 1,
+        isRawOutput: true,
+      });
       const deuteriumNode = createRecipeTreeNode(DEUTERIUM_ID, "重水素", false, deuteriumRecipe, [
         hydrogenNode,
       ]);
 
       const rootNode = createRecipeNode({
-        recipe: createMockRecipe(1, "Test Recipe"),
+        recipe: createSingleOutputRecipe({
+          SID: 1,
+          name: "Test Recipe",
+          type: "Assemble",
+          inputId: 1001,
+          inputName: "Input",
+          inputCount: 1,
+          outputId: 1002,
+          outputName: "Output",
+          outputCount: 1,
+        }),
         machine: createMachineByType({
           id: 2301,
           name: "Assembler Mk.I",
@@ -377,18 +448,20 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
 
   describe("Critical Photon", () => {
     it("should be placed in Phase 1 even though it is recipe-based", () => {
-      const photonRecipe = createMockRecipe(-1, "臨界光子生成");
-      photonRecipe.Type = "PhotonGeneration";
+      const photonRecipe = createSingleOutputRecipe({
+        SID: -1,
+        name: "臨界光子生成",
+        type: "PhotonGeneration",
+        inputId: 0,
+        inputName: "",
+        inputCount: 0,
+        outputId: CRITICAL_PHOTON_ID,
+        outputName: "臨界光子",
+        outputCount: 1,
+        isRawOutput: false,
+      });
+      // Items配列を空にする
       photonRecipe.Items = [];
-      photonRecipe.Results = [
-        {
-          id: CRITICAL_PHOTON_ID,
-          name: "臨界光子",
-          count: 1,
-          Type: "Item",
-          isRaw: false,
-        },
-      ];
 
       const photonNode = createRecipeNode({
         recipe: photonRecipe,
@@ -419,7 +492,17 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
       });
 
       const rootNode = createRecipeNode({
-        recipe: createMockRecipe(1, "Test Recipe"),
+        recipe: createSingleOutputRecipe({
+          SID: 1,
+          name: "Test Recipe",
+          type: "Assemble",
+          inputId: 1001,
+          inputName: "Input",
+          inputCount: 1,
+          outputId: 1002,
+          outputName: "Output",
+          outputCount: 1,
+        }),
         machine: createMachineByType({
           id: 2301,
           name: "Assembler Mk.I",
@@ -477,30 +560,64 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
 
       const rawNode = createRecipeTreeNode(1, "Iron Ore", true);
 
-      const stage1Recipe = createMockRecipe(10, "一次加工レシピ");
-      stage1Recipe.Results = [
-        { id: 101, name: "一次加工製品", count: 1, Type: "Item", isRaw: false },
-      ];
+      const stage1Recipe = createSingleOutputRecipe({
+        SID: 10,
+        name: "一次加工レシピ",
+        type: "Assemble",
+        inputId: 1,
+        inputName: "Iron Ore",
+        inputCount: 1,
+        outputId: 101,
+        outputName: "一次加工製品",
+        outputCount: 1,
+        isRawOutput: false,
+      });
       const stage1Node = createRecipeTreeNode(101, "一次加工製品", false, stage1Recipe, [rawNode]);
 
-      const stage2Recipe = createMockRecipe(20, "二次加工レシピ");
-      stage2Recipe.Results = [
-        { id: 201, name: "二次加工製品", count: 1, Type: "Item", isRaw: false },
-      ];
+      const stage2Recipe = createSingleOutputRecipe({
+        SID: 20,
+        name: "二次加工レシピ",
+        type: "Assemble",
+        inputId: 101,
+        inputName: "一次加工製品",
+        inputCount: 1,
+        outputId: 201,
+        outputName: "二次加工製品",
+        outputCount: 1,
+        isRawOutput: false,
+      });
       const stage2Node = createRecipeTreeNode(201, "二次加工製品", false, stage2Recipe, [
         stage1Node,
       ]);
 
-      const stage3Recipe = createMockRecipe(30, "三次加工レシピ");
-      stage3Recipe.Results = [
-        { id: 301, name: "三次加工製品", count: 1, Type: "Item", isRaw: false },
-      ];
+      const stage3Recipe = createSingleOutputRecipe({
+        SID: 30,
+        name: "三次加工レシピ",
+        type: "Assemble",
+        inputId: 201,
+        inputName: "二次加工製品",
+        inputCount: 1,
+        outputId: 301,
+        outputName: "三次加工製品",
+        outputCount: 1,
+        isRawOutput: false,
+      });
       const stage3Node = createRecipeTreeNode(301, "三次加工製品", false, stage3Recipe, [
         stage2Node,
       ]);
 
-      const finalRecipe = createMockRecipe(40, "最終製品レシピ");
-      finalRecipe.Results = [{ id: 401, name: "最終製品", count: 1, Type: "Item", isRaw: false }];
+      const finalRecipe = createSingleOutputRecipe({
+        SID: 40,
+        name: "最終製品レシピ",
+        type: "Assemble",
+        inputId: 301,
+        inputName: "三次加工製品",
+        inputCount: 1,
+        outputId: 401,
+        outputName: "最終製品",
+        outputCount: 1,
+        isRawOutput: false,
+      });
       const finalNode = createRecipeTreeNode(401, "最終製品", false, finalRecipe, [stage3Node]);
       finalNode.nodeId = "root";
 

@@ -10,6 +10,7 @@ import type { HistoryEntry } from "../../types/history";
 import { generateUUID, HISTORY_VERSION } from "../historyUtils";
 import { setRestoring } from "../historyRecorder";
 import { serializeSettings } from "../storageSerializer";
+import { createMockGameData, createSingleOutputRecipe } from "../../test/factories/testDataFactory";
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -349,27 +350,23 @@ describe("historyRestore", () => {
 
     it("should restore selected recipe", () => {
       // Create a mock recipe in game data
-      const mockRecipe = {
+      const mockRecipe = createSingleOutputRecipe({
         SID: 1001,
         name: "Test Recipe",
-        TimeSpend: 1,
-        Items: [],
-        Results: [{ id: 1, name: "Test Item", count: 1, Type: "Item", isRaw: false }],
-        Type: "Assemble" as const,
-        Explicit: false,
-        GridIndex: "1001",
-        productive: true,
-      };
-
-      useGameDataStore.setState({
-        data: {
-          recipes: new Map([[1001, mockRecipe]]),
-          items: new Map(),
-          machines: new Map(),
-          recipesByItemId: new Map(),
-          allItems: new Map(),
-        },
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1,
+        inputName: "Test Item",
+        inputCount: 1,
+        outputId: 1,
+        outputName: "Test Item",
+        outputCount: 1,
+        gridIndex: "1001",
       });
+
+      const gameData = createMockGameData();
+      gameData.recipes.set(1001, mockRecipe);
+      useGameDataStore.setState({ data: gameData });
 
       const entry: HistoryEntry = {
         id: generateUUID(),
@@ -394,27 +391,23 @@ describe("historyRestore", () => {
 
     it("should clear selected recipe when recipeSID is null", () => {
       // First set a recipe
-      const mockRecipe = {
+      const mockRecipe = createSingleOutputRecipe({
         SID: 1001,
         name: "Test Recipe",
-        TimeSpend: 1,
-        Items: [],
-        Results: [{ id: 1, name: "Test Item", count: 1, Type: "Item", isRaw: false }],
-        Type: "Assemble" as const,
-        Explicit: false,
-        GridIndex: "1001",
-        productive: true,
-      };
-
-      useGameDataStore.setState({
-        data: {
-          recipes: new Map([[1001, mockRecipe]]),
-          items: new Map(),
-          machines: new Map(),
-          recipesByItemId: new Map(),
-          allItems: new Map(),
-        },
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1,
+        inputName: "Test Item",
+        inputCount: 1,
+        outputId: 1,
+        outputName: "Test Item",
+        outputCount: 1,
+        gridIndex: "1001",
       });
+
+      const gameData = createMockGameData();
+      gameData.recipes.set(1001, mockRecipe);
+      useGameDataStore.setState({ data: gameData });
 
       useRecipeSelectionStore.setState({ selectedRecipe: mockRecipe });
 

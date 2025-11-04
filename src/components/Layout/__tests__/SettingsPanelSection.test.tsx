@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SettingsPanelSection } from "../SettingsPanelSection";
-import type { Recipe } from "../../../types";
+import { createSingleOutputRecipe } from "../../../test/factories/testDataFactory";
 
 // i18nextをモック
 vi.mock("react-i18next", () => ({
@@ -28,18 +28,19 @@ vi.mock("../../ItemIcon", () => ({
 }));
 
 describe("SettingsPanelSection", () => {
-  const mockRecipe: Recipe = {
+  const mockRecipe = createSingleOutputRecipe({
     SID: 1,
     name: "Iron Ingot",
-    Type: "Smelt",
-    Explicit: false,
-    TimeSpend: 60,
-    Items: [],
-    Results: [{ id: 1101, name: "Iron Ingot", count: 1 }],
-    GridIndex: "0101",
-    iconPath: "/path/to/icon.png",
-    productive: false,
-  };
+    type: "Smelt",
+    timeSpend: 60,
+    inputId: 1001,
+    inputName: "Iron Ore",
+    inputCount: 1,
+    outputId: 1101,
+    outputName: "Iron Ingot",
+    outputCount: 1,
+    gridIndex: "0101",
+  });
 
   const mockSetTargetQuantity = vi.fn();
 

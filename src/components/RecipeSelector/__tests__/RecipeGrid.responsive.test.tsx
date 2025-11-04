@@ -2,7 +2,10 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { RecipeGrid } from "../RecipeGrid";
 import type { Recipe } from "../../../types";
-import { createMockGameData } from "../../../test/factories/testDataFactory";
+import {
+  createMockGameData,
+  createSingleOutputRecipe,
+} from "../../../test/factories/testDataFactory";
 
 // Mock the ItemIcon component to test responsive behavior
 vi.mock("../../ItemIcon", () => ({
@@ -35,24 +38,32 @@ vi.mock("react-i18next", () => ({
 
 describe("RecipeGrid Responsive Design", () => {
   const mockRecipes: Recipe[] = [
-    {
+    createSingleOutputRecipe({
       SID: 1,
       name: "Test Recipe 1",
-      GridIndex: "1101", // tab 1, row 1, column 01
-      Explicit: true,
-      Type: "Assemble",
-      Items: [],
-      Results: [{ id: 1001, name: "Test Item", count: 1 }],
-    },
-    {
+      gridIndex: "1101",
+      explicit: true,
+      type: "Assemble",
+      inputId: 1001,
+      inputName: "Test Item",
+      inputCount: 1,
+      outputId: 1001,
+      outputName: "Test Item",
+      outputCount: 1,
+    }),
+    createSingleOutputRecipe({
       SID: 2,
       name: "Test Recipe 2",
-      GridIndex: "1102", // tab 1, row 1, column 02
-      Explicit: true,
-      Type: "Assemble",
-      Items: [],
-      Results: [{ id: 1002, name: "Test Item 2", count: 1 }],
-    },
+      gridIndex: "1102",
+      explicit: true,
+      type: "Assemble",
+      inputId: 1002,
+      inputName: "Test Item 2",
+      inputCount: 1,
+      outputId: 1002,
+      outputName: "Test Item 2",
+      outputCount: 1,
+    }),
   ];
 
   it("should render icons with responsive sizing", () => {

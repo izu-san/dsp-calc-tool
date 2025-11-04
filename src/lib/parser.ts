@@ -10,6 +10,7 @@ import {
 } from "../constants/photonGeneration";
 
 const logger = createLogger("Parser");
+export { logger };
 const parser = new XMLParser({
   ignoreAttributes: false,
   attributeNamePrefix: "@_",

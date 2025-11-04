@@ -3,6 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useFavoritesStore } from "../../../stores/favoritesStore";
 import type { Recipe } from "../../../types";
 import { RecipeSelector } from "../index";
+import {
+  createSingleOutputRecipe,
+  createMultiOutputRecipe,
+} from "../../../test/factories/testDataFactory";
 
 // i18nextのモック
 vi.mock("react-i18next", () => ({
@@ -18,42 +22,43 @@ vi.mock("../../../stores/favoritesStore", () => ({
 
 describe("RecipeSelector", () => {
   const mockRecipes: Recipe[] = [
-    {
+    createSingleOutputRecipe({
       SID: 1,
       name: "Iron Ingot",
-      Type: "Smelt",
-      GridIndex: "1101",
-      Items: [{ id: 1001, name: "Iron Ore", count: 1, Type: "Material", isRaw: true }],
-      Results: [{ id: 1101, name: "Iron Ingot", count: 1, Type: "Material", isRaw: false }],
-      Explicit: false,
-      TimeSpend: 60,
-      productive: false,
-    },
-    {
+      type: "Smelt",
+      gridIndex: "1101",
+      inputId: 1001,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1101,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+    }),
+    createSingleOutputRecipe({
       SID: 2,
       name: "Copper Ingot",
-      Type: "Smelt",
-      GridIndex: "1104",
-      Items: [{ id: 1002, name: "Copper Ore", count: 1, Type: "Material", isRaw: true }],
-      Results: [{ id: 1104, name: "Copper Ingot", count: 1, Type: "Material", isRaw: false }],
-      Explicit: false,
-      TimeSpend: 60,
-      productive: false,
-    },
-    {
+      type: "Smelt",
+      gridIndex: "1104",
+      inputId: 1002,
+      inputName: "Copper Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 1104,
+      outputName: "Copper Ingot",
+      outputCount: 1,
+    }),
+    createMultiOutputRecipe({
       SID: 3,
       name: "Circuit Board",
-      Type: "Assemble",
-      GridIndex: "1105",
-      Items: [
-        { id: 1101, name: "Iron Ingot", count: 2, Type: "Material", isRaw: false },
-        { id: 1104, name: "Copper Ingot", count: 1, Type: "Material", isRaw: false },
+      type: "Assemble",
+      gridIndex: "1105",
+      inputs: [
+        { id: 1101, name: "Iron Ingot", count: 2, isRaw: false },
+        { id: 1104, name: "Copper Ingot", count: 1, isRaw: false },
       ],
-      Results: [{ id: 1105, name: "Circuit Board", count: 2, Type: "Component", isRaw: false }],
-      Explicit: false,
-      TimeSpend: 60,
-      productive: false,
-    },
+      outputs: [{ id: 1105, name: "Circuit Board", count: 2, isRaw: false }],
+    }),
   ];
 
   const mockOnRecipeSelect = vi.fn();

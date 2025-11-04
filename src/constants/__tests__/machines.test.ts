@@ -1,228 +1,159 @@
 import { describe, it, expect } from "vitest";
 import { MACHINE_IDS_BY_RECIPE_TYPE, MINING_EQUIPMENT_IDS, getMachineForRecipe } from "../machines";
-import type { Machine, GlobalSettings } from "../../types";
+import type { GlobalSettings } from "../../types";
+import { createMachineByType } from "../../test/factories/testDataFactory";
 
 describe("machines", () => {
   // Mock machines data
-  const mockMachines = new Map<number, Machine>([
+  const mockMachines = new Map([
     // Smelt machines
     [
       2302,
-      {
+      createMachineByType({
         id: 2302,
         name: "Arc Smelter",
-        Type: "Smelt",
-        count: 0,
-        isRaw: false,
+        type: "Smelt",
         assemblerSpeed: 1,
         workEnergyPerTick: 360,
         idleEnergyPerTick: 12,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2315,
-      {
+      createMachineByType({
         id: 2315,
         name: "Plane Smelter",
-        Type: "Smelt",
-        count: 0,
-        isRaw: false,
+        type: "Smelt",
         assemblerSpeed: 2,
         workEnergyPerTick: 720,
         idleEnergyPerTick: 24,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2319,
-      {
+      createMachineByType({
         id: 2319,
         name: "Negentropy Smelter",
-        Type: "Smelt",
-        count: 0,
-        isRaw: false,
+        type: "Smelt",
         assemblerSpeed: 3,
         workEnergyPerTick: 1080,
         idleEnergyPerTick: 36,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
-
     // Assemble machines
     [
       2303,
-      {
+      createMachineByType({
         id: 2303,
         name: "Assembling Machine Mk.I",
-        Type: "Assemble",
-        count: 0,
-        isRaw: false,
+        type: "Assemble",
         assemblerSpeed: 0.75,
         workEnergyPerTick: 270,
         idleEnergyPerTick: 9,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2304,
-      {
+      createMachineByType({
         id: 2304,
         name: "Assembling Machine Mk.II",
-        Type: "Assemble",
-        count: 0,
-        isRaw: false,
+        type: "Assemble",
         assemblerSpeed: 1,
         workEnergyPerTick: 360,
         idleEnergyPerTick: 12,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2305,
-      {
+      createMachineByType({
         id: 2305,
         name: "Assembling Machine Mk.III",
-        Type: "Assemble",
-        count: 0,
-        isRaw: false,
+        type: "Assemble",
         assemblerSpeed: 1.5,
         workEnergyPerTick: 540,
         idleEnergyPerTick: 18,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2318,
-      {
+      createMachineByType({
         id: 2318,
         name: "Re-composing Assembler",
-        Type: "Assemble",
-        count: 0,
-        isRaw: false,
+        type: "Assemble",
         assemblerSpeed: 3,
         workEnergyPerTick: 1080,
         idleEnergyPerTick: 36,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
-
     // Chemical machines
     [
       2309,
-      {
+      createMachineByType({
         id: 2309,
         name: "Chemical Plant",
-        Type: "Chemical",
-        count: 0,
-        isRaw: false,
+        type: "Chemical",
         assemblerSpeed: 1,
         workEnergyPerTick: 360,
         idleEnergyPerTick: 12,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2317,
-      {
+      createMachineByType({
         id: 2317,
         name: "Quantum Chemical Plant",
-        Type: "Chemical",
-        count: 0,
-        isRaw: false,
+        type: "Chemical",
         assemblerSpeed: 2,
         workEnergyPerTick: 720,
         idleEnergyPerTick: 24,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
-
     // Research machines
     [
       2901,
-      {
+      createMachineByType({
         id: 2901,
         name: "Matrix Lab",
-        Type: "Research",
-        count: 0,
-        isRaw: false,
+        type: "Research",
         assemblerSpeed: 1,
         workEnergyPerTick: 480,
         idleEnergyPerTick: 16,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
     [
       2902,
-      {
+      createMachineByType({
         id: 2902,
         name: "Self-evolution Lab",
-        Type: "Research",
-        count: 0,
-        isRaw: false,
+        type: "Research",
         assemblerSpeed: 3,
         workEnergyPerTick: 1440,
         idleEnergyPerTick: 48,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
-
     // Refine machines
     [
       2308,
-      {
+      createMachineByType({
         id: 2308,
         name: "Oil Refinery",
-        Type: "Refine",
-        count: 0,
-        isRaw: false,
+        type: "Refine",
         assemblerSpeed: 1,
         workEnergyPerTick: 480,
         idleEnergyPerTick: 16,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
-
     // Particle machines
     [
       2310,
-      {
+      createMachineByType({
         id: 2310,
         name: "Miniature Particle Collider",
-        Type: "Particle",
-        count: 0,
-        isRaw: false,
+        type: "Particle",
         assemblerSpeed: 1,
         workEnergyPerTick: 12000,
         idleEnergyPerTick: 400,
-        exchangeEnergyPerTick: 0,
-        isPowerConsumer: true,
-        isPowerExchanger: false,
-      },
+      }),
     ],
   ]);
 
@@ -501,20 +432,18 @@ describe("machines", () => {
 
     describe("エラーハンドリング", () => {
       it("機械が見つからない場合、最初の機械をフォールバック", () => {
-        const emptyMachines = new Map<number, Machine>();
-        emptyMachines.set(9999, {
-          id: 9999,
-          name: "Fallback Machine",
-          Type: "Smelt",
-          count: 0,
-          isRaw: false,
-          assemblerSpeed: 1,
-          workEnergyPerTick: 100,
-          idleEnergyPerTick: 10,
-          exchangeEnergyPerTick: 0,
-          isPowerConsumer: true,
-          isPowerExchanger: false,
-        });
+        const emptyMachines = new Map<number, ReturnType<typeof createMachineByType>>();
+        emptyMachines.set(
+          9999,
+          createMachineByType({
+            id: 9999,
+            name: "Fallback Machine",
+            type: "Smelt",
+            assemblerSpeed: 1,
+            workEnergyPerTick: 100,
+            idleEnergyPerTick: 10,
+          })
+        );
 
         const settings = createMockSettings();
         const machine = getMachineForRecipe("Smelt", emptyMachines, settings);
@@ -524,7 +453,7 @@ describe("machines", () => {
       });
 
       it("機械マップが完全に空の場合エラーをthrow", () => {
-        const emptyMachines = new Map<number, Machine>();
+        const emptyMachines = new Map<number, ReturnType<typeof createMachineByType>>();
         const settings = createMockSettings();
 
         expect(() => {

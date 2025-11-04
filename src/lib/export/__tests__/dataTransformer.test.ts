@@ -1,9 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { transformToExportData } from "../dataTransformer";
 import type { CalculationResult, RecipeTreeNode } from "../../../types/calculation";
-import type { Recipe, Machine, RecipeItem } from "../../../types/game-data";
+import type { RecipeItem } from "../../../types/game-data";
 import type { GlobalSettings } from "../../../types/settings";
 import { EXPORT_VERSION } from "../../../constants/exportVersion";
+import {
+  createSingleOutputRecipe,
+  createMachineByType,
+  createRecipeNode,
+  createDefaultPowerConsumption,
+  createDefaultConveyorBelts,
+} from "../../../test/factories/testDataFactory";
 
 describe("dataTransformer", () => {
   describe("transformToExportData", () => {
@@ -13,60 +20,67 @@ describe("dataTransformer", () => {
       count,
     });
 
-    const createMockRecipe = (sid: number, name: string): Recipe => ({
-      SID: sid,
-      id: sid,
-      name,
-      Type: 1,
-      Handcraft: false,
-      Explicit: true,
-      TimeSpend: 60,
-      Items: [createMockRecipeItem(1001, "Iron Ore", 2)],
-      Results: [createMockRecipeItem(1101, "Iron Ingot", 1)],
-      GridIndex: 0,
-      IconPath: "",
-      Description: "",
-    });
+    const createTestRecipe = (sid: number, name: string) => {
+      const recipe = createSingleOutputRecipe({
+        SID: sid,
+        name,
+        type: "Smelt",
+        timeSpend: 60,
+        inputId: 1001,
+        inputName: "Iron Ore",
+        inputCount: 2,
+        outputId: 1101,
+        outputName: "Iron Ingot",
+        outputCount: 1,
+      });
+      return recipe;
+    };
 
-    const createMockMachine = (id: number, name: string, power: number): Machine => ({
-      id,
-      name,
-      type: "Smelter",
-      speed: 1.0,
-      power,
-      iconPath: "",
-      description: "",
-    });
+    const createTestMachine = (id: number, name: string, power: number) => {
+      // powerはkW単位なので、workEnergyPerTickに変換
+      // power (kW) = workEnergyPerTick * 60 / 1000
+      // workEnergyPerTick = power * 1000 / 60
+      const workEnergyPerTick = Math.round((power * 1000) / 60);
+      return createMachineByType({
+        id,
+        name,
+        type: "Smelt",
+        workEnergyPerTick,
+      });
+    };
 
     const createMockTreeNode = (
-      recipe: Recipe,
-      machine: Machine | null,
+      recipe: ReturnType<typeof createTestRecipe>,
+      machine: ReturnType<typeof createTestMachine> | null,
       machineCount: number,
       targetOutputRate: number
-    ): RecipeTreeNode => ({
-      id: `node-${recipe.SID}`,
-      recipe,
-      machine,
-      machineCount,
-      targetOutputRate,
-      inputs: recipe.Items.map((item, index) => ({
-        itemId: item.id,
-        itemName: item.name,
-        requiredRate: (targetOutputRate * item.count) / recipe.TimeSpend,
-        sourceType: "raw" as const,
-      })),
-      children: [],
-      depth: 0,
-      power: {
-        machines: machine ? machine.power * machineCount : 0,
-        sorters: 0,
-        total: machine ? machine.power * machineCount : 0,
-      },
-      conveyorBelts: {
-        total: 0,
-        saturation: 0,
-      },
-    });
+    ): RecipeTreeNode => {
+      return createRecipeNode({
+        recipe,
+        machine: machine || undefined,
+        nodeId: `node-${recipe.SID}`,
+        targetOutputRate,
+        machineCount,
+        power: createDefaultPowerConsumption({
+          machines: machine ? (machine.workEnergyPerTick * 60 * machineCount) / 1000 : 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: machine ? (machine.workEnergyPerTick * 60 * machineCount) / 1000 : 0,
+        }),
+        conveyorBelts: createDefaultConveyorBelts({
+          total: 0,
+          saturation: 0,
+        }),
+        inputs: recipe.Items.map(item => ({
+          itemId: item.id,
+          itemName: item.name,
+          requiredRate: (targetOutputRate * item.count) / recipe.TimeSpend,
+          sourceType: "raw" as const,
+        })),
+        children: [],
+        depth: 0,
+      });
+    };
 
     const createMockCalculationResult = (
       rootNode: RecipeTreeNode,
@@ -136,8 +150,8 @@ describe("dataTransformer", () => {
     });
 
     it("基本的なエクスポートデータ変換", () => {
-      const recipe = createMockRecipe(1, "Iron Ingot Recipe");
-      const machine = createMockMachine(2301, "Smelter", 360);
+      const recipe = createTestRecipe(1, "Iron Ingot Recipe");
+      const machine = createTestMachine(2301, "Smelter", 360);
       const rootNode = createMockTreeNode(recipe, machine, 10, 1.0);
       const calculationResult = createMockCalculationResult(rootNode, 10, 3600);
       const globalSettings = createMockGlobalSettings();
@@ -170,8 +184,8 @@ describe("dataTransformer", () => {
     });
 
     it("原材料リストの正しい変換", () => {
-      const recipe = createMockRecipe(1, "Iron Ingot Recipe");
-      const machine = createMockMachine(2301, "Smelter", 360);
+      const recipe = createTestRecipe(1, "Iron Ingot Recipe");
+      const machine = createTestMachine(2301, "Smelter", 360);
       const rootNode = createMockTreeNode(recipe, machine, 10, 1.0);
       const calculationResult = createMockCalculationResult(rootNode, 10, 3600);
       const globalSettings = createMockGlobalSettings();
@@ -198,8 +212,8 @@ describe("dataTransformer", () => {
     });
 
     it("機械リストの正しい変換", () => {
-      const recipe = createMockRecipe(1, "Iron Ingot Recipe");
-      const machine = createMockMachine(2301, "Smelter", 360);
+      const recipe = createTestRecipe(1, "Iron Ingot Recipe");
+      const machine = createTestMachine(2301, "Smelter", 360);
       const rootNode = createMockTreeNode(recipe, machine, 10, 1.0);
       const calculationResult = createMockCalculationResult(rootNode, 10, 3600);
       const globalSettings = createMockGlobalSettings();
@@ -227,8 +241,8 @@ describe("dataTransformer", () => {
     });
 
     it("電力消費の正しい変換", () => {
-      const recipe = createMockRecipe(1, "Iron Ingot Recipe");
-      const machine = createMockMachine(2301, "Smelter", 360);
+      const recipe = createTestRecipe(1, "Iron Ingot Recipe");
+      const machine = createTestMachine(2301, "Smelter", 360);
       const rootNode = createMockTreeNode(recipe, machine, 10, 1.0);
       const calculationResult = createMockCalculationResult(rootNode, 10, 3600);
       const globalSettings = createMockGlobalSettings();
@@ -255,14 +269,14 @@ describe("dataTransformer", () => {
     });
 
     it("コンベアベルト情報の正しい変換", () => {
-      const recipe = createMockRecipe(1, "Iron Ingot Recipe");
-      const machine = createMockMachine(2301, "Smelter", 360);
+      const recipe = createTestRecipe(1, "Iron Ingot Recipe");
+      const machine = createTestMachine(2301, "Smelter", 360);
       const rootNode = createMockTreeNode(recipe, machine, 10, 1.0);
-      rootNode.conveyorBelts = {
+      rootNode.conveyorBelts = createDefaultConveyorBelts({
         total: 5,
         saturation: 75.5,
-        bottleneckType: "input",
-      };
+      });
+      rootNode.conveyorBelts.bottleneckType = "input";
       const calculationResult = createMockCalculationResult(rootNode, 10, 3600);
       const globalSettings = createMockGlobalSettings();
 
@@ -286,8 +300,8 @@ describe("dataTransformer", () => {
     });
 
     it("設定と発電情報の正しい変換", () => {
-      const recipe = createMockRecipe(1, "Iron Ingot Recipe");
-      const machine = createMockMachine(2301, "Smelter", 360);
+      const recipe = createTestRecipe(1, "Iron Ingot Recipe");
+      const machine = createTestMachine(2301, "Smelter", 360);
       const rootNode = createMockTreeNode(recipe, machine, 10, 1.0);
       const calculationResult = createMockCalculationResult(rootNode, 10, 3600);
       const globalSettings = createMockGlobalSettings();

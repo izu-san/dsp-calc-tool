@@ -7,7 +7,7 @@ import i18n from "../../i18n";
 import { setInternal } from "../../utils/historyRecorder";
 import { HISTORY_VERSION } from "../../utils/historyUtils";
 import { useHistoryStore } from "../../stores/historyStore";
-import type { SavedPlan } from "../../types";
+import type { SavedPlan, NodeOverrideSettings } from "../../types";
 import type { Recipe } from "../../types/game-data";
 import { restorePlanToState, type PlanRestorationCallbacks } from "./planRestorationService";
 import { createLogger } from "../../utils/logger";
@@ -19,7 +19,7 @@ export interface PlanLoadParams {
   recipe: Recipe;
   callbacks: PlanRestorationCallbacks;
   mergeOverrides?: boolean;
-  currentOverrides?: Map<string, unknown>;
+  currentOverrides?: Map<string, NodeOverrideSettings>;
   historyDescription?: string;
   historyMetadata?: Record<string, unknown>;
 }
@@ -40,7 +40,7 @@ export function loadPlanWithHistory(params: PlanLoadParams): void {
       recipe: params.recipe,
       callbacks: params.callbacks,
       mergeOverrides: params.mergeOverrides,
-      currentOverrides: params.currentOverrides as Map<string, unknown>,
+      currentOverrides: params.currentOverrides,
     });
 
     // Record detailed load history

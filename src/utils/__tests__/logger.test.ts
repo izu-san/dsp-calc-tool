@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+// Setupファイルのモックを解除して実際のloggerを使用
+vi.unmock("../logger");
 import { createLogger, logger, Logger } from "../logger";
 
 describe("logger", () => {

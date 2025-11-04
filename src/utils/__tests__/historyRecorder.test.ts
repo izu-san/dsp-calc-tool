@@ -1,4 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+// SetupファイルのhistoryRecorderモックを解除して実際のhistoryRecorderを使用
+vi.unmock("../historyRecorder");
 import { useHistoryStore } from "../../stores/historyStore";
 import { historyDebouncer } from "../historyDebouncer";
 import {

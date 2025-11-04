@@ -5,27 +5,32 @@
 
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import type { CalculationResult, Recipe, GlobalSettings } from "../../types";
-import type { PowerGeneratorType } from "../../types/power-generation";
-import type { ProliferatorConfig } from "../../types";
+import type {
+  CalculationResult,
+  Recipe,
+  GlobalSettings,
+  ProliferatorConfig,
+  PowerGeneratorType,
+  GameTemplate,
+} from "../types";
 import {
   exportPlan,
   exportPlanToImage,
   type PlanExportParams,
   type PlanImageExportParams,
 } from "../services/plan-management/planExportService";
-import type { ImageExportOptions } from "../../types/export";
+import type { ImageExportOptions } from "../types/export";
 
 export interface UsePlanExportParams {
   selectedRecipe: Recipe | null;
   calculationResult: CalculationResult | null;
   targetQuantity: number;
   settings: GlobalSettings;
-  powerGenerationTemplate: string;
+  powerGenerationTemplate: GameTemplate;
   manualPowerGenerator: PowerGeneratorType | null;
   manualPowerFuel: string | null;
   powerFuelProliferator: ProliferatorConfig;
-  items: Map<number, unknown>;
+  items: Map<number, { name: string }>;
 }
 
 export function usePlanExport(params: UsePlanExportParams) {
@@ -125,5 +130,7 @@ export function usePlanExport(params: UsePlanExportParams) {
     handleExport,
     handleImageExport,
     clearMessages,
+    setExportSuccessMessage,
+    setExportErrorMessage,
   };
 }

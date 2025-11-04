@@ -4,6 +4,7 @@ import { ParseError, StorageError } from "./errors";
 import { getErrorMessage } from "./errorHandler";
 
 const logger = createLogger("PlanExport");
+export { logger };
 const PLAN_VERSION = "1.0.0";
 
 /**

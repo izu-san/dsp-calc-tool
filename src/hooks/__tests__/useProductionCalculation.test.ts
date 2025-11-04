@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../../utils/logger");
 import { renderHook } from "@testing-library/react";
 import { useProductionCalculation } from "../useProductionCalculation";
 import * as calculator from "../../lib/calculator";
-import type { Recipe, GameData, GlobalSettings, NodeOverrideSettings } from "../../types";
+import type { Recipe, GlobalSettings, NodeOverrideSettings } from "../../types";
+import { createMockGameData, createSingleOutputRecipe } from "../../test/factories/testDataFactory";
 
 // calculateProductionChainをモック
 vi.mock("../../lib/calculator", () => ({
@@ -10,26 +14,23 @@ vi.mock("../../lib/calculator", () => ({
 }));
 
 describe("useProductionCalculation", () => {
-  const mockRecipe: Recipe = {
+  const mockRecipe = createSingleOutputRecipe({
     SID: 1,
     name: "Iron Ingot",
-    Type: "Smelt",
-    Explicit: false,
-    TimeSpend: 60,
-    Items: [{ id: 1001, name: "Iron Ore", count: 1 }],
-    Results: [{ id: 1101, name: "Iron Ingot", count: 1 }],
-    GridIndex: "0101",
-    iconPath: "/path/to/icon.png",
-    productive: false,
-  };
+    type: "Smelt",
+    timeSpend: 60,
+    inputId: 1001,
+    inputName: "Iron Ore",
+    inputCount: 1,
+    outputId: 1101,
+    outputName: "Iron Ingot",
+    outputCount: 1,
+    isRawInput: true,
+    gridIndex: "0101",
+  });
 
-  const mockGameData: GameData = {
-    items: new Map(),
-    recipes: new Map([[1, mockRecipe]]),
-    machines: new Map(),
-    recipesByItemId: new Map(),
-    allItems: new Map(),
-  };
+  const mockGameData = createMockGameData();
+  mockGameData.recipes.set(1, mockRecipe);
 
   const mockSettings: GlobalSettings = {
     proliferator: { type: "none", mode: "speed" },

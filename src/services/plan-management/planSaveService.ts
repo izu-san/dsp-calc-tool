@@ -3,7 +3,7 @@
  * Handles saving plans with version management and history recording
  */
 
-import type { SavedPlan } from "../../types";
+import type { SavedPlan, NodeOverrideSettings } from "../../types";
 import { useHistoryStore } from "../../stores/historyStore";
 import { savePlanToStorage, cleanupDuplicatePlans } from "./planStorageService";
 import { createLogger } from "../../utils/logger";
@@ -71,7 +71,7 @@ export interface CreatePlanParams {
   targetQuantity: number;
   settings: unknown;
   alternativeRecipes: Map<number, number>;
-  nodeOverrides: Map<string, unknown>;
+  nodeOverrides: Map<string, NodeOverrideSettings>;
   includeOverrides: boolean;
 }
 

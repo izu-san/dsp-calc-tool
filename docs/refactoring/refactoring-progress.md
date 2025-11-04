@@ -230,63 +230,137 @@ const node = createRecipeNode({
 
 ---
 
-## Phase 5: Playwright フィクスチャ導入とシナリオ分割でE2Eを再構築 ⏳ 未着手
+## Phase 5: Playwright フィクスチャ導入とシナリオ分割でE2Eを再構築 ✅ 完了
 
-### 予定作業
+### 実施内容
 
-#### E2Eテストの再構築
+#### 作成したフィクスチャ
 
-- Playwright フィクスチャの導入
-- シナリオの分割と整理
-- テストの実行時間短縮
+- `tests/e2e/fixtures/app.fixture.ts` - アプリ共通フィクスチャ
+  - ページ初期化（`page.goto('/')`）
+  - アニメーション無効化
+  - Welcomeモーダルのスキップ
+
+- `tests/e2e/fixtures/test-data.fixture.ts` - テストデータフィクスチャ
+  - `clearLocalStorage` - localStorageクリア
+  - `clearLocalStorageKeepingTutorial` - チュートリアル状態を保持してクリア
+  - `setLocalStorage` / `getLocalStorage` - localStorage操作
+
+- `tests/e2e/fixtures/browser.fixture.ts` - ブラウザフィクスチャ
+  - `reloadPage` - ページリロード（アニメーション無効化・welcome modalスキップ含む）
+  - `setViewport` - ビューポートサイズ設定
+  - `newPage` - 新しいページを開く
+
+- `tests/e2e/fixtures/index.ts` - フィクスチャのエクスポート
+
+#### リファクタリング完了したE2Eテストファイル
+
+1. ✅ `tests/e2e/02-game-data.spec.ts`
+2. ✅ `tests/e2e/03-main-features.spec.ts`
+3. ✅ `tests/e2e/04-power-generation.spec.ts`
+4. ✅ `tests/e2e/05-import-export.spec.ts`
+5. ✅ `tests/e2e/06-persistence-locale.spec.ts`
+6. ✅ `tests/e2e/07-modsettings.spec.ts`
+7. ✅ `tests/e2e/08-what-if.spec.ts`
+8. ✅ `tests/e2e/09-history-version-management.spec.ts`
+9. ✅ `tests/e2e/10-building-roadmap.spec.ts`
+10. ✅ `tests/e2e/11-custom-template.spec.ts`
+11. ✅ `tests/e2e/seed.spec.ts`
+
+**注**: `01-welcome-modal.spec.ts`はwelcome modalをテストするため、フィクスチャを使用しない
+
+#### パフォーマンス最適化
+
+- `playwright.config.ts`でワーカー数を最適化
+  - ローカル: CPUコア数の50%（速度と安定性のバランス）
+  - CI: 1ワーカー（安定性優先）
+
+#### ドキュメント作成
+
+- `docs/testing/E2E_TESTING.md` - E2Eテストガイド
+  - E2Eテストの実行方法
+  - フィクスチャの使用方法
+  - 新しいシナリオの追加方法
+  - ベストプラクティス
+  - トラブルシューティング
+
+### 成果
+
+- E2Eテストの重複コード削減
 - 保守性の向上
-
-### 現状
-
-- 未着手
-- Phase 4完了後に実施予定
+- テスト実行時間の最適化
+- ドキュメントの整備
 
 ---
 
 ## 残作業詳細
 
-### 1. テストファイルのリファクタリング（継続）
+### 1. テストファイルのリファクタリング ✅ 完了
 
-#### まだリファクタリングしていないテストファイル
+#### リファクタリング完了したテストファイル
 
 **lib/**tests**/ 配下**
 
-- `src/lib/__tests__/parser.test.ts` - XMLパーサーのテスト（モックXML使用のため特殊）
-- `src/lib/__tests__/miningCalculation.test.ts` - 採掘計算のテスト
-- `src/lib/__tests__/miningCalculation.edge.test.ts` - 採掘計算のエッジケース
-- `src/lib/__tests__/photonGenerationCalculation.test.ts` - 光子生成計算のテスト
-- `src/lib/__tests__/powerGenerationCalculation.test.ts` - 発電計算のテスト
-- `src/lib/__tests__/powerDisplayConsistency.test.ts` - 電力表示一貫性のテスト
-- `src/lib/__tests__/unifiedPowerCalculation.test.ts` - 統一電力計算のテスト
-- `src/lib/__tests__/matrix-lab-speed.test.ts` - Matrix Lab速度のテスト
-- `src/lib/__tests__/calculator.boundary.test.ts` - 計算機の境界値テスト
+- ✅ `src/lib/roadmap/__tests__/phaseCalculation.test.ts` - `createMockRecipe`を12箇所全て`createSingleOutputRecipe`に置き換え完了
+- ✅ `src/lib/__tests__/powerDisplayConsistency.test.ts` - ビルダー使用済み
+- ✅ `src/lib/__tests__/unifiedPowerCalculation.test.ts` - ビルダー使用済み
+- ✅ `src/lib/__tests__/calculator.boundary.test.ts` - ビルダー使用済み
+- ✅ `src/lib/__tests__/matrix-lab-speed.test.ts` - ビルダー使用済み（既にリファクタリング済み）
 
 **lib/calculator/**tests**/ 配下**
 
-- `src/lib/calculator/__tests__/belt-calculation.test.ts` - ベルト計算のテスト（モックデータ不使用のため対応不要）
+- ✅ `src/lib/calculator/__tests__/belt-calculation.test.ts` - モックデータ不使用のため対応不要
+
+**hooks/**tests**/ 配下**
+
+- ✅ `src/hooks/__tests__/useProductionCalculation.test.ts` - `createSingleOutputRecipe`と`createMockGameData`を使用するようにリファクタリング完了
+- ✅ `src/hooks/__tests__/useTreeCollapse.test.ts` - ビルダー関数を使用するようにリファクタリング完了
+
+**stores/**tests**/ 配下**
+
+- ✅ `src/stores/__tests__/gameDataStore.test.ts` - `createMachineByType`を使用するようにリファクタリング完了
+
+**utils/**tests**/ 配下**
+
+- ✅ `src/utils/__tests__/historyRestore.test.ts` - `createSingleOutputRecipe`と`createMockGameData`を使用するようにリファクタリング完了（2箇所）
+
+**components/**tests**/ 配下**
+
+- ✅ `src/components/Layout/__tests__/SettingsPanelSection.test.tsx` - `createSingleOutputRecipe`を使用するようにリファクタリング完了
+- ✅ `src/components/Layout/__tests__/ProductionResultsPanel.test.tsx` - `createSingleOutputRecipe`を使用するようにリファクタリング完了
+- ✅ `src/components/RecipeSelector/__tests__/RecipeSelector.test.tsx` - `createSingleOutputRecipe`と`createMultiOutputRecipe`を使用するようにリファクタリング完了
+- ✅ `src/components/RecipeSelector/__tests__/RecipeGrid.responsive.test.tsx` - `createSingleOutputRecipe`を使用するようにリファクタリング完了
+- ✅ `src/components/ResultTree/__tests__/ResultTree.test.tsx` - ビルダー使用済み
+- ✅ `src/components/__tests__/App.smoke.test.tsx` - `createSingleOutputRecipe`を使用するようにリファクタリング完了（3箇所）
+- ✅ `src/components/Layout/__tests__/RecipeSelectorSection.test.tsx` - `createSingleOutputRecipe`を使用するようにリファクタリング完了
+
+**constants/**tests**/ 配下**
+
+- ✅ `src/constants/__tests__/machines.test.ts` - `createMachineByType`を使用するようにリファクタリング完了
 
 **lib/import/**tests**/ 配下**
 
-- インポート関連のテスト（必要に応じて）
+- ✅ `src/lib/import/__tests__/validation.test.ts` - `createSingleOutputRecipe`と`createMockGameData`を使用するようにリファクタリング完了
+- ✅ `src/lib/import/__tests__/planBuilder.test.ts` - `createSingleOutputRecipe`と`createMockGameData`、`createMockSettings`を使用するようにリファクタリング完了
 
 **lib/export/**tests**/ 配下**
 
-- エクスポート関連のテスト（必要に応じて）
+- ✅ `src/lib/export/__tests__/dataTransformer.test.ts` - `createSingleOutputRecipe`と`createMachineByType`を使用するようにリファクタリング完了
 
-**lib/roadmap/**tests**/ 配下**
+#### 対応不要/低優先度のファイル
 
-- `src/lib/roadmap/__tests__/phaseCalculation.test.ts` - フェーズ計算のテスト
+- `src/lib/__tests__/parser.test.ts` - XMLパーサーのテスト（モックXML使用のため特殊）
+- `src/lib/__tests__/miningCalculation.test.ts` - Recipe/Machineモック不使用のため対応不要
+- `src/lib/__tests__/miningCalculation.edge.test.ts` - Recipe/Machineモック不使用のため対応不要
+- `src/lib/__tests__/photonGenerationCalculation.test.ts` - Recipe/Machineモック不使用のため対応不要
+- `src/lib/__tests__/powerGenerationCalculation.test.ts` - Recipe/Machineモック不使用のため対応不要
 
 #### リファクタリング指針
 
 1. **モックRecipe/Machine/Nodeがある場合**
    - `recipePresets`、`machinePresets`、または対応するビルダー関数を使用
    - 特殊なケースは`createSingleOutputRecipe`、`createMultiOutputRecipe`、`createMachineByType`を使用
+   - `createRecipeNode`、`createRawMaterialNode`でノードを作成
 
 2. **XMLパーサーのテスト（parser.test.ts）**
    - XML文字列を直接使用しているため、ビルダーパターンは適用困難
@@ -294,34 +368,38 @@ const node = createRecipeNode({
 
 3. **モックデータ不使用のテスト**
    - `belt-calculation.test.ts`など、モックデータを直接使用していないテストは対応不要
+   - `photonGenerationCalculation.test.ts`、`powerGenerationCalculation.test.ts`など、Recipe/Machineモックを使用しないテストも対応不要
 
-### 2. settingsStore の slice 化（継続）
+4. **コンポーネントテストのリファクタリング**
+   - コンポーネントテストでは、最小限のモックデータで十分な場合が多い
+   - 直接オブジェクトリテラルで定義されている場合でも、ビルダーに置き換えることで一貫性が向上
+   - モック関数内で定義されているものは、外部から見えないため優先度は低い
 
-#### 現状
+5. **優先度の高いリファクタリング対象**
+   - `src/lib/roadmap/__tests__/phaseCalculation.test.ts` - `createMockRecipe`を12箇所使用
+   - その他の`lib/`配下のテストファイル（ビジネスロジック層のため）
 
-- `src/stores/settingsSlice.ts` の基盤ファイルは作成済み
-- 実際のslice化は未実施
+### 2. settingsStore の slice 化 ✅ 完了
 
-#### 予定作業
+#### 実施内容
 
-- `settingsStore`を機能ごとにsliceに分割
-  - 増産剤設定
-  - 機械ランク設定
-  - コンベアベルト設定
-  - ソーター設定
-  - 代替レシピ設定
-  - 採掘速度研究設定
-  - 光子生成設定
-  - カスタムテンプレート
+- `src/stores/settingsSlice.ts` に以下のsliceを実装
+  - `SettingsSlice` - 基本設定（増産剤、機械ランク、コンベアベルト、ソーター、代替レシピ、採掘速度研究、光子生成）
+  - `TemplateSlice` - テンプレート管理
+  - `PowerGenerationSlice` - 発電設備設定
+  - `CustomTemplateSlice` - カスタムテンプレート管理
 
-### 3. Phase 5: E2Eテストの再構築
+- `src/stores/settingsStore.ts` をsliceを使用するように更新
+- テスト更新完了（65テスト成功）
 
-#### 予定作業
+### 3. Phase 5: E2Eテストの再構築 ✅ 完了
 
-- Playwright フィクスチャの導入
-- シナリオの分割
-- テスト実行時間の短縮
-- 保守性の向上
+#### 実施内容
+
+- Playwright フィクスチャの導入完了
+- シナリオの分割完了（11ファイルをリファクタリング）
+- テスト実行時間の短縮完了（ワーカー数最適化）
+- 保守性の向上完了（ドキュメント作成）
 
 ---
 
@@ -553,4 +631,4 @@ export const recipePresets = {
 ---
 
 **最終更新**: 2025-01-28
-**ステータス**: Phase 1-4 完了、Phase 5 未着手
+**ステータス**: Phase 1-5 完了

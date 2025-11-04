@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+
+// Setupファイルのloggerモックを解除して実際のloggerを使用
+vi.unmock("../logger");
 import {
   encodePlanToURL,
   decodePlanFromURL,

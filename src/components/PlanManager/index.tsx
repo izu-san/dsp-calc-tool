@@ -60,7 +60,7 @@ export function PlanManager() {
     manualPowerGenerator,
     manualPowerFuel,
     powerFuelProliferator,
-    items: data?.items || new Map(),
+    items: data?.items || new Map<number, { name: string }>(),
   });
 
   // Import functionality
