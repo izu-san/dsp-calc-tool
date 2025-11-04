@@ -1,22 +1,23 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect } from "@playwright/test";
-import { test } from "./fixtures";
+import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import { test } from "./fixtures";
+
+// ESM環境で__dirnameを解決
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // spec: docs/testing/TEST_PLAN.md
-// このテストは `docs/testing/RECIPE_SIDS.md` を参照して
+// このテストは `tests/e2e/fixtures/RECIPE_SIDS.md` を参照して
 // Items(1xxx) と Buildings(2xxx) の各tab内に全ての recipe-button-<sid> が存在することを確認します。
 
 test.describe("ゲームデータ読み込みと初期表示", () => {
   test("02-01: ゲームデータの初期表示 - 全SIDが各タブで表示されること", async ({ appPage }) => {
     // 大量のレシピボタンをチェックするため、タイムアウトを60秒に設定
     test.setTimeout(60000);
-
-    // waitUntil 'networkidle' to ensure the SPA has finished initial network loading
-    await appPage.goto("http://localhost:5173/", { waitUntil: "networkidle" });
-    // Ensure SPA processes the modal close and any hydration/network activity finishes
-    await appPage.waitForLoadState("networkidle");
 
     // 基本UI要素の存在確認: getByTestId を使って表示されるまで待機する
     await expect(appPage.getByTestId("settings-panel")).toBeVisible();
@@ -25,11 +26,19 @@ test.describe("ゲームデータ読み込みと初期表示", () => {
     await expect(appPage.getByTestId("buildings-tab")).toBeVisible();
 
     // RECIPE_SIDS.md を読み込み、表の左列から SID を抽出する
-    const mdPath = path.resolve(process.cwd(), "docs/testing/RECIPE_SIDS.md");
+    const mdPath = path.resolve(__dirname, "fixtures/RECIPE_SIDS.md");
     if (!fs.existsSync(mdPath)) {
-      throw new Error(
-        `RECIPE_SIDS.md not found at ${mdPath} - generate it with scripts/generate-recipe-sids.js`
-      );
+      console.log("RECIPE_SIDS.md not found, generating...");
+      try {
+        execSync("npm run generate:recipe-sids", {
+          cwd: process.cwd(),
+          stdio: "inherit",
+        });
+      } catch (error) {
+        throw new Error(
+          `Failed to generate RECIPE_SIDS.md: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
     }
 
     const md = fs.readFileSync(mdPath, "utf8");
