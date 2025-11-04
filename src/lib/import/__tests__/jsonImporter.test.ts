@@ -1,6 +1,19 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { EXPORT_VERSION } from "../../../types/export";
-import { parseExportDataFromJSON } from "../jsonImporter";
+import { parseExportDataFromJSON, buildSavedPlanFromExportData } from "../jsonImporter";
+import { createMockGameData } from "../../../test/factories/testDataFactory";
+
+// Mock validation and planBuilder
+const mockValidatePlanInfo = vi.fn();
+const mockBuildPlanFromImport = vi.fn();
+
+vi.mock("../validation", () => ({
+  validatePlanInfo: (...args: unknown[]) => mockValidatePlanInfo(...args),
+}));
+
+vi.mock("../planBuilder", () => ({
+  buildPlanFromImport: (...args: unknown[]) => mockBuildPlanFromImport(...args),
+}));
 
 describe("jsonImporter", () => {
   describe("parseExportDataFromJSON", () => {
@@ -346,4 +359,212 @@ describe("jsonImporter", () => {
 
   // buildSavedPlanFromExportData tests are complex due to GameData and GlobalSettings mock requirements
   // Coverage for this function is tested through integration tests
+  describe("buildSavedPlanFromExportData", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
+    const createMockExportData = () => ({
+      version: EXPORT_VERSION,
+      planInfo: {
+        planName: "Test Plan",
+        recipeSID: 2001,
+        recipeName: "Test Recipe",
+        targetQuantity: 60,
+      },
+      settings: {
+        machineRank: {
+          Smelt: "arc",
+          Assemble: "mk1",
+          Chemical: "standard",
+          Research: "standard",
+          Refine: "standard",
+          Particle: "standard",
+        },
+        proliferator: { type: "none", mode: "speed" },
+        proliferatorMultiplier: { production: 1, speed: 1 },
+        alternativeRecipes: {},
+      },
+      exportDate: Date.now(),
+      statistics: {
+        totalMachines: 0,
+        totalPower: 0,
+        rawMaterialCount: 0,
+        itemCount: 0,
+      },
+      rawMaterials: [],
+      products: [],
+      machines: [],
+      powerConsumption: {
+        machines: 0,
+        sorters: 0,
+        dysonSphere: 0,
+        total: 0,
+        breakdown: [],
+      },
+      conveyorBelts: {
+        totalBelts: 0,
+        totalLength: 0,
+        maxSaturation: 0,
+      },
+    });
+
+    const mockGameData = createMockGameData();
+    const mockCurrentSettings = {
+      machineRank: {
+        Smelt: "arc",
+        Assemble: "mk1",
+        Chemical: "standard",
+        Research: "standard",
+        Refine: "standard",
+        Particle: "standard",
+      },
+      proliferator: { type: "none", mode: "speed" },
+      proliferatorMultiplier: { production: 1, speed: 1 },
+      alternativeRecipes: new Map(),
+      conveyorBelt: { tier: "mk3", speed: 45, stackCount: 1 },
+      sorter: { tier: "pile", speed: 30 },
+      miningSpeedResearch: 100,
+      photonGeneration: {
+        useGravitonLens: false,
+        rayTransmissionEfficiency: 0,
+        gravitonLensProliferator: {
+          type: "none" as const,
+          mode: "speed" as const,
+          speedBonus: 0,
+          productionBonus: 0,
+          powerIncrease: 0,
+        },
+      },
+    };
+
+    it("正常系: ExportDataからSavedPlanを構築", () => {
+      const exportData = createMockExportData();
+      mockValidatePlanInfo.mockReturnValue({
+        isValid: true,
+        errors: [],
+        warnings: [],
+      });
+      mockBuildPlanFromImport.mockReturnValue({
+        name: "Test Plan",
+        timestamp: Date.now(),
+        recipeSID: 2001,
+        targetQuantity: 60,
+        settings: mockCurrentSettings,
+        alternativeRecipes: {},
+        nodeOverrides: {},
+      });
+
+      const result = buildSavedPlanFromExportData(exportData, mockGameData, mockCurrentSettings);
+
+      expect(result).toBeDefined();
+      expect(result.recipeSID).toBe(2001);
+      expect(result.targetQuantity).toBe(60);
+      expect(mockValidatePlanInfo).toHaveBeenCalled();
+      expect(mockBuildPlanFromImport).toHaveBeenCalled();
+    });
+
+    it("異常系: validatePlanInfoが失敗した場合はエラーを投げる", () => {
+      const exportData = createMockExportData();
+      mockValidatePlanInfo.mockReturnValue({
+        isValid: false,
+        errors: [{ type: "validation", message: "Recipe not found" }],
+        warnings: [],
+      });
+
+      expect(() => {
+        buildSavedPlanFromExportData(exportData, mockGameData, mockCurrentSettings);
+      }).toThrow(/Validation failed/);
+      expect(mockBuildPlanFromImport).not.toHaveBeenCalled();
+    });
+
+    it("異常系: buildPlanFromImportがnullを返した場合はエラーを投げる", () => {
+      const exportData = createMockExportData();
+      mockValidatePlanInfo.mockReturnValue({
+        isValid: true,
+        errors: [],
+        warnings: [],
+      });
+      mockBuildPlanFromImport.mockReturnValue(null);
+
+      expect(() => {
+        buildSavedPlanFromExportData(exportData, mockGameData, mockCurrentSettings);
+      }).toThrow(/Failed to build SavedPlan/);
+    });
+
+    it("警告がある場合はconsole.warnが呼ばれる", () => {
+      const exportData = createMockExportData();
+      mockValidatePlanInfo.mockReturnValue({
+        isValid: true,
+        errors: [],
+        warnings: [{ type: "partial_data", message: "Warning message" }],
+      });
+      mockBuildPlanFromImport.mockReturnValue({
+        name: "Test Plan",
+        timestamp: Date.now(),
+        recipeSID: 2001,
+        targetQuantity: 60,
+        settings: mockCurrentSettings,
+        alternativeRecipes: {},
+        nodeOverrides: {},
+      });
+
+      buildSavedPlanFromExportData(exportData, mockGameData, mockCurrentSettings);
+
+      expect(console.warn).toHaveBeenCalledWith("Import warnings:", ["Warning message"]);
+    });
+
+    it("警告がない場合はconsole.warnが呼ばれない", () => {
+      const exportData = createMockExportData();
+      mockValidatePlanInfo.mockReturnValue({
+        isValid: true,
+        errors: [],
+        warnings: [],
+      });
+      mockBuildPlanFromImport.mockReturnValue({
+        name: "Test Plan",
+        timestamp: Date.now(),
+        recipeSID: 2001,
+        targetQuantity: 60,
+        settings: mockCurrentSettings,
+        alternativeRecipes: {},
+        nodeOverrides: {},
+      });
+
+      buildSavedPlanFromExportData(exportData, mockGameData, mockCurrentSettings);
+
+      expect(console.warn).not.toHaveBeenCalled();
+    });
+
+    it("ExportDataの設定が現在の設定にマージされる", () => {
+      const exportData = createMockExportData();
+      exportData.settings = {
+        ...exportData.settings,
+        machineRank: {
+          ...exportData.settings.machineRank,
+          Smelt: "plane",
+        },
+      };
+      mockValidatePlanInfo.mockReturnValue({
+        isValid: true,
+        errors: [],
+        warnings: [],
+      });
+      const savedPlan = {
+        name: "Test Plan",
+        timestamp: Date.now(),
+        recipeSID: 2001,
+        targetQuantity: 60,
+        settings: mockCurrentSettings,
+        alternativeRecipes: {},
+        nodeOverrides: {},
+      };
+      mockBuildPlanFromImport.mockReturnValue(savedPlan);
+
+      const result = buildSavedPlanFromExportData(exportData, mockGameData, mockCurrentSettings);
+
+      expect(result.settings.machineRank.Smelt).toBe("plane");
+    });
+  });
 });
