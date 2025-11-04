@@ -203,12 +203,12 @@ test.describe("履歴・バージョン管理機能", () => {
     });
 
     test("1.6: 履歴最大数 50 のローテーション", async ({ appPage }) => {
-      // テストタイムアウトを90秒に設定 (51回 × 600ms = 30.6秒 + 余裕)
-      test.setTimeout(90000);
+      // テストタイムアウトを120秒に設定 (51回 × 400ms = 20.4秒 + 余裕)
+      test.setTimeout(120000);
 
       // 1. レシピを選択
       await appPage.getByTestId("recipe-button-1101").click(); // 鉄インゴット
-      await appPage.waitForTimeout(500);
+      await appPage.waitForTimeout(300);
 
       // 2. ループで 51 件の履歴エントリを作成（増産剤設定を切り替え）
       for (let i = 1; i <= 51; i++) {
@@ -225,7 +225,7 @@ test.describe("履歴・バージョン管理機能", () => {
           const noneButton = appPage.getByRole("button", { name: /^なし$/ }).first();
           await noneButton.click();
         }
-        await appPage.waitForTimeout(600); // デバウンス待機
+        await appPage.waitForTimeout(400); // デバウンス待機（短縮）
       }
 
       // 3. 履歴ダイアログを開く

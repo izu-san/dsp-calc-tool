@@ -6,7 +6,7 @@
  * 使用方法:
  * node scripts/generate-recipe-sids.cjs
  *
- * 出力先: docs/testing/RECIPE_SIDS.md
+ * 出力先: tests/e2e/fixtures/RECIPE_SIDS.md
  */
 
 const fs = require("fs");
@@ -16,7 +16,7 @@ const { XMLParser } = require("fast-xml-parser");
 // XMLファイルのパス
 const RECIPES_JA_PATH = path.join(__dirname, "../public/data/Recipes/Recipes_ja.xml");
 const RECIPES_EN_PATH = path.join(__dirname, "../public/data/Recipes/Recipes_en.xml");
-const OUTPUT_PATH = path.join(__dirname, "../docs/testing/RECIPE_SIDS.md");
+const OUTPUT_PATH = path.join(__dirname, "../tests/e2e/fixtures/RECIPE_SIDS.md");
 
 /**
  * XMLファイルをパースしてレシピデータを抽出

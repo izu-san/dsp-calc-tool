@@ -44,6 +44,7 @@ coverage/
 # Playwright test results and reports
 playwright-report/
 test-results/
+tests/e2e/fixtures/RECIPE_SIDS.md
 
 # Deployment
 .vercel

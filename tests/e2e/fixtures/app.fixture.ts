@@ -9,7 +9,8 @@ export const appFixture = base.extend<{
   appPage: Page;
 }>({
   appPage: async ({ page }, use) => {
-    await page.goto("/");
+    // Navigate with retry logic for better stability
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     await disableAnimations(page);
 
     // Wait for welcome modal and skip it

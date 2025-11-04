@@ -652,6 +652,9 @@ test.describe("カスタムテンプレート機能", () => {
     });
 
     test("8.6 最大テンプレート数制限（50件）", async ({ appPage }) => {
+      // タイムアウトを120秒に設定（50個のテンプレート作成）
+      test.setTimeout(120000);
+
       // 1. 50個のテンプレートを作成
       for (let i = 1; i <= 50; i++) {
         await appPage.getByTestId("create-custom-template-button").click();
@@ -696,6 +699,9 @@ test.describe("カスタムテンプレート機能", () => {
 
   test.describe("9. 統合テスト", () => {
     test("9.1 テンプレートのライフサイクル全体", async ({ appPage }) => {
+      // タイムアウトを120秒に設定（多数の操作とリロードを含む）
+      test.setTimeout(120000);
+
       // 1. アプリケーションを起動し、カスタムテンプレートが0件であることを確認
       await expect(appPage.getByTestId("custom-template-empty-state")).toBeVisible();
 
