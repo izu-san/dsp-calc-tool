@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { createMockGameData, createMockSettings } from "../../test/factories/testDataFactory";
+import {
+  createMockGameData,
+  createMockSettings,
+  createRecipeNode,
+  createSingleOutputRecipe,
+  createMachineByType,
+  createDefaultPowerConsumption,
+} from "../../test/factories/testDataFactory";
 import type { RecipeTreeNode } from "../../types";
 import type { MiningCalculation } from "../miningCalculation";
 import { calculateItemStatistics } from "../statistics";
@@ -7,29 +14,44 @@ import { calculateUnifiedPower } from "../unifiedPowerCalculation";
 
 // モックデータの作成
 function createMockRecipeTreeNode(): RecipeTreeNode {
-  return {
-    id: "test-node",
-    recipe: {
-      ID: 1,
-      Name: "Test Recipe",
-      Items: [{ ID: 1001, Count: 1 }],
-      Results: [{ ID: 1002, Count: 1 }],
-      TimeSpend: 1,
-    },
-    machine: {
-      id: 2301,
-      name: "Assembling Machine Mk.I",
-      powerConsumption: 420,
-      craftingSpeed: 0.75,
-    },
+  const recipe = createSingleOutputRecipe({
+    SID: 1,
+    name: "Test Recipe",
+    type: "Assemble",
+    timeSpend: 1,
+    inputId: 1001,
+    inputName: "Iron Ore",
+    inputCount: 1,
+    isRawInput: true,
+    outputId: 1002,
+    outputName: "Iron Ingot",
+    outputCount: 1,
+    gridIndex: "1101",
+  });
+
+  const machine = createMachineByType({
+    id: 2301,
+    name: "Assembling Machine Mk.I",
+    type: "Assemble",
+    assemblerSpeed: 7500, // 0.75 crafting speed
+    workEnergyPerTick: 7000, // 420 kW = 7000 * 60 / 1000
+    idleEnergyPerTick: 300,
+  });
+
+  return createRecipeNode({
+    recipe,
+    machine,
+    nodeId: "test-node",
+    targetOutputRate: 1,
     machineCount: 2,
-    power: {
+    power: createDefaultPowerConsumption({
       machines: 840, // 420 * 2
       sorters: 60, // 30 * 2 (入力1 + 出力1)
       dysonSphere: 0,
-    },
+      total: 900,
+    }),
     children: [],
-  };
+  });
 }
 
 function createMockMiningCalculation(): MiningCalculation {
@@ -289,56 +311,85 @@ describe("電力表示の一致確認", () => {
   describe("複雑な生産チェーンでの一致", () => {
     it("複数の子ノードがある場合でも一致する", () => {
       // 複雑な生産チェーンを作成
+      const childRecipe1 = createSingleOutputRecipe({
+        SID: 2,
+        name: "Child Recipe 1",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1003,
+        inputName: "Copper Ore",
+        inputCount: 1,
+        isRawInput: true,
+        outputId: 1001,
+        outputName: "Iron Ore",
+        outputCount: 1,
+      });
+
+      const childMachine1 = createMachineByType({
+        id: 2302,
+        name: "Assembling Machine Mk.II",
+        type: "Assemble",
+        assemblerSpeed: 10000, // 1.0 crafting speed
+        workEnergyPerTick: 10500, // 630 kW
+        idleEnergyPerTick: 300,
+      });
+
+      const childNode1 = createRecipeNode({
+        recipe: childRecipe1,
+        machine: childMachine1,
+        nodeId: "child-1",
+        targetOutputRate: 1,
+        machineCount: 1,
+        power: createDefaultPowerConsumption({
+          machines: 630,
+          sorters: 30,
+          dysonSphere: 0,
+          total: 660,
+        }),
+        children: [],
+      });
+
+      const childRecipe2 = createSingleOutputRecipe({
+        SID: 3,
+        name: "Child Recipe 2",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1004,
+        inputName: "Stone",
+        inputCount: 1,
+        isRawInput: true,
+        outputId: 1003,
+        outputName: "Copper Ore",
+        outputCount: 1,
+      });
+
+      const childMachine2 = createMachineByType({
+        id: 2303,
+        name: "Assembling Machine Mk.III",
+        type: "Assemble",
+        assemblerSpeed: 15000, // 1.5 crafting speed
+        workEnergyPerTick: 14000, // 840 kW
+        idleEnergyPerTick: 300,
+      });
+
+      const childNode2 = createRecipeNode({
+        recipe: childRecipe2,
+        machine: childMachine2,
+        nodeId: "child-2",
+        targetOutputRate: 1,
+        machineCount: 1,
+        power: createDefaultPowerConsumption({
+          machines: 840,
+          sorters: 30,
+          dysonSphere: 0,
+          total: 870,
+        }),
+        children: [],
+      });
+
       const complexRootNode: RecipeTreeNode = {
         ...mockRootNode,
-        children: [
-          {
-            id: "child-1",
-            recipe: {
-              ID: 2,
-              Name: "Child Recipe 1",
-              Items: [{ ID: 1003, Count: 1 }],
-              Results: [{ ID: 1001, Count: 1 }],
-              TimeSpend: 1,
-            },
-            machine: {
-              id: 2302,
-              name: "Assembling Machine Mk.II",
-              powerConsumption: 630,
-              craftingSpeed: 1.0,
-            },
-            machineCount: 1,
-            power: {
-              machines: 630,
-              sorters: 30,
-              dysonSphere: 0,
-            },
-            children: [],
-          },
-          {
-            id: "child-2",
-            recipe: {
-              ID: 3,
-              Name: "Child Recipe 2",
-              Items: [{ ID: 1004, Count: 1 }],
-              Results: [{ ID: 1003, Count: 1 }],
-              TimeSpend: 1,
-            },
-            machine: {
-              id: 2303,
-              name: "Assembling Machine Mk.III",
-              powerConsumption: 840,
-              craftingSpeed: 1.5,
-            },
-            machineCount: 1,
-            power: {
-              machines: 840,
-              sorters: 30,
-              dysonSphere: 0,
-            },
-            children: [],
-          },
-        ],
+        children: [childNode1, childNode2],
       };
 
       // 統計ビューの電力計算

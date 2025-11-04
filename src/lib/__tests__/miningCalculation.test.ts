@@ -1,20 +1,27 @@
-import { describe, it, expect, vi } from "vitest";
-import { calculateMiningRequirements, POWER_MULTIPLIER_BY_SPEED } from "../miningCalculation";
+import { describe, expect, it } from "vitest";
+import { createMockGameData, createMockItem } from "../../test/factories/testDataFactory";
 import type { CalculationResult } from "../../types/calculation";
+import { calculateMiningRequirements, POWER_MULTIPLIER_BY_SPEED } from "../miningCalculation";
 
 // Mock game data
-const mockGameData = {
-  items: new Map([
-    [1001, { id: 1001, name: "Iron Ore", Type: "Resource", isRaw: true }],
-    [1002, { id: 1002, name: "Copper Ore", Type: "Resource", isRaw: true }],
-    [1003, { id: 1003, name: "Stone", Type: "Resource", isRaw: true }],
-    [1000, { id: 1000, name: "Water", Type: "Resource", isRaw: true }],
-    [1007, { id: 1007, name: "Crude Oil", Type: "Resource", isRaw: true }],
-    [1116, { id: 1116, name: "Sulfuric Acid", Type: "Resource", isRaw: true }],
-    [1120, { id: 1120, name: "Hydrogen", Type: "Material", isRaw: false }],
-    [1121, { id: 1121, name: "Deuterium", Type: "Material", isRaw: false }],
-  ]),
-};
+const mockGameData = (() => {
+  const gameData = createMockGameData();
+  // 必要なアイテムを追加
+  gameData.items.set(1001, createMockItem(1001, "Iron Ore"));
+  gameData.items.set(1002, createMockItem(1002, "Copper Ore"));
+  gameData.items.set(1003, createMockItem(1003, "Stone"));
+  gameData.items.set(1000, createMockItem(1000, "Water"));
+  gameData.items.set(1116, createMockItem(1116, "Sulfuric Acid"));
+  gameData.items.set(1121, createMockItem(1121, "Deuterium"));
+  // allItemsも更新
+  gameData.allItems.set(1001, gameData.items.get(1001)!);
+  gameData.allItems.set(1002, gameData.items.get(1002)!);
+  gameData.allItems.set(1003, gameData.items.get(1003)!);
+  gameData.allItems.set(1000, gameData.items.get(1000)!);
+  gameData.allItems.set(1116, gameData.items.get(1116)!);
+  gameData.allItems.set(1121, gameData.items.get(1121)!);
+  return gameData;
+})();
 
 describe("miningCalculation", () => {
   describe("calculateMiningRequirements", () => {
@@ -32,7 +39,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 30]]), // 30 Iron Ore/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Mining Machine: 0.5/s per vein, 研究ボーナスなし (1.0), 速度設定なし
@@ -66,7 +73,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 60]]), // 60 Iron Ore/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Advanced Mining Machine: 1.0/s per vein, 研究ボーナスなし (1.0), 100% speed
@@ -101,7 +108,7 @@ describe("miningCalculation", () => {
             [1003, 15], // Stone
           ]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -135,7 +142,7 @@ describe("miningCalculation", () => {
             [1002, 30], // Copper Ore (middle)
           ]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -159,7 +166,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 60]]), // 60 Iron Ore/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Advanced Mining Machine, 200% speed (2.0x research bonus)
@@ -188,7 +195,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 45]]), // 45 Iron Ore/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -213,7 +220,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 30]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -240,7 +247,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 90]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -268,7 +275,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 120]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -294,7 +301,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 180]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -322,7 +329,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1000, 1.0]]), // 1.0 Water/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Water: 50/min = 0.833.../s per pump, 研究ボーナスなし (1.0)
@@ -354,7 +361,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1007, 8.0]]), // 8.0 Crude Oil/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Crude Oil: 240/min = 4.0/s per extractor, 研究ボーナスなし (1.0)
@@ -386,7 +393,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1116, 2.5]]), // 2.5 Sulfuric Acid/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Sulfuric Acid: 50/min = 0.833.../s per pump, 研究ボーナスなし (1.0)
@@ -418,7 +425,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1000, 1.67]]), // 1.67 Water/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Water: 50/min = 0.833.../s per pump, 研究ボーナス+100% (2.0)
@@ -446,7 +453,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1007, 4.0]]), // 4.0 Crude Oil/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Crude Oil: 240/min = 4.0/s per extractor, 速度設定300%でも影響なし
@@ -477,7 +484,7 @@ describe("miningCalculation", () => {
             [1007, 4.0], // Crude Oil (liquid mining)
           ]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -518,7 +525,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1120, 8.4]]), // 8.4 Hydrogen/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Hydrogen: 0.84/s per collector, 研究ボーナスなし (1.0)
@@ -545,7 +552,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1121, 0.3]]), // 0.3 Deuterium/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Deuterium: 0.03/s per collector, 研究ボーナスなし (1.0)
@@ -572,7 +579,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1120, 16.8]]), // 16.8 Hydrogen/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Hydrogen: 0.84/s * 2.0 = 1.68/s per collector
@@ -599,7 +606,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 60]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // 101% speed (POWER_MULTIPLIER_BY_SPEEDに定義されていない値)
@@ -623,7 +630,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 60]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -646,7 +653,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 60]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -669,7 +676,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 30]]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // Mining Machineで200% speedを指定しても、実際は100%として扱われる
@@ -699,7 +706,7 @@ describe("miningCalculation", () => {
             [1002, 30], // Copper Ore
           ]),
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         const result = calculateMiningRequirements(
@@ -739,7 +746,7 @@ describe("miningCalculation", () => {
           rootNode: {} as any,
           rawMaterials: new Map([[1001, 180]]), // 180 Iron Ore/s
           totalMachines: 0,
-          totalPower: { machines: 0, sorters: 0, total: 0 },
+          totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
         };
 
         // 研究ボーナス+100% (2.0), 速度設定 150%

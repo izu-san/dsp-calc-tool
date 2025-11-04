@@ -5,9 +5,14 @@ import { calculatePhases } from "../phaseCalculation";
 import {
   createMockGameData,
   createMockRecipe,
-  createMockMachine,
   createMockItem,
+  createRawMaterialNode,
+  createRecipeNode,
+  createMachineByType,
+  createDefaultPowerConsumption,
+  createDefaultConveyorBelts,
 } from "../../../test/factories/testDataFactory";
+import { PROLIFERATOR_DATA } from "../../../types/settings";
 import i18n from "../../../i18n";
 
 /**
@@ -20,31 +25,49 @@ function createRecipeTreeNode(
   recipe?: ReturnType<typeof createMockRecipe>,
   children: RecipeTreeNode[] = []
 ): RecipeTreeNode {
-  const node: RecipeTreeNode = {
+  if (isRawMaterial) {
+    return createRawMaterialNode({
+      itemId,
+      itemName,
+      targetOutputRate: 30,
+      nodeId: `node-${itemId}`,
+      miningFrom: "Gas Giant Orbit",
+    });
+  }
+
+  if (!recipe) {
+    throw new Error("Recipe is required for non-raw material nodes");
+  }
+
+  const machine = createMachineByType({
+    id: 2301,
+    name: "Assembler Mk.I",
+    type: "Assemble",
+  });
+
+  return createRecipeNode({
+    recipe,
+    machine,
+    nodeId: `node-${itemId}`,
     targetOutputRate: 30,
-    machineCount: isRawMaterial ? 0 : 10,
-    proliferator: { type: "none", level: 0 },
-    power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+    machineCount: 10,
+    proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+    power: createDefaultPowerConsumption({
+      machines: 0,
+      sorters: 0,
+      dysonSphere: 0,
+      total: 0,
+    }),
     inputs: [],
     children,
-    conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-    nodeId: `node-${itemId}`,
+    conveyorBelts: createDefaultConveyorBelts({
+      inputs: 0,
+      outputs: 1,
+      total: 1,
+    }),
     itemId,
     itemName,
-    isRawMaterial: isRawMaterial ? true : undefined,
-  };
-
-  if (recipe) {
-    node.recipe = recipe;
-    node.machine = createMockMachine("2301", "Assembler Mk.I");
-    node.machineCount = 10;
-  }
-
-  if (isRawMaterial) {
-    node.miningFrom = "Gas Giant Orbit";
-  }
-
-  return node;
+  });
 }
 
 function extractStageFromTitle(title: string): number | null {
@@ -98,17 +121,31 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
     it("should appear ONLY in Phase 1 when mined (isRawMaterial === true)", () => {
       // Create a root node that uses Hydrogen (mined)
       const hydrogenNode = createRecipeTreeNode(HYDROGEN_ID, "水素", true);
-      const rootNode: RecipeTreeNode = {
+      const rootNode = createRecipeNode({
+        recipe: createMockRecipe(1, "Test Recipe"),
+        machine: createMachineByType({
+          id: 2301,
+          name: "Assembler Mk.I",
+          type: "Assemble",
+        }),
+        nodeId: "root",
         targetOutputRate: 30,
         machineCount: 10,
-        proliferator: { type: "none", level: 0 },
-        power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         inputs: [],
         children: [hydrogenNode],
-        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-        nodeId: "root",
-        recipe: createMockRecipe(1, "Test Recipe"),
-      };
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+      });
 
       const phases = calculatePhases(rootNode, gameData);
 
@@ -134,17 +171,31 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
       hydrogenRecipe.Type = "Refine";
 
       const hydrogenNode = createRecipeTreeNode(HYDROGEN_ID, "水素", false, hydrogenRecipe);
-      const rootNode: RecipeTreeNode = {
+      const rootNode = createRecipeNode({
+        recipe: createMockRecipe(1, "Test Recipe"),
+        machine: createMachineByType({
+          id: 2301,
+          name: "Assembler Mk.I",
+          type: "Assemble",
+        }),
+        nodeId: "root",
         targetOutputRate: 30,
         machineCount: 10,
-        proliferator: { type: "none", level: 0 },
-        power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         inputs: [],
         children: [hydrogenNode],
-        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-        nodeId: "root",
-        recipe: createMockRecipe(1, "Test Recipe"),
-      };
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+      });
 
       const phases = calculatePhases(rootNode, gameData);
 
@@ -167,17 +218,31 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
     it("should appear ONLY in Phase 1 when mined (isRawMaterial === true)", () => {
       // Create a root node that uses Deuterium (mined)
       const deuteriumNode = createRecipeTreeNode(DEUTERIUM_ID, "重水素", true);
-      const rootNode: RecipeTreeNode = {
+      const rootNode = createRecipeNode({
+        recipe: createMockRecipe(1, "Test Recipe"),
+        machine: createMachineByType({
+          id: 2301,
+          name: "Assembler Mk.I",
+          type: "Assemble",
+        }),
+        nodeId: "root",
         targetOutputRate: 30,
         machineCount: 10,
-        proliferator: { type: "none", level: 0 },
-        power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         inputs: [],
         children: [deuteriumNode],
-        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-        nodeId: "root",
-        recipe: createMockRecipe(1, "Test Recipe"),
-      };
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+      });
 
       const phases = calculatePhases(rootNode, gameData);
 
@@ -208,17 +273,31 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
         hydrogenNode,
       ]);
 
-      const rootNode: RecipeTreeNode = {
+      const rootNode = createRecipeNode({
+        recipe: createMockRecipe(1, "Test Recipe"),
+        machine: createMachineByType({
+          id: 2301,
+          name: "Assembler Mk.I",
+          type: "Assemble",
+        }),
+        nodeId: "root",
         targetOutputRate: 30,
         machineCount: 10,
-        proliferator: { type: "none", level: 0 },
-        power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         inputs: [],
         children: [deuteriumNode],
-        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-        nodeId: "root",
-        recipe: createMockRecipe(1, "Test Recipe"),
-      };
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+      });
 
       const phases = calculatePhases(rootNode, gameData);
 
@@ -252,17 +331,31 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
         hydrogenNode,
       ]);
 
-      const rootNode: RecipeTreeNode = {
+      const rootNode = createRecipeNode({
+        recipe: createMockRecipe(1, "Test Recipe"),
+        machine: createMachineByType({
+          id: 2301,
+          name: "Assembler Mk.I",
+          type: "Assemble",
+        }),
+        nodeId: "root",
         targetOutputRate: 30,
         machineCount: 10,
-        proliferator: { type: "none", level: 0 },
-        power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         inputs: [],
         children: [deuteriumNode],
-        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-        nodeId: "root",
-        recipe: createMockRecipe(1, "Test Recipe"),
-      };
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+      });
 
       const phases = calculatePhases(rootNode, gameData);
 
@@ -297,21 +390,59 @@ describe("phaseCalculation - Hydrogen and Deuterium placement", () => {
         },
       ];
 
-      const photonNode = createRecipeTreeNode(CRITICAL_PHOTON_ID, "臨界光子", false, photonRecipe);
-      photonNode.machine = createMockMachine("2208", "Ray Receiver");
-      photonNode.machineCount = 5;
+      const photonNode = createRecipeNode({
+        recipe: photonRecipe,
+        machine: createMachineByType({
+          id: 2208,
+          name: "Ray Receiver",
+          type: "Assemble",
+        }),
+        nodeId: `node-${CRITICAL_PHOTON_ID}`,
+        targetOutputRate: 30,
+        machineCount: 5,
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
+        inputs: [],
+        children: [],
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+        itemId: CRITICAL_PHOTON_ID,
+        itemName: "臨界光子",
+      });
 
-      const rootNode: RecipeTreeNode = {
+      const rootNode = createRecipeNode({
+        recipe: createMockRecipe(1, "Test Recipe"),
+        machine: createMachineByType({
+          id: 2301,
+          name: "Assembler Mk.I",
+          type: "Assemble",
+        }),
+        nodeId: "root",
         targetOutputRate: 30,
         machineCount: 10,
-        proliferator: { type: "none", level: 0 },
-        power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+        proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         inputs: [],
         children: [photonNode],
-        conveyorBelts: { inputs: 0, outputs: 1, total: 1 },
-        nodeId: "root",
-        recipe: createMockRecipe(1, "Test Recipe"),
-      };
+        conveyorBelts: createDefaultConveyorBelts({
+          inputs: 0,
+          outputs: 1,
+          total: 1,
+        }),
+      });
 
       const phases = calculatePhases(rootNode, gameData);
 

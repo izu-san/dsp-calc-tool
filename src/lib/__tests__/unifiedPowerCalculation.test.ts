@@ -1,34 +1,56 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { createMockGameData, createMockSettings } from "../../test/factories/testDataFactory";
+import {
+  createMockGameData,
+  createMockSettings,
+  createRecipeNode,
+  createSingleOutputRecipe,
+  createMachineByType,
+  createDefaultPowerConsumption,
+} from "../../test/factories/testDataFactory";
 import type { RecipeTreeNode } from "../../types";
 import type { MiningCalculation } from "../miningCalculation";
 import { calculateUnifiedPower } from "../unifiedPowerCalculation";
 
 // モックデータの作成
 function createMockRecipeTreeNode(): RecipeTreeNode {
-  return {
-    id: "test-node",
-    recipe: {
-      ID: 1,
-      Name: "Test Recipe",
-      Items: [{ ID: 1001, Count: 1 }],
-      Results: [{ ID: 1002, Count: 1 }],
-      TimeSpend: 1,
-    },
-    machine: {
-      id: 2301,
-      name: "Assembling Machine Mk.I",
-      powerConsumption: 420,
-      craftingSpeed: 0.75,
-    },
+  const recipe = createSingleOutputRecipe({
+    SID: 1,
+    name: "Test Recipe",
+    type: "Assemble",
+    timeSpend: 1,
+    inputId: 1001,
+    inputName: "Iron Ore",
+    inputCount: 1,
+    isRawInput: true,
+    outputId: 1002,
+    outputName: "Iron Ingot",
+    outputCount: 1,
+    gridIndex: "1101",
+  });
+
+  const machine = createMachineByType({
+    id: 2301,
+    name: "Assembling Machine Mk.I",
+    type: "Assemble",
+    assemblerSpeed: 7500, // 0.75 crafting speed
+    workEnergyPerTick: 7000, // 420 kW = 7000 * 60 / 1000
+    idleEnergyPerTick: 300,
+  });
+
+  return createRecipeNode({
+    recipe,
+    machine,
+    nodeId: "test-node",
+    targetOutputRate: 1,
     machineCount: 2,
-    power: {
+    power: createDefaultPowerConsumption({
       machines: 840, // 420 * 2
       sorters: 60, // 30 * 2 (入力1 + 出力1)
       dysonSphere: 0,
-    },
+      total: 900,
+    }),
     children: [],
-  };
+  });
 }
 
 function createMockMiningCalculation(): MiningCalculation {
@@ -124,29 +146,41 @@ describe("calculateUnifiedPower", () => {
 
   describe("レイレシーバーの特別処理", () => {
     it("レイレシーバーは設備電力から除外される", () => {
-      const rayReceiverNode: RecipeTreeNode = {
-        id: "ray-receiver",
-        recipe: {
-          ID: 2,
-          Name: "Ray Receiver Recipe",
-          Items: [{ ID: 1003, Count: 1 }],
-          Results: [{ ID: 1004, Count: 1 }],
-          TimeSpend: 1,
-        },
-        machine: {
-          id: 2208, // Ray Receiver ID
-          name: "Ray Receiver",
-          powerConsumption: 0, // ダイソンスフィア電力を使用
-          craftingSpeed: 1.0,
-        },
+      const rayReceiverRecipe = createSingleOutputRecipe({
+        SID: 2,
+        name: "Ray Receiver Recipe",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1003,
+        inputName: "Test Input",
+        inputCount: 1,
+        outputId: 1004,
+        outputName: "Test Output",
+        outputCount: 1,
+      });
+
+      const rayReceiverMachine = createMachineByType({
+        id: 2208, // Ray Receiver ID
+        name: "Ray Receiver",
+        type: "Assemble",
+        workEnergyPerTick: 0, // ダイソンスフィア電力を使用
+        assemblerSpeed: 10000, // 1.0 crafting speed
+      });
+
+      const rayReceiverNode = createRecipeNode({
+        recipe: rayReceiverRecipe,
+        machine: rayReceiverMachine,
+        nodeId: "ray-receiver",
+        targetOutputRate: 1,
         machineCount: 1,
-        power: {
+        power: createDefaultPowerConsumption({
           machines: 0, // 設備電力は0
           sorters: 30, // ソーター電力のみ
           dysonSphere: 1000, // ダイソンスフィア電力
-        },
+          total: 30,
+        }),
         children: [],
-      };
+      });
 
       const result = calculateUnifiedPower(rayReceiverNode);
 
@@ -163,56 +197,85 @@ describe("calculateUnifiedPower", () => {
 
   describe("複雑な生産チェーン", () => {
     it("複数の子ノードがある場合の電力計算が正しく行われる", () => {
+      const childRecipe1 = createSingleOutputRecipe({
+        SID: 2,
+        name: "Child Recipe 1",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1003,
+        inputName: "Copper Ore",
+        inputCount: 1,
+        isRawInput: true,
+        outputId: 1001,
+        outputName: "Iron Ore",
+        outputCount: 1,
+      });
+
+      const childMachine1 = createMachineByType({
+        id: 2302,
+        name: "Assembling Machine Mk.II",
+        type: "Assemble",
+        assemblerSpeed: 10000, // 1.0 crafting speed
+        workEnergyPerTick: 10500, // 630 kW
+        idleEnergyPerTick: 300,
+      });
+
+      const childNode1 = createRecipeNode({
+        recipe: childRecipe1,
+        machine: childMachine1,
+        nodeId: "child-1",
+        targetOutputRate: 1,
+        machineCount: 1,
+        power: createDefaultPowerConsumption({
+          machines: 630,
+          sorters: 30,
+          dysonSphere: 0,
+          total: 660,
+        }),
+        children: [],
+      });
+
+      const childRecipe2 = createSingleOutputRecipe({
+        SID: 3,
+        name: "Child Recipe 2",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1004,
+        inputName: "Stone",
+        inputCount: 1,
+        isRawInput: true,
+        outputId: 1003,
+        outputName: "Copper Ore",
+        outputCount: 1,
+      });
+
+      const childMachine2 = createMachineByType({
+        id: 2303,
+        name: "Assembling Machine Mk.III",
+        type: "Assemble",
+        assemblerSpeed: 15000, // 1.5 crafting speed
+        workEnergyPerTick: 14000, // 840 kW
+        idleEnergyPerTick: 300,
+      });
+
+      const childNode2 = createRecipeNode({
+        recipe: childRecipe2,
+        machine: childMachine2,
+        nodeId: "child-2",
+        targetOutputRate: 1,
+        machineCount: 1,
+        power: createDefaultPowerConsumption({
+          machines: 840,
+          sorters: 30,
+          dysonSphere: 0,
+          total: 870,
+        }),
+        children: [],
+      });
+
       const complexRootNode: RecipeTreeNode = {
         ...mockRootNode,
-        children: [
-          {
-            id: "child-1",
-            recipe: {
-              ID: 2,
-              Name: "Child Recipe 1",
-              Items: [{ ID: 1003, Count: 1 }],
-              Results: [{ ID: 1001, Count: 1 }],
-              TimeSpend: 1,
-            },
-            machine: {
-              id: 2302,
-              name: "Assembling Machine Mk.II",
-              powerConsumption: 630,
-              craftingSpeed: 1.0,
-            },
-            machineCount: 1,
-            power: {
-              machines: 630,
-              sorters: 30,
-              dysonSphere: 0,
-            },
-            children: [],
-          },
-          {
-            id: "child-2",
-            recipe: {
-              ID: 3,
-              Name: "Child Recipe 2",
-              Items: [{ ID: 1004, Count: 1 }],
-              Results: [{ ID: 1003, Count: 1 }],
-              TimeSpend: 1,
-            },
-            machine: {
-              id: 2303,
-              name: "Assembling Machine Mk.III",
-              powerConsumption: 840,
-              craftingSpeed: 1.5,
-            },
-            machineCount: 1,
-            power: {
-              machines: 840,
-              sorters: 30,
-              dysonSphere: 0,
-            },
-            children: [],
-          },
-        ],
+        children: [childNode1, childNode2],
       };
 
       const result = calculateUnifiedPower(complexRootNode);
@@ -340,25 +403,37 @@ describe("calculateUnifiedPower", () => {
 
   describe("エッジケース", () => {
     it("電力情報がないノードはスキップされる", () => {
-      const nodeWithoutPower: RecipeTreeNode = {
-        id: "no-power-node",
-        recipe: {
-          ID: 4,
-          Name: "No Power Recipe",
-          Items: [{ ID: 1005, Count: 1 }],
-          Results: [{ ID: 1006, Count: 1 }],
-          TimeSpend: 1,
-        },
-        machine: {
-          id: 2301,
-          name: "Assembling Machine Mk.I",
-          powerConsumption: 420,
-          craftingSpeed: 0.75,
-        },
+      const recipeWithoutPower = createSingleOutputRecipe({
+        SID: 4,
+        name: "No Power Recipe",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1005,
+        inputName: "Test Input",
+        inputCount: 1,
+        outputId: 1006,
+        outputName: "Test Output",
+        outputCount: 1,
+      });
+
+      const machineWithoutPower = createMachineByType({
+        id: 2301,
+        name: "Assembling Machine Mk.I",
+        type: "Assemble",
+        assemblerSpeed: 7500, // 0.75 crafting speed
+        workEnergyPerTick: 7000, // 420 kW
+      });
+
+      const nodeWithoutPower = createRecipeNode({
+        recipe: recipeWithoutPower,
+        machine: machineWithoutPower,
+        nodeId: "no-power-node",
+        targetOutputRate: 1,
         machineCount: 1,
-        // power プロパティがない
+        // power プロパティを削除してテスト
+        power: undefined as any,
         children: [],
-      };
+      });
 
       const result = calculateUnifiedPower(nodeWithoutPower);
 
@@ -369,29 +444,42 @@ describe("calculateUnifiedPower", () => {
     });
 
     it("machineCountが0の場合は電力内訳に含まれない", () => {
-      const zeroCountNode: RecipeTreeNode = {
-        id: "zero-count-node",
-        recipe: {
-          ID: 5,
-          Name: "Zero Count Recipe",
-          Items: [{ ID: 1007, Count: 1 }],
-          Results: [{ ID: 1008, Count: 1 }],
-          TimeSpend: 1,
-        },
-        machine: {
-          id: 2301,
-          name: "Assembling Machine Mk.I",
-          powerConsumption: 420,
-          craftingSpeed: 0.75,
-        },
+      const zeroCountRecipe = createSingleOutputRecipe({
+        SID: 5,
+        name: "Zero Count Recipe",
+        type: "Assemble",
+        timeSpend: 1,
+        inputId: 1007,
+        inputName: "Crude Oil",
+        inputCount: 1,
+        isRawInput: true,
+        outputId: 1008,
+        outputName: "Test Output",
+        outputCount: 1,
+      });
+
+      const zeroCountMachine = createMachineByType({
+        id: 2301,
+        name: "Assembling Machine Mk.I",
+        type: "Assemble",
+        assemblerSpeed: 7500,
+        workEnergyPerTick: 7000,
+      });
+
+      const zeroCountNode = createRecipeNode({
+        recipe: zeroCountRecipe,
+        machine: zeroCountMachine,
+        nodeId: "zero-count-node",
+        targetOutputRate: 1,
         machineCount: 0, // 設備数が0
-        power: {
+        power: createDefaultPowerConsumption({
           machines: 0,
           sorters: 0,
           dysonSphere: 0,
-        },
+          total: 0,
+        }),
         children: [],
-      };
+      });
 
       const result = calculateUnifiedPower(zeroCountNode);
 
@@ -453,10 +541,20 @@ describe("calculateUnifiedPower", () => {
 
   describe("空のケース", () => {
     it("空のノードを処理する", () => {
-      const emptyNode: RecipeTreeNode = {
-        id: "empty-node",
+      const emptyNode = createRecipeNode({
+        recipe: undefined as any,
+        machine: undefined as any,
+        nodeId: "empty-node",
+        targetOutputRate: 0,
+        machineCount: 0,
+        power: createDefaultPowerConsumption({
+          machines: 0,
+          sorters: 0,
+          dysonSphere: 0,
+          total: 0,
+        }),
         children: [],
-      };
+      });
 
       const result = calculateUnifiedPower(emptyNode);
 

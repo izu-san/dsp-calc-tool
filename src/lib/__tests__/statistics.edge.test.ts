@@ -6,18 +6,29 @@ import {
   getIntermediateProducts,
   getFinalProducts,
 } from "../statistics";
+import {
+  createRecipeNode,
+  createRawMaterialNode,
+  createSingleOutputRecipe,
+} from "../../test/factories/testDataFactory";
+import { PROLIFERATOR_DATA } from "../../types/settings";
+import type { RecipeTreeNode } from "../../types/calculation";
 
 describe("statistics edge cases", () => {
   it("handles empty tree gracefully", () => {
-    const emptyRoot: any = {
-      nodeId: "root",
-      isRawMaterial: false,
+    const emptyRoot = createRecipeNode({
+      recipe: undefined,
+      machine: undefined,
       targetOutputRate: 0,
       machineCount: 0,
-      power: { total: 0, machines: 0, sorters: 0 },
-      conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
+      proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+      power: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+      inputs: [],
       children: [],
-    };
+      conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
+      nodeId: "root",
+    }) as unknown as RecipeTreeNode & { isRawMaterial?: boolean };
+    emptyRoot.isRawMaterial = false;
 
     const stats = calculateItemStatistics(emptyRoot);
     expect(stats.totalMachines).toBe(0);
@@ -30,30 +41,40 @@ describe("statistics edge cases", () => {
   });
 
   it("treats raw material child as consumption only when no recipe", () => {
-    const root: any = {
-      nodeId: "root",
-      isRawMaterial: false,
+    const rawChild = createRawMaterialNode({
+      itemId: 1001,
+      itemName: "Iron Ore",
+      targetOutputRate: 60,
+      nodeId: "raw-1001-0",
+    });
+    (rawChild as { conveyorBelts?: { outputs?: number } }).conveyorBelts = { outputs: 1 };
+
+    const recipe = createSingleOutputRecipe({
+      SID: 2001,
+      name: "Test Recipe",
+      type: "Assemble",
+      timeSpend: 60,
+      inputId: 1001,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      outputId: 1002,
+      outputName: "Test Item",
+      outputCount: 1,
+    });
+
+    const root = createRecipeNode({
+      recipe,
+      machine: undefined,
       targetOutputRate: 60,
       machineCount: 1,
-      power: { total: 120, machines: 120, sorters: 0 },
-      conveyorBelts: { inputs: 1, outputs: 1, total: 2 },
-      recipe: {
-        SID: 2001,
-        Results: [{ id: 1002, count: 1 }],
-      },
+      proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+      power: { machines: 120, sorters: 0, dysonSphere: 0, total: 120 },
       inputs: [{ itemId: 1001, itemName: "Iron Ore", requiredRate: 60 }],
-      children: [
-        {
-          nodeId: "raw-1001-0",
-          isRawMaterial: true,
-          itemId: 1001,
-          itemName: "Iron Ore",
-          targetOutputRate: 60,
-          conveyorBelts: { outputs: 1 },
-          children: [],
-        },
-      ],
-    };
+      children: [rawChild],
+      conveyorBelts: { inputs: 1, outputs: 1, total: 2 },
+      nodeId: "root",
+    }) as unknown as RecipeTreeNode & { isRawMaterial?: boolean };
+    root.isRawMaterial = false;
 
     const stats = calculateItemStatistics(root);
     // raw material is registered as consumption only
@@ -78,23 +99,39 @@ describe("statistics edge cases", () => {
   });
 
   it("proportional outputs are calculated relative to main output count", () => {
-    const root: any = {
-      nodeId: "root",
-      isRawMaterial: false,
+    const recipe = createSingleOutputRecipe({
+      SID: 3001,
+      name: "Multi Output Recipe",
+      type: "Chemical",
+      timeSpend: 60,
+      inputId: 1,
+      inputName: "Input",
+      inputCount: 1,
+      outputId: 2000,
+      outputName: "Main Output",
+      outputCount: 2,
+    });
+    recipe.Results.push({
+      id: 2001,
+      name: "Secondary Output",
+      count: 1,
+      Type: "Material",
+      isRaw: false,
+    });
+
+    const root = createRecipeNode({
+      recipe,
+      machine: undefined,
       targetOutputRate: 60,
       machineCount: 1,
-      power: { total: 120, machines: 120, sorters: 0 },
-      conveyorBelts: { inputs: 1, outputs: 2, total: 3 },
-      recipe: {
-        SID: 3001,
-        Results: [
-          { id: 2000, count: 2 }, // main
-          { id: 2001, count: 1 }, // secondary (half of main)
-        ],
-      },
+      proliferator: { ...PROLIFERATOR_DATA.none, mode: "production" },
+      power: { machines: 120, sorters: 0, dysonSphere: 0, total: 120 },
       inputs: [],
       children: [],
-    };
+      conveyorBelts: { inputs: 1, outputs: 2, total: 3 },
+      nodeId: "root",
+    }) as unknown as RecipeTreeNode & { isRawMaterial?: boolean };
+    root.isRawMaterial = false;
 
     const stats = calculateItemStatistics(root);
     const main = stats.items.get(2000)!;

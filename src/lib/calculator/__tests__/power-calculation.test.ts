@@ -1,21 +1,15 @@
 import { describe, it, expect } from "vitest";
 import { calculateMachinePower, calculateSorterPower } from "../power-calculation";
-import type { Recipe, Machine, ProliferatorConfig } from "../../../types";
+import type { ProliferatorConfig } from "../../../types";
 import { PROLIFERATOR_DATA } from "../../../types/settings";
+import {
+  machinePresets,
+  createMachineByType,
+  createSingleOutputRecipe,
+} from "../../../test/factories/testDataFactory";
 
 describe("calculateMachinePower", () => {
-  const mockMachine: Machine = {
-    id: 2302,
-    name: "Arc Smelter",
-    Type: "Smelt",
-    assemblerSpeed: 10000,
-    workEnergyPerTick: 360000, // 360,000 ticks * 60 / 1000 = 21,600 kW
-    idleEnergyPerTick: 18000,
-    exchangeEnergyPerTick: 0,
-    isPowerConsumer: true,
-    isPowerExchanger: false,
-    isRaw: false,
-  };
+  const mockMachine = machinePresets.arcSmelter();
 
   it("should calculate basic machine power consumption", () => {
     const proliferator: ProliferatorConfig = {
@@ -77,18 +71,17 @@ describe("calculateMachinePower", () => {
   });
 
   describe("PhotonGeneration power calculation", () => {
-    const rayReceiver: Machine = {
+    const rayReceiver = createMachineByType({
       id: 2208,
       name: "Ray Receiver",
-      Type: "PhotonGenerator",
+      type: "PhotonGenerator",
       assemblerSpeed: 10000,
       workEnergyPerTick: 0, // ダイソンスフィア電力を別計算するため0
       idleEnergyPerTick: 0,
       exchangeEnergyPerTick: 0,
       isPowerConsumer: false,
       isPowerExchanger: true,
-      isRaw: false,
-    };
+    });
 
     it("should calculate dyson sphere power for photon generation", () => {
       const proliferator: ProliferatorConfig = {
@@ -256,20 +249,23 @@ describe("calculateMachinePower", () => {
 
 describe("calculateSorterPower", () => {
   it("should calculate sorter power based on input/output types", () => {
-    const mockRecipe: Recipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "Test",
-      TimeSpend: 60,
-      Items: [
-        { id: 1, name: "Iron Ore", count: 1, Type: "0", isRaw: true },
-        { id: 2, name: "Copper Ore", count: 1, Type: "0", isRaw: true },
-      ],
-      Results: [{ id: 3, name: "Iron Ingot", count: 1, Type: "0", isRaw: false }],
-      Type: "Assemble",
-      Explicit: false,
-      GridIndex: "1101",
+      type: "Assemble",
+      timeSpend: 60,
+      inputId: 1,
+      inputName: "Iron Ore",
+      inputCount: 1,
+      isRawInput: true,
+      outputId: 3,
+      outputName: "Iron Ingot",
+      outputCount: 1,
+      gridIndex: "1101",
       productive: true,
-    };
+    });
+    // 複数入力のため追加
+    mockRecipe.Items.push({ id: 2, name: "Copper Ore", count: 1, Type: "Resource", isRaw: true });
 
     const machineCount = 10;
     const sorterPowerPerUnit = 0.03; // 30W = 0.03kW
@@ -283,17 +279,22 @@ describe("calculateSorterPower", () => {
   });
 
   it("should handle recipes with no inputs", () => {
-    const mockRecipe: Recipe = {
+    const mockRecipe = createSingleOutputRecipe({
       SID: 1,
       name: "Mining",
-      TimeSpend: 60,
-      Items: [],
-      Results: [{ id: 1, name: "Iron Ore", count: 1, Type: "0", isRaw: true }],
-      Type: "Smelt",
-      Explicit: false,
-      GridIndex: "1101",
+      type: "Smelt",
+      timeSpend: 60,
+      inputId: 0,
+      inputName: "",
+      inputCount: 0,
+      outputId: 1,
+      outputName: "Iron Ore",
+      outputCount: 1,
+      isRawOutput: true,
+      gridIndex: "1101",
       productive: false,
-    };
+    });
+    mockRecipe.Items = [];
 
     // Sorters = 0 inputs + 1 output = 1
     const power = calculateSorterPower(mockRecipe, 5, 0.03);
@@ -307,18 +308,17 @@ describe("Power Calculation Edge Cases", () => {
     // This test verifies that Dyson Sphere power is treated as generated power,
     // not consumed power, which is important for power generation calculations
 
-    const mockMachine: Machine = {
+    const mockMachine = createMachineByType({
       id: 2208, // Ray Receiver
       name: "Ray Receiver",
-      Type: "Particle",
+      type: "Particle",
       assemblerSpeed: 10000,
       workEnergyPerTick: 0, // Ray Receivers don't consume work energy
       idleEnergyPerTick: 0,
       exchangeEnergyPerTick: 0,
       isPowerConsumer: false,
       isPowerExchanger: true, // This is the key - it exchanges power
-      isRaw: false,
-    };
+    });
 
     const proliferator: ProliferatorConfig = {
       ...PROLIFERATOR_DATA.none,
@@ -333,18 +333,7 @@ describe("Power Calculation Edge Cases", () => {
   });
 
   it("should handle power consumers correctly (should be included in consumption)", () => {
-    const mockMachine: Machine = {
-      id: 2302, // Arc Smelter
-      name: "Arc Smelter",
-      Type: "Smelt",
-      assemblerSpeed: 10000,
-      workEnergyPerTick: 360000,
-      idleEnergyPerTick: 18000,
-      exchangeEnergyPerTick: 0,
-      isPowerConsumer: true, // This is the key - it consumes power
-      isPowerExchanger: false,
-      isRaw: false,
-    };
+    const mockMachine = machinePresets.arcSmelter();
 
     const proliferator: ProliferatorConfig = {
       ...PROLIFERATOR_DATA.none,

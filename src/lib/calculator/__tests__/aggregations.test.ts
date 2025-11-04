@@ -1,44 +1,52 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  calculateTotalPower,
-  calculateTotalMachines,
+  createRecipeNode,
+  createRawMaterialNode,
+  recipePresets,
+} from "../../../test/factories/testDataFactory";
+import type { RecipeTreeNode } from "../../../types";
+import { PROLIFERATOR_DATA } from "../../../types/settings";
+import {
   calculateRawMaterials,
+  calculateTotalMachines,
+  calculateTotalPower,
 } from "../aggregations";
-import type { RecipeTreeNode, Recipe } from "../../../types";
-import { PROLIFERATOR_DATA, CONVEYOR_BELT_DATA, SORTER_DATA } from "../../../types/settings";
 
 describe("aggregations", () => {
   const createMockNode = (overrides?: Partial<RecipeTreeNode>): RecipeTreeNode => {
-    const mockRecipe: Recipe = {
-      SID: 1,
-      name: "Test Recipe",
-      TimeSpend: 60,
-      Results: [{ id: 1, name: "Test Item", count: 1, Type: "0", isRaw: false }],
-      Items: [],
-      Type: "Assemble",
-      Explicit: false,
-      GridIndex: "1",
-      productive: true,
-    };
+    // 原材料ノードの場合は createRawMaterialNode を使用
+    if (overrides?.isRawMaterial) {
+      return createRawMaterialNode({
+        itemId: overrides.itemId ?? 1001,
+        itemName: overrides.itemName ?? "Test Raw Material",
+        targetOutputRate: overrides.targetOutputRate ?? 1,
+        nodeId: overrides.nodeId ?? "test-raw-node",
+        miningFrom: overrides.miningFrom,
+        ...overrides,
+      });
+    }
 
-    return {
+    // 通常のレシピノード
+    const mockRecipe = recipePresets.gear();
+    return createRecipeNode({
       recipe: mockRecipe,
+      machine: undefined,
       targetOutputRate: 1,
       machineCount: 1,
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
-      power: { machines: 100, sorters: 10, total: 110 },
+      power: { machines: 100, sorters: 10, dysonSphere: 0, total: 110 },
       inputs: [],
       children: [],
       conveyorBelts: { inputs: 0, outputs: 0, total: 0 },
       nodeId: "test-node",
       ...overrides,
-    };
+    });
   };
 
   describe("calculateTotalPower", () => {
     it("should calculate power for single node", () => {
       const node = createMockNode({
-        power: { machines: 100, sorters: 10, total: 110 },
+        power: { machines: 100, sorters: 10, dysonSphere: 0, total: 110 },
       });
 
       const result = calculateTotalPower(node);
@@ -50,17 +58,17 @@ describe("aggregations", () => {
 
     it("should sum power across tree", () => {
       const child1 = createMockNode({
-        power: { machines: 50, sorters: 5, total: 55 },
+        power: { machines: 50, sorters: 5, dysonSphere: 0, total: 55 },
         nodeId: "child1",
       });
 
       const child2 = createMockNode({
-        power: { machines: 30, sorters: 3, total: 33 },
+        power: { machines: 30, sorters: 3, dysonSphere: 0, total: 33 },
         nodeId: "child2",
       });
 
       const parent = createMockNode({
-        power: { machines: 100, sorters: 10, total: 110 },
+        power: { machines: 100, sorters: 10, dysonSphere: 0, total: 110 },
         children: [child1, child2],
       });
 
@@ -73,18 +81,18 @@ describe("aggregations", () => {
 
     it("should handle deep tree structures", () => {
       const grandchild = createMockNode({
-        power: { machines: 20, sorters: 2, total: 22 },
+        power: { machines: 20, sorters: 2, dysonSphere: 0, total: 22 },
         nodeId: "grandchild",
       });
 
       const child = createMockNode({
-        power: { machines: 50, sorters: 5, total: 55 },
+        power: { machines: 50, sorters: 5, dysonSphere: 0, total: 55 },
         children: [grandchild],
         nodeId: "child",
       });
 
       const parent = createMockNode({
-        power: { machines: 100, sorters: 10, total: 110 },
+        power: { machines: 100, sorters: 10, dysonSphere: 0, total: 110 },
         children: [child],
       });
 
