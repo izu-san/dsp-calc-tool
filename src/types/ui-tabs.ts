@@ -12,6 +12,7 @@ export const ProductionResultsTab = {
   PowerGeneration: "power-generation",
   MiningCalculator: "mining-calculator",
   Roadmap: "roadmap",
+  Visualization: "visualization",
 } as const;
 
 export type ProductionResultsTab = (typeof ProductionResultsTab)[keyof typeof ProductionResultsTab];

@@ -487,6 +487,44 @@
   "total": "合計",
   "saturation": "飽和度",
   "bottleneckDetected": "ボトルネック検出！",
+  "visualization": {
+    "tabLabel": "可視化",
+    "filters": {
+      "machineType": "設備タイプ",
+      "allMachines": "すべての設備",
+      "materialTypes": "材料カテゴリ",
+      "rawMaterials": "原材料",
+      "intermediates": "中間材",
+      "finalProducts": "最終製品",
+      "reset": "フィルタをリセット"
+    },
+    "emptyState": {
+      "noData": "現在の設定で表示できるサンキーダイアグラムはありません。"
+    },
+    "node": {
+      "machineTitle": "設備",
+      "itemTitle": "アイテム",
+      "close": "詳細を閉じる",
+      "value": "スループット",
+      "machineType": "設備タイプ",
+      "machineRank": "設備ランク",
+      "machineName": "設備名",
+      "machineCount": "設備数",
+      "recipeType": "レシピタイプ",
+      "proliferator": "増産剤",
+      "powerConsumption": "消費電力",
+      "inputs": "入力",
+      "outputs": "出力",
+      "noFlows": "接続されているフローはありません",
+      "nodeType": "ノード種別",
+      "types": {
+        "machine": "設備",
+        "raw-material": "原材料",
+        "intermediate": "中間材",
+        "final-product": "最終製品"
+      }
+    }
+  },
   "addToFavorites": "お気に入りに追加",
   "removeFromFavorites": "お気に入りから削除",
   "mostEfficient": "最も効率的",
