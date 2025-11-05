@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import type { PhaseNode } from "../../types/roadmap";
 import { useBuildingRoadmapStore } from "../../stores/buildingRoadmapStore";
-import { ItemIcon } from "../ItemIcon";
-import { formatNumber, formatBuildingCount } from "../../utils/format";
+import type { PhaseNode } from "../../types/roadmap";
 import { cn } from "../../utils/classNames";
+import { formatBuildingCount, formatNumber } from "../../utils/format";
+import { ItemIcon } from "../ItemIcon";
 
 interface PhaseNodeProps {
   node: PhaseNode;
@@ -27,6 +27,7 @@ export function PhaseNode({ node }: PhaseNodeProps) {
   return (
     <div
       data-testid={`phase-node-${node.nodeId}`}
+      data-item-id={node.itemId}
       role="button"
       tabIndex={0}
       onClick={handleClick}

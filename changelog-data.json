@@ -1,0 +1,30 @@
+[
+  {
+    "version": "0.0.0",
+    "date": "2025-01-XX",
+    "added": {
+      "ja": [
+        "ヘルプ/アバウトページ機能を追加",
+        "対応ゲームバージョン情報の表示",
+        "チェンジログ表示機能",
+        "FAQ機能",
+        "サポート情報の表示"
+      ],
+      "en": [
+        "Added Help/About page feature",
+        "Display supported game version information",
+        "Changelog display feature",
+        "FAQ feature",
+        "Support information display"
+      ]
+    },
+    "changed": {
+      "ja": [],
+      "en": []
+    },
+    "fixed": {
+      "ja": [],
+      "en": []
+    }
+  }
+]

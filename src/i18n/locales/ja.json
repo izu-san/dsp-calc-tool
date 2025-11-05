@@ -582,5 +582,103 @@
     "manualGenerator": "発電設備",
     "manualFuel": "燃料",
     "fuelProliferator": "増産剤"
+  },
+  "help": "ヘルプ",
+  "about": "アバウト",
+  "changelog": "更新履歴",
+  "faqLabel": "よくある質問",
+  "supportLabel": "サポート",
+  "gameVersions": "対応ゲームバージョン一覧",
+  "supportedVersion": "サポート中",
+  "unsupportedVersion": "サポート終了",
+  "primaryVersion": "最新対応バージョン",
+  "dataLastUpdated": "データ最終更新日",
+  "appVersion": "アプリバージョン",
+  "buildTime": "ビルド日時",
+  "repository": "リポジトリ",
+  "reportIssue": "イシューを報告",
+  "changelogNotAvailable": "チェンジログは準備中です",
+  "versionInfoNotAvailable": "バージョン情報を読み込めませんでした",
+  "faq": {
+    "categories": {
+      "calculation": {
+        "title": "計算の前提条件",
+        "questions": [
+          {
+            "question": "増産剤の排他モードについて",
+            "answer": "増産剤は「追加生産」と「速度上昇」の2つのモードがありますが、同時に使用することはできません（排他モード）。一方を選択すると、もう一方は無効になります。"
+          },
+          {
+            "question": "ベルト速度の計算方法",
+            "answer": "ベルト速度は、アイテムの搬送速度（個/秒）に影響します。Mk.I、Mk.II、Mk.IIIの順に速度が上がります。"
+          },
+          {
+            "question": "電力計算の仕組み",
+            "answer": "合計電力消費は、施設の電力消費とソーターの電力消費の合計です。施設の電力消費は、マシンランクと増産剤設定に応じて変化します。"
+          }
+        ]
+      },
+      "limitations": {
+        "title": "既知の制限事項",
+        "questions": [
+          {
+            "question": "計算精度の制限",
+            "answer": "計算結果は理論値であり、実際のゲーム内での動作とは若干異なる場合があります。特に、ベルトの混雑やソーターの処理速度などによる影響は考慮していません。"
+          },
+          {
+            "question": "ブラウザ互換性",
+            "answer": "モダンブラウザ（Chrome、Firefox、Edge、Safari）の最新版を推奨します。Internet Explorerには対応していません。"
+          }
+        ]
+      },
+      "common": {
+        "title": "よくある質問",
+        "questions": [
+          {
+            "question": "計算結果が合わない場合の対処法",
+            "answer": "以下の点を確認してください：\n1. ゲームバージョンが対応しているか\n2. 設定（増産剤、マシンランクなど）が正しいか\n3. 代替レシピの選択が正しいか\n4. ノード別設定が適切か"
+          },
+          {
+            "question": "プランの保存・読み込み方法",
+            "answer": "ヘッダーの「💾 保存」ボタンからプランを保存できます。保存したプランは「📂 読み込み」から読み込むことができます。プランはブラウザのローカルストレージに保存されます。"
+          },
+          {
+            "question": "URL共有の使い方",
+            "answer": "ヘッダーの「💾 保存」→「🔗 URL共有」から、現在のプランをURLで共有できます。生成されたURLを他のユーザーに送ると、同じ設定でプランを読み込むことができます。"
+          }
+        ]
+      },
+      "troubleshooting": {
+        "title": "トラブルシューティング",
+        "questions": [
+          {
+            "question": "データが読み込めない場合",
+            "answer": "以下の点を確認してください：\n1. インターネット接続が正常か\n2. ブラウザのキャッシュをクリア\n3. ページを再読み込み（Ctrl+F5 または Cmd+Shift+R）"
+          },
+          {
+            "question": "計算が実行されない場合",
+            "answer": "レシピが選択されているか確認してください。また、目標生産量が0より大きい値になっているか確認してください。"
+          },
+          {
+            "question": "エラーメッセージの見方",
+            "answer": "エラーメッセージが表示された場合は、エラーの内容を確認し、必要に応じてページを再読み込みしてください。問題が解決しない場合は、GitHubのIssuesで報告してください。"
+          }
+        ]
+      }
+    }
+  },
+  "support": {
+    "title": "サポート",
+    "repository": "リポジトリ",
+    "reportIssue": "イシューを報告",
+    "bugReportInfo": "バグ報告時に必要な情報",
+    "bugReportInfoItems": [
+      "使用しているブラウザとバージョン",
+      "ゲームバージョン",
+      "エラーメッセージ（もしあれば）",
+      "再現手順"
+    ],
+    "responsePolicy": "返信ポリシー",
+    "responsePolicyDescription": "Issuesへの返信は週1回程度確認しています。緊急の場合は、Issueに「urgent」ラベルを付けてください。"
   }
 }

@@ -26,8 +26,8 @@ export default defineConfig({
   /* Local: Optimized for 24-core CPU (i9-13900K) with 3 browser projects running in parallel */
   /* Use 4 workers = 12 total browser instances (4 workers × 3 browsers) */
   /* This keeps CPU usage around 50% and leaves headroom for system stability */
-  /* CI: Use 1 worker to ensure stability */
-  workers: process.env.CI ? 1 : 4,
+  /* CI: Use 2 workers for better performance with sharding */
+  workers: process.env.CI ? 2 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Global timeout for each test - increased for complex tests */

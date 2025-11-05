@@ -1,10 +1,10 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect } from "@playwright/test";
-import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { test } from "./fixtures";
+import { ensureRecipeSidsGenerated, extractSidsFromMarkdown } from "./helpers/game-data-helpers";
 
 // ESM環境で__dirnameを解決
 const __filename = fileURLToPath(import.meta.url);
@@ -27,34 +27,10 @@ test.describe("ゲームデータ読み込みと初期表示", () => {
 
     // RECIPE_SIDS.md を読み込み、表の左列から SID を抽出する
     const mdPath = path.resolve(__dirname, "fixtures/RECIPE_SIDS.md");
-    if (!fs.existsSync(mdPath)) {
-      console.log("RECIPE_SIDS.md not found, generating...");
-      try {
-        execSync("npm run generate:recipe-sids", {
-          cwd: process.cwd(),
-          stdio: "inherit",
-        });
-      } catch (error) {
-        throw new Error(
-          `Failed to generate RECIPE_SIDS.md: ${error instanceof Error ? error.message : String(error)}`
-        );
-      }
-    }
+    await ensureRecipeSidsGenerated(mdPath);
 
     const md = fs.readFileSync(mdPath, "utf8");
-    const sids: string[] = [];
-    for (const line of md.split(/\r?\n/)) {
-      // テーブルの行は `| 1101 | 鉄インゴット | Iron Ingot |` のようになっている想定
-      const m = line.match(/^\|\s*(\d{3,4})\s*\|/);
-      if (m) sids.push(m[1]);
-    }
-
-    if (sids.length === 0) {
-      throw new Error("No SIDs found in RECIPE_SIDS.md");
-    }
-
-    const items = sids.filter(s => s.startsWith("1"));
-    const buildings = sids.filter(s => s.startsWith("2"));
+    const { items, buildings } = extractSidsFromMarkdown(md);
 
     // Items タブ内の全SID のボタンが存在することをチェック
     await appPage.getByTestId("items-tab").click();

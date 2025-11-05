@@ -1,6 +1,36 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { readFileSync } from "fs";
+import { execSync } from "child_process";
+
+// package.jsonからバージョンを取得
+const packageJson = JSON.parse(readFileSync("./package.json", "utf-8"));
+
+// Gitの最新タグからバージョンを取得（フォールバック付き）
+function getAppVersion(): string {
+  try {
+    // 最新のタグを取得（v0.0.3のような形式）
+    const latestTag = execSync("git describe --tags --abbrev=0", {
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .trim()
+      .replace(/^v/, ""); // vプレフィックスを除去
+
+    if (latestTag && latestTag !== "") {
+      return latestTag;
+    }
+  } catch (error) {
+    // Gitタグが取得できない場合はフォールバック
+    console.warn("Failed to get Git tag, using package.json version:", error);
+  }
+
+  // フォールバック: package.jsonのバージョンを使用
+  return packageJson.version;
+}
+
+const appVersion = getAppVersion();
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,6 +41,11 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  define: {
+    "import.meta.env.APP_VERSION": JSON.stringify(appVersion),
+    "import.meta.env.BUILD_TIME": JSON.stringify(new Date().toISOString()),
+    "import.meta.env.GITHUB_REPO_URL": JSON.stringify("https://github.com/izu-san/dsp-calc-tool"),
   },
   test: {
     globals: true,
