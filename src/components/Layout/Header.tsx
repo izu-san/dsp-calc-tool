@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { useTranslation } from "react-i18next";
 import { HistoryToolbar } from "./Header/HistoryToolbar";
 import { LanguageMenu } from "./Header/LanguageMenu";
+import { HelpMenu } from "./Header/HelpMenu";
 
 // Lazy load heavy components
 const PlanManagerMenu = lazy(() =>
@@ -33,6 +34,7 @@ export function Header() {
             <Suspense fallback={<div className="w-8 h-8"></div>}>
               <PlanManagerMenu />
             </Suspense>
+            <HelpMenu />
             <LanguageMenu />
           </div>
         </div>

@@ -3,6 +3,7 @@
 
 import { expect } from "@playwright/test";
 import { test } from "./fixtures";
+import { waitForClickable, waitForDebounce, waitForTemplateApplied } from "./helpers/wait-helpers";
 
 test.describe("履歴・バージョン管理機能", () => {
   test.beforeEach(async ({ appPage, clearLocalStorageKeepingTutorial, reloadPage }) => {
@@ -23,16 +24,16 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(targetInput).toBeVisible();
 
       // 1. 設定パネルで増産剤を Mk.I (速度) に設定
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
 
       // 増産剤モードが表示されるのを待つ
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await expect(speedModeButton).toBeVisible();
       await speedModeButton.click();
 
-      // 2. 500ms 以上待機し、履歴ダイアログを開く
-      await appPage.waitForTimeout(600);
+      // 2. デバウンス待機後、履歴ダイアログを開く
+      await waitForDebounce(appPage);
       await appPage.getByTestId("history-dialog-button").click();
 
       // 3. 履歴パネルが表示されることを確認
@@ -40,7 +41,7 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(historyHeading).toBeVisible();
 
       // 期待結果: 履歴エントリに「増産剤」に関する変更が表示されること
-      const historyEntry = appPage.getByTestId(/history-entry-\d+/).first();
+      const historyEntry = appPage.getByTestId("history-entry-0");
       await expect(historyEntry).toBeVisible();
       await expect(appPage.getByText(/増産剤をなし/)).toBeVisible();
     });
@@ -56,25 +57,24 @@ test.describe("履歴・バージョン管理機能", () => {
       });
 
       // 1. 増産剤モードを速度→追加生産→速度と 300ms 間隔で切り替える
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
 
       // 速度モードを選択
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await expect(speedModeButton).toBeVisible();
       await speedModeButton.click();
-      await appPage.waitForTimeout(300);
 
       // 追加生産モードを選択
-      const extraProductButton = appPage.getByRole("button", { name: /追加生産/ }).first();
+      const extraProductButton = appPage.getByTestId("proliferator-mode-button-production");
+      await expect(extraProductButton).toBeVisible();
       await extraProductButton.click();
-      await appPage.waitForTimeout(300);
 
       // 再び速度モードを選択
       await speedModeButton.click();
 
-      // 2. 800ms 待機後に履歴ダイアログを開く
-      await appPage.waitForTimeout(800);
+      // 2. デバウンス待機後に履歴ダイアログを開く
+      await waitForDebounce(appPage);
       await appPage.getByTestId("history-dialog-button").click();
 
       // 履歴パネルが表示されることを確認
@@ -98,16 +98,16 @@ test.describe("履歴・バージョン管理機能", () => {
       await appPage.getByTestId("recipe-button-1101").click(); // 鉄インゴット
 
       // 設定変更1: 増産剤を Mk.I に設定
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ });
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 設定変更2: ソーターを Mk.II に変更
       const sorterMk2Button = appPage.getByRole("button", { name: /Mk\.II.*36kW/ });
       await sorterMk2Button.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 1. Undo ボタンを確認
       const undoButton = appPage.getByTestId("undo-button");
@@ -119,16 +119,12 @@ test.describe("履歴・バージョン管理機能", () => {
 
       // 2. Undo ボタンを 2 回押下
       await undoButton.click();
-      await appPage.waitForTimeout(100);
       await undoButton.click();
-      await appPage.waitForTimeout(100);
 
       // 4. Redo ボタンを 2 回押下
       await expect(redoButton).toBeEnabled();
       await redoButton.click();
-      await appPage.waitForTimeout(100);
       await redoButton.click();
-      await appPage.waitForTimeout(100);
 
       // 期待結果: Undo ボタンが有効
       await expect(undoButton).toBeEnabled();
@@ -138,28 +134,29 @@ test.describe("履歴・バージョン管理機能", () => {
       // 前提: 履歴が存在する状態
       await appPage.getByTestId("recipe-button-1101").click();
 
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       const undoButton = appPage.getByTestId("undo-button");
       const redoButton = appPage.getByTestId("redo-button");
 
       // 1. Undoボタンをクリック
       await undoButton.click();
-      await appPage.waitForTimeout(200);
 
       // Undo が実行されたことを確認（増産剤がなしに戻る）
-      await expect(appPage.getByText(/増産剤をなし/).first()).toBeVisible();
+      // 設定パネルで「なし」ボタンが選択されていることを確認
+      const noneButton = appPage.getByTestId("proliferator-type-button-none");
+      // 選択されたボタンには特定のCSSクラスが付与される
+      await expect(noneButton).toHaveClass(/bg-neon-magenta\/30/);
 
       // Redo ボタンが有効になる
       await expect(redoButton).toBeEnabled();
 
       // 2. Redoボタンをクリック
       await redoButton.click();
-      await appPage.waitForTimeout(200);
 
       // Redo が実行されたことを確認（増産剤が速度モードに戻る）
       await expect(appPage.getByText(/生産速度上昇.*\+25\.0%/)).toBeVisible();
@@ -172,21 +169,20 @@ test.describe("履歴・バージョン管理機能", () => {
       // 前提: 履歴が存在する状態
       await appPage.getByTestId("recipe-button-1101").click();
 
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // Undo を実行
       const undoButton = appPage.getByTestId("undo-button");
       await undoButton.click();
-      await appPage.waitForTimeout(200);
 
       // 1. Undo 実行後に設定パネルでソーターを Mk.II に変更
       const sorterMk2Button = appPage.getByRole("button", { name: /Mk\.II.*36kW/ });
       await sorterMk2Button.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 期待結果: Redo ボタンが無効化される
       const redoButton = appPage.getByTestId("redo-button");
@@ -198,34 +194,33 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(historyHeading).toBeVisible();
 
       // 新たなエントリが追加されていることを確認 (data-testidを使用)
-      const historyEntry = appPage.getByTestId(/history-entry-\d+/).first();
+      const historyEntry = appPage.getByTestId("history-entry-0");
       await expect(historyEntry).toBeVisible();
     });
 
     test("1.6: 履歴最大数 50 のローテーション", async ({ appPage }) => {
-      // テストタイムアウトを120秒に設定 (51回 × 400ms = 20.4秒 + 余裕)
+      // テストタイムアウトを120秒に設定
       test.setTimeout(120000);
 
       // 1. レシピを選択
       await appPage.getByTestId("recipe-button-1101").click(); // 鉄インゴット
-      await appPage.waitForTimeout(300);
+      await appPage.waitForTimeout(300); // レシピロード待機
 
       // 2. ループで 51 件の履歴エントリを作成（増産剤設定を切り替え）
       for (let i = 1; i <= 51; i++) {
         if (i % 2 === 1) {
           // 増産剤 Mk.I 速度モードに変更
-          const proliferatorMk1Button = appPage
-            .getByRole("button", { name: /増産剤 Mk\.I/ })
-            .first();
+          const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
           await proliferatorMk1Button.click();
-          const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+          const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
           await speedModeButton.click();
         } else {
           // 増産剤をなしに変更
-          const noneButton = appPage.getByRole("button", { name: /^なし$/ }).first();
+          const noneButton = appPage.getByTestId("proliferator-type-button-none");
           await noneButton.click();
         }
-        await appPage.waitForTimeout(400); // デバウンス待機（短縮）
+        // デバウンス待機（履歴が確実に記録されるまで待つ）
+        await appPage.waitForTimeout(600); // デバウンス時間(500ms)より長く
       }
 
       // 3. 履歴ダイアログを開く
@@ -254,20 +249,20 @@ test.describe("履歴・バージョン管理機能", () => {
     test.beforeEach(async ({ appPage }) => {
       // 基本的なレシピを選択
       await appPage.getByTestId("recipe-button-1101").click(); // 鉄インゴット
-      await appPage.waitForTimeout(500); // レシピロード待機
+      await waitForClickable(appPage, appPage.getByTestId("proliferator-type-button-mk1"));
     });
     test("2.1: 差分カテゴリの色分け", async ({ appPage }) => {
       // 1. 設定変更で新規プロパティを追加する操作（増産剤を有効化）
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 2. 別操作で設定を削除（増産剤を無効化）
-      const noneButton = appPage.getByRole("button", { name: /^なし$/ }).first();
+      const noneButton = appPage.getByTestId("proliferator-type-button-none");
       await noneButton.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 履歴リストを確認
       await appPage.getByTestId("history-dialog-button").click();
@@ -276,10 +271,9 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(historyHeading).toBeVisible();
 
       // 履歴エントリをクリックして詳細を表示 (data-testidを使用)
-      const historyEntry = appPage.getByTestId(/history-entry-\d+/).first();
+      const historyEntry = appPage.getByTestId("history-entry-0");
       await expect(historyEntry).toBeVisible();
       await historyEntry.click();
-      await appPage.waitForTimeout(500);
     });
 
     test("2.2: バッチ操作の説明文", async ({ appPage }) => {
@@ -291,7 +285,7 @@ test.describe("履歴・バージョン管理機能", () => {
       const applyButton = appPage.getByTestId("template-confirm-apply-button");
       await expect(applyButton).toBeVisible();
       await applyButton.click();
-      await appPage.waitForTimeout(1000); // テンプレート適用完了待ち
+      await waitForTemplateApplied(appPage);
 
       // 2. 履歴ダイアログを開く
       await appPage.getByTestId("history-dialog-button").click();
@@ -300,27 +294,28 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(historyHeading).toBeVisible();
 
       // 期待結果: 説明「テンプレート「終盤」を適用」が表示される
-      const templateEntry = appPage.getByText(/テンプレート.*終盤.*適用/).first();
-      await expect(templateEntry).toBeVisible();
+      // 履歴ダイアログ内のテキストで確認（履歴は新しい順なので最初のエントリ）
+      const historyEntries = appPage.getByTestId(/history-entry-text-\d+/);
+      const templateEntry = historyEntries.filter({ hasText: /テンプレート.*終盤.*適用/ });
+      await expect(templateEntry).toHaveCount(1);
 
       // 履歴エントリを選択 (data-testidを使用)
-      const historyEntry = appPage.getByTestId(/history-entry-\d+/).first();
+      const historyEntry = appPage.getByTestId("history-entry-0");
       await expect(historyEntry).toBeVisible();
     });
 
     test("2.3: ノードオーバーライド差分", async ({ appPage }) => {
       // 1. レシピ「電磁タービン」で特定ノードにカスタム設定を適用
       await appPage.getByTestId("recipe-button-1204").click(); // 電磁タービン
-      await appPage.waitForTimeout(1000);
 
       // 生産チェーンが表示されるまで待機
       const productionChain = appPage.getByRole("heading", { name: /生産チェーン/ });
       await expect(productionChain).toBeVisible();
 
       // 設定変更を行う
-      const proliferatorMk2Button = appPage.getByRole("button", { name: /増産剤 Mk\.II/ }).first();
+      const proliferatorMk2Button = appPage.getByTestId("proliferator-type-button-mk2");
       await proliferatorMk2Button.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 2. 履歴詳細で affectedNodes を確認
       await appPage.getByTestId("history-dialog-button").click();
@@ -329,7 +324,7 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(historyHeading).toBeVisible();
 
       // 履歴エントリが存在することを確認 (data-testidを使用)
-      const historyEntry = appPage.getByTestId(/history-entry-\d+/).first();
+      const historyEntry = appPage.getByTestId("history-entry-0");
       await expect(historyEntry).toBeVisible();
     });
   });
@@ -357,7 +352,7 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(saveHeading).toBeVisible();
 
       // プラン名を入力
-      const planNameInput = appPage.getByRole("textbox").first();
+      const planNameInput = appPage.getByTestId("plan-name-input");
       await planNameInput.fill("テストプラン1");
 
       // 「ブラウザに保存」ボタンをクリック
@@ -395,7 +390,7 @@ test.describe("履歴・バージョン管理機能", () => {
       const saveHeading = appPage.getByRole("heading", { name: "保存", level: 2 });
       await expect(saveHeading).toBeVisible();
 
-      const planNameInput = appPage.getByRole("textbox").first();
+      const planNameInput = appPage.getByTestId("plan-name-input");
       await planNameInput.fill("バージョンテスト");
 
       const browserSaveButton = appPage.getByRole("button", { name: /ブラウザに保存/ });
@@ -548,17 +543,6 @@ test.describe("履歴・バージョン管理機能", () => {
 
       // 2. アプリをリロード
       await appPage.reload();
-
-      // Welcome モーダルを確実に閉じる
-      const welcomeModal = appPage.getByTestId("welcome-modal");
-      try {
-        await welcomeModal.waitFor({ state: "visible", timeout: 3000 });
-        await appPage.getByTestId("welcome-skip-button").click();
-        await welcomeModal.waitFor({ state: "hidden", timeout: 5000 });
-      } catch (error) {
-        // モーダルが表示されない場合は無視
-      }
-
       await appPage.waitForTimeout(1000);
 
       // 履歴ダイアログを開いて、無効なエントリが除外されていることを確認
@@ -604,17 +588,6 @@ test.describe("履歴・バージョン管理機能", () => {
 
       // 2. アプリをリロードし履歴ダイアログを開く
       await appPage.reload();
-
-      // Welcome モーダルを確実に閉じる
-      const welcomeModal = appPage.getByTestId("welcome-modal");
-      try {
-        await welcomeModal.waitFor({ state: "visible", timeout: 3000 });
-        await appPage.getByTestId("welcome-skip-button").click();
-        await welcomeModal.waitFor({ state: "hidden", timeout: 5000 });
-      } catch (error) {
-        // モーダルが表示されない場合は無視
-      }
-
       await appPage.waitForTimeout(500);
 
       // 履歴ダイアログを開く
@@ -642,9 +615,9 @@ test.describe("履歴・バージョン管理機能", () => {
       // レシピを選択して状態を作成
       await appPage.getByTestId("recipe-button-1101").click();
 
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
       await appPage.waitForTimeout(600);
 
@@ -687,14 +660,14 @@ test.describe("履歴・バージョン管理機能", () => {
 
       const targetInput = appPage.getByTestId("target-quantity-input");
       await targetInput.fill("10");
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 増産剤を設定
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ });
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
-      await appPage.waitForTimeout(600);
+      await waitForDebounce(appPage);
 
       // 2. Undo を実行
       await appPage.keyboard.press("Control+Z");
@@ -735,7 +708,7 @@ test.describe("履歴・バージョン管理機能", () => {
       }
 
       // 2. お気に入り登録
-      const favoriteButton = appPage.getByRole("button", { name: /お気に入りに追加/ }).first();
+      const favoriteButton = appPage.getByRole("button", { name: /お気に入りに追加/ });
       if (await favoriteButton.isVisible()) {
         await favoriteButton.click();
         await appPage.waitForTimeout(300);
@@ -751,7 +724,7 @@ test.describe("履歴・バージョン管理機能", () => {
       // 履歴エントリのテキスト内で検索 (data-testidを使用)
       const historyEntryTexts = appPage.getByTestId(/history-entry-text-\d+/);
       const uiStateEntry = historyEntryTexts.filter({ hasText: /折りたたみ|お気に入り/ });
-      await expect(uiStateEntry.first()).not.toBeVisible();
+      await expect(uiStateEntry).toHaveCount(0);
     });
 
     test("6.3: localStorage 永続化", async ({ appPage }) => {
@@ -762,9 +735,9 @@ test.describe("履歴・バージョン管理機能", () => {
       await targetInput.fill("5");
       await appPage.waitForTimeout(600);
 
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
       await appPage.waitForTimeout(600);
 
@@ -781,16 +754,6 @@ test.describe("履歴・バージョン管理機能", () => {
 
       // 2. ページをリロード
       await appPage.reload();
-
-      // Welcome モーダルを確実に閉じる
-      const welcomeModal = appPage.getByTestId("welcome-modal");
-      try {
-        await welcomeModal.waitFor({ state: "visible", timeout: 3000 });
-        await appPage.getByTestId("welcome-skip-button").click();
-        await welcomeModal.waitFor({ state: "hidden", timeout: 5000 });
-      } catch (error) {
-        // モーダルが表示されない場合は無視
-      }
 
       // 期待結果: Undo/Redo ボタン状態が継続
       const undoEnabledAfter = await undoButton.isEnabled();
@@ -819,9 +782,9 @@ test.describe("履歴・バージョン管理機能", () => {
       await appPage.getByTestId("recipe-button-1101").click(); // 鉄インゴット
 
       // settings タイプ: 増産剤設定
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
       await appPage.waitForTimeout(600);
 
@@ -842,15 +805,15 @@ test.describe("履歴・バージョン管理機能", () => {
       await expect(historyHeading).toBeVisible();
 
       // 履歴エントリが表示されることを確認 (data-testidを使用)
-      const historyEntry = appPage.getByTestId(/history-entry-\d+/).first();
+      const historyEntry = appPage.getByTestId("history-entry-0");
       await expect(historyEntry).toBeVisible();
 
       // アイコンが存在することを確認 (data-testidを使用)
-      const iconElement = appPage.getByTestId(/history-entry-icon-\d+/).first();
+      const iconElement = appPage.getByTestId("history-entry-icon-0");
       await expect(iconElement).toBeVisible();
 
       // テキストが存在することを確認 (data-testidを使用)
-      const textElement = appPage.getByTestId(/history-entry-text-\d+/).first();
+      const textElement = appPage.getByTestId("history-entry-text-0");
       await expect(textElement).toBeVisible();
     });
 
@@ -858,9 +821,9 @@ test.describe("履歴・バージョン管理機能", () => {
       // 設定変更を行う
       await appPage.getByTestId("recipe-button-1101").click();
 
-      const proliferatorMk1Button = appPage.getByRole("button", { name: /増産剤 Mk\.I/ }).first();
+      const proliferatorMk1Button = appPage.getByTestId("proliferator-type-button-mk1");
       await proliferatorMk1Button.click();
-      const speedModeButton = appPage.getByRole("button", { name: /生産速度上昇/ }).first();
+      const speedModeButton = appPage.getByTestId("proliferator-mode-button-speed");
       await speedModeButton.click();
       await appPage.waitForTimeout(600);
 

@@ -4,8 +4,12 @@ import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("What-If分析", () => {
   test.beforeEach(async ({ page }) => {
+    // localStorageにWelcomeモーダルを表示済みフラグを設定
+    await page.addInitScript(() => {
+      localStorage.setItem("dsp_calc_tutorial_seen", "true");
+    });
+
     await page.goto("http://localhost:5173/");
-    await page.getByTestId("welcome-skip-button").click();
     await disableAnimations(page);
   });
 

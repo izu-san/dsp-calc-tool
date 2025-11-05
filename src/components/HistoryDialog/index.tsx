@@ -1,12 +1,12 @@
-import { createPortal } from "react-dom";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import { useHistoryStore } from "../../stores/historyStore";
 import type { HistoryEntry } from "../../types/history";
-import { restoreStateFromHistory } from "../../utils/historyRestore";
 import { historyDebouncer } from "../../utils/historyDebouncer";
 import { regenerateHistoryDescription } from "../../utils/historyDescriptionRegenerator";
-import i18n from "../../i18n";
+import { restoreStateFromHistory } from "../../utils/historyRestore";
 
 interface HistoryDialogProps {
   isOpen: boolean;
@@ -136,7 +136,10 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
               <span className="text-2xl">📜</span>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]">
+              <h2
+                data-testid="history-dialog-title"
+                className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]"
+              >
                 {t("history")}
               </h2>
               <p className="text-sm text-space-200">

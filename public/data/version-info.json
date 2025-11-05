@@ -1,0 +1,12 @@
+{
+  "gameVersions": [
+    {
+      "version": "0.10.33.27024",
+      "supported": true,
+      "dataLastUpdated": "2025-10-28T14:20:00+09:00"
+    }
+  ],
+  "primaryVersion": "0.10.33.27024",
+  "dataLastUpdated": "2025-10-28T14:20:00+09:00",
+  "appVersion": "0.0.3"
+}

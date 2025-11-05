@@ -582,5 +582,103 @@
     "manualGenerator": "Generator",
     "manualFuel": "Fuel",
     "fuelProliferator": "Proliferator"
+  },
+  "help": "Help",
+  "about": "About",
+  "changelog": "Changelog",
+  "faqLabel": "FAQ",
+  "supportLabel": "Support",
+  "gameVersions": "Supported Game Versions List",
+  "supportedVersion": "Supported",
+  "unsupportedVersion": "Unsupported",
+  "primaryVersion": "Latest Supported Version",
+  "dataLastUpdated": "Data Last Updated",
+  "appVersion": "App Version",
+  "buildTime": "Build Time",
+  "repository": "Repository",
+  "reportIssue": "Report Issue",
+  "changelogNotAvailable": "Changelog is being prepared",
+  "versionInfoNotAvailable": "Failed to load version information",
+  "faq": {
+    "categories": {
+      "calculation": {
+        "title": "Calculation Prerequisites",
+        "questions": [
+          {
+            "question": "About Proliferator Exclusive Mode",
+            "answer": "Proliferators have two modes: \"Extra Production\" and \"Speed Boost\", but they cannot be used simultaneously (exclusive mode). When one is selected, the other is disabled."
+          },
+          {
+            "question": "Belt Speed Calculation Method",
+            "answer": "Belt speed affects item transport speed (items/s). Speed increases in order: Mk.I, Mk.II, Mk.III."
+          },
+          {
+            "question": "How Power Calculation Works",
+            "answer": "Total power consumption is the sum of facility power consumption and sorter power consumption. Facility power consumption varies based on machine rank and proliferator settings."
+          }
+        ]
+      },
+      "limitations": {
+        "title": "Known Limitations",
+        "questions": [
+          {
+            "question": "Calculation Accuracy Limitations",
+            "answer": "Calculation results are theoretical values and may differ slightly from actual in-game behavior. In particular, effects such as belt congestion and sorter processing speed are not considered."
+          },
+          {
+            "question": "Browser Compatibility",
+            "answer": "We recommend the latest versions of modern browsers (Chrome, Firefox, Edge, Safari). Internet Explorer is not supported."
+          }
+        ]
+      },
+      "common": {
+        "title": "Frequently Asked Questions",
+        "questions": [
+          {
+            "question": "What to Do When Calculation Results Don't Match",
+            "answer": "Please check the following:\n1. Is the game version supported?\n2. Are the settings (proliferator, machine rank, etc.) correct?\n3. Is the alternative recipe selection correct?\n4. Are the node-specific settings appropriate?"
+          },
+          {
+            "question": "How to Save and Load Plans",
+            "answer": "You can save plans from the \"💾 Save\" button in the header. Saved plans can be loaded from \"📂 Load\". Plans are saved in the browser's local storage."
+          },
+          {
+            "question": "How to Use URL Sharing",
+            "answer": "From the header \"💾 Save\" → \"🔗 URL Share\", you can share your current plan via URL. When you send the generated URL to other users, they can load the plan with the same settings."
+          }
+        ]
+      },
+      "troubleshooting": {
+        "title": "Troubleshooting",
+        "questions": [
+          {
+            "question": "When Data Cannot Be Loaded",
+            "answer": "Please check the following:\n1. Is your internet connection working?\n2. Clear browser cache\n3. Reload the page (Ctrl+F5 or Cmd+Shift+R)"
+          },
+          {
+            "question": "When Calculations Don't Run",
+            "answer": "Please check if a recipe is selected. Also, verify that the target production quantity is greater than 0."
+          },
+          {
+            "question": "How to Read Error Messages",
+            "answer": "If an error message is displayed, check the error content and reload the page if necessary. If the problem persists, please report it on GitHub Issues."
+          }
+        ]
+      }
+    }
+  },
+  "support": {
+    "title": "Support",
+    "repository": "Repository",
+    "reportIssue": "Report Issue",
+    "bugReportInfo": "Information Required for Bug Reports",
+    "bugReportInfoItems": [
+      "Browser and version you are using",
+      "Game version",
+      "Error message (if any)",
+      "Steps to reproduce"
+    ],
+    "responsePolicy": "Response Policy",
+    "responsePolicyDescription": "We check Issues responses approximately once a week. For urgent matters, please add an \"urgent\" label to the Issue."
   }
 }

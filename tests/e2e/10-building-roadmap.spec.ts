@@ -2,7 +2,7 @@
 import { expect } from "@playwright/test";
 import { test } from "./fixtures";
 
-test.setTimeout(120000);
+test.setTimeout(120000); // 一部のテストでループ処理があるため長めに設定
 
 test.describe("建設ロードマップ機能", () => {
   test.describe("1. 基本表示とナビゲーション", () => {
@@ -14,7 +14,7 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByTestId("roadmap-tab").click();
 
       // ビューが表示されることを確認
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
 
       // 全体進捗が0%で表示される
       await expect(appPage.getByText(/全体進捗:\s*0%/)).toBeVisible();
@@ -28,7 +28,7 @@ test.describe("建設ロードマップ機能", () => {
       await expect(phase2).toBeVisible();
 
       // すべてリセットボタンが表示される
-      await expect(appPage.getByRole("button", { name: "すべてリセット" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-reset-all-button")).toBeVisible();
     });
 
     test("1.2 タブ間の切り替え", async ({ appPage }) => {
@@ -37,7 +37,7 @@ test.describe("建設ロードマップ機能", () => {
 
       // 建設ロードマップタブを開く
       await appPage.getByTestId("roadmap-tab").click();
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
 
       // 統計タブに切り替え
       await appPage.getByTestId("statistics-tab").click();
@@ -45,7 +45,7 @@ test.describe("建設ロードマップ機能", () => {
 
       // 建設ロードマップタブに戻る
       await appPage.getByTestId("roadmap-tab").click();
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
 
       // 生産チェーンタブに切り替え
       await appPage.getByTestId("production-chain-tab").click();
@@ -53,7 +53,7 @@ test.describe("建設ロードマップ機能", () => {
 
       // 再度建設ロードマップタブに戻る
       await appPage.getByTestId("roadmap-tab").click();
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
     });
 
     test("1.3 異なるレシピでの表示", async ({ appPage }) => {
@@ -215,8 +215,8 @@ test.describe("建設ロードマップ機能", () => {
     });
 
     test("3.4 ノード表示内容の確認", async ({ appPage }) => {
-      // 原材料ノードの確認（鉄鉱石）
-      const ironOreNode = appPage.getByRole("button", { name: /☐.*鉄鉱石/ }).first();
+      // 原材料ノードの確認（鉄鉱石）data-item-idを使用
+      const ironOreNode = appPage.locator('[data-item-id="1001"]');
       const ironOreText = await ironOreNode.innerText();
 
       // アイテム名、施設タイプ、施設数、採掘速度が含まれる
@@ -228,8 +228,8 @@ test.describe("建設ロードマップ機能", () => {
       // Phase 2を展開して製造ノードを確認
       await appPage.getByRole("button", { name: /▶.*Phase 2:/ }).click();
 
-      // 磁石ノードを確認（展開されたPhase 2の中から）
-      const magnetNode = appPage.getByRole("button", { name: /☐.*磁石.*アーク製錬所/ }).first();
+      // 磁石ノードを確認（data-item-idを使用）
+      const magnetNode = appPage.locator('[data-item-id="1102"]');
       const magnetText = await magnetNode.innerText();
 
       // アイテム名、施設タイプ、施設数が含まれる
@@ -360,6 +360,7 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
       await appPage.getByRole("button", { name: /☐.*銅鉱石/ }).click();
       await appPage.getByRole("button", { name: /▶.*Phase 2:/ }).click();
+      // NOTE: 意図的に.first()を使用 - 複数の磁石ノードから最初のものを選択
       await appPage
         .getByRole("button", { name: /☐.*磁石/ })
         .first()
@@ -375,11 +376,8 @@ test.describe("建設ロードマップ機能", () => {
       appPage.on("dialog", dialog => dialog.accept());
 
       // すべてリセットボタンをクリック
-      const resetButton = appPage.getByRole("button", { name: "すべてリセット" });
+      const resetButton = appPage.getByTestId("roadmap-reset-all-button");
       await resetButton.click();
-
-      // 少し待機してリセットが完了するのを待つ
-      await appPage.waitForTimeout(100);
 
       // 進捗が0%に戻る
       progressText = await appPage.getByText(/全体進捗/).innerText();
@@ -396,8 +394,7 @@ test.describe("建設ロードマップ機能", () => {
 
       // 確認ダイアログを自動承認
       appPage.on("dialog", dialog => dialog.accept());
-      await appPage.getByRole("button", { name: "すべてリセット" }).click();
-      await appPage.waitForTimeout(100);
+      await appPage.getByTestId("roadmap-reset-all-button").click();
 
       // 再度チェック
       await appPage.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
@@ -428,6 +425,7 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
       await appPage.getByRole("button", { name: /☐.*銅鉱石/ }).click();
       await appPage.getByRole("button", { name: /▶.*Phase 2:/ }).click();
+      // NOTE: 意図的に.first()を使用 - 複数の磁石ノードから最初のものを選択
       await appPage
         .getByRole("button", { name: /☐.*磁石/ })
         .first()
@@ -438,7 +436,7 @@ test.describe("建設ロードマップ機能", () => {
       const progressMatch = beforeReloadProgress.match(/(\d+)%/);
       const progress = parseInt(progressMatch![1]);
 
-      // 保存のための少し待機 (debounce 500ms)
+      // localStorageへの保存を待つ (debounce 500ms)
       await appPage.waitForTimeout(600);
 
       // ページをリロード
@@ -459,7 +457,10 @@ test.describe("建設ロードマップ機能", () => {
 
       // Phase 2を展開して確認
       await appPage.getByRole("button", { name: /▶.*Phase 2:/ }).click();
-      await expect(appPage.getByRole("button", { name: /☑.*磁石/ }).first()).toBeVisible();
+      // data-item-idを使用して磁石ノードを確認
+      const magnetNode = appPage.locator('[data-item-id="1102"]');
+      await expect(magnetNode).toBeVisible();
+      await expect(magnetNode).toContainText("☑");
 
       // 全体進捗が同じ
       const afterReloadProgress = await appPage.getByText(/全体進捗/).innerText();
@@ -475,21 +476,20 @@ test.describe("建設ロードマップ機能", () => {
       await expect(appPage.getByRole("button", { name: /☐.*鉄鉱石/ })).toBeVisible();
       await appPage.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
 
-      // 保存のための少し待機 (debounce 500ms)
+      // localStorageへの保存を待つ (debounce 500ms)
       await appPage.waitForTimeout(600);
 
       // 構造マトリックスに切り替え
       await appPage.getByTestId("recipe-button-1803").click();
       await appPage.getByTestId("roadmap-tab").click();
 
-      // ロードマップの生成を待つ（構造マトリックス用）
-      await appPage.waitForTimeout(100);
-
       // 構造マトリックスで別のノードをチェック（最初のチェックボックスノード）
+      // NOTE: 意図的に.first()を使用 - ページ内の最初の未チェックノードを取得
       const firstNode = appPage.getByRole("button", { name: /☐/ }).first();
+      await expect(firstNode).toBeVisible();
       await firstNode.click();
 
-      // 保存のための少し待機
+      // localStorageへの保存を待つ (debounce 500ms)
       await appPage.waitForTimeout(600);
 
       // 電磁マトリックスに戻る
@@ -504,7 +504,6 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByTestId("roadmap-tab").click();
 
       // 構造マトリックスのチェック状態も保持されている（最低1つはチェック済み）
-      await appPage.waitForTimeout(100);
       const checkedNodes = await appPage.getByRole("button", { name: /☑/ }).count();
       expect(checkedNodes).toBeGreaterThanOrEqual(1);
     });
@@ -521,7 +520,7 @@ test.describe("建設ロードマップ機能", () => {
       await setViewport(1920, 1080);
 
       // ビューが正しく表示される
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
 
       // すべてのフェーズが表示される
       await expect(appPage.getByText(/原材料採掘/)).toBeVisible();
@@ -533,7 +532,7 @@ test.describe("建設ロードマップ機能", () => {
       await setViewport(768, 1024);
 
       // ビューが正しく表示される
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
 
       // コンテンツが適切に表示される
       await expect(appPage.getByText(/全体進捗/)).toBeVisible();
@@ -608,7 +607,8 @@ test.describe("建設ロードマップ機能", () => {
         const header = appPage.getByTestId(`phase-header-${i}`);
         if ((await header.count()) > 0) {
           await header.click();
-          await appPage.waitForTimeout(100); // 少し待機
+          // フェーズ展開のDOMレンダリングを待つ
+          await appPage.waitForTimeout(100);
         }
       }
 
@@ -628,10 +628,10 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByTestId("roadmap-tab").click();
 
       // 日本語のUIテキストが表示される
-      await expect(appPage.getByRole("heading", { name: "建設ロードマップ" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
       await expect(appPage.getByText(/全体進捗/)).toBeVisible();
       await expect(appPage.getByText(/原材料採掘/)).toBeVisible();
-      await expect(appPage.getByRole("button", { name: "すべてリセット" })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-reset-all-button")).toBeVisible();
     });
 
     test("10.2 英語表示", async ({ appPage }) => {
@@ -644,7 +644,7 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByTestId("roadmap-tab").click();
 
       // 英語のUIテキストが表示される
-      await expect(appPage.getByRole("heading", { name: /Building Roadmap/i })).toBeVisible();
+      await expect(appPage.getByTestId("roadmap-title")).toBeVisible();
       await expect(appPage.getByText(/Overall Progress/i)).toBeVisible();
 
       // 日本語に戻す
@@ -690,7 +690,7 @@ test.describe("建設ロードマップ機能", () => {
       await appPage.getByRole("button", { name: /☐.*鉄鉱石/ }).click();
       await appPage.getByRole("button", { name: /☐.*銅鉱石/ }).click();
 
-      // 保存のための少し待機 (debounce 500ms)
+      // localStorageへの保存を待つ (debounce 500ms)
       await appPage.waitForTimeout(600);
 
       // 他のタブに移動

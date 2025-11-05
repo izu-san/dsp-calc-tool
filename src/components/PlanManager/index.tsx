@@ -1,26 +1,26 @@
-import { useRef, useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import type { ImageExportOptions } from "../../types/export";
+import { usePlanExport } from "../../hooks/usePlanExport";
+import { usePlanImport } from "../../hooks/usePlanImport";
+import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
+import { loadPlanWithHistory } from "../../services/plan-management/planLoadService";
+import {
+  createPlanFromState,
+  getDefaultPlanName,
+  savePlanWithVersion,
+} from "../../services/plan-management/planSaveService";
+import { getRecentPlans } from "../../services/plan-management/planStorageService";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useHistoryStore } from "../../stores/historyStore";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import type { SavedPlan, Recipe } from "../../types";
-import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
+import type { Recipe, SavedPlan } from "../../types";
+import type { ImageExportOptions } from "../../types/export";
 import { calculatePlanDiff } from "../../utils/planDiff";
+import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
 import { PlanDiffView } from "../PlanDiffView";
-import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
-import { usePlanExport } from "../../hooks/usePlanExport";
-import { usePlanImport } from "../../hooks/usePlanImport";
-import {
-  savePlanWithVersion,
-  getDefaultPlanName,
-  createPlanFromState,
-} from "../../services/plan-management/planSaveService";
-import { getRecentPlans } from "../../services/plan-management/planStorageService";
-import { loadPlanWithHistory } from "../../services/plan-management/planLoadService";
 
 export function PlanManager() {
   const { t } = useTranslation();
@@ -381,7 +381,10 @@ export function PlanManager() {
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl shadow-[0_0_30px_rgba(0,255,136,0.3)] max-w-md w-full animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,255,136,0.6)] flex items-center gap-2 px-6 pt-6">
+              <h2
+                data-testid="save-dialog-title"
+                className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,255,136,0.6)] flex items-center gap-2 px-6 pt-6"
+              >
                 💾 {t("save")}
               </h2>
 
@@ -544,7 +547,10 @@ export function PlanManager() {
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)] flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6">
+              <h2
+                data-testid="load-dialog-title"
+                className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)] flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6"
+              >
                 📂 {t("load")}
               </h2>
 

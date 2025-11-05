@@ -17,6 +17,10 @@ alwaysApply: true
 
 無視するように言われた場合は、そのまま続行します。
 
+## コマンド実行時の禁止事項
+
+Windows OSで動作しているので、Windowsで実行できないコマンド(`head`や`tail`など)の使用は禁止します。
+
 
 # Dyson Sphere Program 生産チェーン計算機 - プロジェクトアーキテクチャ
 
@@ -92,8 +96,8 @@ TypeScript 型定義:
 
 ### データフロー
 ```
-XML (public/data/) 
-  → parser.ts (XMLパース) 
+XML (public/data/)
+  → parser.ts (XMLパース)
   → gameDataStore (Map 構造で保持)
   → calculator.ts (計算)
   → UI コンポーネント (表示)

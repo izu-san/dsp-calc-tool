@@ -1,7 +1,7 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect } from "@playwright/test";
-import { test } from "./fixtures";
 import * as nodePath from "path";
+import { test } from "./fixtures";
 import { acceptDialogDuring } from "./helpers/dialogs";
 
 test.describe("ModSettings とカスタム XML アップロード", () => {
@@ -176,16 +176,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
 
     // Mk.IIIの生産速度上昇
     await appPage.reload();
-    try {
-      await appPage.getByTestId("welcome-skip-button").click({ timeout: 2000 });
-    } catch {
-      // モーダルが再表示されない環境では無視
-    }
-    try {
-      await appPage.getByTestId("welcome-skip-button").click({ timeout: 2000 });
-    } catch {
-      // モーダルが再表示されない環境では無視
-    }
+
     // 再読込後はレシピリストが初期化されるため、Itemsタブと検索で確実にレシピを取得する
     await appPage.getByTestId("items-tab").click();
     await appPage.getByTestId("recipe-search-input").fill("鉄");

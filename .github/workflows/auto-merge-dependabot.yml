@@ -22,14 +22,31 @@ jobs:
 
       - name: Get PR number from workflow_run
         id: pr_info
+        env:
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
         run: |
-          # workflow_run イベントから関連する PR を取得
+          # workflow_run イベントから直接 PR 情報を取得（空の場合がある）
           PR_NUMBER=$(echo '${{ toJSON(github.event.workflow_run.pull_requests) }}' | jq -r '.[0].number // empty')
+
+          # pull_requests が空の場合は、ブランチ名から PR を検索
+          if [ -z "$PR_NUMBER" ] && [ -n "$HEAD_BRANCH" ]; then
+            echo "PR not found in workflow_run.pull_requests, searching by branch name: $HEAD_BRANCH"
+
+            # ブランチ名から PR を検索（develop ブランチへの PR を対象）
+            PR_NUMBER=$(gh pr list --head "$HEAD_BRANCH" --base develop --json number --jq '.[0].number // empty' || echo "")
+
+            if [ -z "$PR_NUMBER" ]; then
+              echo "No PR found for branch: $HEAD_BRANCH targeting develop"
+              exit 0
+            fi
+          fi
 
           if [ -z "$PR_NUMBER" ]; then
             echo "No PR found in workflow_run event"
             exit 0
           fi
+
+          echo "Found PR #$PR_NUMBER"
 
           # PR の詳細を取得
           PR_HEAD=$(gh pr view $PR_NUMBER --json headRefName --jq '.headRefName' || echo "")
@@ -37,12 +54,12 @@ jobs:
 
           # dependabot の PR で、develop ブランチへの PR かどうかを確認
           if [ -z "$PR_HEAD" ] || [[ ! "$PR_HEAD" =~ ^dependabot/ ]]; then
-            echo "Not a Dependabot PR"
+            echo "Not a Dependabot PR (head: $PR_HEAD)"
             exit 0
           fi
 
           if [ "$PR_BASE" != "develop" ]; then
-            echo "Not targeting develop branch"
+            echo "Not targeting develop branch (base: $PR_BASE)"
             exit 0
           fi
 
