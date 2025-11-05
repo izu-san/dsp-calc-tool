@@ -328,3 +328,18 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(0, 136, 255, 0.3);
 }
+
+/* フォーカスインジケーター */
+*:focus-visible {
+  outline: 2px solid rgba(0, 217, 255, 0.8);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ボタンなどの特定要素 */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(0, 217, 255, 0.8);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+}

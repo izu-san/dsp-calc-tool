@@ -190,6 +190,28 @@ describe("HistoryDialog", () => {
 
       expect(onClose).toHaveBeenCalledTimes(1);
     });
+
+    it("should call onClose when pressing Escape key", () => {
+      const onClose = vi.fn();
+
+      render(<HistoryDialog isOpen={true} onClose={onClose} />);
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not call onClose when pressing Escape key and dialog is closed", () => {
+      const onClose = vi.fn();
+
+      render(<HistoryDialog isOpen={false} onClose={onClose} />);
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
   });
 
   describe("Entry Types", () => {

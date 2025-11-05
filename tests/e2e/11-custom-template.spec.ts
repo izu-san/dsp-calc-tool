@@ -382,7 +382,7 @@ test.describe("カスタムテンプレート機能", () => {
       await createTemplate(appPage, "履歴テスト1");
 
       // 2. ヘッダーの「📜 履歴」ボタンをクリック
-      await appPage.getByRole("button", { name: "📜 履歴" }).click();
+      await appPage.getByTestId("history-dialog-button").click();
 
       // 3. 履歴パネルが開くことを確認
       await expect(appPage.getByRole("heading", { name: "履歴" })).toBeVisible();
@@ -402,7 +402,7 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(getAllTemplateCards(appPage)).toHaveCount(1);
 
       // 4. ヘッダーの「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 5. カスタムテンプレートが0件に戻ることを確認（テンプレートが消える）
       await expect(getAllTemplateCards(appPage)).toHaveCount(0);
@@ -411,7 +411,7 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(appPage.getByTestId("custom-template-empty-state")).toBeVisible();
 
       // 7. 「↷ やり直し」ボタンをクリック
-      await appPage.getByRole("button", { name: "↷ やり直し" }).click();
+      await appPage.getByTestId("redo-button").click();
 
       // 8. カスタムテンプレート「Undo/Redoテスト」が再び表示されることを確認
       await expect(getAllTemplateCards(appPage)).toHaveCount(1);
@@ -436,14 +436,14 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(templateCard.getByText("更新メモ")).toBeVisible();
 
       // 4. 「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 5. テンプレート名が「編集前」、メモが「初期メモ」に戻ることを確認
       await expect(templateCard.getByText("編集前")).toBeVisible();
       await expect(templateCard.getByText("初期メモ")).toBeVisible();
 
       // 6. 「↷ やり直し」ボタンをクリック
-      await appPage.getByRole("button", { name: "↷ やり直し" }).click();
+      await appPage.getByTestId("redo-button").click();
 
       // 7. テンプレート名が「編集後」、メモが「更新メモ」に戻ることを確認
       await expect(templateCard.getByText("編集後")).toBeVisible();
@@ -462,14 +462,14 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(getAllTemplateCards(appPage)).toHaveCount(0);
 
       // 4. 「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 5. テンプレート「削除Undoテスト」が復元されることを確認
       await expect(getAllTemplateCards(appPage)).toHaveCount(1);
       await expect(getFirstTemplateCard(appPage).getByText("削除Undoテスト")).toBeVisible();
 
       // 6. 「↷ やり直し」ボタンをクリック
-      await appPage.getByRole("button", { name: "↷ やり直し" }).click();
+      await appPage.getByTestId("redo-button").click();
 
       // 7. テンプレートが再び削除されることを確認
       await expect(getAllTemplateCards(appPage)).toHaveCount(0);
@@ -696,13 +696,13 @@ test.describe("カスタムテンプレート機能", () => {
       await confirmDeleteTemplate(appPage);
 
       // 12. 「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 13. テンプレートが復元されることを確認
       await expect(getAllTemplateCards(appPage)).toHaveCount(1);
 
       // 14. 「📜 履歴」ボタンをクリック
-      await appPage.getByRole("button", { name: "📜 履歴" }).click();
+      await appPage.getByTestId("history-dialog-button").click();
 
       // 15. すべての操作が履歴に記録されていることを確認
       await expect(appPage.getByRole("heading", { name: "履歴" })).toBeVisible();

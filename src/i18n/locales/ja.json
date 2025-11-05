@@ -718,5 +718,31 @@
     ],
     "responsePolicy": "返信ポリシー",
     "responsePolicyDescription": "Issuesへの返信は週1回程度確認しています。緊急の場合は、Issueに「urgent」ラベルを付けてください。"
-  }
+  },
+  "keyboardShortcuts": "キーボードショートカット",
+  "shortcuts": {
+    "undo": "元に戻す",
+    "redo": "やり直し",
+    "modSettings": "MOD設定を開く",
+    "languageSwitch": "言語を切り替える",
+    "helpModal": "ヘルプを開く",
+    "closeModal": "モーダルを閉じる"
+  },
+  "shortcutKeys": {
+    "ctrlZ": "Ctrl+Z",
+    "ctrlY": "Ctrl+Y",
+    "ctrlShiftM": "Ctrl+Shift+M",
+    "ctrlL": "Ctrl+L",
+    "ctrlQuestion": "Ctrl+?",
+    "f1": "F1",
+    "escape": "Esc"
+  },
+  "accessibility": {
+    "policy": "アクセシビリティ方針",
+    "keyboardNavigation": "キーボード操作",
+    "screenReader": "スクリーンリーダー対応",
+    "keyboardNavigationDescription": "このアプリケーションはキーボードのみで操作可能です。主要なショートカットキーはヘルプモーダルの「キーボードショートカット」タブで確認できます。",
+    "screenReaderDescription": "このアプリケーションはスクリーンリーダーに対応しています。主要な操作にはaria-labelが設定されており、音声読み上げソフトウェアで使用できます。"
+  },
+  "changeLanguage": "言語を切り替える"
 }

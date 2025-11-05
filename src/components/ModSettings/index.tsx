@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { loadGameData } from "../../lib/parser";
@@ -129,6 +129,20 @@ export function ModSettings() {
     setProliferatorError("");
     setProliferatorSuccess(false);
   };
+
+  // Escキーでモーダルを閉じる
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   const handleCloseUploadMessage = () => {
     setUploadError("");

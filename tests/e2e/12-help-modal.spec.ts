@@ -34,9 +34,8 @@ test.describe("ヘルプモーダル", () => {
     await expect(modal).toBeHidden();
   });
 
-  test.skip("12-02: ESCキーでヘルプモーダルを閉じる", async ({ appPage }) => {
-    // TODO: ESCキーでモーダルを閉じる機能が実装されていないためスキップ
-    // useEffect内でkeydownイベントリスナーを追加する必要がある
+  test("12-02: ESCキーでヘルプモーダルを閉じる", async ({ appPage }) => {
+    // ESCキーでモーダルを閉じる機能が実装されたためスキップを解除
 
     // 1. ヘルプモーダルを開く
     await appPage.getByTestId("help-menu-trigger").click();
@@ -226,31 +225,39 @@ test.describe("ヘルプモーダル", () => {
     await expect(appPage.getByText("最新対応バージョン")).toBeVisible();
   });
 
-  test.skip("12-08: キーボードナビゲーション", async ({ appPage }) => {
-    // TODO: キーボードナビゲーションが実装されていないためスキップ
-    // Radix UI Tabsのキーボードナビゲーション機能を有効化する必要がある
+  test("12-08: キーボードナビゲーション", async ({ appPage }) => {
+    // Radix UI TabsはactivationMode="automatic"で自動アクティベーションをサポートしています
+    // 矢印キーでタブを移動すると自動的にアクティブになります
 
     // 1. ヘルプモーダルを開く
     await appPage.getByTestId("help-menu-trigger").click();
 
-    // 2. アバウトタブにフォーカスを当てる
-    await appPage.getByRole("tab", { name: "アバウト" }).focus();
+    // 2. アバウトタブが選択されていることを確認
+    const aboutTab = appPage.getByRole("tab", { name: "アバウト" });
+    await expect(aboutTab).toHaveAttribute("data-state", "active");
 
-    // 3. 右矢印キーで次のタブに移動
+    //タブリストにフォーカスを当てるためにアバウトタブを一度クリック
+    await aboutTab.click();
+
+    // 少し待機してフォーカスが確実に設定されるようにする
+    await appPage.waitForTimeout(100);
+
+    // 3. 右矢印キーで次のタブに移動（automaticモードで自動的にアクティブになる）
     await appPage.keyboard.press("ArrowRight");
-    await expect(appPage.getByRole("tab", { name: "更新履歴" })).toBeFocused();
+    const changelogTab = appPage.getByRole("tab", { name: "更新履歴" });
+    await expect(changelogTab).toHaveAttribute("data-state", "active");
+    await expect(appPage.getByTestId("help-tab-changelog")).toBeVisible();
 
     // 4. さらに右矢印キーで次のタブに移動
     await appPage.keyboard.press("ArrowRight");
-    await expect(appPage.getByRole("tab", { name: "よくある質問" })).toBeFocused();
+    const faqTab = appPage.getByRole("tab", { name: "よくある質問" });
+    await expect(faqTab).toHaveAttribute("data-state", "active");
+    await expect(appPage.getByTestId("help-tab-faq")).toBeVisible();
 
     // 5. 左矢印キーで前のタブに戻る
     await appPage.keyboard.press("ArrowLeft");
-    await expect(appPage.getByRole("tab", { name: "更新履歴" })).toBeFocused();
-
-    // 6. Enterキーでタブを選択
-    await appPage.keyboard.press("Enter");
-    await expect(appPage.getByRole("tab", { name: "更新履歴", selected: true })).toBeVisible();
+    await expect(changelogTab).toHaveAttribute("data-state", "active");
+    await expect(appPage.getByTestId("help-tab-changelog")).toBeVisible();
   });
 
   test("12-09: 複数回の開閉", async ({ appPage }) => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useSettingsStore } from "../../stores/settingsStore";
@@ -40,6 +40,58 @@ export function TemplateSelector() {
   const [nameError, setNameError] = useState("");
   const [showOverwriteConfirm, setShowOverwriteConfirm] = useState(false);
   const [overwriteTargetId, setOverwriteTargetId] = useState<string | null>(null);
+
+  // Escキーでモーダルを閉じる
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showOverwriteConfirm) {
+          setShowOverwriteConfirm(false);
+          setOverwriteTargetId(null);
+        } else if (showDefaultConfirm) {
+          setShowDefaultConfirm(false);
+          setSelectedDefaultTemplate(null);
+        } else if (showCustomConfirm) {
+          setShowCustomConfirm(false);
+          setSelectedCustomTemplateId(null);
+        } else if (showCreateModal) {
+          setShowCreateModal(false);
+          setTemplateName("");
+          setTemplateNote("");
+          setNameError("");
+        } else if (showEditModal) {
+          setShowEditModal(false);
+          setEditingTemplateId(null);
+          setTemplateName("");
+          setTemplateNote("");
+          setNameError("");
+        } else if (showDeleteConfirm) {
+          setShowDeleteConfirm(false);
+          setSelectedCustomTemplateId(null);
+        }
+      }
+    };
+
+    if (
+      showDefaultConfirm ||
+      showCustomConfirm ||
+      showCreateModal ||
+      showEditModal ||
+      showDeleteConfirm ||
+      showOverwriteConfirm
+    ) {
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [
+    showDefaultConfirm,
+    showCustomConfirm,
+    showCreateModal,
+    showEditModal,
+    showDeleteConfirm,
+    showOverwriteConfirm,
+    setOverwriteTargetId,
+  ]);
 
   const templateOrder: (keyof typeof SETTINGS_TEMPLATES)[] = [
     "earlyGame",
@@ -633,7 +685,10 @@ export function TemplateSelector() {
       {showDefaultConfirm &&
         currentDefaultTemplate &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+            data-testid="template-confirm-modal"
+          >
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
@@ -681,7 +736,10 @@ export function TemplateSelector() {
       {showCustomConfirm &&
         currentCustomTemplate &&
         createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn">
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+            data-testid="custom-template-confirm-modal"
+          >
             <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">

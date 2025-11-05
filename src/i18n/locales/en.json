@@ -718,5 +718,31 @@
     ],
     "responsePolicy": "Response Policy",
     "responsePolicyDescription": "We check Issues responses approximately once a week. For urgent matters, please add an \"urgent\" label to the Issue."
-  }
+  },
+  "keyboardShortcuts": "Keyboard Shortcuts",
+  "shortcuts": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "modSettings": "Open MOD Settings",
+    "languageSwitch": "Switch Language",
+    "helpModal": "Open Help",
+    "closeModal": "Close Modal"
+  },
+  "shortcutKeys": {
+    "ctrlZ": "Ctrl+Z",
+    "ctrlY": "Ctrl+Y",
+    "ctrlShiftM": "Ctrl+Shift+M",
+    "ctrlL": "Ctrl+L",
+    "ctrlQuestion": "Ctrl+?",
+    "f1": "F1",
+    "escape": "Esc"
+  },
+  "accessibility": {
+    "policy": "Accessibility Policy",
+    "keyboardNavigation": "Keyboard Navigation",
+    "screenReader": "Screen Reader Support",
+    "keyboardNavigationDescription": "This application can be operated entirely with a keyboard. Main shortcut keys can be found in the \"Keyboard Shortcuts\" tab of the help modal.",
+    "screenReaderDescription": "This application supports screen readers. Main operations have aria-label attributes set and can be used with screen reading software."
+  },
+  "changeLanguage": "Change Language"
 }
