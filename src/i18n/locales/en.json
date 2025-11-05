@@ -487,6 +487,44 @@
   "total": "Total",
   "saturation": "Saturation",
   "bottleneckDetected": "Bottleneck detected!",
+  "visualization": {
+    "tabLabel": "Visualization",
+    "filters": {
+      "machineType": "Machine type",
+      "allMachines": "All machines",
+      "materialTypes": "Material categories",
+      "rawMaterials": "Raw materials",
+      "intermediates": "Intermediates",
+      "finalProducts": "Final products",
+      "reset": "Reset filters"
+    },
+    "emptyState": {
+      "noData": "No Sankey data available for the current configuration."
+    },
+    "node": {
+      "machineTitle": "Machine",
+      "itemTitle": "Item",
+      "close": "Close details",
+      "value": "Throughput",
+      "machineType": "Machine type",
+      "machineRank": "Machine rank",
+      "machineName": "Machine name",
+      "machineCount": "Machine count",
+      "recipeType": "Recipe type",
+      "proliferator": "Proliferator",
+      "powerConsumption": "Power consumption",
+      "inputs": "Inputs",
+      "outputs": "Outputs",
+      "noFlows": "No connected flows",
+      "nodeType": "Node type",
+      "types": {
+        "machine": "Machine",
+        "raw-material": "Raw material",
+        "intermediate": "Intermediate",
+        "final-product": "Final product"
+      }
+    }
+  },
   "addToFavorites": "Add to favorites",
   "removeFromFavorites": "Remove from favorites",
   "mostEfficient": "Most efficient",
