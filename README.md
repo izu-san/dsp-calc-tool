@@ -1,9 +1,14 @@
 # [Dyson Sphere Program - 生産チェーン計算機](https://dsp-calc.com/)
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-dsp--calc.com-blue?style=for-the-badge&logo=react)](https://dsp-calc.com/)
-[![Version](https://img.shields.io/badge/version-v0.0.1-green?style=for-the-badge)](https://github.com/izu-san/dsp-calc-tool/releases)
-[![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/izu-san/dsp-calc-tool/ci.yml?branch=main&style=for-the-badge)](https://github.com/izu-san/dsp-calc-tool/actions)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fdsp-calc.com%2F)](https://dsp-calc.com/)
+[![GitHub Tag](https://img.shields.io/github/v/tag/izu-san/dsp-calc-tool)](https://github.com/izu-san/dsp-calc-tool/releases)
+[![GitHub License](https://img.shields.io/github/license/izu-san/dsp-calc-tool)](LICENSE)
+![GitHub top language](https://img.shields.io/github/languages/top/izu-san/dsp-calc-tool)
+[![CI](https://github.com/izu-san/dsp-calc-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/izu-san/dsp-calc-tool/actions/workflows/ci.yml)
+[![GitHub contributors](https://img.shields.io/github/contributors/izu-san/dsp-calc-tool)](https://github.com/izu-san/dsp-calc-tool/graphs/contributors)
+![GitHub repo size](https://img.shields.io/github/repo-size/izu-san/dsp-calc-tool)
+[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/san_izu_san)](https://x.com/san_izu_san)
+
 
 Dyson Sphere Programの生産ラインを最適化するためのWebベース計算ツールです。原材料から最終製品までの完全な生産チェーンを可視化し、必要な施設数・電力・ベルト要件を正確に算出します。
 
