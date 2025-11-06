@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import i18n from "../../i18n";
 import { loadChangelog } from "../../utils/changelog";
 import { loadVersionInfo, type VersionInfo } from "../../utils/versionInfo";
+import { PatchInfoView } from "../PatchInfoView";
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -302,6 +303,12 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
               {t("keyboardShortcuts")}
             </Tabs.Trigger>
             <Tabs.Trigger
+              value="patchDiff"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+            >
+              {t("patchDiff")}
+            </Tabs.Trigger>
+            <Tabs.Trigger
               value="support"
               className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
@@ -547,6 +554,16 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                   </div>
                 </div>
               </div>
+            </Tabs.Content>
+
+            {/* Patch Diff Tab */}
+            <Tabs.Content
+              value="patchDiff"
+              className="space-y-4"
+              onClick={e => e.stopPropagation()}
+              data-testid="help-tab-patch-diff"
+            >
+              <PatchInfoView />
             </Tabs.Content>
 
             {/* Support Tab */}

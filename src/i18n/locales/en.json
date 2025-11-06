@@ -744,5 +744,20 @@
     "keyboardNavigationDescription": "This application can be operated entirely with a keyboard. Main shortcut keys can be found in the \"Keyboard Shortcuts\" tab of the help modal.",
     "screenReaderDescription": "This application supports screen readers. Main operations have aria-label attributes set and can be used with screen reading software."
   },
-  "changeLanguage": "Change Language"
+  "changeLanguage": "Change Language",
+  "patchDiff": "Patch Diff",
+  "selectVersion": "Select Version",
+  "selectVersionToCompare": "Please select a version to compare",
+  "diffSummary": "Diff Summary",
+  "noDiffFound": "No differences found",
+  "added": "Added",
+  "removed": "Removed",
+  "modified": "Modified",
+  "inputItems": "Input Items",
+  "outputItems": "Output Items",
+  "time": "Time",
+  "recipes": "Recipes",
+  "items": "Items",
+  "machines": "Machines",
+  "failedToLoadVersionData": "Failed to load version data"
 }

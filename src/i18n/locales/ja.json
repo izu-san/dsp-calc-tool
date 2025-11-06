@@ -744,5 +744,20 @@
     "keyboardNavigationDescription": "このアプリケーションはキーボードのみで操作可能です。主要なショートカットキーはヘルプモーダルの「キーボードショートカット」タブで確認できます。",
     "screenReaderDescription": "このアプリケーションはスクリーンリーダーに対応しています。主要な操作にはaria-labelが設定されており、音声読み上げソフトウェアで使用できます。"
   },
-  "changeLanguage": "言語を切り替える"
+  "changeLanguage": "言語を切り替える",
+  "patchDiff": "パッチ差分",
+  "selectVersion": "バージョン選択",
+  "selectVersionToCompare": "比較するバージョンを選択してください",
+  "diffSummary": "差分サマリー",
+  "noDiffFound": "差分が見つかりません",
+  "added": "追加",
+  "removed": "削除",
+  "modified": "変更",
+  "inputItems": "材料",
+  "outputItems": "生産物",
+  "time": "時間",
+  "recipes": "レシピ",
+  "items": "アイテム",
+  "machines": "機械",
+  "failedToLoadVersionData": "バージョンデータの読み込みに失敗しました"
 }
