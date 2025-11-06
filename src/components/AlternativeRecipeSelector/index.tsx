@@ -6,7 +6,6 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe, RecipeTreeNode } from "../../types";
 import { cn } from "../../utils/classNames";
-import { ICON_GLOW, NEON_GLOW } from "../../constants/theme";
 import { formatNumber } from "../../utils/format";
 import { parseColorTags } from "../../utils/html";
 import { ItemIcon } from "../ItemIcon";

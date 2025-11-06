@@ -18,7 +18,6 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe, SavedPlan } from "../../types";
 import type { ImageExportOptions } from "../../types/export";
-import { CARD_GLOW, MODAL_GLOW, ICON_GLOW, TEXT_GLOW } from "../../constants/theme";
 import { calculatePlanDiff } from "../../utils/planDiff";
 import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
 import { PlanDiffView } from "../PlanDiffView";

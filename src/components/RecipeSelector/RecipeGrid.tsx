@@ -90,7 +90,9 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
           "absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10 rounded-bl text-xs transition-all cursor-pointer hover:scale-110",
           {
             "bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100": isFavorite(recipe.SID),
-            "bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100": !isFavorite(recipe.SID),
+            "bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100": !isFavorite(
+              recipe.SID
+            ),
           },
           isFavorite(recipe.SID)
             ? "shadow-[0_0_10px_rgba(255,215,0,0.5)] hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]"

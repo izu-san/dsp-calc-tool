@@ -8,7 +8,6 @@ import type {
 } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 import { cn } from "../../utils/classNames";
-import { NEON_GLOW } from "../../constants/theme";
 import { getMachineById } from "../../stores/gameDataStore";
 
 interface MachineOption {

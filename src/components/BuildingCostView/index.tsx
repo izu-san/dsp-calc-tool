@@ -7,7 +7,6 @@ import { ItemIcon } from "../ItemIcon";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import { ICONS } from "../../constants/icons";
-import { CARD_GLOW } from "../../constants/theme";
 
 interface BuildingCostViewProps {
   calculationResult: CalculationResult;

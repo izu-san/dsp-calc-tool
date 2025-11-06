@@ -9,7 +9,6 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { CalculationResult } from "../../types/calculation";
 import { formatBuildingCount, formatNumber, formatPower } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
-import { CARD_GLOW, TEXT_GLOW, ICON_GLOW } from "../../constants/theme";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);

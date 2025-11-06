@@ -6,7 +6,6 @@ import type { ConveyorBeltTier, SorterTier } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 import { createLogger } from "../../utils/logger";
 import { cn } from "../../utils/classNames";
-import { NEON_GLOW, CARD_GLOW } from "../../constants/theme";
 
 const logger = createLogger("ConveyorBeltSettings");
 

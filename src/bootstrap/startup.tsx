@@ -24,7 +24,7 @@ import { logger } from "../utils/logger";
  */
 export async function bootstrap(): Promise<void> {
   // 1. 画像フォーマットサポートを初期化
-  initializeImageFormatSupport();
+  await initializeImageFormatSupport();
 
   // 2. DOM要素の存在確認
   const rootElement = document.getElementById("root");

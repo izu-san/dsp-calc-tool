@@ -6,7 +6,6 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { PROLIFERATOR_DATA } from "../../types/settings";
-import { CARD_GLOW, ICON_GLOW } from "../../constants/theme";
 
 interface CompactNodeSettingsProps {
   node: RecipeTreeNode;

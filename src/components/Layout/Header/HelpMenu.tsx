@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { HelpModal } from "../../HelpModal/index";
-import { CARD_GLOW } from "../../../constants/theme";
 
 /**
  * ヘルプメニューコンポーネント

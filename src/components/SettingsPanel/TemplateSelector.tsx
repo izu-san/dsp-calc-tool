@@ -8,13 +8,6 @@ import {
   isCustomTemplateId,
 } from "../../types/settings";
 import { cn } from "../../utils/classNames";
-import {
-  CARD_GLOW,
-  MODAL_GLOW,
-  ICON_GLOW,
-  TEXT_GLOW,
-  BORDER_COLOR,
-} from "../../constants/theme";
 
 export function TemplateSelector() {
   const { t } = useTranslation();

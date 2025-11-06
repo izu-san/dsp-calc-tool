@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../../components/ToastProvider/useToast";
-import { CARD_GLOW } from "../../constants/theme";
 
 export type SubmitMethod = "github" | "form";
 

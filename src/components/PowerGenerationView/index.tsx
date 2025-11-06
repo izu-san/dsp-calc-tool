@@ -13,7 +13,6 @@ import { calculatePowerGeneration } from "@/lib/powerGenerationCalculation";
 import { calculateUnifiedPower } from "@/lib/unifiedPowerCalculation";
 import { useGameDataStore } from "@/stores/gameDataStore";
 import { useSettingsStore } from "@/stores/settingsStore";
-import { ICON_GLOW, NEON_GLOW } from "@/constants/theme";
 import type { CalculationResult } from "@/types";
 import type { PowerGeneratorType } from "@/types/power-generation";
 import type { GameTemplate } from "@/types/settings/templates";

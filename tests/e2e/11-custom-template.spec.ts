@@ -15,7 +15,7 @@ import {
 } from "./helpers/template-helpers";
 
 test.describe("カスタムテンプレート機能", () => {
-  test.beforeEach(async ({ appPage, clearLocalStorage, reloadPage }) => {
+  test.beforeEach(async ({ clearLocalStorage, reloadPage }) => {
     // LocalStorageをクリアして初期状態に
     await clearLocalStorage();
     await reloadPage();

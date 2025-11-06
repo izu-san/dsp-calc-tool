@@ -5,7 +5,6 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
-import { NEON_GLOW } from "../../constants/theme";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {

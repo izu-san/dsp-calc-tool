@@ -132,7 +132,9 @@ export function WelcomeModal() {
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[10000] p-4 animate-fadeIn"
       data-testid="welcome-modal"
     >
-      <div className={`bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInScale ${MODAL_GLOW.blue}`}>
+      <div
+        className={`bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInScale ${MODAL_GLOW.blue}`}
+      >
         {/* Header */}
         <div className="sticky top-0 bg-dark-700/95 backdrop-blur-md border-b border-neon-blue/40 p-6 pb-4">
           <div className="flex items-center justify-between">

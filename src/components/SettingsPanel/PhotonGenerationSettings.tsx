@@ -6,7 +6,6 @@ import {
 import { useSettingsStore } from "../../stores/settingsStore";
 import { PROLIFERATOR_DATA, type ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
-import { NEON_GLOW } from "../../constants/theme";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {

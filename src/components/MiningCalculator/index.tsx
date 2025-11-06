@@ -303,10 +303,10 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                       </div>
                     </>
                   ) : material.machineType === "Water Pump" ||
-                  material.machineType === "Oil Extractor" ? (
-                  // Liquid mining equipment (Water, Crude Oil, Sulfuric Acid)
-                  <>
-                    <div className={cn("font-bold text-neon-cyan text-lg", TEXT_GLOW.cyan)}>
+                    material.machineType === "Oil Extractor" ? (
+                    // Liquid mining equipment (Water, Crude Oil, Sulfuric Acid)
+                    <>
+                      <div className={cn("font-bold text-neon-cyan text-lg", TEXT_GLOW.cyan)}>
                         {formatBuildingCount(material.minersNeeded)}{" "}
                         {material.machineType === "Water Pump"
                           ? t("waterPumps")

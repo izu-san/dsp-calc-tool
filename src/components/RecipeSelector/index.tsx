@@ -267,7 +267,8 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect",
             {
-              "bg-neon-yellow/40 border-neon-yellow text-white scale-110 font-bold": showOnlyFavorites,
+              "bg-neon-yellow/40 border-neon-yellow text-white scale-110 font-bold":
+                showOnlyFavorites,
               "bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105":
                 !showOnlyFavorites,
             },

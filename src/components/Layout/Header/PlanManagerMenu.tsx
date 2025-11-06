@@ -37,7 +37,6 @@ import { HISTORY_VERSION } from "../../../utils/history/events";
 import i18n from "../../../i18n";
 import { PlanDiffView } from "../../PlanDiffView";
 import { calculatePlanDiff } from "../../../utils/planDiff";
-import { MODAL_GLOW, CARD_GLOW, ICON_GLOW, TEXT_GLOW } from "../../../constants/theme";
 
 /**
  * プランマネージャードロップダウンメニューコンポーネント

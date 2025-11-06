@@ -6,7 +6,6 @@ import { historyDebouncer } from "../../../utils/history/debouncer";
 import { HistoryDialog } from "../../HistoryDialog";
 import { useToast } from "../../ToastProvider/useToast";
 import { regenerateHistoryDescription } from "../../../utils/history/regenerator";
-import { ICON_GLOW, CARD_GLOW } from "../../../constants/theme";
 
 /**
  * 履歴操作ツールバーコンポーネント

@@ -8,7 +8,6 @@ import { NodeSettingsModal } from "../NodeSettingsModal";
 import { CompactNodeSettings } from "./CompactNodeSettings";
 import { RawMaterialNode } from "./RawMaterialNode";
 import {
-  NEON_GLOW,
   TEXT_GLOW,
   ICON_GLOW,
   BADGE_GLOW,

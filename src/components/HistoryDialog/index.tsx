@@ -7,7 +7,6 @@ import type { HistoryEntry } from "../../types/history";
 import { historyDebouncer } from "../../utils/history/debouncer";
 import { regenerateHistoryDescription } from "../../utils/history/regenerator";
 import { restoreStateFromHistory } from "../../utils/history/restoration";
-import { MODAL_GLOW, CARD_GLOW, ICON_GLOW, TEXT_GLOW, NEON_GLOW } from "../../constants/theme";
 
 interface HistoryDialogProps {
   isOpen: boolean;

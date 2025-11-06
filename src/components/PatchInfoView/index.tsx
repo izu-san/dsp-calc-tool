@@ -6,7 +6,6 @@ import { loadGameDataVersion } from "../../lib/parser";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { calculateRecipeDiff, calculateItemDiff, calculateMachineDiff } from "../../lib/patchDiff";
 import type { RecipeDiff, ItemDiff, MachineDiff } from "../../types/patch-diff";
-import { ICON_GLOW } from "../../constants/theme";
 
 export function PatchInfoView() {
   const { t } = useTranslation();

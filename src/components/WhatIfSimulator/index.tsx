@@ -685,13 +685,13 @@ export function WhatIfSimulator() {
               </button>
               <button
                 data-testid="whatif-quick-action-max-belts"
-              onClick={() => {
-                const scenario = scenarios.find(s => s.id === "belt_mk3");
-                if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
-              }}
-              disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === "belt_mk3")!)}
-              className={`px-3 py-2 bg-neon-cyan/30 border-2 border-neon-cyan hover:bg-neon-cyan/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] ripple-effect ${ICON_GLOW.cyan}`}
-            >
+                onClick={() => {
+                  const scenario = scenarios.find(s => s.id === "belt_mk3");
+                  if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
+                }}
+                disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === "belt_mk3")!)}
+                className={`px-3 py-2 bg-neon-cyan/30 border-2 border-neon-cyan hover:bg-neon-cyan/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] ripple-effect ${ICON_GLOW.cyan}`}
+              >
                 <span className="text-lg">🛤️</span>
                 <span className="text-xs leading-tight text-center">{t("maxBelts")}</span>
               </button>

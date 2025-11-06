@@ -8,7 +8,6 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe } from "../../types";
 import { formatNumber, formatPower } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
-import { MODAL_GLOW, CARD_GLOW, TEXT_GLOW } from "../../constants/theme";
 
 interface RecipeComparisonModalProps {
   itemId: number;
