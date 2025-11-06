@@ -85,6 +85,16 @@ test.describe("ヘルプモーダル", () => {
     await expect(appPage.getByText("ビルド日時:").first()).toBeVisible();
     // 「データ最終更新日:」は複数箇所に存在するため.first()を使用
     await expect(appPage.getByText("データ最終更新日:").first()).toBeVisible();
+
+    // 9. 「リポジトリ」セクションが表示されることを確認
+    await expect(aboutTab.getByRole("heading", { name: "リポジトリ", level: 4 })).toBeVisible();
+
+    // 10. GitHubリポジトリのリンクが表示されることを確認
+    const repoLink = aboutTab.getByRole("link", { name: /github\.com\/izu-san\/dsp-calc-tool/ });
+    await expect(repoLink).toBeVisible();
+    await expect(repoLink).toHaveAttribute("href", "https://github.com/izu-san/dsp-calc-tool");
+    await expect(repoLink).toHaveAttribute("target", "_blank");
+    await expect(repoLink).toHaveAttribute("rel", /noopener/);
   });
 
   test("12-04: 更新履歴タブの表示と内容確認", async ({ appPage }) => {
@@ -151,53 +161,69 @@ test.describe("ヘルプモーダル", () => {
     await expect(appPage.getByText(/追加生産.*速度上昇/)).toBeVisible();
   });
 
-  test("12-06: サポートタブの表示と内容確認", async ({ appPage }) => {
+  test("12-06: フィードバックタブの表示と内容確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
     await appPage.getByTestId("help-menu-trigger").click();
 
-    // 2. 「サポート」タブをクリック
-    const supportTabButton = appPage.getByRole("tab", { name: "サポート" });
-    await supportTabButton.click();
+    // 2. 「フィードバック」タブをクリック
+    const feedbackTabButton = appPage.getByRole("tab", { name: "フィードバック" });
+    await feedbackTabButton.click();
 
-    // 3. 「サポート」タブパネルが表示されるまで待つ
-    const supportTab = appPage.getByTestId("help-tab-support");
-    await supportTab.waitFor({ state: "visible", timeout: 10000 });
+    // 3. 「フィードバック」タブパネルが表示されるまで待つ
+    const feedbackTab = appPage.getByTestId("help-tab-feedback");
+    await feedbackTab.waitFor({ state: "visible", timeout: 10000 });
 
-    // 4. サポートの見出しが表示されることを確認
-    await expect(supportTab.getByRole("heading", { name: "サポート", level: 3 })).toBeVisible();
-
-    // 5. 「リポジトリ」セクションが表示されることを確認
-    await expect(supportTab.getByRole("heading", { name: "リポジトリ", level: 4 })).toBeVisible();
-
-    // 6. GitHubリポジトリのリンクが表示されることを確認
-    const repoLink = supportTab.getByRole("link", { name: /github\.com\/izu-san\/dsp-calc-tool/ });
-    await expect(repoLink).toBeVisible();
-    await expect(repoLink).toHaveAttribute("href", "https://github.com/izu-san/dsp-calc-tool");
-
-    // 7. 「イシューを報告」セクションが表示されることを確認
+    // 4. フィードバックの見出しが表示されることを確認
     await expect(
-      supportTab.getByRole("heading", { name: "イシューを報告", level: 4 })
+      feedbackTab.getByRole("heading", { name: "フィードバックを送信", level: 3 })
     ).toBeVisible();
 
-    // 8. イシュー報告のリンクが表示されることを確認
-    const issueLink = supportTab.getByRole("link", { name: "イシューを報告" });
-    await expect(issueLink).toBeVisible();
-    await expect(issueLink).toHaveAttribute("href", /\/issues\/new/);
-
-    // 9. 「バグ報告時に必要な情報」セクションが表示されることを確認
+    // 5. 「バグ報告時に必要な情報」セクションが表示されることを確認
     await expect(
-      supportTab.getByRole("heading", { name: "バグ報告時に必要な情報", level: 4 })
+      feedbackTab.getByRole("heading", { name: "バグ報告時に必要な情報", level: 4 })
     ).toBeVisible();
 
-    // 10. 必要な情報のリストが表示されることを確認
-    await expect(supportTab.getByText("使用しているブラウザとバージョン")).toBeVisible();
-    await expect(supportTab.getByText("ゲームバージョン")).toBeVisible();
-    await expect(supportTab.getByText("エラーメッセージ（もしあれば）")).toBeVisible();
-    await expect(supportTab.getByText("再現手順")).toBeVisible();
+    // 6. 必要な情報のリストが表示されることを確認
+    await expect(feedbackTab.getByText("使用しているブラウザとバージョン")).toBeVisible();
+    await expect(feedbackTab.getByText("ゲームバージョン")).toBeVisible();
+    await expect(feedbackTab.getByText("エラーメッセージ（もしあれば）")).toBeVisible();
+    await expect(feedbackTab.getByText("再現手順")).toBeVisible();
 
-    // 11. 「返信ポリシー」セクションが表示されることを確認
-    await expect(supportTab.getByRole("heading", { name: "返信ポリシー", level: 4 })).toBeVisible();
-    await expect(supportTab.getByText(/週1回程度/)).toBeVisible();
+    // 7. 「返信ポリシー」セクションが表示されることを確認
+    await expect(
+      feedbackTab.getByRole("heading", { name: "返信ポリシー", level: 4 })
+    ).toBeVisible();
+    await expect(feedbackTab.getByText(/週1回程度/)).toBeVisible();
+  });
+
+  test("12-06-2: キーボードショートカットタブのアクセシビリティ方針確認", async ({ appPage }) => {
+    // 1. ヘルプモーダルを開く
+    await appPage.getByTestId("help-menu-trigger").click();
+
+    // 2. 「キーボードショートカット」タブをクリック
+    const keyboardShortcutsTabButton = appPage.getByRole("tab", {
+      name: "キーボードショートカット",
+    });
+    await keyboardShortcutsTabButton.click();
+
+    // 3. 「キーボードショートカット」タブパネルが表示されるまで待つ
+    const keyboardShortcutsTab = appPage.getByTestId("help-tab-keyboard-shortcuts");
+    await keyboardShortcutsTab.waitFor({ state: "visible", timeout: 10000 });
+
+    // 4. 「アクセシビリティ方針」セクションが表示されることを確認
+    await expect(
+      keyboardShortcutsTab.getByRole("heading", { name: "アクセシビリティ方針", level: 4 })
+    ).toBeVisible();
+
+    // 5. 「キーボード操作」セクションが表示されることを確認
+    await expect(
+      keyboardShortcutsTab.getByRole("heading", { name: "キーボード操作", level: 5 })
+    ).toBeVisible();
+
+    // 6. 「スクリーンリーダー対応」セクションが表示されることを確認
+    await expect(
+      keyboardShortcutsTab.getByRole("heading", { name: "スクリーンリーダー対応", level: 5 })
+    ).toBeVisible();
   });
 
   test("12-07: タブ間の切り替え", async ({ appPage }) => {
@@ -217,10 +243,14 @@ test.describe("ヘルプモーダル", () => {
     await expect(appPage.getByRole("tab", { name: "よくある質問", selected: true })).toBeVisible();
     await expect(appPage.getByRole("heading", { name: "よくある質問", level: 3 })).toBeVisible();
 
-    // 5. サポートタブをクリック
-    await appPage.getByRole("tab", { name: "サポート" }).click();
-    await expect(appPage.getByRole("tab", { name: "サポート", selected: true })).toBeVisible();
-    await expect(appPage.getByRole("heading", { name: "サポート", level: 3 })).toBeVisible();
+    // 5. フィードバックタブをクリック
+    await appPage.getByRole("tab", { name: "フィードバック" }).click();
+    await expect(
+      appPage.getByRole("tab", { name: "フィードバック", selected: true })
+    ).toBeVisible();
+    await expect(
+      appPage.getByRole("heading", { name: "フィードバックを送信", level: 3 })
+    ).toBeVisible();
 
     // 6. 再度アバウトタブをクリック
     await appPage.getByRole("tab", { name: "アバウト" }).click();
@@ -283,61 +313,48 @@ test.describe("ヘルプモーダル", () => {
     await expect(modal).toBeVisible();
 
     // タブを切り替えてから閉じる
-    await appPage.getByRole("tab", { name: "サポート" }).click();
-    const supportTab = appPage.getByTestId("help-tab-support");
-    await supportTab.waitFor({ state: "visible", timeout: 10000 });
-    await expect(appPage.getByRole("tab", { name: "サポート", selected: true })).toBeVisible();
+    await appPage.getByRole("tab", { name: "フィードバック" }).click();
+    const feedbackTab = appPage.getByTestId("help-tab-feedback");
+    await feedbackTab.waitFor({ state: "visible", timeout: 10000 });
+    await expect(
+      appPage.getByRole("tab", { name: "フィードバック", selected: true })
+    ).toBeVisible();
 
     await appPage.getByTestId("help-modal-close").click();
     await expect(modal).toBeHidden();
 
-    // 4回目の開閉（サポートタブが選択されたままかもしれない）
+    // 4回目の開閉（フィードバックタブが選択されたままかもしれない）
     await appPage.getByTestId("help-menu-trigger").click();
     await expect(modal).toBeVisible();
-    // モーダルの状態がリセットされない場合、サポートタブが選択されたままの可能性がある
+    // モーダルの状態がリセットされない場合、フィードバックタブが選択されたままの可能性がある
     // どちらかのタブが選択されていることを確認
     const aboutTabSelected = await appPage
       .getByRole("tab", { name: "アバウト", selected: true })
       .isVisible()
       .catch(() => false);
-    const supportTabSelected = await appPage
-      .getByRole("tab", { name: "サポート", selected: true })
+    const feedbackTabSelected = await appPage
+      .getByRole("tab", { name: "フィードバック", selected: true })
       .isVisible()
       .catch(() => false);
 
-    // いずれかのタブが選択されていることを確認（理想はアバウトタブだが、状態がリセットされない場合サポートタブの可能性もある）
-    expect(aboutTabSelected || supportTabSelected).toBe(true);
+    // いずれかのタブが選択されていることを確認（理想はアバウトタブだが、状態がリセットされない場合フィードバックタブの可能性もある）
+    expect(aboutTabSelected || feedbackTabSelected).toBe(true);
   });
 
   test("12-10: リンクの属性確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
     await appPage.getByTestId("help-menu-trigger").click();
 
-    // 2. サポートタブを開く
-    const supportTabButton = appPage.getByRole("tab", { name: "サポート" });
-    await supportTabButton.click();
+    // 2. アバウトタブが選択されていることを確認
+    await expect(appPage.getByRole("tab", { name: "アバウト", selected: true })).toBeVisible();
 
-    // 2.1. サポートタブが選択されたことを確認
-    await expect(appPage.getByRole("tab", { name: "サポート", selected: true })).toBeVisible();
-
-    // 2.2. タブパネルが表示されるまで待つ
-    const supportTab = appPage.getByTestId("help-tab-support");
-    await supportTab.waitFor({ state: "visible", timeout: 10000 });
-
-    // 3. リポジトリリンクの確認
-    const repoLink = supportTab.getByRole("link", { name: /github\.com\/izu-san\/dsp-calc-tool/ });
+    // 3. リポジトリリンクの確認（Aboutタブ内）
+    const aboutTab = appPage.getByTestId("help-tab-about");
+    await aboutTab.waitFor({ state: "visible", timeout: 10000 });
+    const repoLink = aboutTab.getByRole("link", { name: /github\.com\/izu-san\/dsp-calc-tool/ });
     await expect(repoLink).toHaveAttribute("href", "https://github.com/izu-san/dsp-calc-tool");
     await expect(repoLink).toHaveAttribute("target", "_blank");
     await expect(repoLink).toHaveAttribute("rel", /noopener/);
-
-    // 4. イシューリンクの確認
-    const issueLink = supportTab.getByRole("link", { name: "イシューを報告" });
-    await expect(issueLink).toHaveAttribute(
-      "href",
-      /github\.com\/izu-san\/dsp-calc-tool\/issues\/new/
-    );
-    await expect(issueLink).toHaveAttribute("target", "_blank");
-    await expect(issueLink).toHaveAttribute("rel", /noopener/);
   });
 
   test("12-11: スクロール動作確認", async ({ appPage }) => {
@@ -400,5 +417,61 @@ test.describe("ヘルプモーダル", () => {
 
     // 8. 「比較するバージョンを選択してください」のメッセージが表示されることを確認（デフォルトでは最新バージョンが選択されているため）
     await expect(patchInfoView.getByText("比較するバージョンを選択してください")).toBeVisible();
+  });
+
+  test("12-08: フィードバックタブの表示とリンク動作", async ({ appPage, context }) => {
+    // 1. ヘルプモーダルを開く
+    await appPage.getByTestId("help-menu-trigger").click();
+    const modal = appPage.getByTestId("help-modal");
+    await expect(modal).toBeVisible();
+
+    // 2. フィードバックタブをクリック
+    await appPage.getByRole("tab", { name: "フィードバック" }).click();
+
+    // 3. フィードバックタブが選択されていることを確認
+    await expect(
+      appPage.getByRole("tab", { name: "フィードバック", selected: true })
+    ).toBeVisible();
+    await expect(appPage.getByTestId("help-tab-feedback")).toBeVisible();
+
+    // 4. フィードバックフォームが表示されることを確認
+    const feedbackForm = appPage.getByTestId("feedback-form");
+    await expect(feedbackForm).toBeVisible();
+
+    // 5. 送信方法選択ラジオボタンが表示されることを確認
+    await expect(appPage.getByTestId("feedback-form-submit-method-field")).toBeVisible();
+    await expect(appPage.getByTestId("feedback-form-submit-method-github")).toBeVisible();
+
+    // 6. GitHub Issueで報告ボタンが表示されることを確認
+    await expect(appPage.getByTestId("feedback-form-github-issue-button")).toBeVisible();
+
+    // 7. GitHub Issueで報告ボタンをクリック
+    const [newPage] = await Promise.all([
+      context.waitForEvent("page"),
+      appPage.getByTestId("feedback-form-github-issue-button").click(),
+    ]);
+
+    // 8. GitHub Issue作成ページが開かれることを確認（ログインページにリダイレクトされる場合もある）
+    await expect(newPage).toHaveURL(/github\.com\/(login|.*\/issues\/new)/);
+    await newPage.close();
+
+    // 9. フォームで報告を選択（Google Form URLが設定されている場合のみ）
+    const formRadio = appPage.getByTestId("feedback-form-submit-method-form");
+    if (await formRadio.isVisible().catch(() => false)) {
+      await formRadio.click();
+
+      // 10. Google Formボタンが表示されることを確認
+      await expect(appPage.getByTestId("feedback-form-google-form-button")).toBeVisible();
+
+      // 11. Google Formボタンをクリック
+      const [googleFormPage] = await Promise.all([
+        context.waitForEvent("page"),
+        appPage.getByTestId("feedback-form-google-form-button").click(),
+      ]);
+
+      // 12. Google Formが開かれることを確認
+      await expect(googleFormPage).toHaveURL(/docs\.google\.com\/forms/);
+      await googleFormPage.close();
+    }
   });
 });

@@ -39,6 +39,10 @@ jobs:
         continue-on-error: true
 
       - name: Build project
+        env:
+          VITE_GOOGLE_FORM_URL: ${{ secrets.VITE_GOOGLE_FORM_URL }}
+          VITE_GOOGLE_FORM_ENTRY_IDS: ${{ secrets.VITE_GOOGLE_FORM_ENTRY_IDS }}
+          VITE_GOOGLE_FORM_PRIVACY_CONSENT_VALUE: ${{ secrets.VITE_GOOGLE_FORM_PRIVACY_CONSENT_VALUE }}
         run: npm run build
 
       - name: Setup Pages
