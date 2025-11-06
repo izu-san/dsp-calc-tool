@@ -76,44 +76,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Load version info
-      loadVersionInfo()
-        .then(info => {
-          setVersionInfo(info);
-          setLoadingVersionInfo(false);
-        })
-        .catch(() => {
-          setLoadingVersionInfo(false);
-        });
-
-      // Load changelog
-      loadChangelog(i18n.language === "en" ? "en" : "ja")
-        .then(text => {
-          setChangelog(text);
-          setLoadingChangelog(false);
-        })
-        .catch(() => {
-          setLoadingChangelog(false);
-        });
-    }
-  }, [isOpen]);
-
-  // Escキーでモーダルを閉じる
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
   if (!isOpen) return null;
 
   const githubRepoUrl =
