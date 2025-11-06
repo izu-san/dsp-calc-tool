@@ -116,7 +116,7 @@ export default defineConfig({
             "@radix-ui/react-tooltip",
           ],
           // Chart and visualization
-          "chart-vendor": ["chart.js", "react-chartjs-2", "d3-sankey", "d3-shape", "d3-zoom"],
+          "chart-vendor": ["chart.js", "react-chartjs-2", "d3-sankey", "d3-zoom"],
           // Utilities and parsers
           "utils-vendor": [
             "decimal.js",
