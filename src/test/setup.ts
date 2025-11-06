@@ -17,7 +17,7 @@ vi.mock("../services/history-recording", () => ({
 }));
 
 // Mock historyRecorder utility
-vi.mock("../utils/historyRecorder", () => ({
+vi.mock("../utils/history/recorder", () => ({
   recordHistoryEntry: vi.fn(),
   isRestoring: vi.fn(() => false),
   setRestoring: vi.fn(),
@@ -26,13 +26,17 @@ vi.mock("../utils/historyRecorder", () => ({
 }));
 
 // Mock logger
+const mockLogger = {
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+};
+
 vi.mock("../utils/logger", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  }),
+  logger: mockLogger,
+  createLogger: () => mockLogger,
+  Logger: vi.fn(() => mockLogger),
 }));
 
 // Mock fetch to prevent network requests during tests

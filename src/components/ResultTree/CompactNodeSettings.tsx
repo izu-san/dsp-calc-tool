@@ -249,7 +249,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
           >
             <span
               className={`
-                inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform ${ICON_GLOW.white}
+                inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform
                 ${useOverride ? "translate-x-3.5" : "translate-x-1"}
               `}
             />

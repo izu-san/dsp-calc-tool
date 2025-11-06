@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useHistoryStore } from "../../../stores/historyStore";
 import type { HistoryEntry } from "../../../types/history";
-import { generateUUID, HISTORY_VERSION } from "../../../utils/historyUtils";
+import { generateUUID, HISTORY_VERSION } from "../../../utils/history/events";
 import { HistoryDialog } from "../index";
 
 // Mock i18n
@@ -52,7 +52,7 @@ const localStorageMock = (() => {
 global.localStorage = localStorageMock as Storage;
 
 // Mock historyRestore
-vi.mock("../../../utils/historyRestore", () => ({
+vi.mock("../../../utils/history/restoration", () => ({
   restoreStateFromHistory: vi.fn(),
 }));
 
@@ -99,7 +99,7 @@ describe("HistoryDialog", () => {
   describe("Entry Interaction", () => {
     it("should restore to entry when clicking restore button", async () => {
       const user = userEvent.setup();
-      const { restoreStateFromHistory } = await import("../../../utils/historyRestore");
+      const { restoreStateFromHistory } = await import("../../../utils/history/restoration");
 
       const entry1: HistoryEntry = {
         id: generateUUID(),
@@ -601,7 +601,7 @@ describe("HistoryDialog", () => {
   describe("Undo/Redo Operations", () => {
     it("should perform undo when restoring to earlier entry", async () => {
       const user = userEvent.setup();
-      const { restoreStateFromHistory } = await import("../../../utils/historyRestore");
+      const { restoreStateFromHistory } = await import("../../../utils/history/restoration");
 
       const entry1: HistoryEntry = {
         id: generateUUID(),
@@ -655,7 +655,7 @@ describe("HistoryDialog", () => {
 
     it("should perform redo when restoring to later entry", async () => {
       const user = userEvent.setup();
-      const { restoreStateFromHistory } = await import("../../../utils/historyRestore");
+      const { restoreStateFromHistory } = await import("../../../utils/history/restoration");
 
       const entry1: HistoryEntry = {
         id: generateUUID(),

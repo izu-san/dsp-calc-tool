@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { HistoryDebouncer, DEBOUNCE_TIMES } from "../historyDebouncer";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { HistoryEntry } from "../../types/history";
-import { generateUUID, HISTORY_VERSION } from "../historyUtils";
+import { DEBOUNCE_TIMES, HistoryDebouncer } from "../history/debouncer";
+import { generateUUID, HISTORY_VERSION } from "../history/events";
 
 describe("HistoryDebouncer", () => {
   let debouncer: HistoryDebouncer;

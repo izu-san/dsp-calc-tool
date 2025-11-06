@@ -1,12 +1,12 @@
 import { useEffect, useMemo } from "react";
+import { tryCalculateProductionChain } from "../lib/calculator";
 import type {
-  Recipe,
+  CalculationResult,
   GameData,
   GlobalSettings,
   NodeOverrideSettings,
-  CalculationResult,
+  Recipe,
 } from "../types";
-import { tryCalculateProductionChain } from "../lib/calculator";
 import { handleError } from "../utils/errorHandler";
 
 /**
@@ -59,15 +59,16 @@ export function useProductionCalculation(
     data,
     memoizedSettings,
     memoizedNodeOverrides,
+    _nodeOverridesVersion,
     memoizedMiningSettings,
     setCalculationResult,
   ]);
 }
 
 function createSettingsSignature(settings: GlobalSettings): string {
-  const alternativeEntries = Array.from(settings.alternativeRecipes.entries()).sort(
-    ([a], [b]) => a - b
-  );
+  const alternativeEntries = settings.alternativeRecipes
+    ? Array.from(settings.alternativeRecipes.entries()).sort(([a], [b]) => a - b)
+    : [];
 
   return JSON.stringify({
     proliferator: settings.proliferator,

@@ -1,13 +1,13 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import type { HistoryEntry } from "../../types/history";
 import {
-  generateUUID,
-  HISTORY_VERSION,
-  validateHistoryEntry,
-  migrateHistoryEntry,
   calculateChanges,
   DEBOUNCE_TIMES,
-} from "../historyUtils";
-import type { HistoryEntry } from "../../types/history";
+  generateUUID,
+  HISTORY_VERSION,
+  migrateHistoryEntry,
+  validateHistoryEntry,
+} from "../history/events";
 
 describe("historyUtils", () => {
   describe("generateUUID", () => {
