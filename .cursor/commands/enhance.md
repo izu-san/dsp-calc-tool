@@ -58,14 +58,14 @@
 #### ✅ **ステップ 4**: 既存テストの実行（変更前） 🔴 必須実行
 - [ ] **単体テストを実行**し、全テスト合格を確認（必ず実行すること）
   ```bash
-  npm test
+  pnpm test
   ```
 - [ ] **E2Eテストを実行**し、全テスト合格を確認（必ず実行すること）
   ```bash
   # Windows (PowerShell)
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   Start-Sleep -Seconds 5
-  npm run test:e2e
+  pnpm run test:e2e
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
   ```
@@ -79,7 +79,7 @@
   ```
 - [ ] TypeScriptのコンパイルエラーがないことを確認
   ```bash
-  npx tsc --noEmit
+  pnpm exec tsc --noEmit
   ```
 
 #### ✅ **ステップ 5.5**: ユーザー確認 🔴 必須実行
@@ -91,13 +91,13 @@
 #### ✅ **ステップ 6**: ビルド確認
 - [ ] **プロダクションビルドが成功**することを確認
   ```bash
-  npm run build
+  pnpm run build
   ```
 
 #### ✅ **ステップ 7**: 単体テストの再実行（変更後）
 - [ ] **単体テストを再実行**し、全テスト合格を確認
   ```bash
-  npm test
+  pnpm test
   ```
 
 #### ✅ **ステップ 8**: 単体テストの追加・変更（必要に応じて）
@@ -111,9 +111,9 @@
 - [ ] **E2Eテストを再実行**し、全テスト合格を確認（必ず実行すること）
   ```bash
   # Windows (PowerShell)
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   Start-Sleep -Seconds 5
-  npm run test:e2e
+  pnpm run test:e2e
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
   ```
@@ -121,11 +121,11 @@
 #### ✅ **ステップ 10**: 最終確認
 - [ ] ESLintでコード品質を確認
   ```bash
-  npm run lint
+  pnpm run lint
   ```
 - [ ] ローカル環境でアプリケーションを起動し、動作確認
   ```bash
-  npm run dev
+  pnpm run dev
   ```
 
 #### ✅ **ステップ 11**: コミット前の最終確認 🔴 必須実行

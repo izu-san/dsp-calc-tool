@@ -1,6 +1,8 @@
 version: 2
 updates:
-  # npm依存関係の自動アップデート
+  # pnpm依存関係の自動アップデート
+  # 注意: Dependabotはpnpmを直接サポートしていないため、npmとして扱われますが
+  # pnpm-lock.yamlが存在する場合、Dependabotはpnpmを使用します
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -11,7 +13,7 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
-      - "npm"
+      - "pnpm"
     # バージョンアップデート戦略
     versioning-strategy: increase
     # グループ化設定（関連する依存関係をまとめる）

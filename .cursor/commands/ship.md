@@ -51,7 +51,7 @@
 
 - [ ] **TypeScriptコンパイルを実行**（必ず実行すること）
   ```bash
-  npx tsc --noEmit
+  pnpm exec tsc --noEmit
   ```
 
 - [ ] **エラー処理**:
@@ -66,13 +66,13 @@
 
 - [ ] **ESLintチェックを実行**（必ず実行すること）
   ```bash
-  npm run lint
+  pnpm run lint
   ```
 
 - [ ] **エラー処理**:
   - **成功（exit code 0）**: ステップ4へ進む
   - **失敗（exit code 非0）**:
-    - 自動修正を実行（`npm run lint:fix`）
+    - 自動修正を実行（`pnpm run lint:fix`）
     - 修正後、再度ESLintチェックを実行
     - **自動修正しても直らない場合**:
       - エラー内容を解析
@@ -83,13 +83,13 @@
 
 - [ ] **Prettierチェックを実行**（必ず実行すること）
   ```bash
-  npm run format:check
+  pnpm run format:check
   ```
 
 - [ ] **エラー処理**:
   - **成功（exit code 0）**: ステップ5へ進む
   - **失敗（exit code 非0）**:
-    - 自動修正を実行（`npm run format`）
+    - 自動修正を実行（`pnpm run format`）
     - 修正後、再度フォーマットチェックを実行
     - **自動修正後も失敗する場合**: エラー内容を出力して処理を中止
 
@@ -97,7 +97,7 @@
 
 - [ ] **単体テストを実行**（必ず実行すること）
   ```bash
-  npm test
+  pnpm test
   ```
 
 - [ ] **エラー処理**:
@@ -113,11 +113,11 @@
   **Windows (PowerShell)**:
   ```powershell
   # devサーバーをバックグラウンドで起動
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   # 数秒待機してサーバー起動を確認
   Start-Sleep -Seconds 5
   # E2Eテスト実行
-  npm run test:e2e
+  pnpm run test:e2e
   # テスト後、Viteを実行しているプロセスを停止（ポート5173）
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
@@ -126,12 +126,12 @@
   **Unix/Mac (Bash)**:
   ```bash
   # devサーバーをバックグラウンドで起動
-  npm run dev &
+  pnpm run dev &
   DEV_PID=$!
   # 数秒待機してサーバー起動を確認
   sleep 3
   # E2Eテスト実行
-  npm run test:e2e
+  pnpm run test:e2e
   # テスト後、devサーバーを停止
   kill $DEV_PID
   ```
@@ -146,7 +146,7 @@
 
 - [ ] **プロダクションビルドを実行**（必ず実行すること）
   ```bash
-  npm run build
+  pnpm run build
   ```
 
 - [ ] **エラー処理**:
@@ -269,11 +269,11 @@
 以下のエラーは自動修正を試みます：
 
 1. **ESLintエラー**
-   - `npm run lint:fix` で自動修正
+   - `pnpm run lint:fix` で自動修正
    - 修正後、再度チェックを実行
 
 2. **Prettierフォーマットエラー**
-   - `npm run format` で自動修正
+   - `pnpm run format` で自動修正
    - 修正後、再度チェックを実行
 
 3. **TypeScriptの一部エラー**
@@ -346,7 +346,7 @@
 # 実行フロー:
 # 1. TypeScriptコンパイルチェック ✅
 # 2. ESLintチェック ❌ (2 errors, 1 warning)
-#    → npm run lint:fix を実行
+#    → pnpm run lint:fix を実行
 #    → 再度ESLintチェック ✅
 # 3. Prettierチェック ✅
 # 4. 単体テスト ✅

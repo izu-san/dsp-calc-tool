@@ -38,7 +38,7 @@ alwaysApply: false
    - 作業タイプに応じたブランチを作成
 
 2. ✅ **ステップ 2**: 既存テストの実行（変更前）
-   - 単体テスト (`npm test`) を実行してベースラインを確立
+   - 単体テスト (`pnpm test`) を実行してベースラインを確立
    - E2Eテスト: devサーバーをバックグラウンドで起動して実行
    - テスト結果を記録（終了コードと出力から解析、PR本文生成に使用）
 
@@ -83,7 +83,7 @@ alwaysApply: false
 ### ステップ 1: 作業タイプの判定とブランチ作成 🔴 必須実行
 
 - [ ] **作業タイプを判定**（必ず実行すること）
-  
+
   依頼内容から以下のいずれかを判定：
   - **不具合修正** (`hotfix/fix-*` → `main`)
   - **リファクタリング** (`feature/refactoring-*` → `develop`)
@@ -112,10 +112,10 @@ alwaysApply: false
 - [ ] **作業ブランチを作成**（必ず実行すること）
 
   **ブランチ名の決定方法**:
-  
+
   **不具合修正の場合**:
   - 形式: `hotfix/fix-<問題の説明>`
-  - 例: 
+  - 例:
     - `hotfix/fix-calculation-error` (計算エラー修正)
     - `hotfix/fix-proliferator-bug` (増産剤バグ修正)
     - `hotfix/fix-null-pointer` (Null参照エラー修正)
@@ -150,7 +150,7 @@ alwaysApply: false
 - [ ] **単体テストを実行**し、全テスト合格を確認（必ず実行すること）
 
   ```bash
-  npm test
+  pnpm test
   ```
 
   - **合格基準**: 全テスト成功（0 failed）
@@ -161,11 +161,11 @@ alwaysApply: false
   **Windows (PowerShell)**:
   ```powershell
   # devサーバーをバックグラウンドで起動
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   # 数秒待機してサーバー起動を確認
   Start-Sleep -Seconds 5
   # E2Eテスト実行
-  npm run test:e2e
+  pnpm run test:e2e
   # テスト後、Viteを実行しているプロセスを停止（ポート5173）
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
@@ -174,12 +174,12 @@ alwaysApply: false
   **Unix/Mac (Bash)**:
   ```bash
   # devサーバーをバックグラウンドで起動
-  npm run dev &
+  pnpm run dev &
   DEV_PID=$!
   # 数秒待機してサーバー起動を確認
   sleep 3
   # E2Eテスト実行
-  npm run test:e2e
+  pnpm run test:e2e
   # テスト後、devサーバーを停止
   kill $DEV_PID
   ```
@@ -201,13 +201,13 @@ alwaysApply: false
   ```bash
   # 単一ファイルを削除
   git rm <削除するファイルパス>
-  
+
   # 複数ファイルを一度に削除
   git rm <ファイル1> <ファイル2> <ファイル3>
-  
+
   # ディレクトリごと削除
   git rm -r <ディレクトリパス>
-  
+
   # 例: 統合されたファイルを削除
   git rm src/components/OldComponent.tsx
   ```
@@ -226,45 +226,45 @@ alwaysApply: false
 - [ ] TypeScriptのコンパイルエラーがないことを確認
 
   ```bash
-  npx tsc --noEmit
+  pnpm exec tsc --noEmit
   ```
 
 ### ステップ 3.5: ユーザー確認 🔴 必須実行
 
 - [ ] **変更内容をユーザーに報告**（必ず実行すること）
-  
+
   以下の情報を報告する：
   - 作業タイプ（リファクタリング/不具合修正/機能エンハンス）
   - 変更したファイルと変更内容の概要
   - 追加・削除・変更した関数・コンポーネント・モジュールのリスト
   - 変更の意図と効果
-  
+
   **報告方法**:
   ```bash
   # 変更されたファイルを確認
   git status
-  
+
   # 差分を確認
   git diff --stat
   ```
-  
+
   **確認内容をユーザーに提示**:
   - 「以下の変更を実施しました。確認してOK/NGをお知らせください。」
   - 変更内容の詳細を箇条書きで説明
   - 主要な変更点をコードブロックで表示（必要に応じて）
 
 - [ ] **ユーザーの承認を待つ**
-  
+
   **ユーザーの判断**:
   - ✅ **OK**: ステップ4に進む
   - ❌ **NG**: ステップ3に戻り、フィードバックに基づいて再度変更
-  
+
   **NGの場合の対応**:
   1. ユーザーからのフィードバックを受け取る
   2. フィードバックに基づいて変更方針を調整
   3. ステップ3からやり直す
   4. 再度ステップ3.5で確認を取る
-  
+
   **重要**: ユーザーがOKを出すまでステップ4以降には進まない
 
 ### ステップ 4: ビルド確認
@@ -272,7 +272,7 @@ alwaysApply: false
 - [ ] **プロダクションビルドが成功**することを確認
 
   ```bash
-  npm run build
+  pnpm run build
   ```
 
   - **合格基準**: エラーなしでビルド完了
@@ -284,14 +284,14 @@ alwaysApply: false
 - [ ] **単体テストを再実行**し、全テスト合格を確認
 
   ```bash
-  npm test
+  pnpm test
   ```
 
   - **合格基準**: 全テスト成功（変更前と同じ結果）
   - **カバレッジ確認**: カバレッジが低下していないか確認
 
     ```bash
-    npm run test:coverage
+    pnpm run test:coverage
     ```
 
   - **失敗時の対応**: リグレッションが発生している可能性があるため、コードを見直し
@@ -299,38 +299,38 @@ alwaysApply: false
 ### ステップ 6: 単体テストの追加・変更（必要に応じて）
 
 - [ ] **変更内容に応じて単体テストを追加・変更**する
-  
+
   **テスト追加が必要な場合**:
   - **新しい関数・モジュールを追加した場合**: 対応するテストを追加
   - **新しいロジックを追加した場合**: 新規ロジックのテストを追加
   - **不具合修正の場合**: バグを再現するテストを追加してからコード修正（TDD推奨）
   - テストファイル: `src/**/__tests__/*.test.ts(x)`
   - カバレッジ目標: 新規コードは85%以上
-  
+
   **既存テストの変更が必要な場合**:
   - **関数シグネチャが変更された場合**: テストの呼び出し方を更新
   - **モジュール構造が変更された場合**: import文やモックを更新
   - **内部実装が大幅に変更された場合**: テストケースを見直し・更新
-  
+
   **追加・変更が不要な場合の判断基準**:
   - **既存コードの構造のみを変更した場合**: ファイル分割、関数抽出など構造のみの変更
   - **既存テストが全て合格している場合**: リグレッションが発生していない
   - **カバレッジが維持されている場合**: テストカバレッジが低下していない
-  
+
 - [ ] **追加・変更が不要な場合は、その理由をユーザーに報告**する
-  
+
   **報告内容**:
   - 「ステップ 6: 単体テストの追加・変更は不要です」
   - 理由を明記（例: 「既存コードの構造のみを変更し、既存テストが全て合格しているため」）
-  
+
 - [ ] **追加・変更したテストが合格することを確認**
 
   ```bash
   # 特定のテストファイルのみ実行
-  npm test -- <テストファイル名>
-  
+  pnpm test -- <テストファイル名>
+
   # 全テストを再実行
-  npm test
+  pnpm test
   ```
 
 ### ステップ 7: E2Eテストの再実行（変更後） 🔴 必須実行
@@ -338,15 +338,15 @@ alwaysApply: false
 - [ ] **E2Eテストを再実行**し、全テスト合格を確認（必ず実行すること）
 
   **実行方法**:
-  
+
   **Windows (PowerShell)**:
   ```powershell
   # devサーバーをバックグラウンドで起動
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   # 数秒待機してサーバー起動を確認
   Start-Sleep -Seconds 5
   # E2Eテスト実行
-  npm run test:e2e
+  pnpm run test:e2e
   # テスト後、Viteを実行しているプロセスを停止（ポート5173）
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
@@ -355,12 +355,12 @@ alwaysApply: false
   **Unix/Mac (Bash)**:
   ```bash
   # devサーバーをバックグラウンドで起動
-  npm run dev &
+  pnpm run dev &
   DEV_PID=$!
   # 数秒待機してサーバー起動を確認
   sleep 3
   # E2Eテスト実行
-  npm run test:e2e
+  pnpm run test:e2e
   # テスト後、devサーバーを停止
   kill $DEV_PID
   ```
@@ -374,7 +374,7 @@ alwaysApply: false
 - [ ] ESLintでコード品質を確認
 
   ```bash
-  npm run lint
+  pnpm run lint
   ```
 
   - **合格基準**: エラー0件、警告0件（または許容範囲内）
@@ -382,7 +382,7 @@ alwaysApply: false
 - [ ] ローカル環境でアプリケーションを起動し、動作確認
 
   ```bash
-  npm run dev
+  pnpm run dev
   ```
 
   - **確認項目**:
@@ -411,7 +411,7 @@ alwaysApply: false
   ```bash
   # 削除されたファイルを確認
   git status | grep deleted
-  
+
   # または git diff で削除されたファイルを詳細確認
   git diff --cached --diff-filter=D --name-only
   ```
@@ -437,19 +437,19 @@ alwaysApply: false
   **報告形式**:
   ```
   以下の変更をコミットします：
-  
+
   【変更ファイル】
   - src/App.tsx (修正)
   - src/components/Layout/SettingsPanelSection.tsx (修正)
-  
+
   【コミットメッセージ】
   fix: ヘッダーと設定エリアのsticky機能を修正
-  
+
   【変更内容】
   - ヘッダーをposition: fixedに変更
   - 設定エリアのstickyが動作しない原因を特定・修正
   - overflow-x-hiddenを削除（stickyの動作を阻害していた）
-  
+
   この内容でgit操作を実行してもよろしいですか？
   ```
 
@@ -473,7 +473,7 @@ alwaysApply: false
 - [ ] 変更をステージングしてコミット（必ず実行すること）
 
   **コミットメッセージの生成方法**:
-  
+
   作業タイプに応じて以下の形式でメッセージを生成：
 
   | 作業タイプ | 形式 | 例 |
@@ -492,7 +492,7 @@ alwaysApply: false
   # コミット（自動生成したメッセージを使用）
   git commit -m "<作業タイプのプレフィックス>: <自動生成したメッセージ>"
   ```
-  
+
 - [ ] リモートリポジトリにプッシュ
 
   **不具合修正の場合**:
@@ -530,12 +530,12 @@ alwaysApply: false
 
 | 項目 | 成功基準 | 確認方法 |
 |------|---------|---------|
-| **単体テスト** | 全テスト合格（0 failed） | `npm test` |
-| **E2Eテスト** | 全21シナリオ合格 | `npm run test:e2e` |
-| **ビルド** | エラーなしで完了 | `npm run build` |
-| **コード品質** | ESLintエラー0件 | `npm run lint` |
-| **カバレッジ** | 変更前と同等以上 | `npm run test:coverage` |
-| **TypeScript** | コンパイルエラー0件 | `npx tsc --noEmit` |
+| **単体テスト** | 全テスト合格（0 failed） | `pnpm test` |
+| **E2Eテスト** | 全21シナリオ合格 | `pnpm run test:e2e` |
+| **ビルド** | エラーなしで完了 | `pnpm run build` |
+| **コード品質** | ESLintエラー0件 | `pnpm run lint` |
+| **カバレッジ** | 変更前と同等以上 | `pnpm run test:coverage` |
+| **TypeScript** | コンパイルエラー0件 | `pnpm exec tsc --noEmit` |
 | **動作確認** | 主要機能が正常動作 | 手動テスト |
 
 ---
@@ -585,21 +585,21 @@ alwaysApply: false
 1. TypeScriptのコンパイルエラーを確認
 
    ```bash
-   npx tsc --noEmit
+   pnpm exec tsc --noEmit
    ```
 
 2. 依存関係の問題を確認
 
    ```bash
-   npm ci
+   pnpm install --frozen-lockfile
    ```
 
 3. キャッシュをクリア
 
    ```bash
    rm -rf node_modules dist
-   npm install
-   npm run build
+   pnpm install
+   pnpm run build
    ```
 
 ### E2Eテストが失敗した場合
@@ -607,13 +607,13 @@ alwaysApply: false
 1. **UIモード**でテストを実行して視覚的に確認
 
    ```bash
-   npm run test:e2e -- --ui
+   pnpm run test:e2e -- --ui
    ```
 
 2. **特定のテストのみ**を実行して問題を絞り込み
 
    ```bash
-   npm run test:e2e -- tests/e2e/basic-flow.spec.ts
+   pnpm run test:e2e -- tests/e2e/basic-flow.spec.ts
    ```
 
 3. **スクリーンショット**を確認（`test-results/` ディレクトリ）
@@ -631,12 +631,12 @@ git pull origin main
 git checkout -b hotfix/fix-calculation-error
 
 # ステップ 2: 変更前のテスト実行
-npm test
+pnpm test
 # E2Eテスト（devサーバーをバックグラウンドで起動）
 # Windows
-Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
 Start-Sleep -Seconds 5
-npm run test:e2e
+pnpm run test:e2e
 $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
 if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
 
@@ -652,17 +652,17 @@ git diff --stat
 # ユーザーに変更内容を報告し、OK/NGの承認を待つ
 
 # ステップ 4-8: ビルド、テスト、最終確認
-npm run build
-npm test
-npm run test:coverage
+pnpm run build
+pnpm test
+pnpm run test:coverage
 # E2Eテスト再実行
-Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
 Start-Sleep -Seconds 5
-npm run test:e2e
+pnpm run test:e2e
 $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
 if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
-npm run lint
-npm run dev  # 動作確認
+pnpm run lint
+pnpm run dev  # 動作確認
 
 # ステップ 9: コミット前の最終確認
 git status

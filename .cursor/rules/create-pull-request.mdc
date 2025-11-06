@@ -107,22 +107,22 @@ git log <マージ先ブランチ>..HEAD --oneline
 PR本文生成前に、以下の情報を収集する：
 
 1. **単体テスト結果**: テスト実行時の出力を解析
-   - `npm test` の終了コード（0=成功、非0=失敗）を確認
+   - `pnpm test` の終了コード（0=成功、非0=失敗）を確認
    - 出力から "Tests:" または "Test Suites:" 行を抽出してテスト合格数を取得
-   - `npm run test:coverage` 実行後、coverage サマリーからカバレッジ率を取得
+   - `pnpm run test:coverage` 実行後、coverage サマリーからカバレッジ率を取得
    - 例: "All files | 92.5 | 90.2 | 95.3 | 92.5 |" から 92.5% を抽出
 
 2. **E2Eテスト結果**: テスト実行時の出力を解析
-   - `npm run test:e2e` の終了コード（0=成功、非0=失敗）を確認
+   - `pnpm run test:e2e` の終了コード（0=成功、非0=失敗）を確認
    - 出力から "passed" または "failed" を含む行を抽出
    - 例: "21 passed (13s)" から成功数を取得
 
 3. **ビルド結果**: コマンド実行の終了コードから判定
-   - `npm run build` の終了コード
+   - `pnpm run build` の終了コード
    - 成功: exit code 0 → "✅ success"
    - 失敗: exit code 非0 → "❌ failed"
 
-4. **ESLint結果**: `npm run lint` の出力を解析
+4. **ESLint結果**: `pnpm run lint` の出力を解析
    - 出力から "error" と "warning" の数をカウント
    - 例: "0 errors, 2 warnings" から抽出
 
