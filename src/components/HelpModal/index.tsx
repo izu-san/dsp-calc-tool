@@ -9,6 +9,8 @@ import i18n from "../../i18n";
 import { loadChangelog } from "../../utils/changelog";
 import { loadVersionInfo, type VersionInfo } from "../../utils/versionInfo";
 import { PatchInfoView } from "../PatchInfoView";
+import { ReliabilityIndicator } from "./ReliabilityIndicator";
+import { QualityPolicy } from "./QualityPolicy";
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -407,6 +409,12 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                       )}
                     </div>
                   </div>
+
+                  {/* Reliability Indicator */}
+                  <ReliabilityIndicator />
+
+                  {/* Quality Policy */}
+                  <QualityPolicy />
                 </div>
               ) : (
                 <div className="text-center py-8 text-space-300">
