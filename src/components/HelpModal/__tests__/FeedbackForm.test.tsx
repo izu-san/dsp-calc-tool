@@ -43,14 +43,8 @@ Object.defineProperty(window, "open", {
   writable: true,
 });
 
-// Mock environment variables
-Object.defineProperty(import.meta, "env", {
-  value: {
-    GITHUB_REPO_URL: "https://github.com/izu-san/dsp-calc-tool",
-    VITE_GOOGLE_FORM_URL: "https://docs.google.com/forms/d/e/TEST_FORM_ID/viewform",
-  },
-  writable: true,
-});
+// Note: VITE_GOOGLE_FORM_URLはvite.config.tsのdefineで定義されているため、
+// テスト実行時にも有効になる
 
 describe("FeedbackForm", () => {
   beforeEach(() => {
