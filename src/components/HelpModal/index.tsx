@@ -399,14 +399,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                           <span className="text-white font-medium">{formatDate(buildTime)}</span>
                         </div>
                       )}
-                      {versionInfo.dataLastUpdated && (
-                        <div className="flex justify-between">
-                          <span className="text-space-300">{t("dataLastUpdated")}:</span>
-                          <span className="text-white font-medium">
-                            {formatDate(versionInfo.dataLastUpdated)}
-                          </span>
-                        </div>
-                      )}
                     </div>
                   </div>
 

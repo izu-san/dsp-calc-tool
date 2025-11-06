@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { execSync } from "child_process";
 import path from "path";
 
@@ -47,16 +47,73 @@ function getBuildStatus():
   return undefined;
 }
 
-// テストカバレッジ情報を取得（将来の拡張用）
+// テストカバレッジ情報を取得
 function getTestCoverage():
   | {
       percentage: number;
       reportUrl?: string;
     }
   | undefined {
-  // 現在はカバレッジ情報を取得できないため、undefinedを返す
-  // 将来的にCIでカバレッジレポートを生成した場合、ここでパースする
-  return undefined;
+  try {
+    // coverage/coverage-final.jsonからカバレッジ情報を取得
+    const coveragePath = path.join(process.cwd(), "coverage", "coverage-final.json");
+
+    if (!existsSync(coveragePath)) {
+      return undefined;
+    }
+
+    const coverageData = JSON.parse(readFileSync(coveragePath, "utf-8"));
+
+    // vitestのカバレッジレポートの形式を確認
+    // coverage-final.jsonにはtotalプロパティが含まれる場合がある
+    let percentage: number;
+
+    if (coverageData.total && typeof coverageData.total.statements?.pct === "number") {
+      // totalプロパティが存在する場合（全体的なカバレッジ率）
+      percentage = coverageData.total.statements.pct;
+    } else {
+      // ファイル単位でカバレッジを計算
+      let totalStatements = 0;
+      let coveredStatements = 0;
+
+      for (const filePath in coverageData) {
+        // totalプロパティはスキップ
+        if (filePath === "total") continue;
+
+        const fileCoverage = coverageData[filePath];
+        if (fileCoverage && fileCoverage.s) {
+          // s: statements coverage
+          for (const statementKey in fileCoverage.s) {
+            totalStatements++;
+            if (fileCoverage.s[statementKey] > 0) {
+              coveredStatements++;
+            }
+          }
+        }
+      }
+
+      percentage = totalStatements > 0 ? (coveredStatements / totalStatements) * 100 : 0;
+    }
+
+    // CodecovレポートURLを生成（CI環境の場合）
+    let reportUrl: string | undefined;
+    const githubServerUrl = process.env.GITHUB_SERVER_URL;
+    const githubRepository = process.env.GITHUB_REPOSITORY;
+    const githubSha = process.env.GITHUB_SHA;
+
+    if (githubServerUrl && githubRepository && githubSha) {
+      // CodecovのレポートURLを生成
+      reportUrl = `https://app.codecov.io/gh/${githubRepository}/commit/${githubSha}`;
+    }
+
+    return {
+      percentage: Math.round(percentage * 10) / 10, // 小数点第1位まで
+      ...(reportUrl && { reportUrl }),
+    };
+  } catch (error) {
+    console.warn("Failed to get test coverage:", error);
+    return undefined;
+  }
 }
 
 // version-info.jsonからデータ更新日時を取得
