@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "type": "module",
   "license": "MIT",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && tsx scripts/generate-build-info.ts",

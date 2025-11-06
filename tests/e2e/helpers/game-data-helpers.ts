@@ -12,7 +12,7 @@ export async function ensureRecipeSidsGenerated(mdPath: string): Promise<void> {
   console.log("RECIPE_SIDS.md not found, generating...");
 
   try {
-    execSync("npm run generate:recipe-sids", {
+    execSync("pnpm run generate:recipe-sids", {
       cwd: process.cwd(),
       stdio: "inherit",
     });

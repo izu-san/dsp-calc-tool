@@ -15,22 +15,27 @@ jobs:
   bundle-size:
     name: Bundle Size Analysis
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Analyze bundle size
         run: |
@@ -50,15 +55,15 @@ jobs:
           script: |
             const fs = require('fs');
             const { execSync } = require('child_process');
-            
+
             const distSize = execSync('du -sh dist/').toString().trim();
-            
+
             const comment = `## 📦 Bundle Size Report
-            
+
             **Total size:** ${distSize.split('\t')[0]}
-            
+
             Built successfully! ✅`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -70,19 +75,24 @@ jobs:
   code-duplication:
     name: Code Duplication Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install jscpd
-        run: npm install -g jscpd
+        run: pnpm install -g jscpd
 
       - name: Run duplication detection
         run: |

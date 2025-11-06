@@ -99,51 +99,51 @@ Dyson Sphere Programの生産ラインを最適化するためのWebベース計
 ### 前提条件
 
 - **Node.js** 18以上
-- **npm** または **yarn**
+- **pnpm** 9.15.0以上
 
 ### インストール
 
 ```bash
 # 依存関係のインストール
-npm install
+pnpm install
 
 # 開発サーバーの起動
-npm run dev
+pnpm run dev
 
 # 本番用ビルド
-npm run build
+pnpm run build
 
 # ビルドのプレビュー
-npm run preview
+pnpm run preview
 ```
 
 ### テスト
 
 ```bash
 # ユニットテストの実行
-npm run test
+pnpm run test
 
 # テストUIの起動
-npm run test:ui
+pnpm run test:ui
 
 # カバレッジレポートの生成
-npm run test:coverage
+pnpm run test:coverage
 
 # E2Eテストの実行
-npm run test:e2e
+pnpm run test:e2e
 
 # E2EテストのUIモード
-npm run test:e2e:ui
+pnpm run test:e2e:ui
 ```
 
 ### その他のコマンド
 
 ```bash
 # コード品質チェック
-npm run lint
+pnpm run lint
 
 # 画像をWebP形式に変換
-npm run convert:webp
+pnpm run convert:webp
 ```
 
 ## 📁 プロジェクト構造
@@ -330,7 +330,7 @@ scripts/
 
 ```bash
 # カバレッジレポート生成
-npm run test:coverage
+pnpm run test:coverage
 
 # カバレッジをブラウザで確認
 open coverage/index.html
@@ -369,7 +369,7 @@ open coverage/index.html
 
 ```bash
 # 本番用ビルド
-npm run build
+pnpm run build
 
 # dist/ディレクトリが生成されます
 # 任意の静的ホスティングサービスにデプロイ可能

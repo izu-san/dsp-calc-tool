@@ -17,7 +17,7 @@ async function globalSetup() {
   // Generate RECIPE_SIDS.md file
   console.log("Generating RECIPE_SIDS.md...");
   try {
-    execSync("npm run generate:recipe-sids", {
+    execSync("pnpm run generate:recipe-sids", {
       cwd: path.resolve(__dirname, "../.."),
       stdio: "inherit",
     });
