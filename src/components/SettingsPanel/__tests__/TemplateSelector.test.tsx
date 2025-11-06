@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within, act } from "@testing-library/react";
 import { TemplateSelector } from "../TemplateSelector";
 import { DEFAULT_PHOTON_GENERATION_SETTINGS } from "../../../types/settings/photonGeneration";
 
@@ -878,6 +878,181 @@ describe("TemplateSelector", () => {
         expect(screen.queryByTestId("overwrite-confirm-modal")).not.toBeInTheDocument();
         expect(screen.getByTestId("create-template-modal")).toBeInTheDocument();
       });
+    });
+  });
+
+  describe("Escキーでモーダルを閉じる", () => {
+    it("作成モーダルが開いているときにEscキーで閉じる", async () => {
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("create-template-modal")).toBeInTheDocument();
+      });
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("create-template-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("編集モーダルが開いているときにEscキーで閉じる", async () => {
+      const templateId = "edit-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Editable Template",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`edit-custom-template-${templateId}`));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("edit-template-modal")).toBeInTheDocument();
+      });
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("edit-template-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("削除確認モーダルが開いているときにEscキーで閉じる", async () => {
+      const templateId = "delete-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Deletable Template",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`delete-custom-template-${templateId}`));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("delete-template-modal")).toBeInTheDocument();
+      });
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("delete-template-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("デフォルトテンプレート確認モーダルが開いているときにEscキーで閉じる", async () => {
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("template-button-earlyGame"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("template-confirm-modal")).toBeInTheDocument();
+      });
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("template-confirm-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("カスタムテンプレート確認モーダルが開いているときにEscキーで閉じる", async () => {
+      const templateId = "custom-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Custom Template",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId(`custom-template-apply-button-${templateId}`));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("custom-template-confirm-modal")).toBeInTheDocument();
+      });
+
+      const event = new KeyboardEvent("keydown", { key: "Escape" });
+      window.dispatchEvent(event);
+
+      await waitFor(() => {
+        expect(screen.queryByTestId("custom-template-confirm-modal")).not.toBeInTheDocument();
+      });
+    });
+
+    it("上書き確認モーダルが開いているときにEscキーで閉じる", async () => {
+      const templateId = "existing-id";
+      const now = Date.now();
+      customTemplatesMock = {
+        [templateId]: {
+          meta: {
+            id: templateId,
+            name: "Duplicate Name",
+            createdAt: now,
+            updatedAt: now,
+          },
+          settings: createDefaultSettings(),
+        },
+      };
+
+      render(<TemplateSelector />);
+      fireEvent.click(screen.getByTestId("create-custom-template-button"));
+
+      const nameInput = screen.getByTestId("template-name-input");
+      fireEvent.change(nameInput, { target: { value: "Duplicate Name" } });
+
+      const saveButton = screen.getByTestId("create-template-save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("overwrite-confirm-modal")).toBeInTheDocument();
+      });
+
+      // イベントリスナーが登録されるまで少し待つ
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      });
+
+      // Escキーを押す
+      await act(async () => {
+        const event = new KeyboardEvent("keydown", {
+          key: "Escape",
+          bubbles: true,
+          cancelable: true,
+        });
+        window.dispatchEvent(event);
+      });
+
+      await waitFor(
+        () => {
+          expect(screen.queryByTestId("overwrite-confirm-modal")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   });
 });

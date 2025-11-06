@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface ExportDialogProps {
@@ -26,13 +26,27 @@ export function ExportDialog({
   const [planName, setPlanName] = useState(defaultPlanName);
   const [includeOverrides, setIncludeOverrides] = useState(includeOverridesDefault);
 
-  if (!isOpen) return null;
-
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setPlanName(defaultPlanName);
     setIncludeOverrides(includeOverridesDefault);
     onClose();
-  };
+  }, [defaultPlanName, includeOverridesDefault, onClose]);
+
+  // Escキーでダイアログを閉じる
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleClose]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50">

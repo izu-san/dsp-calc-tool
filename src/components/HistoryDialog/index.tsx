@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
@@ -73,6 +73,20 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
   const { entries, currentIndex, canUndo, canRedo } = useHistoryStore();
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Escキーでダイアログを閉じる
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   const handleRestoreToEntry = (_entry: HistoryEntry, targetIndex: number) => {
     // Flush pending debounced entries

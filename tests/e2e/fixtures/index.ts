@@ -22,6 +22,8 @@ export const test = appFixture.extend<{
   reloadPage: () => Promise<void>;
   setViewport: (width: number, height: number) => Promise<void>;
   newPage: () => Promise<Page>;
+  // WelcomeModal-specific fixture (does not skip tutorial)
+  freshPage: Page;
 }>({
   // Test data fixtures
   clearLocalStorage: async ({ appPage }, use) => {
@@ -94,6 +96,14 @@ export const test = appFixture.extend<{
     await use(async () => {
       return await appPage.context().newPage();
     });
+  },
+
+  // Fresh page without tutorial_seen set (for WelcomeModal tests)
+  freshPage: async ({ page }, use) => {
+    // Navigate WITHOUT setting tutorial_seen
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await disableAnimations(page);
+    await use(page);
   },
 });
 

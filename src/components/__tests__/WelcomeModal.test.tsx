@@ -11,6 +11,18 @@ import { WelcomeModal } from "../WelcomeModal";
 // i18n のモック（キーをそのまま返す）
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string, _opts?: unknown) => key }),
+  initReactI18next: {
+    type: "languageDetector",
+    async: false,
+  },
+}));
+
+// useGameDataStore のモック
+vi.mock("../stores/gameDataStore", () => ({
+  useGameDataStore: () => ({
+    locale: "ja",
+    setLocale: vi.fn(),
+  }),
 }));
 
 describe("WelcomeModal", () => {

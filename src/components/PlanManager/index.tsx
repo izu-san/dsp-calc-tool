@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { usePlanExport } from "../../hooks/usePlanExport";
@@ -49,6 +49,32 @@ export function PlanManager() {
 
   // Dialog state management
   const dialogs = usePlanManagerDialogs();
+
+  // Escキーでダイアログを閉じる
+  useEffect(() => {
+    if (!dialogs.activeDialog) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (dialogs.activeDialog === "diff") {
+          dialogs.setDiffVersions(null, null);
+        }
+        if (dialogs.activeDialog === "version") {
+          dialogs.setSelectedPlanId(null);
+        }
+        dialogs.closeDialog();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    dialogs.activeDialog,
+    dialogs.closeDialog,
+    dialogs.setDiffVersions,
+    dialogs.setSelectedPlanId,
+  ]);
 
   // Export functionality
   const planExport = usePlanExport({

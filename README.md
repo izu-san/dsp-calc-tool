@@ -9,7 +9,6 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/izu-san/dsp-calc-tool)
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/san_izu_san)](https://x.com/san_izu_san)
 
-
 Dyson Sphere Programの生産ラインを最適化するためのWebベース計算ツールです。原材料から最終製品までの完全な生産チェーンを可視化し、必要な施設数・電力・ベルト要件を正確に算出します。
 
 ## ✨ 主要機能

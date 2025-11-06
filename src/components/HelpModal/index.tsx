@@ -1,7 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import DOMPurify from "dompurify";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
@@ -21,6 +21,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
   const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
   const [loadingChangelog, setLoadingChangelog] = useState(true);
   const [activeTab, setActiveTab] = useState("about");
+  const firstTabRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -45,6 +46,69 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
         });
     }
   }, [isOpen]);
+
+  // Escキーでモーダルを閉じる
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  // モーダルが開いたときに最初のタブにフォーカスを当てる
+  useEffect(() => {
+    if (isOpen && firstTabRef.current) {
+      // 少し遅延を入れて、DOMが完全にレンダリングされた後にフォーカスを当てる
+      const timer = setTimeout(() => {
+        firstTabRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Load version info
+      loadVersionInfo()
+        .then(info => {
+          setVersionInfo(info);
+          setLoadingVersionInfo(false);
+        })
+        .catch(() => {
+          setLoadingVersionInfo(false);
+        });
+
+      // Load changelog
+      loadChangelog(i18n.language === "en" ? "en" : "ja")
+        .then(text => {
+          setChangelog(text);
+          setLoadingChangelog(false);
+        })
+        .catch(() => {
+          setLoadingChangelog(false);
+        });
+    }
+  }, [isOpen]);
+
+  // Escキーでモーダルを閉じる
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -205,6 +269,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
         <Tabs.Root
           value={activeTab}
           onValueChange={setActiveTab}
+          activationMode="automatic"
           className="flex-1 flex flex-col overflow-hidden"
         >
           <Tabs.List
@@ -212,26 +277,33 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             onClick={e => e.stopPropagation()}
           >
             <Tabs.Trigger
+              ref={firstTabRef}
               value="about"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("about")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="changelog"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("changelog")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="faq"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("faqLabel")}
             </Tabs.Trigger>
             <Tabs.Trigger
+              value="keyboardShortcuts"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+            >
+              {t("keyboardShortcuts")}
+            </Tabs.Trigger>
+            <Tabs.Trigger
               value="support"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("supportLabel")}
             </Tabs.Trigger>
@@ -397,6 +469,86 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
               })()}
             </Tabs.Content>
 
+            {/* Keyboard Shortcuts Tab */}
+            <Tabs.Content
+              value="keyboardShortcuts"
+              className="space-y-4"
+              onClick={e => e.stopPropagation()}
+              data-testid="help-tab-keyboard-shortcuts"
+            >
+              <h3 className="text-xl font-bold text-neon-purple mb-4">{t("keyboardShortcuts")}</h3>
+
+              <div className="space-y-4">
+                {/* Undo */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">{t("shortcuts.undo")}</span>
+                    <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                      {t("shortcutKeys.ctrlZ")}
+                    </kbd>
+                  </div>
+                </div>
+
+                {/* Redo */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">{t("shortcuts.redo")}</span>
+                    <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                      {t("shortcutKeys.ctrlY")}
+                    </kbd>
+                  </div>
+                </div>
+
+                {/* Mod Settings */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">{t("shortcuts.modSettings")}</span>
+                    <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                      {t("shortcutKeys.ctrlShiftM")}
+                    </kbd>
+                  </div>
+                </div>
+
+                {/* Language Switch */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">
+                      {t("shortcuts.languageSwitch")}
+                    </span>
+                    <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                      {t("shortcutKeys.ctrlL")}
+                    </kbd>
+                  </div>
+                </div>
+
+                {/* Help Modal */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">{t("shortcuts.helpModal")}</span>
+                    <div className="flex gap-2">
+                      <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                        {t("shortcutKeys.ctrlQuestion")}
+                      </kbd>
+                      <span className="text-space-300">/</span>
+                      <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                        {t("shortcutKeys.f1")}
+                      </kbd>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Close Modal */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">{t("shortcuts.closeModal")}</span>
+                    <kbd className="px-2 py-1 bg-dark-700 text-neon-cyan rounded border border-neon-cyan/50">
+                      {t("shortcutKeys.escape")}
+                    </kbd>
+                  </div>
+                </div>
+              </div>
+            </Tabs.Content>
+
             {/* Support Tab */}
             <Tabs.Content
               value="support"
@@ -458,6 +610,29 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                     {t("support.responsePolicy")}
                   </h4>
                   <p className="text-space-200">{t("support.responsePolicyDescription")}</p>
+                </div>
+
+                {/* Accessibility Policy */}
+                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                  <h4 className="text-lg font-semibold text-white mb-3">
+                    {t("accessibility.policy")}
+                  </h4>
+                  <div className="space-y-4">
+                    <div>
+                      <h5 className="font-medium text-neon-purple mb-2">
+                        {t("accessibility.keyboardNavigation")}
+                      </h5>
+                      <p className="text-space-200">
+                        {t("accessibility.keyboardNavigationDescription")}
+                      </p>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-neon-purple mb-2">
+                        {t("accessibility.screenReader")}
+                      </h5>
+                      <p className="text-space-200">{t("accessibility.screenReaderDescription")}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Tabs.Content>

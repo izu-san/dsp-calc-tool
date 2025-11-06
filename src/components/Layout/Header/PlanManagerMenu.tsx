@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useTranslation } from "react-i18next";
@@ -721,6 +721,44 @@ export function PlanManagerMenu() {
     padding: 20,
   };
 
+  // Escキーでモーダルを閉じる
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showSaveDialog) {
+          setShowSaveDialog(false);
+          setPlanName("");
+          setExportSuccessMessage("");
+          setExportErrorMessage("");
+        } else if (showLoadDialog) {
+          setShowLoadDialog(false);
+          setImportSuccessMessage("");
+          setImportErrorMessage("");
+        } else if (showShareDialog) {
+          setShowShareDialog(false);
+        } else if (showVersionDialog) {
+          setShowVersionDialog(false);
+          setSelectedPlanId(null);
+        } else if (showDiffDialog) {
+          setShowDiffDialog(false);
+          setDiffBaseVersion(null);
+          setDiffCompareVersion(null);
+        }
+      }
+    };
+
+    if (
+      showSaveDialog ||
+      showLoadDialog ||
+      showShareDialog ||
+      showVersionDialog ||
+      showDiffDialog
+    ) {
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [showSaveDialog, showLoadDialog, showShareDialog, showVersionDialog, showDiffDialog]);
+
   return (
     <>
       <DropdownMenu.Root>
@@ -730,6 +768,7 @@ export function PlanManagerMenu() {
             disabled={!selectedRecipe}
             className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2"
             title={t("save")}
+            aria-label={t("save")}
           >
             💾 {t("save")}
             <span className="text-xs">▼</span>

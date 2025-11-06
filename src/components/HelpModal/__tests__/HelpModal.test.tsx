@@ -197,10 +197,13 @@ describe("HelpModal", () => {
     const faqTab = screen.getByRole("tab", { name: "faqLabel" });
     await user.click(faqTab);
 
-    // FAQコンテンツが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText("計算の前提条件")).toBeInTheDocument();
-    });
+    // FAQコンテンツが表示されることを確認（タブの切り替えが完了するまで待つ）
+    await waitFor(
+      () => {
+        expect(screen.getByText("計算の前提条件")).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it("サポートタブを表示できる", async () => {
@@ -218,10 +221,13 @@ describe("HelpModal", () => {
     const supportTab = screen.getByRole("tab", { name: "supportLabel" });
     await user.click(supportTab);
 
-    // サポートコンテンツが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText("support.title")).toBeInTheDocument();
-    });
+    // サポートコンテンツが表示されることを確認（タブの切り替えが完了するまで待つ）
+    await waitFor(
+      () => {
+        expect(screen.getByText("support.title")).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it("バージョン情報の読み込みエラー時にデフォルト値が表示される", async () => {
@@ -253,10 +259,13 @@ describe("HelpModal", () => {
     const changelogTab = screen.getByRole("tab", { name: "changelog" });
     await user.click(changelogTab);
 
-    // エラーメッセージが表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText("changelogNotAvailable")).toBeInTheDocument();
-    });
+    // エラーメッセージが表示されることを確認（タブの切り替えが完了するまで待つ）
+    await waitFor(
+      () => {
+        expect(screen.getByText("changelogNotAvailable")).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it("GitHubリポジトリへのリンクが正しく設定されている", async () => {
