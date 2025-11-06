@@ -8,6 +8,7 @@ import { useFavoritesStore } from "../../stores/favoritesStore";
 import { ItemIcon } from "../ItemIcon";
 import { useDebounce } from "../../hooks/useDebounce";
 import { cn } from "../../utils/classNames";
+import { NEON_GLOW, BORDER_COLOR, ICON_GLOW } from "../../constants/theme";
 
 interface RecipeSelectorProps {
   recipes: Recipe[];
@@ -174,7 +175,11 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         {/* Autocomplete Dropdown */}
         {showSuggestions && searchSuggestions.length > 0 && (
           <div
-            className="absolute z-10 w-full mt-1 border-2 border-neon-cyan/50 rounded-lg shadow-[0_0_20px_rgba(0,217,255,0.3)] max-h-60 overflow-y-auto"
+            className={cn(
+              "absolute z-10 w-full mt-1 border-2 rounded-lg max-h-60 overflow-y-auto",
+              BORDER_COLOR.cyan,
+              NEON_GLOW.cyan
+            )}
             style={{ backgroundColor: "#0F172A" }}
           >
             <div className="p-2">
@@ -189,7 +194,11 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                     setSearchQuery(suggestion);
                     setShowSuggestions(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-md text-sm text-space-200 hover:text-white transition-all hover:bg-neon-cyan/30 hover:border-neon-cyan border-2 border-transparent hover:scale-[1.02] hover:shadow-[0_0_10px_rgba(0,217,255,0.4)] ripple-effect"
+                  className={cn(
+                    "w-full text-left px-3 py-2 rounded-md text-sm text-space-200 hover:text-white transition-all hover:bg-neon-cyan/30 border-2 border-transparent hover:scale-[1.02] ripple-effect",
+                    `hover:${BORDER_COLOR.cyan}`,
+                    `hover:${ICON_GLOW.cyan}`
+                  )}
                 >
                   <span className="flex items-center gap-2">
                     <svg
@@ -258,11 +267,11 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect",
             {
-              "bg-neon-yellow/40 border-neon-yellow text-white shadow-[0_0_20px_rgba(255,215,0,0.6)] scale-110 font-bold":
-                showOnlyFavorites,
+              "bg-neon-yellow/40 border-neon-yellow text-white scale-110 font-bold": showOnlyFavorites,
               "bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105":
                 !showOnlyFavorites,
-            }
+            },
+            showOnlyFavorites && "shadow-[0_0_20px_rgba(255,215,0,0.6)]"
           )}
         >
           ⭐ {t("favorites")}{" "}
@@ -288,11 +297,12 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect",
                 {
-                  "bg-neon-blue/40 border-neon-blue text-white shadow-[0_0_20px_rgba(0,136,255,0.6)] scale-110 font-bold":
+                  "bg-neon-blue/40 border-neon-blue text-white scale-110 font-bold":
                     selectedCategory === category,
                   "bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105":
                     selectedCategory !== category,
-                }
+                },
+                selectedCategory === category && NEON_GLOW.blueStrong
               )}
             >
               {categoryInfo.iconId && (
@@ -328,18 +338,24 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           <Tabs.Trigger
             value={RecipeSelectorTab.RecipeList}
             data-testid="items-tab"
-            className="px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect
-                       data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]
-                       data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
+            className={cn(
+              "px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect",
+              "data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan",
+              `data-[state=active]:${ICON_GLOW.cyan}`,
+              "data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
+            )}
           >
             Items
           </Tabs.Trigger>
           <Tabs.Trigger
             value={RecipeSelectorTab.Favorites}
             data-testid="buildings-tab"
-            className="px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect
-                       data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]
-                       data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
+            className={cn(
+              "px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect",
+              "data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan",
+              `data-[state=active]:${ICON_GLOW.cyan}`,
+              "data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
+            )}
           >
             Buildings
           </Tabs.Trigger>

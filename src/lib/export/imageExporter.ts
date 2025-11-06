@@ -6,15 +6,31 @@
  */
 
 import type { ImageExportOptions } from "../../types/export";
+import { validateImageExportOptions, defaultImageExportOptions } from "./validation";
 
 /**
  * 画像形式でエクスポートする
  *
  * @param selector - キャプチャするDOM要素のセレクタ
- * @param options - 画像エクスポートオプション
+ * @param options - 画像エクスポートオプション（バリデーションされる）
  * @returns Promise<Blob> - 画像データ
+ * @throws Error - オプションが不正な場合
  */
-export async function exportToImage(selector: string, options: ImageExportOptions): Promise<Blob> {
+export async function exportToImage(
+  selector: string,
+  options: ImageExportOptions = defaultImageExportOptions
+): Promise<Blob> {
+  // オプションをバリデート
+  const validationResult = validateImageExportOptions(options);
+  if (!validationResult.success) {
+    const errorMessages = validationResult.error.issues
+      .map((e: { path: unknown[]; message: string }) => `${String(e.path.join("."))}: ${e.message}`)
+      .join(", ");
+    throw new Error(`Invalid export options: ${errorMessages}`);
+  }
+
+  const validatedOptions = validationResult.data;
+
   // 動的インポートで html2canvas をロード
   const html2canvas = (await import("html2canvas")).default;
 
@@ -25,12 +41,12 @@ export async function exportToImage(selector: string, options: ImageExportOption
   }
 
   // 解像度スケールを計算
-  const scale = getScale(options.resolution);
+  const scale = getScale(validatedOptions.resolution);
 
   // html2canvas でキャプチャ
   const canvas = await html2canvas(element as HTMLElement, {
     scale: scale,
-    backgroundColor: options.backgroundColor,
+    backgroundColor: validatedOptions.backgroundColor,
     useCORS: true,
     allowTaint: true,
     logging: false,
@@ -48,8 +64,8 @@ export async function exportToImage(selector: string, options: ImageExportOption
           reject(new Error("Failed to convert canvas to blob"));
         }
       },
-      `image/${options.format}`,
-      options.quality / 100
+      `image/${validatedOptions.format}`,
+      validatedOptions.quality / 100
     );
   });
 }
@@ -74,13 +90,25 @@ function getScale(resolution: "1x" | "2x" | "4x"): number {
  * 複数のビューを結合してエクスポート
  *
  * @param selectors - キャプチャするDOM要素のセレクタ配列
- * @param options - 画像エクスポートオプション
+ * @param options - 画像エクスポートオプション（バリデーションされる）
  * @returns Promise<Blob> - 画像データ
+ * @throws Error - オプションが不正な場合
  */
 export async function exportMultipleViews(
   selectors: string[],
-  options: ImageExportOptions
+  options: ImageExportOptions = defaultImageExportOptions
 ): Promise<Blob> {
+  // オプションをバリデート
+  const validationResult = validateImageExportOptions(options);
+  if (!validationResult.success) {
+    const errorMessages = validationResult.error.issues
+      .map((e: { path: unknown[]; message: string }) => `${String(e.path.join("."))}: ${e.message}`)
+      .join(", ");
+    throw new Error(`Invalid export options: ${errorMessages}`);
+  }
+
+  const validatedOptions = validationResult.data;
+
   // 動的インポートで html2canvas をロード
   const html2canvas = (await import("html2canvas")).default;
 
@@ -89,10 +117,10 @@ export async function exportMultipleViews(
   for (const selector of selectors) {
     const element = document.querySelector(selector);
     if (element) {
-      const scale = getScale(options.resolution);
+      const scale = getScale(validatedOptions.resolution);
       const canvas = await html2canvas(element as HTMLElement, {
         scale: scale,
-        backgroundColor: options.backgroundColor,
+        backgroundColor: validatedOptions.backgroundColor,
         useCORS: true,
         allowTaint: true,
         logging: false,
@@ -110,7 +138,8 @@ export async function exportMultipleViews(
   // 結合用のキャンバスを作成
   const totalWidth = Math.max(...canvases.map(c => c.width));
   const totalHeight =
-    canvases.reduce((sum, c) => sum + c.height, 0) + options.padding * (canvases.length - 1);
+    canvases.reduce((sum, c) => sum + c.height, 0) +
+    validatedOptions.padding * (canvases.length - 1);
 
   const combinedCanvas = document.createElement("canvas");
   combinedCanvas.width = totalWidth;
@@ -122,14 +151,14 @@ export async function exportMultipleViews(
   }
 
   // 背景色を塗る
-  ctx.fillStyle = options.backgroundColor;
+  ctx.fillStyle = validatedOptions.backgroundColor;
   ctx.fillRect(0, 0, totalWidth, totalHeight);
 
   // 各キャンバスを縦に結合
   let currentY = 0;
   for (const canvas of canvases) {
     ctx.drawImage(canvas, 0, currentY);
-    currentY += canvas.height + options.padding;
+    currentY += canvas.height + validatedOptions.padding;
   }
 
   // Blob として返す
@@ -142,8 +171,8 @@ export async function exportMultipleViews(
           reject(new Error("Failed to convert canvas to blob"));
         }
       },
-      `image/${options.format}`,
-      options.quality / 100
+      `image/${validatedOptions.format}`,
+      validatedOptions.quality / 100
     );
   });
 }

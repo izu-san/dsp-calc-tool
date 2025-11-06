@@ -1,5 +1,5 @@
-import type { HistoryEntry } from "../types/history";
-import { useGameDataStore } from "../stores/gameDataStore";
+import type { HistoryEntry } from "../../types/history";
+import { useGameDataStore } from "../../stores/gameDataStore";
 import {
   generateProliferatorDescription,
   generateMachineRankDescription,
@@ -17,8 +17,8 @@ import {
   generateRecipeSelectionDescription,
   generateTargetQuantityDescription,
   generateTemplateDescription,
-} from "./historyDescriptionHelper";
-import i18n from "../i18n";
+} from "./formatters";
+import i18n from "../../i18n";
 
 /**
  * Regenerate history description in current locale
@@ -91,7 +91,7 @@ function regenerateSettingsDescription(entry: HistoryEntry, locale: string): str
   }
 
   // Check for machine rank changes
-  for (const key in changes) {
+  for (const key of Object.keys(changes)) {
     if (key.startsWith("settings.machineRank.")) {
       const recipeType = key.split(".")[2];
       const beforeRank = (previousChanges[key] as string) || "";
@@ -136,7 +136,7 @@ function regenerateSettingsDescription(entry: HistoryEntry, locale: string): str
   if (changes["settings.alternativeRecipes"]) {
     const altRecipesChanges = changes["settings.alternativeRecipes"] as Record<string, unknown>;
 
-    for (const itemIdStr in altRecipesChanges) {
+    for (const itemIdStr of Object.keys(altRecipesChanges)) {
       const itemId = Number(itemIdStr);
       const beforeRecipeSID = previousChanges["settings.alternativeRecipes"]
         ? ((previousChanges["settings.alternativeRecipes"] as Record<string, unknown>)[

@@ -6,6 +6,7 @@ import {
 import { useSettingsStore } from "../../stores/settingsStore";
 import { PROLIFERATOR_DATA, type ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
+import { NEON_GLOW } from "../../constants/theme";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {
@@ -77,7 +78,7 @@ export function PhotonGenerationSettings() {
                     px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                     ${
                       isSelected
-                        ? "bg-neon-magenta/30 text-white border-neon-magenta shadow-[0_0_20px_rgba(233,53,255,0.6),inset_0_0_20px_rgba(233,53,255,0.2)] backdrop-blur-sm font-bold scale-105"
+                        ? "bg-neon-magenta/30 text-white border-neon-magenta ${NEON_GLOW.magentaStrong},inset_0_0_20px_rgba(233,53,255,0.2) backdrop-blur-sm font-bold scale-105"
                         : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
                     }
                   `}

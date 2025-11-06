@@ -5,6 +5,7 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
+import { NEON_GLOW } from "../../constants/theme";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {
@@ -74,7 +75,7 @@ export function ProliferatorSettings() {
                   px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
                   ${
                     proliferator.type === type
-                      ? "bg-neon-magenta/30 text-white border-neon-magenta shadow-[0_0_20px_rgba(233,53,255,0.6),inset_0_0_20px_rgba(233,53,255,0.2)] backdrop-blur-sm font-bold scale-105"
+                      ? "bg-neon-magenta/30 text-white border-neon-magenta ${NEON_GLOW.magentaStrong},inset_0_0_20px_rgba(233,53,255,0.2) backdrop-blur-sm font-bold scale-105"
                       : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
                   }
                 `}
@@ -128,7 +129,7 @@ export function ProliferatorSettings() {
                         isDisabled
                           ? "bg-dark-800/30 text-space-500 border-dark-700 cursor-not-allowed opacity-50 hover:scale-100 hover:bg-dark-800/30"
                           : proliferator.mode === mode
-                            ? "bg-neon-cyan/30 text-white border-neon-cyan shadow-[0_0_20px_rgba(0,217,255,0.6),inset_0_0_20px_rgba(0,217,255,0.2)] backdrop-blur-sm font-bold scale-105 hover:scale-105"
+                            ? "bg-neon-cyan/30 text-white border-neon-cyan ${NEON_GLOW.cyanStrong},inset_0_0_20px_rgba(0,217,255,0.2) backdrop-blur-sm font-bold scale-105 hover:scale-105"
                             : "bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan hover:scale-105"
                       }
                     `}

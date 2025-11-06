@@ -6,6 +6,7 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { PROLIFERATOR_DATA } from "../../types/settings";
+import { CARD_GLOW, ICON_GLOW } from "../../constants/theme";
 
 interface CompactNodeSettingsProps {
   node: RecipeTreeNode;
@@ -214,7 +215,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
 
   return (
     <div
-      className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+      className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30 ${CARD_GLOW.purpleLight}"
       data-testid="compact-node-settings"
     >
       <div className="space-y-3">
@@ -242,14 +243,14 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
               relative inline-flex h-4 w-7 items-center rounded-full transition-all ripple-effect
               ${
                 useOverride
-                  ? "bg-neon-purple shadow-[0_0_10px_rgba(168,85,247,0.5)]"
+                  ? "bg-neon-purple ${ICON_GLOW.purple}"
                   : "bg-dark-600 border border-neon-purple/30"
               }
             `}
           >
             <span
               className={`
-                inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform shadow-[0_0_5px_rgba(255,255,255,0.3)]
+                inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform ${ICON_GLOW.white}
                 ${useOverride ? "translate-x-3.5" : "translate-x-1"}
               `}
             />
@@ -273,7 +274,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                   }}
                   aria-label={t("proliferator")}
                   data-testid="proliferator-type-select"
-                  className="w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta focus:shadow-[0_0_10px_rgba(233,53,255,0.3)] transition-all"
+                  className="w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta focus:${ICON_GLOW.magenta} transition-all"
                   style={{
                     backgroundColor: "#1E293B",
                     color: "#FFFFFF",
@@ -331,7 +332,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                               isDisabled
                                 ? "bg-dark-600 border border-neon-magenta/20 text-space-400 cursor-not-allowed opacity-50 hover:bg-dark-600"
                                 : proliferatorMode === mode
-                                  ? "bg-neon-magenta/30 border border-neon-magenta text-white shadow-[0_0_10px_rgba(233,53,255,0.4)]"
+                                  ? "bg-neon-magenta/30 border border-neon-magenta text-white ${ICON_GLOW.magenta}"
                                   : "bg-dark-700/50 border border-neon-magenta/30 text-space-200 hover:border-neon-magenta/60 hover:bg-neon-magenta/10 hover:text-neon-magenta"
                             }
                           `}
@@ -364,7 +365,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                     setMachineRank(e.target.value);
                   }}
                   data-testid="machine-rank-select"
-                  className="w-full text-xs border border-neon-blue/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-blue focus:shadow-[0_0_10px_rgba(0,136,255,0.3)] transition-all"
+                  className="w-full text-xs border border-neon-blue/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-blue focus:${ICON_GLOW.blue} transition-all"
                   style={{
                     backgroundColor: "#1E293B",
                     color: "#FFFFFF",

@@ -1,13 +1,20 @@
-import { useGameDataStore } from "../stores/gameDataStore";
-import { useMiningSettingsStore } from "../stores/miningSettingsStore";
-import { useNodeOverrideStore } from "../stores/nodeOverrideStore";
-import { useRecipeSelectionStore } from "../stores/recipeSelectionStore";
-import { useSettingsStore } from "../stores/settingsStore";
-import type { CustomSettingsTemplate, NodeOverrideSettings } from "../types";
-import type { HistoryEntry } from "../types/history";
-import { PROLIFERATOR_DATA } from "../types/settings";
-import { setRestoring } from "./historyRecorder";
-import { deserializeSettings } from "./storageSerializer";
+import { useGameDataStore } from "../../stores/gameDataStore";
+import { useMiningSettingsStore, type MiningSettings } from "../../stores/miningSettingsStore";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
+import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
+import { useSettingsStore } from "../../stores/settingsStore";
+import type {
+  CustomSettingsTemplate,
+  NodeOverrideSettings,
+  GlobalSettings,
+  GameTemplate,
+  CustomTemplateId,
+} from "../../types";
+import type { HistoryEntry } from "../../types/history";
+import { PROLIFERATOR_DATA } from "../../types/settings";
+import type { PowerGeneratorType } from "../../types/power-generation";
+import { setRestoring } from "./recorder";
+import { deserializeSettings } from "../storageSerializer";
 
 /**
  * Restore state from history entry
@@ -42,7 +49,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
   let hasMiningSettingsChanges = false;
 
   // Store completeSettings outside try block for use after finally
-  let completeSettings: import("../types").GlobalSettings | null = null;
+  let completeSettings: GlobalSettings | null = null;
 
   try {
     // Process each change
@@ -60,13 +67,11 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
       } else if (path === "powerGenerationTemplate") {
         // Power generation template change - does NOT affect production chain
         if (typeof value === "string") {
-          setPowerGenerationTemplate(value as import("../types/settings").GameTemplate);
+          setPowerGenerationTemplate(value as GameTemplate);
         }
       } else if (path === "manualPowerGenerator") {
         // Manual power generator change - does NOT affect production chain
-        setManualPowerGenerator(
-          value as import("../types/power-generation").PowerGeneratorType | null
-        );
+        setManualPowerGenerator(value as PowerGeneratorType | null);
       } else if (path === "manualPowerFuel") {
         // Manual power fuel change - does NOT affect production chain
         setManualPowerFuel(value as string | null);
@@ -124,9 +129,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
           setSelectedTemplate(null);
         } else if (typeof value === "string") {
           // Type assertion: value could be GameTemplate or CustomTemplateId
-          setSelectedTemplate(
-            value as import("../types").GameTemplate | import("../types").CustomTemplateId | null
-          );
+          setSelectedTemplate(value as GameTemplate | CustomTemplateId | null);
         }
       } else if (path === "customTemplates") {
         // Custom templates change - restore entire customTemplates object
@@ -228,7 +231,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
                 settings: {
                   ...existingTemplate.settings,
                   ...updatedSettings,
-                } as import("../types").GlobalSettings,
+                } as GlobalSettings,
               };
             }
           }
@@ -309,9 +312,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
 
     // Apply mining settings changes
     if (hasMiningSettingsChanges) {
-      setMiningSettings(
-        miningSettingsChanges as Partial<import("../stores/miningSettingsStore").MiningSettings>
-      );
+      setMiningSettings(miningSettingsChanges as Partial<MiningSettings>);
     }
   } finally {
     // Always reset restoring flag, even if an error occurs
@@ -337,9 +338,9 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
  * Apply multiple settings changes to current settings
  */
 function applySettingsChanges(
-  currentSettings: import("../types").GlobalSettings,
+  currentSettings: GlobalSettings,
   changes: Record<string, unknown>
-): Partial<import("../types").GlobalSettings> {
+): Partial<GlobalSettings> {
   // Group changes by top-level property (e.g., "proliferator", "machineRank")
   const groupedChanges: Record<string, Record<string, unknown>> = {};
 
@@ -428,7 +429,7 @@ function applySettingsChanges(
     }
   }
 
-  return result as Partial<import("../types").GlobalSettings>;
+  return result as Partial<GlobalSettings>;
 }
 
 /**

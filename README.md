@@ -94,6 +94,164 @@ Dyson Sphere Programの生産ラインを最適化するためのWebベース計
 - **Testing Library** - コンポーネントテスト
 - **V8 Coverage** - カバレッジレポート
 
+## 🏗️ アーキテクチャ
+
+### システム構成
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         UI Layer                             │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │  Components                                         │    │
+│  │  - RecipeSelector    - SettingsPanel               │    │
+│  │  - ResultTree        - StatisticsView              │    │
+│  │  - BuildingCostView  - PowerGraphView              │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                      State Management                        │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │  Zustand Stores (with localStorage persistence)    │    │
+│  │  - gameDataStore          - settingsStore          │    │
+│  │  - recipeSelectionStore   - nodeOverrideStore      │    │
+│  │  - favoritesStore         - historyStore           │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                      Business Logic                          │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │  Pure Functions (src/lib/)                         │    │
+│  │  - calculator.ts      - proliferator.ts            │    │
+│  │  - parser.ts          - powerCalculation.ts        │    │
+│  │  - statistics.ts      - buildingCost.ts            │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                         Data Layer                           │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │  Game Data (XML)                                    │    │
+│  │  - Items.xml          - Recipes.xml                │    │
+│  │  - StringProto.xml    (parsed at runtime)          │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### データフロー
+
+```
+┌──────────────────┐
+│  User Action     │
+│  (UI Interaction)│
+└────────┬─────────┘
+         │
+         ↓
+┌──────────────────────────────────────────────────┐
+│  Store Update                                    │
+│  - settingsStore.setProliferatorMode()          │
+│  - recipeSelectionStore.setSelectedRecipe()     │
+└────────┬─────────────────────────────────────────┘
+         │
+         ↓
+┌──────────────────────────────────────────────────┐
+│  Custom Hook                                     │
+│  - useProductionCalculation()                   │
+│    → Monitors store changes via useMemo         │
+│    → Stabilizes dependencies with signatures    │
+└────────┬─────────────────────────────────────────┘
+         │
+         ↓
+┌──────────────────────────────────────────────────┐
+│  Calculator                                      │
+│  - calculateProductionChain()                   │
+│    → buildRecipeTree() (recursive)              │
+│    → resolveProliferatorMode()                  │
+│    → resolveMachine()                           │
+│    → Result<T, E> for error handling            │
+└────────┬─────────────────────────────────────────┘
+         │
+         ↓
+┌──────────────────────────────────────────────────┐
+│  Aggregation                                     │
+│  - calculateStatistics()                        │
+│  - calculateBuildingCosts()                     │
+│  - calculatePowerConsumption()                  │
+└────────┬─────────────────────────────────────────┘
+         │
+         ↓
+┌──────────────────────────────────────────────────┐
+│  Store Result                                    │
+│  - recipeSelectionStore.setCalculationResult()  │
+└────────┬─────────────────────────────────────────┘
+         │
+         ↓
+┌──────────────────────────────────────────────────┐
+│  Re-render UI                                    │
+│  - ResultTree, StatisticsView, etc.             │
+│  - Optimized with createSelectors()             │
+└──────────────────────────────────────────────────┘
+```
+
+### ストア間データフロー
+
+```
+┌─────────────────┐
+│  gameDataStore  │  ← XMLデータをパースして格納
+│  (Map structure)│  - items: Map<number, Item>
+└────────┬────────┘  - recipes: Map<number, Recipe>
+         │
+         ↓ (参照)
+┌─────────────────────────────────────────────┐
+│  recipeSelectionStore                       │
+│  - selectedRecipe: Recipe | null            │
+│  - calculationResult: CalculationResult     │
+└────────┬────────────────────────────────────┘
+         │
+         ↓ (設定を参照)
+┌─────────────────────────────────────────────┐
+│  settingsStore (persist)                    │
+│  - settings: GlobalSettings                 │
+│    - defaultProliferatorMode                │
+│    - machineRank                            │
+│    - conveyorBelt                           │
+│    - alternativeRecipes                     │
+└────────┬────────────────────────────────────┘
+         │
+         ↓ (個別設定を参照)
+┌─────────────────────────────────────────────┐
+│  nodeOverrideStore (persist)                │
+│  - overrides: Map<nodeId, NodeOverride>     │
+│    → 特定ノードのカスタム設定               │
+└────────┬────────────────────────────────────┘
+         │
+         ↓ (履歴を記録)
+┌─────────────────────────────────────────────┐
+│  historyStore (persist)                     │
+│  - entries: HistoryEntry[]                  │
+│  - currentIndex: number                     │
+│    → Undo/Redo機能                          │
+└────────┬────────────────────────────────────┘
+         │
+         ↓ (お気に入りを管理)
+┌─────────────────────────────────────────────┐
+│  favoritesStore (persist)                   │
+│  - favoriteRecipes: Set<recipeId>           │
+└─────────────────────────────────────────────┘
+```
+
+### 主要な設計パターン
+
+1. **状態の不変更新**: すべてのストアはスプレッド構文で不変更新
+2. **純粋関数**: `src/lib/` 配下は副作用なし、テスト容易
+3. **Result型**: エラーハンドリングを明示的に（`Result<T, E>`）
+4. **セレクタ最適化**: `createSelectors()` で無駄な再レンダリング抑制
+5. **Context オブジェクト**: 多数のパラメータを構造化（`TreeBuilderContext`）
+6. **依存安定化**: `useMemo` + 署名文字列で Map/Object の参照変更を吸収
+
+詳細は [`docs/refactor-plan.md`](docs/refactor-plan.md) を参照してください。
+
 ## 🚀 セットアップ
 
 ### 前提条件
@@ -145,6 +303,12 @@ pnpm run lint
 # 画像をWebP形式に変換
 pnpm run convert:webp
 ```
+
+### Lint ワークフロー
+
+- `pnpm run lint` で ESLint/Prettier を実行し、`@typescript-eslint/no-floating-promises` や `no-restricted-syntax` による検出結果を確認する。
+- `pnpm run lint -- --fix` で自動修正可能な問題を解消し、残った警告はコード側で対応する。
+- CI で同じコマンドが走るため、Pull Request 前にローカルで必ず通すこと。
 
 ## 📁 プロジェクト構造
 

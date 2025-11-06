@@ -6,6 +6,7 @@ import type { ConveyorBeltTier, SorterTier } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
 import { createLogger } from "../../utils/logger";
 import { cn } from "../../utils/classNames";
+import { NEON_GLOW, CARD_GLOW } from "../../constants/theme";
 
 const logger = createLogger("ConveyorBeltSettings");
 
@@ -115,11 +116,11 @@ export function ConveyorBeltSettings() {
                 "px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
                 {
                   // Selected state
-                  "bg-neon-yellow/30 text-white border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.6),inset_0_0_20px_rgba(255,215,0,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-yellow/30 text-white border-neon-yellow ${NEON_GLOW.yellowStrong},inset_0_0_20px_rgba(255,215,0,0.2) backdrop-blur-sm font-bold scale-105":
                     conveyorBelt.tier === option.tier && option.color === "yellow",
-                  "bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-blue/30 text-white border-neon-blue ${NEON_GLOW.blueStrong},inset_0_0_20px_rgba(0,136,255,0.2) backdrop-blur-sm font-bold scale-105":
                     conveyorBelt.tier === option.tier && option.color === "blue",
-                  "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-purple/30 text-white border-neon-purple ${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) backdrop-blur-sm font-bold scale-105":
                     conveyorBelt.tier === option.tier && option.color === "purple",
                   // Unselected state
                   "bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan":
@@ -149,7 +150,7 @@ export function ConveyorBeltSettings() {
               className={cn(
                 "px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-110",
                 {
-                  "bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-110":
+                  "bg-neon-green/30 text-white border-neon-green ${NEON_GLOW.greenStrong},inset_0_0_20px_rgba(0,255,136,0.2) backdrop-blur-sm font-bold scale-110":
                     conveyorBelt.stackCount === count,
                   "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green":
                     conveyorBelt.stackCount !== count,
@@ -162,7 +163,7 @@ export function ConveyorBeltSettings() {
         </div>
       </div>
 
-      <div className="bg-neon-cyan/10 rounded-lg p-3 border border-neon-cyan/40 backdrop-blur-sm shadow-[0_0_15px_rgba(0,217,255,0.2)]">
+      <div className="bg-neon-cyan/10 rounded-lg p-3 border border-neon-cyan/40 backdrop-blur-sm ${CARD_GLOW.cyanLight}">
         <div className="text-xs font-semibold text-neon-cyan mb-1">{t("totalBeltSpeed")}</div>
         <div className="text-sm text-white">
           <span className="font-bold text-neon-cyan">{totalSpeed}</span> {t("itemsPerSecond")}
@@ -187,13 +188,13 @@ export function ConveyorBeltSettings() {
                 "px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
                 {
                   // Selected state
-                  "bg-neon-yellow/30 text-white border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.6),inset_0_0_20px_rgba(255,215,0,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-yellow/30 text-white border-neon-yellow ${NEON_GLOW.yellowStrong},inset_0_0_20px_rgba(255,215,0,0.2) backdrop-blur-sm font-bold scale-105":
                     sorter.tier === option.tier && option.color === "yellow",
-                  "bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-blue/30 text-white border-neon-blue ${NEON_GLOW.blueStrong},inset_0_0_20px_rgba(0,136,255,0.2) backdrop-blur-sm font-bold scale-105":
                     sorter.tier === option.tier && option.color === "blue",
-                  "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-purple/30 text-white border-neon-purple ${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) backdrop-blur-sm font-bold scale-105":
                     sorter.tier === option.tier && option.color === "purple",
-                  "bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-105":
+                  "bg-neon-green/30 text-white border-neon-green ${NEON_GLOW.greenStrong},inset_0_0_20px_rgba(0,255,136,0.2) backdrop-blur-sm font-bold scale-105":
                     sorter.tier === option.tier && option.color === "green",
                   // Unselected state
                   "bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange":

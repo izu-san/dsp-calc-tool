@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import type {
   Recipe,
   GameData,
@@ -6,7 +6,7 @@ import type {
   NodeOverrideSettings,
   CalculationResult,
 } from "../types";
-import { calculateProductionChain } from "../lib/calculator";
+import { tryCalculateProductionChain } from "../lib/calculator";
 import { handleError } from "../utils/errorHandler";
 
 /**
@@ -18,27 +18,36 @@ export function useProductionCalculation(
   data: GameData | null,
   settings: GlobalSettings,
   nodeOverrides: Map<string, NodeOverrideSettings>,
-  nodeOverridesVersion: number,
+  _nodeOverridesVersion: number, // Used by caller to trigger re-calculation
   miningSettings: {
     machineType: "Mining Machine" | "Advanced Mining Machine";
     workSpeedMultiplier: number;
   },
   setCalculationResult: (result: CalculationResult | null) => void
 ) {
+  const settingsSignature = useMemo(() => createSettingsSignature(settings), [settings]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- settingsSignatureで依存管理
+  const memoizedSettings = useMemo(() => settings, [settingsSignature]);
+  const memoizedNodeOverrides = useMemo(() => nodeOverrides, [nodeOverrides]);
+  const miningSettingsSignature = `${miningSettings.machineType}:${miningSettings.workSpeedMultiplier}`;
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- miningSettingsSignatureで依存管理
+  const memoizedMiningSettings = useMemo(() => miningSettings, [miningSettingsSignature]);
+
   useEffect(() => {
     if (selectedRecipe && data && targetQuantity > 0) {
-      try {
-        const result = calculateProductionChain(
-          selectedRecipe,
-          targetQuantity,
-          data,
-          settings,
-          nodeOverrides,
-          miningSettings
-        );
-        setCalculationResult(result);
-      } catch (error) {
-        handleError(error, "Calculation error");
+      const result = tryCalculateProductionChain(
+        selectedRecipe,
+        targetQuantity,
+        data,
+        memoizedSettings,
+        memoizedNodeOverrides,
+        memoizedMiningSettings
+      );
+
+      if (result.ok) {
+        setCalculationResult(result.value);
+      } else {
+        handleError(result.error, "Calculation error");
         setCalculationResult(null);
       }
     } else {
@@ -48,10 +57,26 @@ export function useProductionCalculation(
     selectedRecipe,
     targetQuantity,
     data,
-    settings,
-    nodeOverrides,
-    nodeOverridesVersion,
-    miningSettings,
+    memoizedSettings,
+    memoizedNodeOverrides,
+    memoizedMiningSettings,
     setCalculationResult,
   ]);
+}
+
+function createSettingsSignature(settings: GlobalSettings): string {
+  const alternativeEntries = Array.from(settings.alternativeRecipes.entries()).sort(
+    ([a], [b]) => a - b
+  );
+
+  return JSON.stringify({
+    proliferator: settings.proliferator,
+    machineRank: settings.machineRank,
+    conveyorBelt: settings.conveyorBelt,
+    sorter: settings.sorter,
+    alternativeRecipes: alternativeEntries,
+    miningSpeedResearch: settings.miningSpeedResearch,
+    proliferatorMultiplier: settings.proliferatorMultiplier,
+    photonGeneration: settings.photonGeneration,
+  });
 }

@@ -2,6 +2,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useGameDataStore } from "../../../stores/gameDataStore";
+import { CARD_GLOW, ICON_GLOW, MODAL_GLOW } from "../../../constants/theme";
 
 /**
  * 言語切替ドロップダウンメニューコンポーネント
@@ -47,7 +48,7 @@ export function LanguageMenu() {
         <button
           data-testid="language-menu-trigger"
           disabled={isLoading}
-          className="px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan hover:shadow-[0_0_15px_rgba(0,217,255,0.4)] disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2"
+          className="px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan hover:${CARD_GLOW.cyan} disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2"
           title={t("changeLanguage")}
           aria-label={t("changeLanguage")}
         >
@@ -55,14 +56,14 @@ export function LanguageMenu() {
           <span>{currentLanguage.flag}</span>
           <span>{currentLanguage.label}</span>
           {isLoading && (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-neon-cyan shadow-[0_0_8px_rgba(0,217,255,0.4)]"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-neon-cyan ${ICON_GLOW.cyan}"></div>
           )}
         </button>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] animate-fadeInScale z-50"
+          className="min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg ${MODAL_GLOW.blue} animate-fadeInScale z-50"
           align="end"
           sideOffset={5}
         >

@@ -99,7 +99,7 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
       }
     }
 
-    loadSprites();
+    void loadSprites();
 
     return () => {
       mounted = false;

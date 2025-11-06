@@ -1,17 +1,14 @@
 import * as Tabs from "@radix-ui/react-tabs";
-import DOMPurify from "dompurify";
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import ReactMarkdown from "react-markdown";
-import i18n from "../../i18n";
-import { loadChangelog } from "../../utils/changelog";
-import { loadVersionInfo, type VersionInfo } from "../../utils/versionInfo";
 import { PatchInfoView } from "../PatchInfoView";
+import { formatDate } from "./dateFormatter";
 import { FeedbackForm } from "./FeedbackForm";
 import { QualityPolicy } from "./QualityPolicy";
 import { ReliabilityIndicator } from "./ReliabilityIndicator";
+import { useHelpModalLifecycle } from "./useHelpModalLifecycle";
+import { useSanitizedMarkdown } from "./useSanitizedMarkdown";
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -20,61 +17,16 @@ interface HelpModalProps {
 
 export function HelpModal({ isOpen, onClose }: HelpModalProps) {
   const { t } = useTranslation();
-  const [versionInfo, setVersionInfo] = useState<VersionInfo | null>(null);
-  const [changelog, setChangelog] = useState<string | null>(null);
-  const [loadingVersionInfo, setLoadingVersionInfo] = useState(true);
-  const [loadingChangelog, setLoadingChangelog] = useState(true);
   const [activeTab, setActiveTab] = useState("about");
   const firstTabRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (isOpen) {
-      // Load version info
-      loadVersionInfo()
-        .then(info => {
-          setVersionInfo(info);
-          setLoadingVersionInfo(false);
-        })
-        .catch(() => {
-          setLoadingVersionInfo(false);
-        });
+  const { versionInfo, changelog, loadingVersionInfo, loadingChangelog } = useHelpModalLifecycle(
+    isOpen,
+    onClose,
+    firstTabRef
+  );
 
-      // Load changelog
-      loadChangelog(i18n.language === "en" ? "en" : "ja")
-        .then(text => {
-          setChangelog(text);
-          setLoadingChangelog(false);
-        })
-        .catch(() => {
-          setLoadingChangelog(false);
-        });
-    }
-  }, [isOpen]);
-
-  // Escキーでモーダルを閉じる
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  // モーダルが開いたときに最初のタブにフォーカスを当てる
-  useEffect(() => {
-    if (isOpen && firstTabRef.current) {
-      // 少し遅延を入れて、DOMが完全にレンダリングされた後にフォーカスを当てる
-      const timer = setTimeout(() => {
-        firstTabRef.current?.focus();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
+  const { renderMarkdown } = useSanitizedMarkdown();
 
   if (!isOpen) return null;
 
@@ -83,99 +35,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
   // version-info.jsonのappVersionを優先、なければビルド時のAPP_VERSIONを使用
   const appVersion = versionInfo?.appVersion || import.meta.env.APP_VERSION || "0.0.0";
   const buildTime = import.meta.env.BUILD_TIME || "";
-
-  const formatDate = (dateString: string): string => {
-    try {
-      const date = new Date(dateString);
-      const locale = i18n.language || "ja";
-      const isJa = locale === "ja";
-
-      // JST (UTC+9) に変換
-      const jstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-      const jstYear = jstDate.getUTCFullYear();
-      const jstMonth = jstDate.getUTCMonth() + 1;
-      const jstDay = jstDate.getUTCDate();
-      const jstHour = jstDate.getUTCHours();
-      const jstMinute = jstDate.getUTCMinutes();
-
-      if (isJa) {
-        return `${jstYear}年${jstMonth}月${jstDay}日 ${String(jstHour).padStart(2, "0")}:${String(jstMinute).padStart(2, "0")}`;
-      } else {
-        return `${jstYear}-${String(jstMonth).padStart(2, "0")}-${String(jstDay).padStart(2, "0")} ${String(jstHour).padStart(2, "0")}:${String(jstMinute).padStart(2, "0")}`;
-      }
-    } catch {
-      return dateString;
-    }
-  };
-
-  const renderMarkdown = (content: string): React.ReactElement => {
-    // ReactMarkdown is safe by default, but we sanitize user content as extra precaution
-    const sanitized = DOMPurify.sanitize(content);
-    return (
-      <div className="markdown-content">
-        <ReactMarkdown
-          components={{
-            h1: ({ children }) => (
-              <h1 className="text-3xl font-bold text-white mb-4 pb-2 border-b-2 border-neon-purple/30">
-                {children}
-              </h1>
-            ),
-            h2: ({ children }) => (
-              <h2 className="text-2xl font-bold text-neon-purple mt-6 mb-3">{children}</h2>
-            ),
-            h3: ({ children }) => (
-              <h3 className="text-xl font-semibold text-neon-purple mt-4 mb-2">{children}</h3>
-            ),
-            h4: ({ children }) => (
-              <h4 className="text-lg font-semibold text-white mt-3 mb-2">{children}</h4>
-            ),
-            p: ({ children }) => <p className="text-space-200 mb-4 leading-relaxed">{children}</p>,
-            ul: ({ children }) => (
-              <ul className="list-disc list-inside text-space-200 mb-4 space-y-2 ml-4">
-                {children}
-              </ul>
-            ),
-            ol: ({ children }) => (
-              <ol className="list-decimal list-inside text-space-200 mb-4 space-y-2 ml-4">
-                {children}
-              </ol>
-            ),
-            li: ({ children }) => <li className="text-space-200">{children}</li>,
-            code: ({ children }) => (
-              <code className="bg-dark-700/50 text-neon-cyan px-1.5 py-0.5 rounded text-sm font-mono">
-                {children}
-              </code>
-            ),
-            pre: ({ children }) => (
-              <pre className="bg-dark-700/70 border border-neon-purple/30 rounded-lg p-4 overflow-x-auto mb-4">
-                {children}
-              </pre>
-            ),
-            blockquote: ({ children }) => (
-              <blockquote className="border-l-4 border-neon-purple/50 pl-4 italic text-space-300 mb-4">
-                {children}
-              </blockquote>
-            ),
-            hr: () => <hr className="border-neon-purple/30 my-6" />,
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-neon-cyan hover:text-neon-purple underline transition-colors"
-              >
-                {children}
-              </a>
-            ),
-            strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
-            em: ({ children }) => <em className="italic text-space-200">{children}</em>,
-          }}
-        >
-          {sanitized}
-        </ReactMarkdown>
-      </div>
-    );
-  };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // モーダル背景クリック時のみ閉じる
@@ -194,7 +53,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
       aria-labelledby="help-modal-title"
     >
       <div
-        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
+        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg ${MODAL_GLOW.purple} max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
         style={{ zIndex: 100000 }}
         onClick={e => e.stopPropagation()}
         data-testid="help-modal"
@@ -202,13 +61,13 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
         {/* Header */}
         <div className="p-6 border-b border-neon-purple/30 flex items-center justify-between bg-dark-800/50">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+            <div className="p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg ${CARD_GLOW.purple}">
               <span className="text-2xl">📖</span>
             </div>
             <div>
               <h2
                 id="help-modal-title"
-                className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+                className="text-2xl font-bold text-white ${TEXT_GLOW.purple}"
               >
                 {t("help")}
               </h2>
@@ -245,37 +104,37 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <Tabs.Trigger
               ref={firstTabRef}
               value="about"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("about")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="changelog"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("changelog")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="faq"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("faqLabel")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="keyboardShortcuts"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("keyboardShortcuts")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="patchDiff"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("patchDiff")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="feedback"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
               {t("feedback")}
             </Tabs.Trigger>

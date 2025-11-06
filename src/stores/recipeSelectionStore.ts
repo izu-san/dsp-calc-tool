@@ -5,8 +5,9 @@ import { recordPlanHistory } from "../services/history-recording";
 import {
   generateRecipeSelectionDescription,
   generateTargetQuantityDescription,
-} from "../utils/historyDescriptionHelper";
+} from "../utils/history/formatters";
 import i18n from "../i18n";
+import { createSelectors } from "./createSelectors";
 
 interface RecipeSelectionStore {
   selectedRecipe: Recipe | null;
@@ -17,7 +18,7 @@ interface RecipeSelectionStore {
   setCalculationResult: (result: CalculationResult | null) => void;
 }
 
-export const useRecipeSelectionStore = create<RecipeSelectionStore>()(
+const useRecipeSelectionStoreBase = create<RecipeSelectionStore>()(
   persist(
     set => ({
       selectedRecipe: null,
@@ -75,3 +76,5 @@ export const useRecipeSelectionStore = create<RecipeSelectionStore>()(
     }
   )
 );
+
+export const useRecipeSelectionStore = createSelectors(useRecipeSelectionStoreBase);

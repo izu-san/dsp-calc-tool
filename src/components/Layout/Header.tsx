@@ -25,7 +25,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)] animate-fadeIn">
+            <h1 className="text-2xl font-bold text-white ${TEXT_GLOW.cyan} animate-fadeIn">
               {t("title")}
             </h1>
           </div>

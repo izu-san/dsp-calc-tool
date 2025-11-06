@@ -4,7 +4,7 @@
  */
 
 import type { HistoryEntryType } from "../../types/history";
-import { recordHistoryEntry as recordHistoryEntryUtil } from "../../utils/historyRecorder";
+import { recordHistoryEntry as recordHistoryEntryUtil } from "../../utils/history/recorder";
 import { createLogger } from "../../utils/logger";
 
 const logger = createLogger("HistoryRecordingService");

@@ -18,6 +18,7 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe, SavedPlan } from "../../types";
 import type { ImageExportOptions } from "../../types/export";
+import { CARD_GLOW, MODAL_GLOW, ICON_GLOW, TEXT_GLOW } from "../../constants/theme";
 import { calculatePlanDiff } from "../../utils/planDiff";
 import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
 import { PlanDiffView } from "../PlanDiffView";
@@ -374,7 +375,7 @@ export function PlanManager() {
             planExport.setExportErrorMessage("");
           }}
           disabled={!selectedRecipe}
-          className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+          className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:${CARD_GLOW.greenStrong} disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
         >
           💾 {t("save")}
         </button>
@@ -386,7 +387,7 @@ export function PlanManager() {
             dialogs.openDialog("load");
             planImport.clearMessages();
           }}
-          className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)] transition-all ripple-effect"
+          className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:${CARD_GLOW.blue} transition-all ripple-effect"
         >
           📂 {t("load")}
         </button>
@@ -396,7 +397,7 @@ export function PlanManager() {
           data-testid="url-share-button"
           onClick={handleShareURL}
           disabled={!selectedRecipe}
-          className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+          className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:${CARD_GLOW.purple} disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
         >
           🔗 {t("shareURL")}
         </button>
@@ -406,10 +407,10 @@ export function PlanManager() {
       {dialogs.activeDialog === "save" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl shadow-[0_0_30px_rgba(0,255,136,0.3)] max-w-md w-full animate-fadeInScale">
+            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl ${MODAL_GLOW.green} max-w-md w-full animate-fadeInScale">
               <h2
                 data-testid="save-dialog-title"
-                className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,255,136,0.6)] flex items-center gap-2 px-6 pt-6"
+                className="text-2xl font-bold mb-6 text-white ${TEXT_GLOW.green} flex items-center gap-2 px-6 pt-6"
               >
                 💾 {t("save")}
               </h2>
@@ -433,7 +434,7 @@ export function PlanManager() {
                 <button
                   data-testid="save-to-localstorage-button"
                   onClick={handleSaveToLocalStorage}
-                  className="w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect font-medium"
+                  className="w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all ${ICON_GLOW.green} hover:${CARD_GLOW.greenStrong} ripple-effect font-medium"
                 >
                   💾 {t("saveToLocalStorage")}
                 </button>
@@ -447,7 +448,7 @@ export function PlanManager() {
                       onClick={() =>
                         handleExport("json", dialogs.planName || getDefaultPlanNameValue())
                       }
-                      className="px-3 py-2 bg-green-500/20 border-2 border-green-500/40 text-white rounded-lg hover:bg-green-500/30 hover:border-green-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(34,197,94,0.3)] hover:shadow-[0_0_15px_rgba(34,197,94,0.5)] ripple-effect text-sm font-medium"
+                      className="px-3 py-2 bg-green-500/20 border-2 border-green-500/40 text-white rounded-lg hover:bg-green-500/30 hover:border-green-500 hover:scale-105 active:scale-95 transition-all ${ICON_GLOW.green} hover:${CARD_GLOW.greenStrong} ripple-effect text-sm font-medium"
                     >
                       JSON
                     </button>
@@ -572,7 +573,7 @@ export function PlanManager() {
       {dialogs.activeDialog === "load" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
+            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl ${MODAL_GLOW.blue} max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
               <h2
                 data-testid="load-dialog-title"
                 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)] flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6"
@@ -594,7 +595,7 @@ export function PlanManager() {
                     onChange={e => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        handleImportFile(file);
+                        void handleImportFile(file);
                         // Reset file input
                         if (fileInputRef.current) {
                           fileInputRef.current.value = "";

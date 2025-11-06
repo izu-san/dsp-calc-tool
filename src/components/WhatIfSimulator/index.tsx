@@ -8,6 +8,7 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { ConveyorBeltTier, GlobalSettings, RecipeTreeNode } from "../../types";
 import { formatBuildingCount, formatNumber, formatPower } from "../../utils/format";
+import { ICON_GLOW } from "../../constants/theme";
 
 interface Scenario {
   id: string;
@@ -411,7 +412,7 @@ export function WhatIfSimulator() {
 
       {/* Applied Scenario Notification */}
       {appliedScenario && (
-        <div className="bg-neon-green/10 backdrop-blur-sm border border-neon-green/40 rounded-lg p-3 flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,136,0.2)] animate-fadeInScale">
+        <div className="bg-neon-green/10 backdrop-blur-sm border border-neon-green/40 rounded-lg p-3 flex items-center gap-2 ${CARD_GLOW.greenLight} animate-fadeInScale">
           <span className="text-green-600 dark:text-green-400 text-xl">✓</span>
           <div className="flex-1">
             <div className="text-sm font-semibold text-neon-green">{t("scenarioApplied")}</div>
@@ -424,7 +425,7 @@ export function WhatIfSimulator() {
 
       {/* Bottleneck Warnings */}
       {bottleneckSuggestions.length > 0 ? (
-        <div className="bg-neon-orange/10 backdrop-blur-sm border border-neon-orange/40 rounded-lg p-3 shadow-[0_0_15px_rgba(255,107,53,0.2)] animate-fadeInScale">
+        <div className="bg-neon-orange/10 backdrop-blur-sm border border-neon-orange/40 rounded-lg p-3 ${CARD_GLOW.orangeLight} animate-fadeInScale">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className="flex items-start gap-2 flex-1">
               <span className="text-yellow-600 dark:text-yellow-400 text-xl">⚠️</span>
@@ -684,13 +685,13 @@ export function WhatIfSimulator() {
               </button>
               <button
                 data-testid="whatif-quick-action-max-belts"
-                onClick={() => {
-                  const scenario = scenarios.find(s => s.id === "belt_mk3");
-                  if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
-                }}
-                disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === "belt_mk3")!)}
-                className="px-3 py-2 bg-neon-cyan/30 border-2 border-neon-cyan hover:bg-neon-cyan/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] shadow-[0_0_10px_rgba(0,217,255,0.3)] ripple-effect"
-              >
+              onClick={() => {
+                const scenario = scenarios.find(s => s.id === "belt_mk3");
+                if (scenario && !isScenarioAlreadyApplied(scenario)) applyScenario(scenario);
+              }}
+              disabled={isScenarioAlreadyApplied(scenarios.find(s => s.id === "belt_mk3")!)}
+              className={`px-3 py-2 bg-neon-cyan/30 border-2 border-neon-cyan hover:bg-neon-cyan/40 disabled:bg-dark-800/50 disabled:border-dark-600 disabled:cursor-not-allowed disabled:opacity-40 text-white text-xs font-medium rounded transition-all flex flex-col items-center justify-center gap-1 min-h-[60px] ripple-effect ${ICON_GLOW.cyan}`}
+            >
                 <span className="text-lg">🛤️</span>
                 <span className="text-xs leading-tight text-center">{t("maxBelts")}</span>
               </button>

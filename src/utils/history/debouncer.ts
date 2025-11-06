@@ -1,5 +1,5 @@
-import type { HistoryEntry } from "../types/history";
-import { DEBOUNCE_TIMES } from "./historyUtils";
+import type { HistoryEntry } from "../../types/history";
+import { DEBOUNCE_TIMES } from "./events";
 
 export { DEBOUNCE_TIMES };
 

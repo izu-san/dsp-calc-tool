@@ -4,9 +4,10 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { useHistoryStore } from "../../stores/historyStore";
 import type { HistoryEntry } from "../../types/history";
-import { historyDebouncer } from "../../utils/historyDebouncer";
-import { regenerateHistoryDescription } from "../../utils/historyDescriptionRegenerator";
-import { restoreStateFromHistory } from "../../utils/historyRestore";
+import { historyDebouncer } from "../../utils/history/debouncer";
+import { regenerateHistoryDescription } from "../../utils/history/regenerator";
+import { restoreStateFromHistory } from "../../utils/history/restoration";
+import { MODAL_GLOW, CARD_GLOW, ICON_GLOW, TEXT_GLOW, NEON_GLOW } from "../../constants/theme";
 
 interface HistoryDialogProps {
   isOpen: boolean;
@@ -139,20 +140,20 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
       }}
     >
       <div
-        className="bg-dark-700 border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
+        className="bg-dark-700 border-2 border-neon-blue/40 rounded-lg ${MODAL_GLOW.blue} max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
         style={{ zIndex: 100000 }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-6 border-b border-neon-blue/30 flex items-center justify-between bg-dark-800/50">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-neon-blue/20 border border-neon-blue/50 rounded-lg shadow-[0_0_15px_rgba(0,136,255,0.3)]">
+            <div className="p-2 bg-neon-blue/20 border border-neon-blue/50 rounded-lg ${CARD_GLOW.blue}">
               <span className="text-2xl">📜</span>
             </div>
             <div>
               <h2
                 data-testid="history-dialog-title"
-                className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]"
+                className="text-2xl font-bold text-white ${TEXT_GLOW.cyan}"
               >
                 {t("history")}
               </h2>
@@ -290,7 +291,7 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
                     p-3 rounded-lg border-2 transition-all
                     ${
                       isCurrent
-                        ? "border-neon-cyan bg-neon-cyan/10 shadow-[0_0_20px_rgba(0,217,255,0.4)]"
+                        ? "border-neon-cyan bg-neon-cyan/10 ${NEON_GLOW.cyan}"
                         : isPast
                           ? "border-neon-blue/20 bg-dark-600/50"
                           : "border-space-400/20 bg-dark-600/30 opacity-60"
@@ -339,7 +340,7 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
                             onClick={() => handleRestoreToEntry(entry, originalIndex)}
                             className="px-3 py-1 text-xs font-medium rounded-lg border-2 transition-all ripple-effect
                             bg-neon-blue/30 border-neon-blue/50 text-white
-                            hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)]"
+                            hover:bg-neon-blue/40 hover:border-neon-blue hover:${CARD_GLOW.blue}"
                           >
                             {needsUndo ? t("restoreToHere") : t("restoreFromHere")}
                           </button>
@@ -364,7 +365,7 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
             onClick={() => {
               useHistoryStore.getState().clearHistory();
             }}
-            className="px-4 py-2 bg-red-600/30 border border-red-600/50 text-white rounded-lg hover:bg-red-600/40 hover:border-red-600 hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all ripple-effect text-sm"
+            className="px-4 py-2 bg-red-600/30 border border-red-600/50 text-white rounded-lg hover:bg-red-600/40 hover:border-red-600 hover:${CARD_GLOW.redStrong} transition-all ripple-effect text-sm"
           >
             {t("clearHistory")}
           </button>

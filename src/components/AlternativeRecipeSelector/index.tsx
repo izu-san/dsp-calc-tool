@@ -6,6 +6,7 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe, RecipeTreeNode } from "../../types";
 import { cn } from "../../utils/classNames";
+import { ICON_GLOW, NEON_GLOW } from "../../constants/theme";
 import { formatNumber } from "../../utils/format";
 import { parseColorTags } from "../../utils/html";
 import { ItemIcon } from "../ItemIcon";
@@ -160,7 +161,7 @@ export function AlternativeRecipeSelector() {
                         e.stopPropagation();
                         setComparisonModal({ itemId, itemName, recipes, canBeMined, miningFrom });
                       }}
-                      className="px-2 py-1 text-xs bg-neon-purple/30 border border-neon-purple text-white rounded hover:bg-neon-purple/40 transition-all flex items-center gap-1 whitespace-nowrap shadow-[0_0_10px_rgba(168,85,247,0.3)] ripple-effect"
+                      className="px-2 py-1 text-xs bg-neon-purple/30 border border-neon-purple text-white rounded hover:bg-neon-purple/40 transition-all flex items-center gap-1 whitespace-nowrap ${ICON_GLOW.purple} ripple-effect"
                       title={t("compareRecipes")}
                     >
                       <svg
@@ -206,7 +207,7 @@ export function AlternativeRecipeSelector() {
                         w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
                         ${
                           selectedRecipeId === -1
-                            ? "bg-neon-yellow/20 border-neon-yellow shadow-[0_0_20px_rgba(255,215,0,0.4)] backdrop-blur-sm font-bold scale-105"
+                            ? "bg-neon-yellow/20 border-neon-yellow ${NEON_GLOW.yellow} backdrop-blur-sm font-bold scale-105"
                             : "bg-dark-700/50 border-neon-yellow/20 hover:border-neon-yellow/50 hover:bg-neon-yellow/10"
                         }
                       `}
@@ -261,7 +262,7 @@ export function AlternativeRecipeSelector() {
                           w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
                           ${
                             isSelected
-                              ? "bg-neon-green/20 border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.4)] backdrop-blur-sm font-bold scale-105"
+                              ? "bg-neon-green/20 border-neon-green ${NEON_GLOW.green} backdrop-blur-sm font-bold scale-105"
                               : "bg-dark-700/50 border-neon-green/20 hover:border-neon-green/50 hover:bg-neon-green/10"
                           }
                         `}

@@ -31,7 +31,7 @@ export function NodeDetailPanel({ node, inbound, outbound, onClose }: NodeDetail
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           {node.itemId && <ItemIcon itemId={node.itemId} size={32} alt={node.label} />}
-          <h2 className="text-xl font-semibold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.45)]">
+          <h2 className="text-xl font-semibold text-white ${TEXT_GLOW.cyan}">
             {node.label}
           </h2>
         </div>

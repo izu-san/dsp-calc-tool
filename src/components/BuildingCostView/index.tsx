@@ -7,6 +7,7 @@ import { ItemIcon } from "../ItemIcon";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import { ICONS } from "../../constants/icons";
+import { CARD_GLOW } from "../../constants/theme";
 
 interface BuildingCostViewProps {
   calculationResult: CalculationResult;
@@ -96,7 +97,7 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div
               data-testid="building-cost-sorters"
-              className="p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40 shadow-[0_0_15px_rgba(233,53,255,0.2)]"
+              className="p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40 ${CARD_GLOW.magentaLight}"
             >
               <div className="flex items-center gap-2 mb-2">
                 <ItemIcon itemId={getSorterIcon()} size={24} />
@@ -109,7 +110,7 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
 
             <div
               data-testid="building-cost-belts"
-              className="p-4 bg-neon-cyan/20 backdrop-blur-sm rounded-lg border border-neon-cyan/40 shadow-[0_0_15px_rgba(0,217,255,0.2)]"
+              className="p-4 bg-neon-cyan/20 backdrop-blur-sm rounded-lg border border-neon-cyan/40 ${CARD_GLOW.cyanLight}"
             >
               <div className="flex items-center gap-2 mb-2">
                 <ItemIcon itemId={2001} size={24} />

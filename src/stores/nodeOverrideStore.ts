@@ -4,7 +4,7 @@ import type { NodeOverrideSettings } from "../types";
 import {
   generateNodeOverrideDescription,
   generateNodeOverrideResetDescription,
-} from "../utils/historyDescriptionHelper";
+} from "../utils/history/formatters";
 import { recordNodeOverrideHistory } from "../services/history-recording";
 
 interface NodeOverrideStore {

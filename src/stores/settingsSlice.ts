@@ -26,7 +26,7 @@ import {
   extractCustomTemplateId,
 } from "../types/settings";
 import { serializeSettings } from "../utils/storageSerializer";
-import { generateUUID } from "../utils/historyUtils";
+import { generateUUID } from "../utils/history/events";
 import {
   generateAlternativeRecipeDescription,
   generateBatchSettingsDescription,
@@ -46,7 +46,7 @@ import {
   generateCustomTemplateUpdatedDescription,
   generateCustomTemplateDeletedDescription,
   generateCustomTemplateAppliedDescription,
-} from "../utils/historyDescriptionHelper";
+} from "../utils/history/formatters";
 import { useGameDataStore } from "./gameDataStore";
 
 /**
