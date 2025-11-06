@@ -130,33 +130,41 @@ describe("HelpModal", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it.skip("バージョン情報が読み込まれる", async () => {
-    // TODO: モックの設定方法を見直す必要がある
+  it("バージョン情報が読み込まれる", async () => {
     mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
     mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
 
     render(<HelpModal isOpen={true} onClose={vi.fn()} />);
 
+    // モックが呼ばれることを確認
     await waitFor(() => {
       expect(mocks.mockLoadVersionInfo).toHaveBeenCalled();
     });
 
-    // バージョン情報が表示されることを確認
-    await waitFor(() => {
-      expect(screen.getByText("0.10.33.27024")).toBeInTheDocument();
-    });
+    // バージョン情報が表示されることを確認（ローディングが完了してから）
+    // primaryVersionとgameVersionsの両方に同じバージョンが表示されるため、getAllByTextを使用
+    await waitFor(
+      () => {
+        const versionElements = screen.getAllByText("0.10.33.27024");
+        expect(versionElements.length).toBeGreaterThan(0);
+      },
+      { timeout: 3000 }
+    );
   });
 
-  it.skip("チェンジログが読み込まれる", async () => {
-    // TODO: モックの設定方法を見直す必要がある
+  it("チェンジログが読み込まれる", async () => {
     mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
     mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
 
     render(<HelpModal isOpen={true} onClose={vi.fn()} />);
 
-    await waitFor(() => {
-      expect(mocks.mockLoadChangelog).toHaveBeenCalledWith("ja");
-    });
+    // モックが正しい引数で呼ばれることを確認
+    await waitFor(
+      () => {
+        expect(mocks.mockLoadChangelog).toHaveBeenCalledWith("ja");
+      },
+      { timeout: 3000 }
+    );
   });
 
   it("タブを切り替えられる - changelogタブ", async () => {

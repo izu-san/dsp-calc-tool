@@ -58,10 +58,15 @@ fi
 
 - ユーザーから明示的に指定がある場合: その指定に従う（自動判定を上書き）
 
-### 2.2 Issue番号の確認
-- ユーザーから Issue 番号の指定があるか確認
-- 指定がある場合: Issue番号を記録（例: `#123`）
-- 指定がない場合: Issue紐づけなしでPRを作成
+### 2.2 Issue番号の確認と抽出 🔴 必須実行
+- **ユーザーから Issue 番号の指定があるか確認**（必ず実行すること）
+- **Issue番号の抽出方法**:
+  - コマンド引数から抽出（例: `/refactoring #45` → `45`）
+  - Issue URLから抽出（例: `https://github.com/owner/repo/issues/45` → `45`）
+  - Issue番号のみの場合（例: `45` → `45`）
+- **抽出したIssue番号を数値として検証**（数値であることを確認）
+- **Issue番号が指定されている場合**: Issue番号を記録（例: `45`）
+- **Issue番号が指定されていない場合**: Issue紐づけなしでPRを作成（ユーザーに警告を表示）
 
 ### 2.3 差分の統計を確認
 ```bash
@@ -159,17 +164,17 @@ PR本文生成前に、以下の情報を収集する：
 ---
 
 **Issue番号が指定されている場合**:
-- 本文の末尾に以下を追加してIssueを自動クローズ:
-  - `Closes #<Issue番号>` (バグ修正、機能実装の場合)
-  - `Resolves #<Issue番号>` (問題解決の場合)
-  - `Fixes #<Issue番号>` (修正の場合)
-  - `Related to #<Issue番号>` (関連するが自動クローズしない場合)
+- 本文の末尾に以下を追加してIssueを自動クローズ（作業タイプに応じて自動選択）:
+  - **リファクタリング** (`feature/refactoring-*`): `Closes #<Issue番号>`
+  - **不具合修正** (`hotfix/fix-*`): `Fixes #<Issue番号>`
+  - **機能エンハンス** (`feature/*`): `Closes #<Issue番号>`
+  - **その他**: `Closes #<Issue番号>`（デフォルト）
 
 **キーワードの使い分け**:
-- `Closes`: 機能実装、タスク完了
-- `Fixes`: バグ修正
-- `Resolves`: 問題解決
-- `Related to`: 関連するが自動クローズしない
+- `Closes`: 機能実装、タスク完了、リファクタリング（PRマージ時に自動クローズ）
+- `Fixes`: バグ修正（PRマージ時に自動クローズ）
+- `Resolves`: 問題解決（PRマージ時に自動クローズ）
+- `Related to`: 関連するが自動クローズしない（参照のみ）
 ```
 
 ### 本文生成の具体例（リファクタリングの場合）
@@ -208,7 +213,11 @@ App.tsxが1000行を超え、保守性が低下していたため、責任を分
 ## 参考
 
 - リファクタリングガイド: @refactoring.mdc
+
+Closes #45
 ```
+
+**注意**: リファクタリングの場合もIssue番号がある場合は `Closes #<Issue番号>` を使用します（`Refactors`は非標準キーワードなので使用しません）。
 
 ### 本文生成の具体例（Issue番号がある場合）
 
@@ -288,25 +297,51 @@ if [[ $remote_url =~ github\.com[:/]([^/]+)/([^/\.]+) ]]; then
 fi
 ```
 
-### 5.2 PR本文の準備
+### 5.2 PR本文の準備 🔴 必須実行
 
-**Issue番号の追加**:
-- Issue番号が指定されている場合、PR本文の末尾に以下を追加:
-  - バグ修正: `Fixes #<Issue番号>`
-  - 機能実装: `Closes #<Issue番号>`
-  - 問題解決: `Resolves #<Issue番号>`
-  - 関連のみ: `Related to #<Issue番号>`
+**Issue番号の追加（作業タイプに応じて自動選択）**:
 
-例:
+1. **Issue番号が指定されている場合のみ**: 作業タイプに応じて適切なキーワードを選択
+   - **リファクタリング** (`feature/refactoring-*`): `Closes #<Issue番号>`
+   - **不具合修正** (`hotfix/fix-*`): `Fixes #<Issue番号>`
+   - **機能エンハンス** (`feature/*`): `Closes #<Issue番号>`
+   - **その他**: `Closes #<Issue番号>`（デフォルト）
+
+2. **キーワードのフォーマット**:
+   - Issue番号は数値のみ（`#`記号は含めない）
+   - 例: `Closes #45`（正しい）、`Closes 45`（誤り）、`Closes #`（誤り）
+
+3. **PR本文の末尾に追加**:
+   - 必ずPR本文の最後の行に追加（空行を1行空けて追加）
+   - 複数のIssueがある場合: `Closes #45, #67` のようにカンマ区切りで記述
+
+4. **検証**:
+   - Issue番号が数値であることを確認
+   - キーワードが正しくフォーマットされていることを確認
+
+**例**:
 ```markdown
 <生成したPR本文>
 
 Closes #45
 ```
 
-### 5.3 GitHub MCPでPRを作成
+**複数Issueの場合**:
+```markdown
+<生成したPR本文>
+
+Closes #45, #67
+Fixes #78
+```
+
+### 5.3 GitHub MCPでPRを作成 🔴 必須実行
 
 AIアシスタントは、**`mcp_github_create_pull_request` ツール**を使用してPRを直接作成します：
+
+**実行前の最終確認**:
+- [ ] Issue番号が指定されている場合、PR本文の末尾に適切なキーワードが追加されているか確認
+- [ ] キーワードのフォーマットが正しいか確認（例: `Closes #45`、`Fixes #78`）
+- [ ] Issue番号が数値であることを確認
 
 **必須パラメータ**:
 - `owner`: リポジトリのオーナー（ステップ5.1で取得）
@@ -316,10 +351,10 @@ AIアシスタントは、**`mcp_github_create_pull_request` ツール**を使�
 - `base`: マージ先ブランチ（ステップ2.1で決定）
 
 **オプションパラメータ**:
-- `body`: PR本文（ステップ4で生成、Issue番号を含む）
+- `body`: PR本文（ステップ4で生成、Issue番号を含む）**必須**
 - `draft`: ドラフトPRとして作成する場合は `true`（デフォルト: `false`）
 
-**使用例**:
+**使用例（Issue番号あり）**:
 ```typescript
 mcp_github_create_pull_request({
   owner: "your-username",
@@ -331,9 +366,27 @@ mcp_github_create_pull_request({
 })
 ```
 
-### 5.4 結果を確認
+**使用例（Issue番号なし）**:
+```typescript
+mcp_github_create_pull_request({
+  owner: "your-username",
+  repo: "DysonSphereProgram",
+  title: "refactor: App.tsxを分割",
+  head: "feature/refactoring-app-component",
+  base: "develop",
+  body: "App.tsxを分割...\n\n## 目的\n..."
+})
+```
+
+**重要**: `body`パラメータには必ずPR本文全体を含めること。Issue番号が指定されている場合は、末尾に適切なキーワード（`Closes #<Issue番号>`など）を含めること。
+
+### 5.4 結果を確認 🔴 必須実行
 - MCPコマンドの実行結果からPR番号とURLを取得
+- **PR作成後、Issueが正しく紐づいているか確認**（必ず実行すること）
+  - PRのURLを開いてIssueがリンクされているか確認
+  - Issue側からもPRが参照されているか確認
 - ユーザーに作成されたPRのURLを報告
+- **Issueが紐づいていない場合**: PR本文を編集してIssue番号を再追加するよう警告
 
 ---
 
@@ -391,11 +444,13 @@ Cursorの設定でGitHub MCPの認証トークンを確認してください。
 
 PR本文に以下のキーワードを含めると、PRがマージされたときに自動的にIssueがクローズされます：
 
-| キーワード | 用途 | 例 |
-|---------|-----|-----|
-| `Closes #123` | 機能実装、タスク完了 | `Closes #45` |
-| `Fixes #123` | バグ修正 | `Fixes #78` |
-| `Resolves #123` | 問題解決 | `Resolves #92` |
+| キーワード | 用途 | ブランチパターン | 例 |
+|---------|-----|----------------|-----|
+| `Closes #123` | 機能実装、タスク完了、リファクタリング | `feature/*`, `feature/refactoring-*` | `Closes #45` |
+| `Fixes #123` | バグ修正 | `hotfix/fix-*` | `Fixes #78` |
+| `Resolves #123` | 問題解決 | その他 | `Resolves #92` |
+
+**重要**: GitHubが認識する標準キーワードは `Closes`、`Fixes`、`Resolves` のみです。`Refactors` などの非標準キーワードは使用しないでください。
 
 ### 複数のIssueを紐づける
 
@@ -434,7 +489,15 @@ Closes #45
 4. **差分を確認**: PR作成前に必ず差分を確認し、意図しない変更がないかチェック
 5. **ユーザーに報告**: 各ステップの実行結果をユーザーに報告する
 6. **リポジトリ情報の取得**: `git remote get-url origin` から正確にowner/repoを抽出する
-7. **Issue紐づけ**: Issue番号が指定されている場合、適切なキーワード（Closes/Fixes/Resolves）を使用してPRとIssueを紐づける
+7. **Issue紐づけ（重要）**:
+   - Issue番号が指定されている場合、作業タイプに応じて適切なキーワードを使用（`Closes`/`Fixes`/`Resolves`）
+   - **リファクタリング**: `Closes #<Issue番号>`（`Refactors`は非標準キーワードなので使用禁止）
+   - **不具合修正**: `Fixes #<Issue番号>`
+   - **機能エンハンス**: `Closes #<Issue番号>`
+   - PR本文の末尾に必ず追加（空行を1行空けて追加）
+   - Issue番号が数値であることを検証
+   - PR作成後、Issueが正しく紐づいているか確認
 8. **MCPツールの使用**: `mcp_github_create_pull_request` ツールを使用してPRを作成（一時ファイル不要）
+9. **Issue番号の抽出**: コマンド引数、Issue URL、Issue番号のみなど、様々な形式から正確に抽出する
 
 ---
