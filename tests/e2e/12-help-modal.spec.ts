@@ -81,7 +81,8 @@ test.describe("ヘルプモーダル", () => {
 
     // 8. アプリバージョン情報が表示されることを確認
     await expect(appPage.getByText("アプリバージョン:")).toBeVisible();
-    await expect(appPage.getByText("ビルド日時:")).toBeVisible();
+    // 「ビルド日時:」は複数箇所に存在するため.first()を使用
+    await expect(appPage.getByText("ビルド日時:").first()).toBeVisible();
     // 「データ最終更新日:」は複数箇所に存在するため.first()を使用
     await expect(appPage.getByText("データ最終更新日:").first()).toBeVisible();
   });

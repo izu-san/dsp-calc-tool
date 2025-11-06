@@ -9,6 +9,8 @@ import i18n from "../../i18n";
 import { loadChangelog } from "../../utils/changelog";
 import { loadVersionInfo, type VersionInfo } from "../../utils/versionInfo";
 import { PatchInfoView } from "../PatchInfoView";
+import { ReliabilityIndicator } from "./ReliabilityIndicator";
+import { QualityPolicy } from "./QualityPolicy";
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -397,16 +399,14 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                           <span className="text-white font-medium">{formatDate(buildTime)}</span>
                         </div>
                       )}
-                      {versionInfo.dataLastUpdated && (
-                        <div className="flex justify-between">
-                          <span className="text-space-300">{t("dataLastUpdated")}:</span>
-                          <span className="text-white font-medium">
-                            {formatDate(versionInfo.dataLastUpdated)}
-                          </span>
-                        </div>
-                      )}
                     </div>
                   </div>
+
+                  {/* Reliability Indicator */}
+                  <ReliabilityIndicator />
+
+                  {/* Quality Policy */}
+                  <QualityPolicy />
                 </div>
               ) : (
                 <div className="text-center py-8 text-space-300">
