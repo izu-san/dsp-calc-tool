@@ -625,7 +625,6 @@
   "about": "アバウト",
   "changelog": "更新履歴",
   "faqLabel": "よくある質問",
-  "supportLabel": "サポート",
   "gameVersions": "対応ゲームバージョン一覧",
   "supportedVersion": "サポート中",
   "unsupportedVersion": "サポート終了",
@@ -729,6 +728,53 @@
     ],
     "responsePolicy": "返信ポリシー",
     "responsePolicyDescription": "Issuesへの返信は週1回程度確認しています。緊急の場合は、Issueに「urgent」ラベルを付けてください。"
+  },
+  "feedback": "フィードバック",
+  "feedbackForm": {
+    "title": "フィードバックを送信",
+    "category": "カテゴリ",
+    "category.featureRequest": "機能追加",
+    "category.dataCorrection": "データ訂正",
+    "category.uiImprovement": "UI改善",
+    "category.bugReport": "バグ報告",
+    "category.other": "その他",
+    "title.label": "タイトル",
+    "title.placeholder": "フィードバックのタイトルを入力",
+    "content.label": "内容",
+    "content.placeholder": "フィードバックの内容を詳しく記入してください",
+    "contact.label": "連絡先（任意）",
+    "contact.placeholder": "メールアドレスまたはGitHubユーザー名",
+    "contact.description": "返信が必要な場合のみ入力してください",
+    "privacyConsent": "プライバシーポリシーと利用規約に同意します",
+    "privacyConsent.link": "プライバシーポリシーと利用規約",
+    "privacyConsent.required": "プライバシーポリシーと利用規約への同意は必須です",
+    "submit": "送信",
+    "submitting": "送信中...",
+    "success.github": "フィードバックを送信しました。GitHubのIssueページに移動します。",
+    "success.form": "フィードバックフォームを開きました。フォームに入力してください。",
+    "success.formPrefilled": "フィードバックフォームを開きました。データが自動入力されています。内容を確認して送信してください。",
+    "error": "送信に失敗しました。もう一度お試しください。",
+    "error.formNotConfigured": "フォーム送信が設定されていません。GitHub Issueで報告してください。",
+    "submitMethod": {
+      "label": "送信方法",
+      "github": "GitHub Issueで報告（GitHubアカウントが必要）",
+      "form": "フォームで報告（アカウント不要）",
+      "description": "GitHub Issueで報告する場合は、GitHubアカウントが必要です。アカウントがない場合は、フォームで報告を選択してください。"
+    },
+    "githubIssue": {
+      "description": "GitHub Issueで報告する場合は、以下のボタンをクリックしてGitHubのIssue作成ページに移動してください。",
+      "button": "イシューを報告"
+    },
+    "googleForm": {
+      "description": "フォームで報告する場合は、以下のボタンをクリックしてGoogle Formを開いてください。",
+      "button": "フォームで報告"
+    },
+    "validation": {
+      "required": "この項目は必須です",
+      "maxLength": "最大{{max}}文字まで入力できます",
+      "emailInvalid": "メールアドレスの形式が正しくありません",
+      "categoryRequired": "カテゴリを選択してください"
+    }
   },
   "keyboardShortcuts": "キーボードショートカット",
   "shortcuts": {

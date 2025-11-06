@@ -112,8 +112,18 @@ export function PatchInfoView() {
             </Select.Trigger>
 
             <Select.Portal>
-              <Select.Content className="bg-dark-700 border border-neon-purple/40 rounded-lg shadow-lg overflow-hidden z-50">
-                <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-dark-800 cursor-default">
+              <Select.Content
+                className="bg-dark-700 border border-neon-purple/40 rounded-lg shadow-lg overflow-hidden min-w-[var(--radix-select-trigger-width)]"
+                position="popper"
+                sideOffset={5}
+                style={{
+                  zIndex: 100001,
+                  backgroundColor: "#1a1a2e",
+                  width: "var(--radix-select-trigger-width)",
+                  maxWidth: "var(--radix-select-trigger-width)",
+                }}
+              >
+                <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-dark-800 cursor-default text-white">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
@@ -124,14 +134,14 @@ export function PatchInfoView() {
                   </svg>
                 </Select.ScrollUpButton>
 
-                <Select.Viewport className="p-1">
+                <Select.Viewport className="p-1 bg-dark-700">
                   {versionInfo.gameVersions.map(version => (
                     <Select.Item
                       key={version.version}
                       value={version.version}
-                      className="px-3 py-2 rounded cursor-pointer hover:bg-dark-600 focus:bg-dark-600 focus:outline-none data-[highlighted]:bg-dark-600"
+                      className="px-3 py-2 rounded cursor-pointer text-white bg-dark-700 hover:bg-dark-600 hover:text-neon-purple hover:shadow-[0_0_8px_rgba(168,85,247,0.4)] focus:bg-dark-600 focus:outline-none data-[highlighted]:bg-dark-600 data-[highlighted]:text-neon-purple data-[highlighted]:shadow-[0_0_8px_rgba(168,85,247,0.4)] transition-all duration-200"
                     >
-                      <Select.ItemText>
+                      <Select.ItemText className="text-white">
                         <div className="flex items-center justify-between">
                           <span className="text-white">{version.version}</span>
                           {version.version === versionInfo.primaryVersion && (
@@ -145,7 +155,7 @@ export function PatchInfoView() {
                   ))}
                 </Select.Viewport>
 
-                <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-dark-800 cursor-default">
+                <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-dark-800 cursor-default text-white">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"

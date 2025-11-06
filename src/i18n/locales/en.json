@@ -625,7 +625,6 @@
   "about": "About",
   "changelog": "Changelog",
   "faqLabel": "FAQ",
-  "supportLabel": "Support",
   "gameVersions": "Supported Game Versions List",
   "supportedVersion": "Supported",
   "unsupportedVersion": "Unsupported",
@@ -729,6 +728,53 @@
     ],
     "responsePolicy": "Response Policy",
     "responsePolicyDescription": "We check Issues responses approximately once a week. For urgent matters, please add an \"urgent\" label to the Issue."
+  },
+  "feedback": "Feedback",
+  "feedbackForm": {
+    "title": "Send Feedback",
+    "category": "Category",
+    "category.featureRequest": "Feature Request",
+    "category.dataCorrection": "Data Correction",
+    "category.uiImprovement": "UI Improvement",
+    "category.bugReport": "Bug Report",
+    "category.other": "Other",
+    "title.label": "Title",
+    "title.placeholder": "Enter feedback title",
+    "content.label": "Content",
+    "content.placeholder": "Please describe your feedback in detail",
+    "contact.label": "Contact (Optional)",
+    "contact.placeholder": "Email address or GitHub username",
+    "contact.description": "Only fill in if you need a response",
+    "privacyConsent": "I agree to the Privacy Policy and Terms of Service",
+    "privacyConsent.link": "Privacy Policy and Terms of Service",
+    "privacyConsent.required": "Privacy Policy and Terms of Service agreement is required",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success.github": "Feedback submitted. Redirecting to GitHub Issues page.",
+    "success.form": "Feedback form opened. Please fill in the form.",
+    "success.formPrefilled": "Feedback form opened. Data has been automatically filled in. Please review and submit.",
+    "error": "Failed to submit. Please try again.",
+    "error.formNotConfigured": "Form submission is not configured. Please report via GitHub Issue.",
+    "submitMethod": {
+      "label": "Submit Method",
+      "github": "Report via GitHub Issue (GitHub account required)",
+      "form": "Report via Form (No account required)",
+      "description": "If you report via GitHub Issue, a GitHub account is required. If you don't have an account, please select form submission."
+    },
+    "githubIssue": {
+      "description": "To report via GitHub Issue, please click the button below to go to the GitHub Issue creation page.",
+      "button": "Report Issue"
+    },
+    "googleForm": {
+      "description": "To report via form, please click the button below to open the Google Form.",
+      "button": "Report via Form"
+    },
+    "validation": {
+      "required": "This field is required",
+      "maxLength": "Maximum {{max}} characters allowed",
+      "emailInvalid": "Invalid email address format",
+      "categoryRequired": "Please select a category"
+    }
   },
   "keyboardShortcuts": "Keyboard Shortcuts",
   "shortcuts": {

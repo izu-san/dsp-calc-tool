@@ -9,8 +9,9 @@ import i18n from "../../i18n";
 import { loadChangelog } from "../../utils/changelog";
 import { loadVersionInfo, type VersionInfo } from "../../utils/versionInfo";
 import { PatchInfoView } from "../PatchInfoView";
-import { ReliabilityIndicator } from "./ReliabilityIndicator";
+import { FeedbackForm } from "./FeedbackForm";
 import { QualityPolicy } from "./QualityPolicy";
+import { ReliabilityIndicator } from "./ReliabilityIndicator";
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -74,44 +75,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen) {
-      // Load version info
-      loadVersionInfo()
-        .then(info => {
-          setVersionInfo(info);
-          setLoadingVersionInfo(false);
-        })
-        .catch(() => {
-          setLoadingVersionInfo(false);
-        });
-
-      // Load changelog
-      loadChangelog(i18n.language === "en" ? "en" : "ja")
-        .then(text => {
-          setChangelog(text);
-          setLoadingChangelog(false);
-        })
-        .catch(() => {
-          setLoadingChangelog(false);
-        });
-    }
-  }, [isOpen]);
-
-  // Escキーでモーダルを閉じる
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -231,7 +194,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
       aria-labelledby="help-modal-title"
     >
       <div
-        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
+        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
         style={{ zIndex: 100000 }}
         onClick={e => e.stopPropagation()}
         data-testid="help-modal"
@@ -311,10 +274,10 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
               {t("patchDiff")}
             </Tabs.Trigger>
             <Tabs.Trigger
-              value="support"
+              value="feedback"
               className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
             >
-              {t("supportLabel")}
+              {t("feedback")}
             </Tabs.Trigger>
           </Tabs.List>
 
@@ -407,6 +370,19 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
 
                   {/* Quality Policy */}
                   <QualityPolicy />
+
+                  {/* Repository Link */}
+                  <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                    <h4 className="text-lg font-semibold text-white mb-3">{t("repository")}</h4>
+                    <a
+                      href={githubRepoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-neon-purple hover:text-neon-cyan transition-colors underline"
+                    >
+                      {githubRepoUrl}
+                    </a>
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-8 text-space-300">
@@ -553,81 +529,6 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                     </kbd>
                   </div>
                 </div>
-              </div>
-            </Tabs.Content>
-
-            {/* Patch Diff Tab */}
-            <Tabs.Content
-              value="patchDiff"
-              className="space-y-4"
-              onClick={e => e.stopPropagation()}
-              data-testid="help-tab-patch-diff"
-            >
-              <PatchInfoView />
-            </Tabs.Content>
-
-            {/* Support Tab */}
-            <Tabs.Content
-              value="support"
-              className="space-y-4"
-              onClick={e => e.stopPropagation()}
-              data-testid="help-tab-support"
-            >
-              <h3 className="text-xl font-bold text-neon-purple mb-4">{t("support.title")}</h3>
-
-              <div className="space-y-4">
-                {/* Repository Link */}
-                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
-                  <h4 className="text-lg font-semibold text-white mb-3">
-                    {t("support.repository")}
-                  </h4>
-                  <a
-                    href={githubRepoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-neon-purple hover:text-neon-cyan transition-colors underline"
-                  >
-                    {githubRepoUrl}
-                  </a>
-                </div>
-
-                {/* Report Issue */}
-                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
-                  <h4 className="text-lg font-semibold text-white mb-3">
-                    {t("support.reportIssue")}
-                  </h4>
-                  <a
-                    href={`${githubRepoUrl}/issues/new?template=bug_report.md`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all ripple-effect"
-                  >
-                    {t("reportIssue")}
-                  </a>
-                </div>
-
-                {/* Bug Report Info */}
-                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
-                  <h4 className="text-lg font-semibold text-white mb-3">
-                    {t("support.bugReportInfo")}
-                  </h4>
-                  <ul className="list-disc list-inside space-y-1 text-space-200">
-                    {(() => {
-                      const items = t("support.bugReportInfoItems", {
-                        returnObjects: true,
-                      }) as string[];
-                      return items.map((item, index) => <li key={index}>{item}</li>);
-                    })()}
-                  </ul>
-                </div>
-
-                {/* Response Policy */}
-                <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
-                  <h4 className="text-lg font-semibold text-white mb-3">
-                    {t("support.responsePolicy")}
-                  </h4>
-                  <p className="text-space-200">{t("support.responsePolicyDescription")}</p>
-                </div>
 
                 {/* Accessibility Policy */}
                 <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
@@ -652,6 +553,51 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
                   </div>
                 </div>
               </div>
+            </Tabs.Content>
+
+            {/* Patch Diff Tab */}
+            <Tabs.Content
+              value="patchDiff"
+              className="space-y-4"
+              onClick={e => e.stopPropagation()}
+              data-testid="help-tab-patch-diff"
+            >
+              <PatchInfoView />
+            </Tabs.Content>
+
+            {/* Feedback Tab */}
+            <Tabs.Content
+              value="feedback"
+              className="space-y-4"
+              onClick={e => e.stopPropagation()}
+              data-testid="help-tab-feedback"
+            >
+              <h3 className="text-xl font-bold text-neon-purple mb-4">{t("feedbackForm.title")}</h3>
+
+              {/* Bug Report Info */}
+              <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                <h4 className="text-lg font-semibold text-white mb-3">
+                  {t("support.bugReportInfo")}
+                </h4>
+                <ul className="list-disc list-inside space-y-1 text-space-200">
+                  {(() => {
+                    const items = t("support.bugReportInfoItems", {
+                      returnObjects: true,
+                    }) as string[];
+                    return items.map((item, index) => <li key={index}>{item}</li>);
+                  })()}
+                </ul>
+              </div>
+
+              {/* Response Policy */}
+              <div className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-4 border border-neon-purple/30">
+                <h4 className="text-lg font-semibold text-white mb-3">
+                  {t("support.responsePolicy")}
+                </h4>
+                <p className="text-space-200">{t("support.responsePolicyDescription")}</p>
+              </div>
+
+              <FeedbackForm />
             </Tabs.Content>
           </div>
         </Tabs.Root>

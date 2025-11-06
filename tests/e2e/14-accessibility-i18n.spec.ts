@@ -86,20 +86,31 @@ test.describe("14: アクセシビリティ & 多言語対応", () => {
     await expect(shortcutsContent.getByText("言語を切り替える")).toBeVisible();
   });
 
-  test("14-06: HelpModalのサポートタブにアクセシビリティ情報が表示される", async ({ appPage }) => {
+  test("14-06: HelpModalのキーボードショートカットタブにアクセシビリティ情報が表示される", async ({
+    appPage,
+  }) => {
     // HelpModalを開く
     await appPage.getByTestId("help-menu-trigger").click();
     await expect(appPage.getByTestId("help-modal")).toBeVisible();
 
-    // サポートタブをクリック
-    const supportTab = appPage.getByRole("tab", { name: "サポート" });
-    await supportTab.click();
+    // キーボードショートカットタブをクリック
+    const keyboardShortcutsTab = appPage.getByRole("tab", { name: "キーボードショートカット" });
+    await keyboardShortcutsTab.click();
+
+    // キーボードショートカットタブパネルが表示されるまで待つ
+    const keyboardShortcutsContent = appPage.getByTestId("help-tab-keyboard-shortcuts");
+    await keyboardShortcutsContent.waitFor({ state: "visible", timeout: 10000 });
 
     // アクセシビリティ方針が表示されることを確認
-    await expect(appPage.getByTestId("help-tab-support")).toBeVisible();
-    await expect(appPage.getByText("アクセシビリティ方針")).toBeVisible();
-    await expect(appPage.getByText("キーボード操作")).toBeVisible();
-    await expect(appPage.getByText("スクリーンリーダー対応")).toBeVisible();
+    await expect(
+      keyboardShortcutsContent.getByRole("heading", { name: "アクセシビリティ方針", level: 4 })
+    ).toBeVisible();
+    await expect(
+      keyboardShortcutsContent.getByRole("heading", { name: "キーボード操作", level: 5 })
+    ).toBeVisible();
+    await expect(
+      keyboardShortcutsContent.getByRole("heading", { name: "スクリーンリーダー対応", level: 5 })
+    ).toBeVisible();
   });
 
   test("14-07: WelcomeModalの多言語対応", async ({ freshPage }) => {

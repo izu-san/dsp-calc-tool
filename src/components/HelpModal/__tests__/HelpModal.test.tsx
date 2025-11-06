@@ -3,6 +3,7 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { ToastProvider } from "../../ToastProvider";
 
 // createPortal をテスト簡易化のため直描画にモック
 vi.mock("react-dom", () => ({
@@ -74,6 +75,11 @@ Object.defineProperty(import.meta, "env", {
 
 import type { VersionInfo } from "../../../utils/versionInfo";
 import { HelpModal } from "../index";
+
+// ToastProviderでラップするヘルパー関数
+function renderWithToastProvider(ui: React.ReactElement) {
+  return render(<ToastProvider>{ui}</ToastProvider>);
+}
 
 describe("HelpModal", () => {
   const mockVersionInfo: VersionInfo = {
@@ -214,7 +220,59 @@ describe("HelpModal", () => {
     );
   });
 
-  it("サポートタブを表示できる", async () => {
+  it("Aboutタブにリポジトリリンクが表示される", async () => {
+    mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
+    mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
+
+    render(<HelpModal isOpen={true} onClose={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("help")).toBeInTheDocument();
+    });
+
+    // Aboutタブが選択されていることを確認
+    const aboutTab = screen.getByTestId("help-tab-about");
+    expect(aboutTab).toBeInTheDocument();
+
+    // リポジトリリンクが表示されることを確認
+    await waitFor(() => {
+      const repoLink = screen.getByText("https://github.com/izu-san/dsp-calc-tool");
+      expect(repoLink).toBeInTheDocument();
+      expect(repoLink).toHaveAttribute("href", "https://github.com/izu-san/dsp-calc-tool");
+      expect(repoLink).toHaveAttribute("target", "_blank");
+      expect(repoLink).toHaveAttribute("rel", "noopener noreferrer");
+    });
+  });
+
+  it("Feedbackタブにバグ報告情報と返信ポリシーが表示される", async () => {
+    mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
+    mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
+
+    const user = userEvent.setup();
+    renderWithToastProvider(<HelpModal isOpen={true} onClose={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("help")).toBeInTheDocument();
+    });
+
+    // Feedbackタブをクリック
+    const feedbackTab = screen.getByRole("tab", { name: "feedback" });
+    await user.click(feedbackTab);
+
+    // バグ報告情報が表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText("support.bugReportInfo")).toBeInTheDocument();
+      expect(screen.getByText("ブラウザ情報")).toBeInTheDocument();
+    });
+
+    // 返信ポリシーが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText("support.responsePolicy")).toBeInTheDocument();
+      expect(screen.getByText("support.responsePolicyDescription")).toBeInTheDocument();
+    });
+  });
+
+  it("キーボードショートカットタブにアクセシビリティ方針が表示される", async () => {
     mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
     mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
 
@@ -225,17 +283,16 @@ describe("HelpModal", () => {
       expect(screen.getByText("help")).toBeInTheDocument();
     });
 
-    // サポートタブをクリック
-    const supportTab = screen.getByRole("tab", { name: "supportLabel" });
-    await user.click(supportTab);
+    // キーボードショートカットタブをクリック
+    const keyboardShortcutsTab = screen.getByRole("tab", { name: "keyboardShortcuts" });
+    await user.click(keyboardShortcutsTab);
 
-    // サポートコンテンツが表示されることを確認（タブの切り替えが完了するまで待つ）
-    await waitFor(
-      () => {
-        expect(screen.getByText("support.title")).toBeInTheDocument();
-      },
-      { timeout: 3000 }
-    );
+    // アクセシビリティ方針が表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText("accessibility.policy")).toBeInTheDocument();
+      expect(screen.getByText("accessibility.keyboardNavigation")).toBeInTheDocument();
+      expect(screen.getByText("accessibility.screenReader")).toBeInTheDocument();
+    });
   });
 
   it("バージョン情報の読み込みエラー時にデフォルト値が表示される", async () => {
@@ -273,61 +330,6 @@ describe("HelpModal", () => {
         expect(screen.getByText("changelogNotAvailable")).toBeInTheDocument();
       },
       { timeout: 3000 }
-    );
-  });
-
-  it("GitHubリポジトリへのリンクが正しく設定されている", async () => {
-    mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
-    mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
-
-    const user = userEvent.setup();
-    render(<HelpModal isOpen={true} onClose={vi.fn()} />);
-
-    await waitFor(() => {
-      expect(screen.getByText("help")).toBeInTheDocument();
-    });
-
-    // サポートタブに切り替え
-    const supportTab = screen.getByRole("tab", { name: "supportLabel" });
-    await user.click(supportTab);
-
-    await waitFor(() => {
-      expect(screen.getByText("support.title")).toBeInTheDocument();
-    });
-
-    // リンクを確認
-    const repoLink = screen.getByText("https://github.com/izu-san/dsp-calc-tool");
-    expect(repoLink).toBeInTheDocument();
-    expect(repoLink).toHaveAttribute("href", "https://github.com/izu-san/dsp-calc-tool");
-    expect(repoLink).toHaveAttribute("target", "_blank");
-    expect(repoLink).toHaveAttribute("rel", "noopener noreferrer");
-  });
-
-  it("Issue報告リンクにテンプレートパラメータが含まれている", async () => {
-    mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
-    mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
-
-    const user = userEvent.setup();
-    render(<HelpModal isOpen={true} onClose={vi.fn()} />);
-
-    await waitFor(() => {
-      expect(screen.getByText("help")).toBeInTheDocument();
-    });
-
-    // サポートタブに切り替え
-    const supportTab = screen.getByRole("tab", { name: "supportLabel" });
-    await user.click(supportTab);
-
-    await waitFor(() => {
-      expect(screen.getByText("support.title")).toBeInTheDocument();
-    });
-
-    // Issue報告リンクを確認
-    const issueLink = screen.getByText("reportIssue");
-    expect(issueLink).toBeInTheDocument();
-    expect(issueLink).toHaveAttribute(
-      "href",
-      "https://github.com/izu-san/dsp-calc-tool/issues/new?template=bug_report.md"
     );
   });
 });
