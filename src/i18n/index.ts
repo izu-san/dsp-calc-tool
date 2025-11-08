@@ -8,7 +8,7 @@ const resources = {
   ja: { translation: ja },
 };
 
-i18n.use(initReactI18next).init({
+void i18n.use(initReactI18next).init({
   resources,
   lng: "ja", // Default language
   fallbackLng: "en",

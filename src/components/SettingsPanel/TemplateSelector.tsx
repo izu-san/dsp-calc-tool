@@ -8,6 +8,7 @@ import {
   isCustomTemplateId,
 } from "../../types/settings";
 import { cn } from "../../utils/classNames";
+import { CARD_GLOW, TEXT_GLOW, ICON_GLOW, MODAL_GLOW } from "../../constants/theme";
 
 export function TemplateSelector() {
   const { t } = useTranslation();
@@ -555,11 +556,11 @@ export function TemplateSelector() {
               data-testid={`template-button-${templateId}`}
               onClick={() => handleDefaultTemplateClick(templateId)}
               className={cn(
-                "px-3 py-2 text-sm font-medium rounded-lg border-2 backdrop-blur-sm text-white transition-all",
+                "px-3 py-2 text-sm font-medium rounded-lg border-2 backdrop-blur-sm text-white transition-all ripple-effect",
                 isSelected
-                  ? "border-neon-blue bg-neon-blue/40 shadow-[0_0_15px_rgba(0,136,255,0.6)]"
+                  ? cn("border-neon-blue bg-neon-blue/40", CARD_GLOW.blueStrong)
                   : "border-neon-blue/40 bg-neon-blue/20 hover:border-neon-blue hover:bg-neon-blue/30 hover:scale-105 active:scale-95",
-                "shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect"
+                !isSelected && cn(ICON_GLOW.blue, `hover:${CARD_GLOW.blueStrong}`)
               )}
               title={t(`${templateId}Desc`)}
             >
@@ -575,11 +576,12 @@ export function TemplateSelector() {
         data-testid="template-button-powerSaver"
         onClick={() => handleDefaultTemplateClick("powerSaver")}
         className={cn(
-          "w-full px-3 py-2 text-sm font-medium rounded-lg border-2 backdrop-blur-sm text-white transition-all mb-4",
+          "w-full px-3 py-2 text-sm font-medium rounded-lg border-2 backdrop-blur-sm text-white transition-all mb-4 ripple-effect",
           isDefaultTemplateSelected("powerSaver")
-            ? "border-neon-green bg-neon-green/40 shadow-[0_0_15px_rgba(0,255,136,0.6)]"
+            ? cn("border-neon-green bg-neon-green/40", CARD_GLOW.greenStrong)
             : "border-neon-green/40 bg-neon-green/20 hover:border-neon-green hover:bg-neon-green/30 hover:scale-105 active:scale-95",
-          "shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect"
+          !isDefaultTemplateSelected("powerSaver") &&
+            cn(ICON_GLOW.green, `hover:${CARD_GLOW.greenStrong}`)
         )}
         title={t("powerSaverDesc")}
       >
@@ -604,7 +606,8 @@ export function TemplateSelector() {
             className={cn(
               "px-3 py-1.5 text-xs font-medium rounded-lg border-2 border-neon-purple/40 bg-neon-purple/20 backdrop-blur-sm text-white",
               "hover:border-neon-purple hover:bg-neon-purple/30 hover:scale-105 active:scale-95 transition-all",
-              "shadow-[0_0_10px_rgba(168,85,247,0.3)] hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] ripple-effect",
+              "shadow-[0_0_10px_rgba(168,85,247,0.3)] ripple-effect",
+              `hover:${CARD_GLOW.purpleStrong}`,
               "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             )}
             title={
@@ -689,13 +692,23 @@ export function TemplateSelector() {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
             data-testid="template-confirm-modal"
           >
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl max-w-md w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.purple
+              )}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                <div
+                  className={cn(
+                    "text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg",
+                    CARD_GLOW.purple
+                  )}
+                >
                   {currentDefaultTemplate.icon}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
+                  <h3 className={cn("text-lg font-bold text-white", TEXT_GLOW.purple)}>
                     {t(selectedDefaultTemplate!)} {t("applyQuestion")}
                   </h3>
                   <p className="text-sm text-space-200">{t(`${selectedDefaultTemplate!}Desc`)}</p>
@@ -721,7 +734,8 @@ export function TemplateSelector() {
                   className={cn(
                     "flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white",
                     "hover:bg-neon-green/40 transition-all",
-                    "shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
+                    CARD_GLOW.greenStrong,
+                    "hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
                   )}
                 >
                   {t("apply")}
@@ -740,13 +754,23 @@ export function TemplateSelector() {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
             data-testid="custom-template-confirm-modal"
           >
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl max-w-md w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.purple
+              )}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                <div
+                  className={cn(
+                    "text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg",
+                    CARD_GLOW.purple
+                  )}
+                >
                   ⭐
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
+                  <h3 className={cn("text-lg font-bold text-white", TEXT_GLOW.purple)}>
                     {currentCustomTemplate.meta.name} {t("applyQuestion")}
                   </h3>
                   <p className="text-sm text-space-200">
@@ -775,7 +799,8 @@ export function TemplateSelector() {
                   className={cn(
                     "flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white",
                     "hover:bg-neon-green/40 transition-all",
-                    "shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
+                    CARD_GLOW.greenStrong,
+                    "hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
                   )}
                 >
                   {t("apply")}
@@ -793,13 +818,23 @@ export function TemplateSelector() {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
             data-testid="create-template-modal"
           >
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl max-w-md w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.purple
+              )}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                <div
+                  className={cn(
+                    "text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg",
+                    CARD_GLOW.purple
+                  )}
+                >
                   ＋
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
+                  <h3 className={cn("text-lg font-bold text-white", TEXT_GLOW.purple)}>
                     {t("createCustomTemplate")}
                   </h3>
                   <p className="text-sm text-space-200">{t("customTemplateEmptyState")}</p>
@@ -884,7 +919,8 @@ export function TemplateSelector() {
                   className={cn(
                     "flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white",
                     "hover:bg-neon-green/40 transition-all",
-                    "shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
+                    CARD_GLOW.greenStrong,
+                    "hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
                   )}
                 >
                   {t("save")}
@@ -904,13 +940,23 @@ export function TemplateSelector() {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
             data-testid="edit-template-modal"
           >
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-md w-full p-6 animate-fadeInScale">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl max-w-md w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.purple
+              )}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                <div
+                  className={cn(
+                    "text-3xl p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg",
+                    CARD_GLOW.purple
+                  )}
+                >
                   ✏️
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
+                  <h3 className={cn("text-lg font-bold text-white", TEXT_GLOW.purple)}>
                     {t("editCustomTemplate")}
                   </h3>
                   <p className="text-sm text-space-200">
@@ -1001,7 +1047,8 @@ export function TemplateSelector() {
                   className={cn(
                     "flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-green bg-neon-green/30 text-white",
                     "hover:bg-neon-green/40 transition-all",
-                    "shadow-[0_0_15px_rgba(0,255,136,0.4)] hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
+                    CARD_GLOW.greenStrong,
+                    "hover:shadow-[0_0_20px_rgba(0,255,136,0.6)] ripple-effect"
                   )}
                 >
                   {t("save")}
@@ -1021,13 +1068,23 @@ export function TemplateSelector() {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
             data-testid="delete-template-modal"
           >
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-red/40 rounded-xl shadow-[0_0_30px_rgba(255,0,0,0.3)] max-w-md w-full p-6 animate-fadeInScale">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-red/40 rounded-xl max-w-md w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.red
+              )}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl p-2 bg-neon-red/20 border border-neon-red/50 rounded-lg shadow-[0_0_15px_rgba(255,0,0,0.3)]">
+                <div
+                  className={cn(
+                    "text-3xl p-2 bg-neon-red/20 border border-neon-red/50 rounded-lg",
+                    CARD_GLOW.red
+                  )}
+                >
                   🗑️
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(255,0,0,0.6)]">
+                  <h3 className={cn("text-lg font-bold text-white", TEXT_GLOW.red)}>
                     {t("deleteCustomTemplate")}
                   </h3>
                   <p className="text-sm text-space-200">
@@ -1054,7 +1111,8 @@ export function TemplateSelector() {
                   className={cn(
                     "flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-red bg-neon-red/30 text-white",
                     "hover:bg-neon-red/40 transition-all",
-                    "shadow-[0_0_15px_rgba(255,0,0,0.4)] hover:shadow-[0_0_20px_rgba(255,0,0,0.6)] ripple-effect"
+                    CARD_GLOW.redStrong,
+                    "hover:shadow-[0_0_20px_rgba(255,0,0,0.6)] ripple-effect"
                   )}
                 >
                   {t("delete")}
@@ -1074,13 +1132,23 @@ export function TemplateSelector() {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-fadeIn"
             data-testid="overwrite-confirm-modal"
           >
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-yellow/40 rounded-xl shadow-[0_0_30px_rgba(255,255,0,0.3)] max-w-md w-full p-6 animate-fadeInScale">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-yellow/40 rounded-xl max-w-md w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.yellow
+              )}
+            >
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-3xl p-2 bg-neon-yellow/20 border border-neon-yellow/50 rounded-lg shadow-[0_0_15px_rgba(255,255,0,0.3)]">
+                <div
+                  className={cn(
+                    "text-3xl p-2 bg-neon-yellow/20 border border-neon-yellow/50 rounded-lg",
+                    CARD_GLOW.yellow
+                  )}
+                >
                   ⚠️
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white drop-shadow-[0_0_8px_rgba(255,255,0,0.6)]">
+                  <h3 className={cn("text-lg font-bold text-white", TEXT_GLOW.yellow)}>
                     {t("customTemplateConfirmOverwrite")}
                   </h3>
                   <p className="text-sm text-space-200">
@@ -1106,7 +1174,8 @@ export function TemplateSelector() {
                   className={cn(
                     "flex-1 px-4 py-2 text-sm font-medium rounded-lg border-2 border-neon-yellow bg-neon-yellow/30 text-white",
                     "hover:bg-neon-yellow/40 transition-all",
-                    "shadow-[0_0_15px_rgba(255,255,0,0.4)] hover:shadow-[0_0_20px_rgba(255,255,0,0.6)] ripple-effect"
+                    CARD_GLOW.yellowStrong,
+                    "hover:shadow-[0_0_20px_rgba(255,255,0,0.6)] ripple-effect"
                   )}
                 >
                   {t("overwrite")}

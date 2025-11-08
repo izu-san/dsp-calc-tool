@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 import { useGameDataStore } from "../stores/gameDataStore";
+import { cn } from "../utils/classNames";
+import { MODAL_GLOW, CARD_GLOW } from "../constants/theme";
 
 const TUTORIAL_SEEN_KEY = "dsp_calc_tutorial_seen";
 
@@ -130,7 +132,9 @@ export function WelcomeModal() {
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[10000] p-4 animate-fadeIn"
       data-testid="welcome-modal"
     >
-      <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInScale">
+      <div
+        className={`bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInScale ${MODAL_GLOW.blue}`}
+      >
         {/* Header */}
         <div className="sticky top-0 bg-dark-700/95 backdrop-blur-md border-b border-neon-blue/40 p-6 pb-4">
           <div className="flex items-center justify-between">
@@ -151,7 +155,10 @@ export function WelcomeModal() {
             {/* 言語切替ボタン */}
             <button
               onClick={handleLanguageSwitch}
-              className="px-3 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan hover:shadow-[0_0_15px_rgba(0,217,255,0.4)] transition-all ripple-effect flex items-center gap-2 ml-4"
+              className={cn(
+                "px-3 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan transition-all ripple-effect flex items-center gap-2 ml-4",
+                `hover:${CARD_GLOW.cyan}`
+              )}
               aria-label={t("changeLanguage")}
               title={t("changeLanguage")}
               data-testid="welcome-language-switch"

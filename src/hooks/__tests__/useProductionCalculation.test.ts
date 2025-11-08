@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import * as calculator from "../../lib/calculator";
+import { createMockGameData, createSingleOutputRecipe } from "../../test/factories/testDataFactory";
+import type { GlobalSettings, NodeOverrideSettings } from "../../types";
+import { useProductionCalculation } from "../useProductionCalculation";
 
 // Setupファイルのloggerモックを解除して実際のloggerを使用
 vi.unmock("../../utils/logger");
-import { renderHook } from "@testing-library/react";
-import { useProductionCalculation } from "../useProductionCalculation";
-import * as calculator from "../../lib/calculator";
-import type { Recipe, GlobalSettings, NodeOverrideSettings } from "../../types";
-import { createMockGameData, createSingleOutputRecipe } from "../../test/factories/testDataFactory";
 
-// calculateProductionChainをモック
+// tryCalculateProductionChainをモック
 vi.mock("../../lib/calculator", () => ({
-  calculateProductionChain: vi.fn(),
+  tryCalculateProductionChain: vi.fn(),
 }));
 
 describe("useProductionCalculation", () => {
@@ -33,17 +33,41 @@ describe("useProductionCalculation", () => {
   mockGameData.recipes.set(1, mockRecipe);
 
   const mockSettings: GlobalSettings = {
-    proliferator: { type: "none", mode: "speed" },
+    proliferator: {
+      type: "none",
+      mode: "speed",
+      productionBonus: 0,
+      speedBonus: 0,
+      powerIncrease: 0,
+    },
     conveyorBelt: { tier: "mk3", speed: 30, stackCount: 1 },
-    machineRanks: {
-      smelt: "arc",
-      assemble: "mk1",
-      chemical: "standard",
-      research: "standard",
-      refine: "standard",
-      particle: "standard",
+    sorter: { tier: "mk3", powerConsumption: 72 },
+    machineRank: {
+      Smelt: "arc",
+      Assemble: "mk1",
+      Chemical: "standard",
+      Research: "standard",
+      Refine: "standard",
+      Particle: "standard",
     },
     alternativeRecipes: new Map(),
+    miningSpeedResearch: 100,
+    proliferatorMultiplier: {
+      production: 1,
+      speed: 1,
+    },
+    photonGeneration: {
+      useGravitonLens: false,
+      gravitonLensProliferator: {
+        type: "none",
+        mode: "speed",
+        speedBonus: 0,
+        productionBonus: 0,
+        powerIncrease: 0,
+      },
+      rayTransmissionEfficiency: 0,
+      continuousReception: 100,
+    },
   };
 
   const mockNodeOverrides = new Map<string, NodeOverrideSettings>();
@@ -60,12 +84,15 @@ describe("useProductionCalculation", () => {
   it("selectedRecipeとdataとtargetQuantityが全て存在する場合、計算を実行する", () => {
     const mockResult = {
       rootNode: {} as any,
-      totalMachines: new Map(),
-      totalPower: 0,
-      rawMaterials: [],
+      totalMachines: 0,
+      totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+      rawMaterials: new Map(),
     };
 
-    vi.mocked(calculator.calculateProductionChain).mockReturnValue(mockResult);
+    vi.mocked(calculator.tryCalculateProductionChain).mockReturnValue({
+      ok: true,
+      value: mockResult,
+    });
 
     renderHook(() =>
       useProductionCalculation(
@@ -80,7 +107,7 @@ describe("useProductionCalculation", () => {
       )
     );
 
-    expect(calculator.calculateProductionChain).toHaveBeenCalledWith(
+    expect(calculator.tryCalculateProductionChain).toHaveBeenCalledWith(
       mockRecipe,
       10,
       mockGameData,
@@ -105,7 +132,7 @@ describe("useProductionCalculation", () => {
       )
     );
 
-    expect(calculator.calculateProductionChain).not.toHaveBeenCalled();
+    expect(calculator.tryCalculateProductionChain).not.toHaveBeenCalled();
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
   });
 
@@ -123,7 +150,7 @@ describe("useProductionCalculation", () => {
       )
     );
 
-    expect(calculator.calculateProductionChain).not.toHaveBeenCalled();
+    expect(calculator.tryCalculateProductionChain).not.toHaveBeenCalled();
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
   });
 
@@ -141,16 +168,16 @@ describe("useProductionCalculation", () => {
       )
     );
 
-    expect(calculator.calculateProductionChain).not.toHaveBeenCalled();
+    expect(calculator.tryCalculateProductionChain).not.toHaveBeenCalled();
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
   });
 
   it("計算でエラーが発生した場合、nullをセットしてコンソールエラーを出力する", () => {
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const error = new Error("Calculation failed");
 
-    vi.mocked(calculator.calculateProductionChain).mockImplementation(() => {
-      throw error;
+    vi.mocked(calculator.tryCalculateProductionChain).mockReturnValue({
+      ok: false,
+      error: error,
     });
 
     renderHook(() =>
@@ -166,25 +193,22 @@ describe("useProductionCalculation", () => {
       )
     );
 
-    expect(calculator.calculateProductionChain).toHaveBeenCalled();
+    expect(calculator.tryCalculateProductionChain).toHaveBeenCalled();
     expect(mockSetCalculationResult).toHaveBeenCalledWith(null);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "[ERROR] [DSP-Calc] Calculation error: Calculation failed",
-      error
-    );
-
-    consoleErrorSpy.mockRestore();
   });
 
   it("依存配列の値が変更されると再計算される", () => {
     const mockResult = {
       rootNode: {} as any,
-      totalMachines: new Map(),
-      totalPower: 0,
-      rawMaterials: [],
+      totalMachines: 0,
+      totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+      rawMaterials: new Map(),
     };
 
-    vi.mocked(calculator.calculateProductionChain).mockReturnValue(mockResult);
+    vi.mocked(calculator.tryCalculateProductionChain).mockReturnValue({
+      ok: true,
+      value: mockResult,
+    });
 
     const { rerender } = renderHook(
       ({ quantity }) =>
@@ -201,13 +225,13 @@ describe("useProductionCalculation", () => {
       { initialProps: { quantity: 10 } }
     );
 
-    expect(calculator.calculateProductionChain).toHaveBeenCalledTimes(1);
+    expect(calculator.tryCalculateProductionChain).toHaveBeenCalledTimes(1);
 
     // targetQuantityを変更
     rerender({ quantity: 20 });
 
-    expect(calculator.calculateProductionChain).toHaveBeenCalledTimes(2);
-    expect(calculator.calculateProductionChain).toHaveBeenLastCalledWith(
+    expect(calculator.tryCalculateProductionChain).toHaveBeenCalledTimes(2);
+    expect(calculator.tryCalculateProductionChain).toHaveBeenLastCalledWith(
       mockRecipe,
       20,
       mockGameData,
@@ -220,12 +244,15 @@ describe("useProductionCalculation", () => {
   it("nodeOverridesVersionが変更されると再計算される", () => {
     const mockResult = {
       rootNode: {} as any,
-      totalMachines: new Map(),
-      totalPower: 0,
-      rawMaterials: [],
+      totalMachines: 0,
+      totalPower: { machines: 0, sorters: 0, dysonSphere: 0, total: 0 },
+      rawMaterials: new Map(),
     };
 
-    vi.mocked(calculator.calculateProductionChain).mockReturnValue(mockResult);
+    vi.mocked(calculator.tryCalculateProductionChain).mockReturnValue({
+      ok: true,
+      value: mockResult,
+    });
 
     const { rerender } = renderHook(
       ({ version }) =>
@@ -242,11 +269,11 @@ describe("useProductionCalculation", () => {
       { initialProps: { version: 1 } }
     );
 
-    expect(calculator.calculateProductionChain).toHaveBeenCalledTimes(1);
+    expect(calculator.tryCalculateProductionChain).toHaveBeenCalledTimes(1);
 
     // バージョンを変更
     rerender({ version: 2 });
 
-    expect(calculator.calculateProductionChain).toHaveBeenCalledTimes(2);
+    expect(calculator.tryCalculateProductionChain).toHaveBeenCalledTimes(2);
   });
 });

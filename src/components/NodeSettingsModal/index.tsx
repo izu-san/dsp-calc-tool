@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ICONS } from "../../constants/icons";
+import { PROLIFERATOR_TYPES, PROLIFERATOR_MODES } from "../../constants/proliferator";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
-import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { PROLIFERATOR_DATA } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
+import { useNodeSettingsState } from "./useNodeSettingsState";
 
 interface NodeSettingsModalProps {
   node: RecipeTreeNode;
@@ -19,43 +20,18 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
   const { settings } = useSettingsStore();
   const { nodeOverrides, setNodeOverride, clearNodeOverride } = useNodeOverrideStore();
 
-  // Get current override or use global settings
-  const currentOverride = nodeOverrides.get(node.nodeId);
+  // Use custom hook for state management
+  const {
+    state,
+    setUseOverride,
+    setProliferatorType,
+    setProliferatorMode,
+    setMachineRank,
+    resetState,
+  } = useNodeSettingsState(node, isOpen, nodeOverrides, settings);
+
+  const { useOverride, proliferatorType, proliferatorMode, machineRank } = state;
   const recipeType = node.recipe?.Type;
-
-  const [useOverride, setUseOverride] = useState(!!currentOverride);
-  const [proliferatorType, setProliferatorType] = useState<ProliferatorType>(
-    currentOverride?.proliferator?.type || settings.proliferator.type
-  );
-  const [proliferatorMode, setProliferatorMode] = useState<ProliferatorMode>(
-    currentOverride?.proliferator?.mode || settings.proliferator.mode
-  );
-  const [machineRank, setMachineRank] = useState<string>(
-    currentOverride?.machineRank ||
-      (recipeType && recipeType in settings.machineRank
-        ? settings.machineRank[recipeType as keyof typeof settings.machineRank] || ""
-        : "")
-  );
-
-  useEffect(() => {
-    if (isOpen) {
-      // Sync state when modal opens
-      const override = nodeOverrides.get(node.nodeId);
-      const currentRecipeType = node.recipe?.Type;
-      // Use queueMicrotask to defer state updates
-      queueMicrotask(() => {
-        setUseOverride(!!override);
-        setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
-        setProliferatorMode(override?.proliferator?.mode || settings.proliferator.mode);
-        setMachineRank(
-          override?.machineRank ||
-            (currentRecipeType && currentRecipeType in settings.machineRank
-              ? settings.machineRank[currentRecipeType as keyof typeof settings.machineRank] || ""
-              : "")
-        );
-      });
-    }
-  }, [isOpen, node.nodeId, node.recipe?.Type, nodeOverrides, settings]);
 
   // Escキーでモーダルを閉じる
   useEffect(() => {
@@ -94,14 +70,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
   };
 
   const handleReset = () => {
-    setUseOverride(false);
-    setProliferatorType(settings.proliferator.type);
-    setProliferatorMode(settings.proliferator.mode);
-    setMachineRank(
-      recipeType && recipeType in settings.machineRank
-        ? settings.machineRank[recipeType as keyof typeof settings.machineRank] || ""
-        : ""
-    );
+    resetState();
     clearNodeOverride(node.nodeId);
   };
 
@@ -229,7 +198,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                     {t("type")}
                   </label>
                   <div className="grid grid-cols-4 gap-2">
-                    {(["none", "mk1", "mk2", "mk3"] as ProliferatorType[]).map(type => (
+                    {PROLIFERATOR_TYPES.map(type => (
                       <button
                         key={type}
                         onClick={() => setProliferatorType(type)}
@@ -270,7 +239,7 @@ export function NodeSettingsModal({ node, isOpen, onClose }: NodeSettingsModalPr
                       </div>
                     )}
                     <div className="grid grid-cols-2 gap-2">
-                      {(["production", "speed"] as ProliferatorMode[]).map(mode => {
+                      {PROLIFERATOR_MODES.map(mode => {
                         const isDisabled = mode === "production" && !isProductionAllowed;
                         return (
                           <button

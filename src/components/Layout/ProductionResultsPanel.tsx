@@ -9,6 +9,7 @@ import { ProductionResultsTab } from "../../types/ui-tabs";
 import { cn } from "../../utils/classNames";
 import { formatNumber } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
+import { TEXT_GLOW } from "../../constants/theme";
 
 const ProductionTree = lazy(() =>
   import("../ResultTree").then(m => ({ default: m.ProductionTree }))
@@ -104,7 +105,7 @@ export function ProductionResultsPanel({
                       <ItemIcon itemId={result.itemId} alt={result.itemName} size={32} />
                       <div className="flex-1 text-sm font-medium text-white">{result.itemName}</div>
                       <div
-                        className="text-lg font-bold text-neon-cyan drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]"
+                        className={cn("text-lg font-bold text-neon-cyan", TEXT_GLOW.cyan)}
                         data-testid={`output-item-rate-${result.itemId}`}
                       >
                         {formatNumber(result.productionRate)}/s
@@ -297,7 +298,6 @@ export function ProductionResultsPanel({
                     node={calculationResult.rootNode}
                     collapsedNodes={collapsedNodes}
                     onToggleCollapse={handleToggleCollapse}
-                    nodeId="root"
                   />
                 </div>
               )}

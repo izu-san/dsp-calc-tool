@@ -1,8 +1,11 @@
-## [0.0.4] - 2025-XX-XX
+## [0.0.4] - 2025-11-08
 
 ### Added
 
 - Help page
+- Production chain visualization in the Sankey dialog
+- Keyboard shortcuts
+- User feedback screen
 
 ## [0.0.3] - 2025-11-04
 
@@ -16,9 +19,9 @@
 
 - Critical photon generation
 - Power generation equipment calculation
-- Multiple format export
-- Building roadmap
-- Custom template
+- Multiple export formats
+- Construction roadmap
+- Custom templates
 
 ### Improved
 
@@ -29,7 +32,3 @@
 ### Added
 
 - Initial version
-
----
-
-Generated at: November 4, 2025 21:08

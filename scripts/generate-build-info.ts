@@ -76,14 +76,14 @@ function getTestCoverage():
       let totalStatements = 0;
       let coveredStatements = 0;
 
-      for (const filePath in coverageData) {
+      for (const filePath of Object.keys(coverageData)) {
         // totalプロパティはスキップ
         if (filePath === "total") continue;
 
         const fileCoverage = coverageData[filePath];
         if (fileCoverage && fileCoverage.s) {
           // s: statements coverage
-          for (const statementKey in fileCoverage.s) {
+          for (const statementKey of Object.keys(fileCoverage.s)) {
             totalStatements++;
             if (fileCoverage.s[statementKey] > 0) {
               coveredStatements++;

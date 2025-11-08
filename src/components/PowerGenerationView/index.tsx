@@ -8,6 +8,7 @@ import {
   POWER_GENERATORS,
   TEMPLATE_POWER_GENERATORS,
 } from "@/constants/powerGeneration";
+import { ICON_GLOW, NEON_GLOW } from "@/constants/theme";
 import type { MiningCalculation } from "@/lib/miningCalculation";
 import { calculatePowerGeneration } from "@/lib/powerGenerationCalculation";
 import { calculateUnifiedPower } from "@/lib/unifiedPowerCalculation";
@@ -16,10 +17,11 @@ import { useSettingsStore } from "@/stores/settingsStore";
 import type { CalculationResult } from "@/types";
 import type { PowerGeneratorType } from "@/types/power-generation";
 import type { GameTemplate } from "@/types/settings/templates";
+import { cn } from "@/utils/classNames";
 import { formatNumber, formatPower, formatRate } from "@/utils/format";
+import { setInternal } from "@/utils/history/recorder";
 import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { setInternal } from "@/utils/historyRecorder";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<string, number | null> = {
@@ -196,7 +198,10 @@ export function PowerGenerationView({
           data-testid="power-generation-template-select"
           value={template}
           onChange={e => setPowerGenerationTemplate(e.target.value as GameTemplate)}
-          className="w-full px-3 py-2 border border-neon-blue/40 rounded-lg bg-dark-700/50 text-white text-sm focus:border-neon-blue focus:shadow-[0_0_10px_rgba(0,136,255,0.3)] transition-all"
+          className={cn(
+            "w-full px-3 py-2 border border-neon-blue/40 rounded-lg bg-dark-700/50 text-white text-sm focus:border-neon-blue transition-all",
+            `focus:${ICON_GLOW.blue}`
+          )}
           style={{
             backgroundColor: "rgba(30, 41, 59, 0.5)",
             color: "#FFFFFF",
@@ -246,14 +251,15 @@ export function PowerGenerationView({
                       const mode = isArtificialStar ? "speed" : "production";
                       setPowerFuelProliferator(type, mode);
                     }}
-                    className={`
-                      px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                      ${
-                        powerFuelProliferator.type === type
-                          ? "bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(16,185,129,0.6),inset_0_0_20px_rgba(16,185,129,0.2)] backdrop-blur-sm font-bold scale-105"
-                          : "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green"
-                      }
-                    `}
+                    className={cn(
+                      "px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                      powerFuelProliferator.type === type
+                        ? cn(
+                            "bg-neon-green/30 text-white border-neon-green backdrop-blur-sm font-bold scale-105",
+                            NEON_GLOW.greenStrong
+                          )
+                        : "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green"
+                    )}
                   >
                     <div className="flex flex-col items-center gap-1">
                       {iconId && <ItemIcon itemId={iconId} size={24} />}
@@ -319,14 +325,15 @@ export function PowerGenerationView({
                   setManualPowerFuel(null);
                   setTimeout(() => setInternal(false), 600);
                 }}
-                className={`
-                  px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                  ${
-                    manualGenerator === null
-                      ? "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105"
-                      : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
-                  }
-                `}
+                className={cn(
+                  "px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  manualGenerator === null
+                    ? cn(
+                        "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                        NEON_GLOW.purpleStrong
+                      )
+                    : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
+                )}
               >
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-2xl">🤖</span>
@@ -352,14 +359,15 @@ export function PowerGenerationView({
                       setManualPowerFuel(null);
                       setTimeout(() => setInternal(false), 600);
                     }}
-                    className={`
-                      px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                      ${
-                        isSelected
-                          ? "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105"
-                          : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
-                      }
-                    `}
+                    className={cn(
+                      "px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                      isSelected
+                        ? cn(
+                            "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                            NEON_GLOW.purpleStrong
+                          )
+                        : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
+                    )}
                   >
                     <div className="flex flex-col items-center gap-1">
                       <ItemIcon itemId={generator.machineId} size={32} />
@@ -385,14 +393,15 @@ export function PowerGenerationView({
                 <button
                   data-testid="power-generation-fuel-auto-button"
                   onClick={() => setManualPowerFuel(null)}
-                  className={`
-                    px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                    ${
-                      manualFuel === null
-                        ? "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105"
-                        : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
-                    }
-                  `}
+                  className={cn(
+                    "px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                    manualFuel === null
+                      ? cn(
+                          "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                          NEON_GLOW.purpleStrong
+                        )
+                      : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
+                  )}
                 >
                   <div className="flex flex-col items-center gap-1">
                     <span className="text-xl">🤖</span>
@@ -411,14 +420,15 @@ export function PowerGenerationView({
                       key={fuel.key}
                       data-testid={`power-generation-fuel-button-${fuel.key}`}
                       onClick={() => setManualPowerFuel(fuel.key)}
-                      className={`
-                        px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                        ${
-                          isSelected
-                            ? "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105"
-                            : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
-                        }
-                      `}
+                      className={cn(
+                        "px-1.5 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                        isSelected
+                          ? cn(
+                              "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                              NEON_GLOW.purpleStrong
+                            )
+                          : "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
+                      )}
                     >
                       <div className="flex flex-col items-center gap-1">
                         <ItemIcon itemId={fuel.itemId} size={24} />

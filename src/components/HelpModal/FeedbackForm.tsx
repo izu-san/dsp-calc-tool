@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../../components/ToastProvider/useToast";
+import { cn } from "../../utils/classNames";
+import { CARD_GLOW } from "../../constants/theme";
 
 export type SubmitMethod = "github" | "form";
 
@@ -93,7 +95,10 @@ export function FeedbackForm() {
           <button
             type="button"
             onClick={handleGitHubIssueClick}
-            className="inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all ripple-effect"
+            className={cn(
+              "inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple transition-all ripple-effect",
+              `hover:${CARD_GLOW.purple}`
+            )}
             data-testid="feedback-form-github-issue-button"
           >
             {t("feedbackForm.githubIssue.button")}
@@ -108,7 +113,10 @@ export function FeedbackForm() {
           <button
             type="button"
             onClick={handleGoogleFormClick}
-            className="inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all ripple-effect"
+            className={cn(
+              "inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple transition-all ripple-effect",
+              `hover:${CARD_GLOW.purple}`
+            )}
             data-testid="feedback-form-google-form-button"
           >
             {t("feedbackForm.googleForm.button")}

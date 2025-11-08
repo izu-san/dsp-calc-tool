@@ -32,8 +32,10 @@ import {
   savePlanToLocalStorage,
 } from "../../../utils/planExport";
 import { copyToClipboard, generateShareURL } from "../../../utils/urlShare";
-import { setInternal } from "../../../utils/historyRecorder";
-import { HISTORY_VERSION } from "../../../utils/historyUtils";
+import { setInternal } from "../../../utils/history/recorder";
+import { cn } from "../../../utils/classNames";
+import { CARD_GLOW, MODAL_GLOW, TEXT_GLOW, ICON_GLOW } from "../../../constants/theme";
+import { HISTORY_VERSION } from "../../../utils/history/events";
 import i18n from "../../../i18n";
 import { PlanDiffView } from "../../PlanDiffView";
 import { calculatePlanDiff } from "../../../utils/planDiff";
@@ -766,7 +768,10 @@ export function PlanManagerMenu() {
           <button
             data-testid="plan-manager-menu-trigger"
             disabled={!selectedRecipe}
-            className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2"
+            className={cn(
+              "px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2",
+              `hover:${CARD_GLOW.greenStrong}`
+            )}
             title={t("save")}
             aria-label={t("save")}
           >
@@ -777,7 +782,10 @@ export function PlanManagerMenu() {
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] animate-fadeInScale z-50"
+            className={cn(
+              "min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg animate-fadeInScale z-50",
+              MODAL_GLOW.blue
+            )}
             align="end"
             sideOffset={5}
           >
@@ -830,7 +838,10 @@ export function PlanManagerMenu() {
               </DropdownMenu.SubTrigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.SubContent
-                  className="min-w-[180px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] animate-fadeInScale z-50"
+                  className={cn(
+                    "min-w-[180px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg animate-fadeInScale z-50",
+                    MODAL_GLOW.blue
+                  )}
                   sideOffset={5}
                 >
                   <DropdownMenu.Item
@@ -892,7 +903,7 @@ export function PlanManagerMenu() {
         onChange={e => {
           const file = e.target.files?.[0];
           if (file) {
-            handleImportFile(file);
+            void handleImportFile(file);
             if (fileInputRef.current) {
               fileInputRef.current.value = "";
             }
@@ -905,8 +916,18 @@ export function PlanManagerMenu() {
       {showSaveDialog &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl shadow-[0_0_30px_rgba(0,255,136,0.3)] max-w-md w-full animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,255,136,0.6)] flex items-center gap-2 px-6 pt-6">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl max-w-md w-full animate-fadeInScale",
+                MODAL_GLOW.green
+              )}
+            >
+              <h2
+                className={cn(
+                  "text-2xl font-bold mb-6 text-white flex items-center gap-2 px-6 pt-6",
+                  TEXT_GLOW.green
+                )}
+              >
                 💾 {t("save")}
               </h2>
 
@@ -928,7 +949,11 @@ export function PlanManagerMenu() {
                 <button
                   data-testid="save-to-localstorage-button"
                   onClick={handleSaveToLocalStorage}
-                  className="w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect font-medium"
+                  className={cn(
+                    "w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all ripple-effect font-medium",
+                    ICON_GLOW.green,
+                    `hover:${CARD_GLOW.greenStrong}`
+                  )}
                 >
                   💾 {t("saveToLocalStorage")}
                 </button>
@@ -999,8 +1024,18 @@ export function PlanManagerMenu() {
       {showLoadDialog &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)] flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale",
+                MODAL_GLOW.blue
+              )}
+            >
+              <h2
+                className={cn(
+                  "text-2xl font-bold mb-6 text-white flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6",
+                  TEXT_GLOW.blue
+                )}
+              >
                 📂 {t("load")}
               </h2>
 
@@ -1017,7 +1052,7 @@ export function PlanManagerMenu() {
                     onChange={e => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        handleImportFile(file);
+                        void handleImportFile(file);
                         if (fileInputRef.current) {
                           fileInputRef.current.value = "";
                         }
@@ -1099,7 +1134,11 @@ export function PlanManagerMenu() {
                                   ? handleLoadLatestPlan(plan.planId)
                                   : handleLoadFromLocalStorage(plan.key)
                               }
-                              className="px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect text-sm font-medium"
+                              className={cn(
+                                "px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
+                                ICON_GLOW.blue,
+                                `hover:${CARD_GLOW.blue}`
+                              )}
                             >
                               {t("load")}
                             </button>
@@ -1110,7 +1149,11 @@ export function PlanManagerMenu() {
                                   setSelectedPlanId(plan.planId || null);
                                   setShowVersionDialog(true);
                                 }}
-                                className="px-3 py-1 bg-purple-500/20 border-2 border-purple-500/40 text-white rounded-lg hover:bg-purple-500/30 hover:border-purple-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(168,85,247,0.3)] hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] ripple-effect text-sm font-medium"
+                                className={cn(
+                                  "px-3 py-1 bg-purple-500/20 border-2 border-purple-500/40 text-white rounded-lg hover:bg-purple-500/30 hover:border-purple-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
+                                  ICON_GLOW.purple,
+                                  `hover:${CARD_GLOW.purple}`
+                                )}
                               >
                                 📚 {t("versions")}
                               </button>
@@ -1118,7 +1161,11 @@ export function PlanManagerMenu() {
                             <button
                               data-testid={`delete-plan-button-${plan.key}`}
                               onClick={() => handleDeletePlan(plan.key)}
-                              className="px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] ripple-effect text-sm font-medium"
+                              className={cn(
+                                "px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
+                                ICON_GLOW.red,
+                                `hover:${CARD_GLOW.redStrong}`
+                              )}
                             >
                               {t("delete")}
                             </button>
@@ -1150,8 +1197,18 @@ export function PlanManagerMenu() {
       {showShareDialog &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-2xl w-full p-6 animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-4 text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)] flex items-center gap-2">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl max-w-2xl w-full p-6 animate-fadeInScale",
+                MODAL_GLOW.purple
+              )}
+            >
+              <h2
+                className={cn(
+                  "text-2xl font-bold mb-4 text-white flex items-center gap-2",
+                  TEXT_GLOW.purple
+                )}
+              >
                 🔗 {t("shareURL")}
               </h2>
 
@@ -1173,11 +1230,16 @@ export function PlanManagerMenu() {
                   <button
                     data-testid="copy-url-button"
                     onClick={handleCopyURL}
-                    className={`px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 ${
+                    className={cn(
+                      "px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 ripple-effect",
                       copySuccess
                         ? "bg-green-500/20 border-2 border-green-500/40 shadow-[0_0_15px_rgba(34,197,94,0.5)]"
-                        : "bg-neon-blue/20 border-2 border-neon-blue/40 hover:bg-neon-blue/30 hover:border-neon-blue shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)]"
-                    } ripple-effect`}
+                        : cn(
+                            "bg-neon-blue/20 border-2 border-neon-blue/40 hover:bg-neon-blue/30 hover:border-neon-blue",
+                            ICON_GLOW.blue,
+                            `hover:${CARD_GLOW.blue}`
+                          )
+                    )}
                   >
                     {copySuccess ? `✓ ${t("copied")}` : `📋 ${t("copy")}`}
                   </button>
@@ -1219,8 +1281,18 @@ export function PlanManagerMenu() {
         selectedPlanId &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-purple-500/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)] flex items-center gap-2 px-6 pt-6">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-purple-500/40 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale",
+                MODAL_GLOW.purple
+              )}
+            >
+              <h2
+                className={cn(
+                  "text-2xl font-bold mb-6 text-white flex items-center gap-2 px-6 pt-6",
+                  TEXT_GLOW.purple
+                )}
+              >
                 📚 {t("versionHistory")}
               </h2>
 
@@ -1260,7 +1332,11 @@ export function PlanManagerMenu() {
                               )}
                               <button
                                 onClick={() => handleLoadVersion(selectedPlanId, version.version)}
-                                className="px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect text-sm font-medium"
+                                className={cn(
+                                  "px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
+                                  ICON_GLOW.blue,
+                                  `hover:${CARD_GLOW.blue}`
+                                )}
                               >
                                 {t("load")}
                               </button>
@@ -1313,7 +1389,11 @@ export function PlanManagerMenu() {
                       setDiffBaseVersion(null);
                       setDiffCompareVersion(null);
                     }}
-                    className="px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] ripple-effect text-sm font-medium"
+                    className={cn(
+                      "px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
+                      ICON_GLOW.red,
+                      `hover:${CARD_GLOW.redStrong}`
+                    )}
                   >
                     {t("close")}
                   </button>

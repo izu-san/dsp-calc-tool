@@ -125,8 +125,7 @@ test.describe("ヘルプモーダル", () => {
     // NOTE: 意図的に.first()を使用 - 複数のリストから最初のものを取得
     await expect(appPage.getByRole("list").first()).toBeVisible();
 
-    // 8. 生成日時が表示されることを確認
-    await expect(appPage.getByText(/生成日時:/)).toBeVisible();
+    // NOTE: 生成日時はCHANGELOG_ja.mdに含まれないため、このアサーションは削除
   });
 
   test("12-05: よくある質問タブの表示と内容確認", async ({ appPage }) => {

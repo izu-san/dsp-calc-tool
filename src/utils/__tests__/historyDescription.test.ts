@@ -10,7 +10,7 @@ import {
   getProliferatorModeLabel,
   getProliferatorTypeLabel,
   getSorterLabel,
-} from "../historyDescription";
+} from "../history/description";
 
 // Mock gameDataStore
 vi.mock("../../stores/gameDataStore", () => ({

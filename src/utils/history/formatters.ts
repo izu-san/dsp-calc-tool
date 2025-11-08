@@ -1,4 +1,4 @@
-import type { GameData } from "../types";
+import type { GameData } from "../../types";
 import {
   getProliferatorTypeLabel,
   getProliferatorModeLabel,
@@ -6,8 +6,8 @@ import {
   getConveyorBeltLabel,
   getSorterLabel,
   getAlternativeRecipeName,
-} from "./historyDescription";
-import { POWER_GENERATORS, FUEL_ITEMS } from "../constants/powerGeneration";
+} from "./description";
+import { POWER_GENERATORS, FUEL_ITEMS } from "../../constants/powerGeneration";
 
 /**
  * Helper function to format history description with locale-aware syntax

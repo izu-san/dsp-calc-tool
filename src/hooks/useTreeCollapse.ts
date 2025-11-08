@@ -1,60 +1,46 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import type { RecipeTreeNode, CalculationResult } from "../types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { CalculationResult, RecipeTreeNode } from "../types";
 
-// ノードIDを生成する（ResultTreeコンポーネントと一致させる必要がある）
-const generateNodeId = (node: RecipeTreeNode, parentNodeId: string, depth: number): string => {
-  if (node.isRawMaterial) {
-    return `${parentNodeId}-raw-${node.itemId}-${depth}`;
-  }
-  return `${parentNodeId}-${node.recipe?.SID}-${depth}`;
-};
+// ノードIDは RecipeTreeNode.nodeId を直接使用する
+// （tree-builder.tsで生成された正しいIDと一致させるため）
 
 // 指定された深さ以降のノードIDを収集する
 const collectNodeIdsFromDepth = (
   node: RecipeTreeNode,
   currentDepth: number,
-  targetDepth: number,
-  parentNodeId: string = "root"
+  targetDepth: number
 ): Set<string> => {
   const nodeIds = new Set<string>();
 
-  const traverse = (n: RecipeTreeNode, depth: number, parentId: string) => {
+  const traverse = (n: RecipeTreeNode, depth: number) => {
     if (depth >= targetDepth) {
-      const nodeId = depth === 0 ? "root" : generateNodeId(n, parentId, depth);
-      nodeIds.add(nodeId);
+      nodeIds.add(n.nodeId);
     }
     n.children?.forEach((child: RecipeTreeNode) => {
-      const currentNodeId = depth === 0 ? "root" : generateNodeId(n, parentId, depth);
-      traverse(child, depth + 1, currentNodeId);
+      traverse(child, depth + 1);
     });
   };
 
-  traverse(node, currentDepth, parentNodeId);
+  traverse(node, currentDepth);
   return nodeIds;
 };
 
 // 全てのノードIDを収集する（原材料ノードとPhotonGenerationの子ノードを除外するオプション付き）
-const collectAllNodeIds = (
-  node: RecipeTreeNode,
-  depth: number,
-  parentId: string,
-  excludeUnstableNodes = false
-): Set<string> => {
+const collectAllNodeIds = (node: RecipeTreeNode, excludeUnstableNodes = false): Set<string> => {
   const allNodeIds = new Set<string>();
-  const nodeId = depth === 0 ? "root" : generateNodeId(node, parentId, depth);
 
   // PhotonGenerationレシピの場合、その子ノードは不安定（設定変更で変わる）なので除外
   const parentIsPhotonGeneration = node.recipe?.Type === "PhotonGeneration";
 
   // 不安定なノードを除外する場合はスキップ
   if (!excludeUnstableNodes || (!node.isRawMaterial && !parentIsPhotonGeneration)) {
-    allNodeIds.add(nodeId);
+    allNodeIds.add(node.nodeId);
   }
 
   // PhotonGenerationレシピの子ノードは構造が不安定なので、子の探索をスキップ
   if (!parentIsPhotonGeneration) {
     node.children?.forEach((child: RecipeTreeNode) => {
-      const childNodeIds = collectAllNodeIds(child, depth + 1, nodeId, excludeUnstableNodes);
+      const childNodeIds = collectAllNodeIds(child, excludeUnstableNodes);
       childNodeIds.forEach(id => allNodeIds.add(id));
     });
   }
@@ -76,7 +62,7 @@ export function useTreeCollapse(calculationResult: CalculationResult | null) {
     if (calculationResult?.rootNode) {
       // 現在のツリーの全ノードIDを取得して文字列化
       // 原材料ノードとPhotonGenerationの子ノードは設定変更で変わるため、構造比較から除外
-      const currentNodeIds = collectAllNodeIds(calculationResult.rootNode, 0, "root", true);
+      const currentNodeIds = collectAllNodeIds(calculationResult.rootNode, true);
       const currentNodeIdsStr = Array.from(currentNodeIds).sort().join(",");
 
       // ノードIDのセットが変わっていない場合は何もしない（設定変更のみの場合）
@@ -96,7 +82,7 @@ export function useTreeCollapse(calculationResult: CalculationResult | null) {
           const newCollapsed = new Set<string>();
 
           // 全ノードID（原材料含む）を取得
-          const allCurrentNodeIds = collectAllNodeIds(calculationResult.rootNode, 0, "root", false);
+          const allCurrentNodeIds = collectAllNodeIds(calculationResult.rootNode, false);
 
           // 既存の折りたたみ状態を維持（ノードIDが新しいツリーにも存在する場合）
           prev.forEach(nodeId => {
@@ -139,7 +125,7 @@ export function useTreeCollapse(calculationResult: CalculationResult | null) {
     if (isTreeExpanded) {
       // 全折りたたみ
       if (calculationResult?.rootNode) {
-        const allNodeIds = collectAllNodeIds(calculationResult.rootNode, 0, "root");
+        const allNodeIds = collectAllNodeIds(calculationResult.rootNode);
         setCollapsedNodes(allNodeIds);
         setIsTreeExpanded(false);
       }

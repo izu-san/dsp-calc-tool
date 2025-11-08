@@ -4,8 +4,8 @@
  */
 
 import i18n from "../../i18n";
-import { setInternal } from "../../utils/historyRecorder";
-import { HISTORY_VERSION } from "../../utils/historyUtils";
+import { setInternal } from "../../utils/history/recorder";
+import { HISTORY_VERSION } from "../../utils/history/events";
 import { useHistoryStore } from "../../stores/historyStore";
 import type { SavedPlan, NodeOverrideSettings } from "../../types";
 import type { Recipe } from "../../types/game-data";

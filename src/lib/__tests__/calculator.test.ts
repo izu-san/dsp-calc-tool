@@ -15,7 +15,7 @@ import {
   SORTER_DATA,
 } from "../../types/settings";
 import {
-  buildRecipeTree,
+  buildRecipeTreeFromParams,
   calculateConveyorBelts,
   calculateMachinePower,
   calculateProductionChain,
@@ -509,7 +509,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -536,7 +536,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -560,7 +560,7 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "speed" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -586,7 +586,7 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk3, mode: "production" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -615,7 +615,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.mk2, mode: "production" },
     });
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -642,7 +642,7 @@ describe("buildRecipeTree", () => {
       machineRank: "plane", // Plane Smelter (different from default 'arc')
     });
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -665,7 +665,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -689,7 +689,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -713,7 +713,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -741,7 +741,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -765,7 +765,7 @@ describe("buildRecipeTree", () => {
     const nodeOverrides = new Map();
 
     expect(() => {
-      buildRecipeTree(
+      buildRecipeTreeFromParams(
         recipe,
         1,
         gameData,
@@ -787,7 +787,7 @@ describe("buildRecipeTree", () => {
     settings.alternativeRecipes.set(1001, -1); // Force mining for Iron Ore
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -812,7 +812,7 @@ describe("buildRecipeTree", () => {
     settings.proliferatorMultiplier = { production: 2, speed: 1 }; // 2x multiplier
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       10,
       gameData,
@@ -835,7 +835,7 @@ describe("buildRecipeTree", () => {
     const settings = createDefaultSettings();
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -880,7 +880,7 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk1, mode: "production" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       nonProductiveRecipe,
       1,
       gameData,
@@ -904,7 +904,7 @@ describe("buildRecipeTree", () => {
     settings.proliferator = { ...PROLIFERATOR_DATA.mk2, mode: "speed" };
     const nodeOverrides = new Map();
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -931,7 +931,7 @@ describe("buildRecipeTree", () => {
       machineRank: "arc",
     });
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -959,7 +959,7 @@ describe("buildRecipeTree", () => {
       machineRank: "plane",
     });
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       recipe,
       1,
       gameData,
@@ -1000,7 +1000,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "mk1",
     });
-    const tree1 = buildRecipeTree(
+    const tree1 = buildRecipeTreeFromParams(
       assembleRecipe,
       1,
       gameData,
@@ -1020,7 +1020,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "mk2",
     });
-    const tree2 = buildRecipeTree(
+    const tree2 = buildRecipeTreeFromParams(
       assembleRecipe,
       1,
       gameData,
@@ -1040,7 +1040,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "mk3",
     });
-    const tree3 = buildRecipeTree(
+    const tree3 = buildRecipeTreeFromParams(
       assembleRecipe,
       1,
       gameData,
@@ -1079,7 +1079,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "standard",
     });
-    const tree1 = buildRecipeTree(
+    const tree1 = buildRecipeTreeFromParams(
       chemicalRecipe,
       1,
       gameData,
@@ -1099,7 +1099,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "quantum",
     });
-    const tree2 = buildRecipeTree(
+    const tree2 = buildRecipeTreeFromParams(
       chemicalRecipe,
       1,
       gameData,
@@ -1138,7 +1138,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "standard",
     });
-    const tree1 = buildRecipeTree(
+    const tree1 = buildRecipeTreeFromParams(
       researchRecipe,
       1,
       gameData,
@@ -1191,7 +1191,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "negentropy",
     });
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       smeltRecipe,
       1,
       gameData,
@@ -1244,7 +1244,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "recomposing",
     });
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       assembleRecipe,
       1,
       gameData,
@@ -1297,7 +1297,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "quantum",
     });
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       chemicalRecipe,
       1,
       gameData,
@@ -1350,7 +1350,7 @@ describe("buildRecipeTree", () => {
       proliferator: { ...PROLIFERATOR_DATA.none, mode: "speed" },
       machineRank: "self-evolution",
     });
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       researchRecipe,
       1,
       gameData,
@@ -1414,7 +1414,7 @@ describe("buildRecipeTree", () => {
     };
     gameData.recipes.set(200, parentRecipe);
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       parentRecipe,
       1,
       gameData,
@@ -1470,7 +1470,7 @@ describe("buildRecipeTree", () => {
     };
     gameData.recipes.set(200, parentRecipe);
 
-    const tree = buildRecipeTree(
+    const tree = buildRecipeTreeFromParams(
       parentRecipe,
       1,
       gameData,

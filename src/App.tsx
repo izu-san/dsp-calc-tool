@@ -8,9 +8,23 @@ import { useMiningSettingsStore } from "./stores/miningSettingsStore";
 import i18n from "./i18n";
 import { BackgroundEffects } from "./components/Layout/BackgroundEffects";
 import { Header } from "./components/Layout/Header";
-import { SettingsPanelSection } from "./components/Layout/SettingsPanelSection";
-import { RecipeSelectorSection } from "./components/Layout/RecipeSelectorSection";
-import { ProductionResultsPanel } from "./components/Layout/ProductionResultsPanel";
+
+// Lazy load heavy layout components for better initial load performance
+const SettingsPanelSection = lazy(() =>
+  import("./components/Layout/SettingsPanelSection").then(module => ({
+    default: module.SettingsPanelSection,
+  }))
+);
+const RecipeSelectorSection = lazy(() =>
+  import("./components/Layout/RecipeSelectorSection").then(module => ({
+    default: module.RecipeSelectorSection,
+  }))
+);
+const ProductionResultsPanel = lazy(() =>
+  import("./components/Layout/ProductionResultsPanel").then(module => ({
+    default: module.ProductionResultsPanel,
+  }))
+);
 import { useTreeCollapse } from "./hooks/useTreeCollapse";
 import { useProductionCalculation } from "./hooks/useProductionCalculation";
 import { getPlanFromURL } from "./utils/urlShare";
@@ -54,7 +68,7 @@ function App() {
   // 言語設定の同期とHTML lang属性の更新
   useEffect(() => {
     if (locale && i18n.language !== locale) {
-      i18n.changeLanguage(locale);
+      void i18n.changeLanguage(locale);
     }
     document.documentElement.lang = locale;
   }, [locale]);
@@ -100,7 +114,7 @@ function App() {
 
   // ゲームデータの読み込み
   useEffect(() => {
-    loadData();
+    void loadData();
   }, [loadData]);
 
   if (isLoading) {
@@ -139,27 +153,64 @@ function App() {
 
       <main className="max-w-[1920px] mx-auto px-4 py-6 sm:px-6 lg:px-8 relative z-10 mt-20">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          <SettingsPanelSection
-            selectedRecipe={selectedRecipe}
-            targetQuantity={targetQuantity}
-            setTargetQuantity={setTargetQuantity}
-          />
+          <Suspense
+            fallback={
+              <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg p-6 animate-pulse">
+                <div className="h-8 bg-dark-600 rounded mb-4"></div>
+                <div className="space-y-3">
+                  <div className="h-4 bg-dark-600 rounded"></div>
+                  <div className="h-4 bg-dark-600 rounded w-3/4"></div>
+                </div>
+              </div>
+            }
+          >
+            <SettingsPanelSection
+              selectedRecipe={selectedRecipe}
+              targetQuantity={targetQuantity}
+              setTargetQuantity={setTargetQuantity}
+            />
+          </Suspense>
 
           <div className="xl:col-span-3 space-y-6 animate-slideInRight">
-            <RecipeSelectorSection
-              recipes={Array.from(data.recipes.values())}
-              selectedRecipeId={selectedRecipe?.SID}
-              onRecipeSelect={setSelectedRecipe}
-            />
+            <Suspense
+              fallback={
+                <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg p-6 animate-pulse">
+                  <div className="h-8 bg-dark-600 rounded mb-4"></div>
+                  <div className="grid grid-cols-4 gap-4">
+                    {[...Array(8)].map((_, i) => (
+                      <div key={i} className="h-24 bg-dark-600 rounded"></div>
+                    ))}
+                  </div>
+                </div>
+              }
+            >
+              <RecipeSelectorSection
+                recipes={Array.from(data.recipes.values())}
+                selectedRecipeId={selectedRecipe?.SID}
+                onRecipeSelect={setSelectedRecipe}
+              />
+            </Suspense>
 
-            <ProductionResultsPanel
-              calculationResult={calculationResult}
-              selectedRecipe={selectedRecipe}
-              collapsedNodes={collapsedNodes}
-              isTreeExpanded={isTreeExpanded}
-              handleToggleCollapse={handleToggleCollapse}
-              handleToggleAll={handleToggleAll}
-            />
+            <Suspense
+              fallback={
+                <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg p-6 animate-pulse">
+                  <div className="h-8 bg-dark-600 rounded mb-4"></div>
+                  <div className="space-y-3">
+                    <div className="h-32 bg-dark-600 rounded"></div>
+                    <div className="h-32 bg-dark-600 rounded"></div>
+                  </div>
+                </div>
+              }
+            >
+              <ProductionResultsPanel
+                calculationResult={calculationResult}
+                selectedRecipe={selectedRecipe}
+                collapsedNodes={collapsedNodes}
+                isTreeExpanded={isTreeExpanded}
+                handleToggleCollapse={handleToggleCollapse}
+                handleToggleAll={handleToggleAll}
+              />
+            </Suspense>
           </div>
         </div>
       </main>

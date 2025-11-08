@@ -1,4 +1,4 @@
-import type { HistoryEntry, HistoryValidationResult } from "../types/history";
+import type { HistoryEntry, HistoryValidationResult } from "../../types/history";
 
 /**
  * Generate UUID v4
@@ -202,7 +202,7 @@ export function calculateChanges(
     const afterObj = after as Record<string, unknown>;
 
     // Check all keys in after
-    for (const key in afterObj) {
+    for (const key of Object.keys(afterObj)) {
       const path = prefix ? `${prefix}.${key}` : key;
       const beforeValue = beforeObj[key];
       const afterValue = afterObj[key];
@@ -337,7 +337,7 @@ export function calculateChanges(
     }
 
     // Check for deleted keys
-    for (const key in beforeObj) {
+    for (const key of Object.keys(beforeObj)) {
       if (!(key in afterObj)) {
         const path = prefix ? `${prefix}.${key}` : key;
         changes[path] = undefined;

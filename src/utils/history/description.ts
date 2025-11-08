@@ -1,5 +1,5 @@
-import type { GameData } from "../types";
-import { getMachineById } from "../stores/gameDataStore";
+import type { GameData } from "../../types";
+import { getMachineById } from "../../stores/gameDataStore";
 
 /**
  * Get human-readable label for proliferator type

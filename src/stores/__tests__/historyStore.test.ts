@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { HistoryEntry } from "../../types/history";
-import { generateUUID, HISTORY_VERSION } from "../../utils/historyUtils";
+import { generateUUID, HISTORY_VERSION } from "../../utils/history/events";
 import { useHistoryStore } from "../historyStore";
 
 describe("historyStore", () => {

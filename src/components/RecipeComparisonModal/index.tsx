@@ -8,6 +8,8 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe } from "../../types";
 import { formatNumber, formatPower } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
+import { cn } from "../../utils/classNames";
+import { CARD_GLOW, TEXT_GLOW, MODAL_GLOW } from "../../constants/theme";
 
 interface RecipeComparisonModalProps {
   itemId: number;
@@ -172,18 +174,26 @@ export function RecipeComparisonModal({
       }}
     >
       <div
-        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
+        className={cn(
+          "bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale",
+          MODAL_GLOW.blue
+        )}
         style={{ zIndex: 100000 }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="p-6 border-b border-neon-blue/30 flex items-center justify-between bg-dark-800/50">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-neon-blue/20 border border-neon-blue/50 rounded-lg shadow-[0_0_15px_rgba(0,136,255,0.3)]">
+            <div
+              className={cn(
+                "p-2 bg-neon-blue/20 border border-neon-blue/50 rounded-lg",
+                CARD_GLOW.blue
+              )}
+            >
               <ItemIcon itemId={itemId} size={48} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)]">
+              <h2 className={cn("text-2xl font-bold text-white", TEXT_GLOW.cyan)}>
                 {t("recipeComparison")}
               </h2>
               <p className="text-sm text-space-200">
@@ -252,10 +262,12 @@ export function RecipeComparisonModal({
                   return (
                     <tr
                       key={recipeId}
-                      className={`
-                        ${isSelected ? "bg-neon-cyan/20 border-neon-cyan shadow-[0_0_15px_rgba(0,217,255,0.2)]" : "bg-dark-700/30 hover:bg-neon-blue/10"}
-                        transition-all
-                      `}
+                      className={cn(
+                        "transition-all",
+                        isSelected
+                          ? cn("bg-neon-cyan/20 border-neon-cyan", CARD_GLOW.cyanLight)
+                          : "bg-dark-700/30 hover:bg-neon-blue/10"
+                      )}
                     >
                       {/* Method */}
                       <td className="p-3 border border-neon-blue/20">
@@ -368,14 +380,15 @@ export function RecipeComparisonModal({
                             onSelectRecipe(recipeId);
                             onClose();
                           }}
-                          className={`
-                            px-4 py-2 rounded-lg font-medium transition-all border-2 ripple-effect
-                            ${
-                              isSelected
-                                ? "bg-neon-cyan/30 border-neon-cyan text-white shadow-[0_0_15px_rgba(0,217,255,0.5)] scale-105"
-                                : "bg-dark-700/50 border-neon-blue/30 text-space-200 hover:border-neon-blue hover:bg-neon-blue/20 hover:text-neon-cyan"
-                            }
-                          `}
+                          className={cn(
+                            "px-4 py-2 rounded-lg font-medium transition-all border-2 ripple-effect",
+                            isSelected
+                              ? cn(
+                                  "bg-neon-cyan/30 border-neon-cyan text-white scale-105",
+                                  CARD_GLOW.cyan
+                                )
+                              : "bg-dark-700/50 border-neon-blue/30 text-space-200 hover:border-neon-blue hover:bg-neon-blue/20 hover:text-neon-cyan"
+                          )}
                         >
                           {isSelected ? t("selected") : t("select")}
                         </button>
@@ -388,7 +401,12 @@ export function RecipeComparisonModal({
           </div>
 
           {/* Legend */}
-          <div className="mt-6 p-4 bg-neon-purple/10 border border-neon-purple/40 rounded-lg backdrop-blur-sm shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+          <div
+            className={cn(
+              "mt-6 p-4 bg-neon-purple/10 border border-neon-purple/40 rounded-lg backdrop-blur-sm",
+              CARD_GLOW.purpleLight
+            )}
+          >
             <h3 className="font-semibold text-neon-purple mb-2 flex items-center gap-2">
               <span>📊</span>
               {t("efficiencyScoreCalculation")}

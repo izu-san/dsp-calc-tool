@@ -1,8 +1,9 @@
-import type { HistoryEntry, HistoryEntryType } from "../types/history";
-import { useHistoryStore } from "../stores/historyStore";
-import { generateUUID, HISTORY_VERSION, calculateChanges } from "./historyUtils";
-import { historyDebouncer, DEBOUNCE_TIMES } from "./historyDebouncer";
-import i18n from "../i18n";
+import type { HistoryEntry, HistoryEntryType } from "../../types/history";
+import type { SavedPlan } from "../../types";
+import { useHistoryStore } from "../../stores/historyStore";
+import { generateUUID, HISTORY_VERSION, calculateChanges } from "./events";
+import { historyDebouncer, DEBOUNCE_TIMES } from "./debouncer";
+import i18n from "../../i18n";
 
 /**
  * Flag to prevent recording history during state restoration
@@ -121,7 +122,7 @@ export function recordPlanSaveEntry(
     description,
     changes,
     version: HISTORY_VERSION,
-    planSnapshot: plan as import("../types").SavedPlan,
+    planSnapshot: plan as SavedPlan,
     locale: i18n.language,
   };
 

@@ -6,7 +6,7 @@ import { test } from "./fixtures";
 import { waitForClickable, waitForDebounce, waitForTemplateApplied } from "./helpers/wait-helpers";
 
 test.describe("履歴・バージョン管理機能", () => {
-  test.beforeEach(async ({ appPage, clearLocalStorageKeepingTutorial, reloadPage }) => {
+  test.beforeEach(async ({ clearLocalStorageKeepingTutorial, reloadPage }) => {
     // localStorage をクリア（但しWelcomeモーダルのスキップ状態は保持）
     await clearLocalStorageKeepingTutorial();
     await reloadPage();
