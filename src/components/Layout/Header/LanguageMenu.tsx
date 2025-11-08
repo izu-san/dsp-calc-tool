@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useGameDataStore } from "../../../stores/gameDataStore";
 import { cn } from "../../../utils/classNames";
-import { CARD_GLOW, ICON_GLOW, MODAL_GLOW } from "../../../constants/theme";
+import { HOVER_CARD_GLOW, ICON_GLOW, MODAL_GLOW } from "../../../constants/theme";
 
 /**
  * 言語切替ドロップダウンメニューコンポーネント
@@ -51,7 +51,7 @@ export function LanguageMenu() {
           disabled={isLoading}
           className={cn(
             "px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2",
-            `hover:${CARD_GLOW.cyan}`
+            HOVER_CARD_GLOW.cyan
           )}
           title={t("changeLanguage")}
           aria-label={t("changeLanguage")}

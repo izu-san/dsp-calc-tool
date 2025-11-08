@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { CARD_GLOW, ICON_GLOW, MODAL_GLOW, TEXT_GLOW } from "../../constants/theme";
+import { HOVER_CARD_GLOW, ICON_GLOW, MODAL_GLOW, TEXT_GLOW } from "../../constants/theme";
 import { usePlanExport } from "../../hooks/usePlanExport";
 import { usePlanImport } from "../../hooks/usePlanImport";
 import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
@@ -383,7 +383,7 @@ export function PlanManager() {
           disabled={!selectedRecipe}
           className={cn(
             "px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
-            `hover:${CARD_GLOW.greenStrong}`
+            HOVER_CARD_GLOW.greenStrong
           )}
         >
           💾 {t("save")}
@@ -398,7 +398,7 @@ export function PlanManager() {
           }}
           className={cn(
             "px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue transition-all ripple-effect",
-            `hover:${CARD_GLOW.blue}`
+            HOVER_CARD_GLOW.blue
           )}
         >
           📂 {t("load")}
@@ -411,7 +411,7 @@ export function PlanManager() {
           disabled={!selectedRecipe}
           className={cn(
             "px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
-            `hover:${CARD_GLOW.purple}`
+            HOVER_CARD_GLOW.purple
           )}
         >
           🔗 {t("shareURL")}
@@ -460,7 +460,7 @@ export function PlanManager() {
                   className={cn(
                     "w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all ripple-effect font-medium",
                     ICON_GLOW.green,
-                    `hover:${CARD_GLOW.greenStrong}`
+                    HOVER_CARD_GLOW.greenStrong
                   )}
                 >
                   💾 {t("saveToLocalStorage")}
@@ -478,7 +478,7 @@ export function PlanManager() {
                       className={cn(
                         "px-3 py-2 bg-green-500/20 border-2 border-green-500/40 text-white rounded-lg hover:bg-green-500/30 hover:border-green-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
                         ICON_GLOW.green,
-                        `hover:${CARD_GLOW.greenStrong}`
+                        HOVER_CARD_GLOW.greenStrong
                       )}
                     >
                       JSON

@@ -8,7 +8,13 @@ import {
   isCustomTemplateId,
 } from "../../types/settings";
 import { cn } from "../../utils/classNames";
-import { CARD_GLOW, TEXT_GLOW, ICON_GLOW, MODAL_GLOW } from "../../constants/theme";
+import {
+  CARD_GLOW,
+  HOVER_CARD_GLOW,
+  TEXT_GLOW,
+  ICON_GLOW,
+  MODAL_GLOW,
+} from "../../constants/theme";
 
 export function TemplateSelector() {
   const { t } = useTranslation();
@@ -560,7 +566,7 @@ export function TemplateSelector() {
                 isSelected
                   ? cn("border-neon-blue bg-neon-blue/40", CARD_GLOW.blueStrong)
                   : "border-neon-blue/40 bg-neon-blue/20 hover:border-neon-blue hover:bg-neon-blue/30 hover:scale-105 active:scale-95",
-                !isSelected && cn(ICON_GLOW.blue, `hover:${CARD_GLOW.blueStrong}`)
+                !isSelected && cn(ICON_GLOW.blue, HOVER_CARD_GLOW.blueStrong)
               )}
               title={t(`${templateId}Desc`)}
             >
@@ -581,7 +587,7 @@ export function TemplateSelector() {
             ? cn("border-neon-green bg-neon-green/40", CARD_GLOW.greenStrong)
             : "border-neon-green/40 bg-neon-green/20 hover:border-neon-green hover:bg-neon-green/30 hover:scale-105 active:scale-95",
           !isDefaultTemplateSelected("powerSaver") &&
-            cn(ICON_GLOW.green, `hover:${CARD_GLOW.greenStrong}`)
+            cn(ICON_GLOW.green, HOVER_CARD_GLOW.greenStrong)
         )}
         title={t("powerSaverDesc")}
       >
@@ -607,7 +613,7 @@ export function TemplateSelector() {
               "px-3 py-1.5 text-xs font-medium rounded-lg border-2 border-neon-purple/40 bg-neon-purple/20 backdrop-blur-sm text-white",
               "hover:border-neon-purple hover:bg-neon-purple/30 hover:scale-105 active:scale-95 transition-all",
               "shadow-[0_0_10px_rgba(168,85,247,0.3)] ripple-effect",
-              `hover:${CARD_GLOW.purpleStrong}`,
+              HOVER_CARD_GLOW.purpleStrong,
               "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             )}
             title={

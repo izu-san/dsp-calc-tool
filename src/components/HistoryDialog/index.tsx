@@ -8,7 +8,13 @@ import { historyDebouncer } from "../../utils/history/debouncer";
 import { regenerateHistoryDescription } from "../../utils/history/regenerator";
 import { restoreStateFromHistory } from "../../utils/history/restoration";
 import { cn } from "../../utils/classNames";
-import { CARD_GLOW, TEXT_GLOW, NEON_GLOW, MODAL_GLOW } from "../../constants/theme";
+import {
+  CARD_GLOW,
+  HOVER_CARD_GLOW,
+  TEXT_GLOW,
+  NEON_GLOW,
+  MODAL_GLOW,
+} from "../../constants/theme";
 
 interface HistoryDialogProps {
   isOpen: boolean;
@@ -347,7 +353,7 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
                             onClick={() => handleRestoreToEntry(entry, originalIndex)}
                             className={cn(
                               "px-3 py-1 text-xs font-medium rounded-lg border-2 transition-all ripple-effect bg-neon-blue/30 border-neon-blue/50 text-white hover:bg-neon-blue/40 hover:border-neon-blue",
-                              `hover:${CARD_GLOW.blue}`
+                              HOVER_CARD_GLOW.blue
                             )}
                           >
                             {needsUndo ? t("restoreToHere") : t("restoreFromHere")}
@@ -375,7 +381,7 @@ export function HistoryDialog({ isOpen, onClose }: HistoryDialogProps) {
             }}
             className={cn(
               "px-4 py-2 bg-red-600/30 border border-red-600/50 text-white rounded-lg hover:bg-red-600/40 hover:border-red-600 transition-all ripple-effect text-sm",
-              `hover:${CARD_GLOW.redStrong}`
+              HOVER_CARD_GLOW.redStrong
             )}
           >
             {t("clearHistory")}

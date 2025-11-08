@@ -170,6 +170,33 @@ export const CARD_GLOW = {
 } as const;
 
 /**
+ * ホバー時のカードグロー (中)
+ * TailwindのJITコンパイラが検出できるように、hover:プレフィックスを含めた完全なクラス名を定義
+ */
+export const HOVER_CARD_GLOW = {
+  cyan: "hover:shadow-[0_0_15px_rgba(0,217,255,0.3)]",
+  cyanLight: "hover:shadow-[0_0_15px_rgba(0,217,255,0.2)]",
+  blue: "hover:shadow-[0_0_15px_rgba(0,136,255,0.3)]",
+  blueLight: "hover:shadow-[0_0_15px_rgba(0,136,255,0.2)]",
+  blueStrong: "hover:shadow-[0_0_15px_rgba(0,136,255,0.5)]",
+  purple: "hover:shadow-[0_0_15px_rgba(168,85,247,0.3)]",
+  purpleLight: "hover:shadow-[0_0_15px_rgba(168,85,247,0.2)]",
+  purpleStrong: "hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]",
+  magenta: "hover:shadow-[0_0_15px_rgba(233,53,255,0.3)]",
+  magentaLight: "hover:shadow-[0_0_15px_rgba(233,53,255,0.2)]",
+  magentaStrong: "hover:shadow-[0_0_15px_rgba(233,53,255,0.5)]",
+  green: "hover:shadow-[0_0_15px_rgba(0,255,136,0.3)]",
+  greenLight: "hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]",
+  greenStrong: "hover:shadow-[0_0_15px_rgba(0,255,136,0.4)]",
+  yellow: "hover:shadow-[0_0_15px_rgba(255,215,0,0.3)]",
+  yellowLight: "hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]",
+  yellowStrong: "hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]",
+  red: "hover:shadow-[0_0_15px_rgba(255,0,0,0.3)]",
+  redLight: "hover:shadow-[0_0_15px_rgba(255,0,0,0.2)]",
+  redStrong: "hover:shadow-[0_0_15px_rgba(255,0,0,0.4)]",
+} as const;
+
+/**
  * ノード状態に応じたスタイル
  */
 export const NODE_STYLES = {

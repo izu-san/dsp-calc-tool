@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 import { useGameDataStore } from "../stores/gameDataStore";
 import { cn } from "../utils/classNames";
-import { MODAL_GLOW, CARD_GLOW } from "../constants/theme";
+import { MODAL_GLOW, HOVER_CARD_GLOW } from "../constants/theme";
 
 const TUTORIAL_SEEN_KEY = "dsp_calc_tutorial_seen";
 
@@ -157,7 +157,7 @@ export function WelcomeModal() {
               onClick={handleLanguageSwitch}
               className={cn(
                 "px-3 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan transition-all ripple-effect flex items-center gap-2 ml-4",
-                `hover:${CARD_GLOW.cyan}`
+                HOVER_CARD_GLOW.cyan
               )}
               aria-label={t("changeLanguage")}
               title={t("changeLanguage")}

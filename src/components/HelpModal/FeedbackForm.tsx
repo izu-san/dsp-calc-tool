@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "../../components/ToastProvider/useToast";
 import { cn } from "../../utils/classNames";
-import { CARD_GLOW } from "../../constants/theme";
+import { HOVER_CARD_GLOW } from "../../constants/theme";
 
 export type SubmitMethod = "github" | "form";
 
@@ -97,7 +97,7 @@ export function FeedbackForm() {
             onClick={handleGitHubIssueClick}
             className={cn(
               "inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple transition-all ripple-effect",
-              `hover:${CARD_GLOW.purple}`
+              HOVER_CARD_GLOW.purple
             )}
             data-testid="feedback-form-github-issue-button"
           >
@@ -115,7 +115,7 @@ export function FeedbackForm() {
             onClick={handleGoogleFormClick}
             className={cn(
               "inline-block px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple transition-all ripple-effect",
-              `hover:${CARD_GLOW.purple}`
+              HOVER_CARD_GLOW.purple
             )}
             data-testid="feedback-form-google-form-button"
           >

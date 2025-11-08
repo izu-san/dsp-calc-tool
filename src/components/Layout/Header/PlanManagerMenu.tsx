@@ -1,17 +1,15 @@
-import { useRef, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { useRecipeSelectionStore } from "../../../stores/recipeSelectionStore";
+import { HOVER_CARD_GLOW, ICON_GLOW, MODAL_GLOW, TEXT_GLOW } from "../../../constants/theme";
+import i18n from "../../../i18n";
 import { exportToCSV } from "../../../lib/export/csvExporter";
 import { transformToExportData } from "../../../lib/export/dataTransformer";
 import { exportToExcel } from "../../../lib/export/excelExporter";
 import { generateExportFilename } from "../../../lib/export/filenameGenerator";
-import { exportToImage, exportMultipleViews } from "../../../lib/export/imageExporter";
+import { exportMultipleViews, exportToImage } from "../../../lib/export/imageExporter";
 import { exportToMarkdown } from "../../../lib/export/markdownExporter";
-import type { ImageExportOptions } from "../../../types/export";
-import type { SavedPlan } from "../../../types/saved-plan";
-import type { NodeOverrideSettings } from "../../../types/calculation";
 import { importPlan } from "../../../lib/import";
 import {
   buildSavedPlanFromExportData,
@@ -23,7 +21,15 @@ import { validatePlanInfo } from "../../../lib/import/validation";
 import { useGameDataStore } from "../../../stores/gameDataStore";
 import { useHistoryStore } from "../../../stores/historyStore";
 import { useNodeOverrideStore } from "../../../stores/nodeOverrideStore";
+import { useRecipeSelectionStore } from "../../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../../stores/settingsStore";
+import type { NodeOverrideSettings } from "../../../types/calculation";
+import type { ImageExportOptions } from "../../../types/export";
+import type { SavedPlan } from "../../../types/saved-plan";
+import { cn } from "../../../utils/classNames";
+import { HISTORY_VERSION } from "../../../utils/history/events";
+import { setInternal } from "../../../utils/history/recorder";
+import { calculatePlanDiff } from "../../../utils/planDiff";
 import {
   deletePlanFromLocalStorage,
   getRecentPlans,
@@ -32,13 +38,7 @@ import {
   savePlanToLocalStorage,
 } from "../../../utils/planExport";
 import { copyToClipboard, generateShareURL } from "../../../utils/urlShare";
-import { setInternal } from "../../../utils/history/recorder";
-import { cn } from "../../../utils/classNames";
-import { CARD_GLOW, MODAL_GLOW, TEXT_GLOW, ICON_GLOW } from "../../../constants/theme";
-import { HISTORY_VERSION } from "../../../utils/history/events";
-import i18n from "../../../i18n";
 import { PlanDiffView } from "../../PlanDiffView";
-import { calculatePlanDiff } from "../../../utils/planDiff";
 
 /**
  * プランマネージャードロップダウンメニューコンポーネント
@@ -770,7 +770,7 @@ export function PlanManagerMenu() {
             disabled={!selectedRecipe}
             className={cn(
               "px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2",
-              `hover:${CARD_GLOW.greenStrong}`
+              HOVER_CARD_GLOW.greenStrong
             )}
             title={t("save")}
             aria-label={t("save")}
@@ -952,7 +952,7 @@ export function PlanManagerMenu() {
                   className={cn(
                     "w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all ripple-effect font-medium",
                     ICON_GLOW.green,
-                    `hover:${CARD_GLOW.greenStrong}`
+                    HOVER_CARD_GLOW.greenStrong
                   )}
                 >
                   💾 {t("saveToLocalStorage")}
@@ -1137,7 +1137,7 @@ export function PlanManagerMenu() {
                               className={cn(
                                 "px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
                                 ICON_GLOW.blue,
-                                `hover:${CARD_GLOW.blue}`
+                                HOVER_CARD_GLOW.blue
                               )}
                             >
                               {t("load")}
@@ -1152,7 +1152,7 @@ export function PlanManagerMenu() {
                                 className={cn(
                                   "px-3 py-1 bg-purple-500/20 border-2 border-purple-500/40 text-white rounded-lg hover:bg-purple-500/30 hover:border-purple-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
                                   ICON_GLOW.purple,
-                                  `hover:${CARD_GLOW.purple}`
+                                  HOVER_CARD_GLOW.purple
                                 )}
                               >
                                 📚 {t("versions")}
@@ -1164,7 +1164,7 @@ export function PlanManagerMenu() {
                               className={cn(
                                 "px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
                                 ICON_GLOW.red,
-                                `hover:${CARD_GLOW.redStrong}`
+                                HOVER_CARD_GLOW.redStrong
                               )}
                             >
                               {t("delete")}
@@ -1237,7 +1237,7 @@ export function PlanManagerMenu() {
                         : cn(
                             "bg-neon-blue/20 border-2 border-neon-blue/40 hover:bg-neon-blue/30 hover:border-neon-blue",
                             ICON_GLOW.blue,
-                            `hover:${CARD_GLOW.blue}`
+                            HOVER_CARD_GLOW.blue
                           )
                     )}
                   >
@@ -1335,7 +1335,7 @@ export function PlanManagerMenu() {
                                 className={cn(
                                   "px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
                                   ICON_GLOW.blue,
-                                  `hover:${CARD_GLOW.blue}`
+                                  HOVER_CARD_GLOW.blue
                                 )}
                               >
                                 {t("load")}
@@ -1392,7 +1392,7 @@ export function PlanManagerMenu() {
                     className={cn(
                       "px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
                       ICON_GLOW.red,
-                      `hover:${CARD_GLOW.redStrong}`
+                      HOVER_CARD_GLOW.redStrong
                     )}
                   >
                     {t("close")}
