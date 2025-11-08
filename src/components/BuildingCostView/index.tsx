@@ -100,7 +100,7 @@ export function BuildingCostView({ calculationResult }: BuildingCostViewProps) {
               data-testid="building-cost-sorters"
               className={cn(
                 "p-4 bg-neon-magenta/20 backdrop-blur-sm rounded-lg border border-neon-magenta/40",
-                CARD_GLOW.purpleLight
+                CARD_GLOW.magentaLight
               )}
             >
               <div className="flex items-center gap-2 mb-2">
