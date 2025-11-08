@@ -1,6 +1,6 @@
 {
-  "name": "new_calc",
-  "version": "0.0.3",
+  "name": "DSP Recipe Calculator",
+  "version": "0.0.4",
   "type": "module",
   "license": "MIT",
   "packageManager": "pnpm@9.15.0",
