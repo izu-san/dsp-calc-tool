@@ -9,6 +9,8 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { CalculationResult } from "../../types/calculation";
 import { formatBuildingCount, formatNumber, formatPower } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
+import { cn } from "../../utils/classNames";
+import { CARD_GLOW, TEXT_GLOW } from "../../constants/theme";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -119,7 +121,10 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
       {/* Summary Card */}
       <div
         data-testid="power-graph-total-consumption"
-        className="bg-gradient-to-br from-neon-purple/20 to-neon-blue/20 backdrop-blur-sm rounded-xl p-6 border border-neon-purple/40 ${CARD_GLOW.purple}"
+        className={cn(
+          "bg-gradient-to-br from-neon-purple/20 to-neon-blue/20 backdrop-blur-sm rounded-xl p-6 border border-neon-purple/40",
+          CARD_GLOW.purple
+        )}
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -128,7 +133,7 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
           </h3>
           <div
             data-testid="power-graph-total-consumption-value"
-            className="text-3xl font-bold text-white ${TEXT_GLOW.cyan}"
+            className={cn("text-3xl font-bold text-white", TEXT_GLOW.cyan)}
           >
             {formatPower(powerBreakdown.totalConsumption)}
           </div>
@@ -142,7 +147,12 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
       {/* Chart and Breakdown */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Pie Chart */}
-        <div className="bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-cyan/30 ${CARD_GLOW.cyanLight}">
+        <div
+          className={cn(
+            "bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-cyan/30",
+            CARD_GLOW.cyanLight
+          )}
+        >
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <span>📊</span>
             {t("powerDistribution")}
@@ -153,7 +163,12 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
         </div>
 
         {/* Detailed Breakdown */}
-        <div className="bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-green/30 ${CARD_GLOW.greenLight}">
+        <div
+          className={cn(
+            "bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-green/30",
+            CARD_GLOW.greenLight
+          )}
+        >
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
             <span>⚙️</span>
             {t("powerBreakdown")}
@@ -166,7 +181,7 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
               >
                 {/* Color Indicator */}
                 <div
-                  className="w-4 h-4 rounded-full flex-shrink-0 ${ICON_GLOW.white}"
+                  className="w-4 h-4 rounded-full flex-shrink-0"
                   style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }}
                 />
 
@@ -184,7 +199,7 @@ export function PowerGraphView({ calculationResult, miningCalculation }: PowerGr
 
                 {/* Power and Percentage */}
                 <div className="text-right flex-shrink-0">
-                  <div className="font-bold text-neon-yellow ${TEXT_GLOW.yellow}">
+                  <div className={cn("font-bold text-neon-yellow", TEXT_GLOW.yellow)}>
                     {formatPower(item.totalPower)}
                   </div>
                   <div className="text-sm text-space-200">{item.percentage.toFixed(1)}%</div>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { HelpModal } from "../../HelpModal/index";
+import { cn } from "../../../utils/classNames";
+import { CARD_GLOW } from "../../../constants/theme";
 
 /**
  * ヘルプメニューコンポーネント
@@ -35,7 +37,10 @@ export function HelpMenu() {
       <button
         data-testid="help-menu-trigger"
         onClick={() => setIsOpen(true)}
-        className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/40 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:${CARD_GLOW.purple} transition-all ripple-effect flex items-center gap-2"
+        className={cn(
+          "px-4 py-2 bg-neon-purple/30 border border-neon-purple/40 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple transition-all ripple-effect flex items-center gap-2",
+          `hover:${CARD_GLOW.purple}`
+        )}
         title={t("help")}
         aria-label={t("help")}
       >

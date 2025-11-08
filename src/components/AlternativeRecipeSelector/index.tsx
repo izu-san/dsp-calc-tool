@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isRawMaterial } from "../../constants/rawMaterials";
+import { ICON_GLOW, NEON_GLOW } from "../../constants/theme";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
@@ -160,7 +161,10 @@ export function AlternativeRecipeSelector() {
                         e.stopPropagation();
                         setComparisonModal({ itemId, itemName, recipes, canBeMined, miningFrom });
                       }}
-                      className="px-2 py-1 text-xs bg-neon-purple/30 border border-neon-purple text-white rounded hover:bg-neon-purple/40 transition-all flex items-center gap-1 whitespace-nowrap ${ICON_GLOW.purple} ripple-effect"
+                      className={cn(
+                        "px-2 py-1 text-xs bg-neon-purple/30 border border-neon-purple text-white rounded hover:bg-neon-purple/40 transition-all flex items-center gap-1 whitespace-nowrap ripple-effect",
+                        ICON_GLOW.purple
+                      )}
                       title={t("compareRecipes")}
                     >
                       <svg
@@ -202,14 +206,15 @@ export function AlternativeRecipeSelector() {
                     <button
                       data-testid={`alternative-recipe-mining-button-${itemId}`}
                       onClick={() => handleRecipeSelect(itemId, -1)}
-                      className={`
-                        w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
-                        ${
-                          selectedRecipeId === -1
-                            ? "bg-neon-yellow/20 border-neon-yellow ${NEON_GLOW.yellow} backdrop-blur-sm font-bold scale-105"
-                            : "bg-dark-700/50 border-neon-yellow/20 hover:border-neon-yellow/50 hover:bg-neon-yellow/10"
-                        }
-                      `}
+                      className={cn(
+                        "w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect",
+                        selectedRecipeId === -1
+                          ? cn(
+                              "bg-neon-yellow/20 border-neon-yellow backdrop-blur-sm font-bold scale-105",
+                              NEON_GLOW.yellow
+                            )
+                          : "bg-dark-700/50 border-neon-yellow/20 hover:border-neon-yellow/50 hover:bg-neon-yellow/10"
+                      )}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
@@ -257,14 +262,15 @@ export function AlternativeRecipeSelector() {
                         key={recipe.SID}
                         data-testid={`alternative-recipe-button-${itemId}-${recipe.SID}`}
                         onClick={() => handleRecipeSelect(itemId, recipe.SID)}
-                        className={`
-                          w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect
-                          ${
-                            isSelected
-                              ? "bg-neon-green/20 border-neon-green ${NEON_GLOW.green} backdrop-blur-sm font-bold scale-105"
-                              : "bg-dark-700/50 border-neon-green/20 hover:border-neon-green/50 hover:bg-neon-green/10"
-                          }
-                        `}
+                        className={cn(
+                          "w-full p-3 rounded-lg border-2 transition-all text-left ripple-effect",
+                          isSelected
+                            ? cn(
+                                "bg-neon-green/20 border-neon-green backdrop-blur-sm font-bold scale-105",
+                                NEON_GLOW.green
+                              )
+                            : "bg-dark-700/50 border-neon-green/20 hover:border-neon-green/50 hover:bg-neon-green/10"
+                        )}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex items-center gap-2">

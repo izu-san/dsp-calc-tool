@@ -6,6 +6,8 @@ import { loadGameDataVersion } from "../../lib/parser";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { calculateRecipeDiff, calculateItemDiff, calculateMachineDiff } from "../../lib/patchDiff";
 import type { RecipeDiff, ItemDiff, MachineDiff } from "../../types/patch-diff";
+import { cn } from "../../utils/classNames";
+import { ICON_GLOW } from "../../constants/theme";
 
 export function PatchInfoView() {
   const { t } = useTranslation();
@@ -97,7 +99,12 @@ export function PatchInfoView() {
             value={selectedVersion || versionInfo.primaryVersion}
             onValueChange={handleVersionChange}
           >
-            <Select.Trigger className="w-full px-4 py-2 bg-dark-700/50 border border-neon-purple/40 rounded-lg text-white hover:border-neon-purple/70 focus:border-neon-purple focus:${ICON_GLOW.purple} transition-all">
+            <Select.Trigger
+              className={cn(
+                "w-full px-4 py-2 bg-dark-700/50 border border-neon-purple/40 rounded-lg text-white hover:border-neon-purple/70 focus:border-neon-purple transition-all",
+                `focus:${ICON_GLOW.purple}`
+              )}
+            >
               <Select.Value />
               <Select.Icon className="ml-auto">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -139,7 +146,11 @@ export function PatchInfoView() {
                     <Select.Item
                       key={version.version}
                       value={version.version}
-                      className="px-3 py-2 rounded cursor-pointer text-white bg-dark-700 hover:bg-dark-600 hover:text-neon-purple hover:${ICON_GLOW.purple} focus:bg-dark-600 focus:outline-none data-[highlighted]:bg-dark-600 data-[highlighted]:text-neon-purple data-[highlighted]:${ICON_GLOW.purple} transition-all duration-200"
+                      className={cn(
+                        "px-3 py-2 rounded cursor-pointer text-white bg-dark-700 hover:bg-dark-600 hover:text-neon-purple focus:bg-dark-600 focus:outline-none data-[highlighted]:bg-dark-600 data-[highlighted]:text-neon-purple transition-all duration-200",
+                        `hover:${ICON_GLOW.purple}`,
+                        `data-[highlighted]:${ICON_GLOW.purple}`
+                      )}
                     >
                       <Select.ItemText className="text-white">
                         <div className="flex items-center justify-between">

@@ -7,6 +7,8 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { PROLIFERATOR_DATA } from "../../types/settings";
+import { cn } from "../../utils/classNames";
+import { CARD_GLOW, ICON_GLOW } from "../../constants/theme";
 
 interface CompactNodeSettingsProps {
   node: RecipeTreeNode;
@@ -215,7 +217,10 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
 
   return (
     <div
-      className="bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30 ${CARD_GLOW.purpleLight}"
+      className={cn(
+        "bg-dark-800/50 backdrop-blur-sm rounded-lg p-3 border border-neon-purple/30",
+        CARD_GLOW.purpleLight
+      )}
       data-testid="compact-node-settings"
     >
       <div className="space-y-3">
@@ -239,14 +244,12 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
             aria-checked={useOverride}
             aria-label={t("useCustomSettings")}
             data-testid="custom-settings-toggle"
-            className={`
-              relative inline-flex h-4 w-7 items-center rounded-full transition-all ripple-effect
-              ${
-                useOverride
-                  ? "bg-neon-purple ${ICON_GLOW.purple}"
-                  : "bg-dark-600 border border-neon-purple/30"
-              }
-            `}
+            className={cn(
+              "relative inline-flex h-4 w-7 items-center rounded-full transition-all ripple-effect",
+              useOverride
+                ? cn("bg-neon-purple", ICON_GLOW.purple)
+                : "bg-dark-600 border border-neon-purple/30"
+            )}
           >
             <span
               className={`
@@ -274,7 +277,10 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                   }}
                   aria-label={t("proliferator")}
                   data-testid="proliferator-type-select"
-                  className="w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta focus:${ICON_GLOW.magenta} transition-all"
+                  className={cn(
+                    "w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta transition-all",
+                    `focus:${ICON_GLOW.purple}`
+                  )}
                   style={{
                     backgroundColor: "#1E293B",
                     color: "#FFFFFF",
@@ -326,16 +332,17 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                             aria-pressed={proliferatorMode === mode}
                             aria-label={`${t("mode")}: ${mode}`}
                             data-testid={`proliferator-mode-${mode}`}
-                            className={`
-                            px-2 py-2 text-xs rounded transition-all min-h-[2rem] flex items-center justify-center ripple-effect
-                            ${
+                            className={cn(
+                              "px-2 py-2 text-xs rounded transition-all min-h-[2rem] flex items-center justify-center ripple-effect",
                               isDisabled
                                 ? "bg-dark-600 border border-neon-magenta/20 text-space-400 cursor-not-allowed opacity-50 hover:bg-dark-600"
                                 : proliferatorMode === mode
-                                  ? "bg-neon-magenta/30 border border-neon-magenta text-white ${ICON_GLOW.magenta}"
+                                  ? cn(
+                                      "bg-neon-magenta/30 border border-neon-magenta text-white",
+                                      ICON_GLOW.purple
+                                    )
                                   : "bg-dark-700/50 border border-neon-magenta/30 text-space-200 hover:border-neon-magenta/60 hover:bg-neon-magenta/10 hover:text-neon-magenta"
-                            }
-                          `}
+                            )}
                           >
                             <div className="flex items-center gap-1">
                               <span>{mode === "production" ? "🏭" : "⚡"}</span>
@@ -365,7 +372,10 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                     setMachineRank(e.target.value);
                   }}
                   data-testid="machine-rank-select"
-                  className="w-full text-xs border border-neon-blue/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-blue focus:${ICON_GLOW.blue} transition-all"
+                  className={cn(
+                    "w-full text-xs border border-neon-blue/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-blue transition-all",
+                    `focus:${ICON_GLOW.blue}`
+                  )}
                   style={{
                     backgroundColor: "#1E293B",
                     color: "#FFFFFF",

@@ -117,7 +117,7 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
             className={cn(
               "px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all ripple-effect",
               showPowerGraph
-                ? `bg-neon-purple/30 border-neon-purple text-white ${CARD_GLOW.purpleStrong}`
+                ? cn("bg-neon-purple/30 border-neon-purple text-white", CARD_GLOW.purpleStrong)
                 : "bg-dark-700/50 border-neon-purple/30 text-space-200 hover:border-neon-purple hover:bg-neon-purple/10 hover:text-neon-purple"
             )}
           >

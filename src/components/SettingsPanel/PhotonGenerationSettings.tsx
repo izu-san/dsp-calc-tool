@@ -6,6 +6,8 @@ import {
 import { useSettingsStore } from "../../stores/settingsStore";
 import { PROLIFERATOR_DATA, type ProliferatorType } from "../../types/settings";
 import { ItemIcon } from "../ItemIcon";
+import { cn } from "../../utils/classNames";
+import { NEON_GLOW } from "../../constants/theme";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {
@@ -73,14 +75,15 @@ export function PhotonGenerationSettings() {
                   key={type}
                   data-testid={`photon-generation-proliferator-button-${type}`}
                   onClick={() => handleProliferatorChange(type)}
-                  className={`
-                    px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                    ${
-                      isSelected
-                        ? "bg-neon-magenta/30 text-white border-neon-magenta ${NEON_GLOW.magentaStrong},inset_0_0_20px_rgba(233,53,255,0.2) backdrop-blur-sm font-bold scale-105"
-                        : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
-                    }
-                  `}
+                  className={cn(
+                    "px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                    isSelected
+                      ? cn(
+                          "bg-neon-magenta/30 text-white border-neon-magenta backdrop-blur-sm font-bold scale-105",
+                          NEON_GLOW.purpleStrong
+                        )
+                      : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
+                  )}
                 >
                   <div className="flex flex-col items-center gap-1">
                     {iconId && <ItemIcon itemId={iconId} size={24} />}

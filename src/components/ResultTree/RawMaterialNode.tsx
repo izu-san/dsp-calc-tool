@@ -96,8 +96,8 @@ export function RawMaterialNode({ node, depth }: RawMaterialNodeProps) {
               className={cn(
                 "text-lg font-bold",
                 isCircular
-                  ? `text-neon-purple ${TEXT_GLOW.purple}`
-                  : `text-neon-green ${TEXT_GLOW.green}`
+                  ? cn("text-neon-purple", TEXT_GLOW.purple)
+                  : cn("text-neon-green", TEXT_GLOW.green)
               )}
             >
               {formatRate(node.targetOutputRate)}

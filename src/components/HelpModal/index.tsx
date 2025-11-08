@@ -2,6 +2,8 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { CARD_GLOW, ICON_GLOW, MODAL_GLOW, NEON_GLOW, TEXT_GLOW } from "../../constants/theme";
+import { cn } from "../../utils/classNames";
 import { PatchInfoView } from "../PatchInfoView";
 import { formatDate } from "./dateFormatter";
 import { FeedbackForm } from "./FeedbackForm";
@@ -53,7 +55,10 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
       aria-labelledby="help-modal-title"
     >
       <div
-        className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg ${MODAL_GLOW.purple} max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale"
+        className={cn(
+          "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale",
+          MODAL_GLOW.purple
+        )}
         style={{ zIndex: 100000 }}
         onClick={e => e.stopPropagation()}
         data-testid="help-modal"
@@ -61,13 +66,18 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
         {/* Header */}
         <div className="p-6 border-b border-neon-purple/30 flex items-center justify-between bg-dark-800/50">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg ${CARD_GLOW.purple}">
+            <div
+              className={cn(
+                "p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg",
+                CARD_GLOW.purple
+              )}
+            >
               <span className="text-2xl">📖</span>
             </div>
             <div>
               <h2
                 id="help-modal-title"
-                className="text-2xl font-bold text-white ${TEXT_GLOW.purple}"
+                className={cn("text-2xl font-bold text-white", TEXT_GLOW.purple)}
               >
                 {t("help")}
               </h2>
@@ -104,37 +114,61 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
             <Tabs.Trigger
               ref={firstTabRef}
               value="about"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className={cn(
+                "px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan",
+                `hover:${ICON_GLOW.purple}`,
+                `data-[state=active]:${NEON_GLOW.purpleStrong}`
+              )}
             >
               {t("about")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="changelog"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className={cn(
+                "px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan",
+                `hover:${ICON_GLOW.purple}`,
+                `data-[state=active]:${NEON_GLOW.purpleStrong}`
+              )}
             >
               {t("changelog")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="faq"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className={cn(
+                "px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan",
+                `hover:${ICON_GLOW.purple}`,
+                `data-[state=active]:${NEON_GLOW.purpleStrong}`
+              )}
             >
               {t("faqLabel")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="keyboardShortcuts"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className={cn(
+                "px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan",
+                `hover:${ICON_GLOW.purple}`,
+                `data-[state=active]:${NEON_GLOW.purpleStrong}`
+              )}
             >
               {t("keyboardShortcuts")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="patchDiff"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className={cn(
+                "px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan",
+                `hover:${ICON_GLOW.purple}`,
+                `data-[state=active]:${NEON_GLOW.purpleStrong}`
+              )}
             >
               {t("patchDiff")}
             </Tabs.Trigger>
             <Tabs.Trigger
               value="feedback"
-              className="px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 hover:${ICON_GLOW.purple} transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:${NEON_GLOW.purpleStrong},inset_0_0_20px_rgba(168,85,247,0.2) data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan"
+              className={cn(
+                "px-5 py-2.5 rounded-t-lg text-space-300 bg-dark-700/50 border-2 border-b-0 border-neon-purple/40 hover:text-white hover:bg-dark-600/70 hover:border-neon-purple/70 transition-all duration-200 cursor-pointer font-medium relative data-[state=active]:text-white data-[state=active]:bg-neon-purple/30 data-[state=active]:border-neon-purple data-[state=active]:border-b-neon-purple/30 data-[state=active]:z-10 focus-visible:outline-2 focus-visible:outline-neon-cyan focus-visible:outline-offset-2 focus-visible:border-neon-cyan",
+                `hover:${ICON_GLOW.purple}`,
+                `data-[state=active]:${NEON_GLOW.purpleStrong}`
+              )}
             >
               {t("feedback")}
             </Tabs.Trigger>
