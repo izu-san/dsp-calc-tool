@@ -29,6 +29,19 @@ function isValidVersion(version: unknown): version is string {
  * CI/CD環境や shallow clone でも安全に動作するように設計
  */
 function getAppVersion(): string {
+  // テスト環境では execSync を避けて package.json のバージョンを直接使用
+  // これによりテスト実行時の副作用を防ぐ
+  // process.env.VITEST は vitest が自動的に設定する環境変数（GitHub ActionsのCI環境でも設定される）
+  // process.env.NODE_ENV === "test" もチェックして、より確実にテスト環境を検出
+  const isTestEnv = process.env.NODE_ENV === "test" || process.env.VITEST !== undefined;
+
+  if (isTestEnv) {
+    if (isValidVersion(packageJson.version)) {
+      return packageJson.version;
+    }
+    return "0.0.0";
+  }
+
   // まず Git タグから取得を試みる
   try {
     const latestTag = execSync("git describe --tags --abbrev=0", {
