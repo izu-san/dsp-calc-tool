@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
+import { CARD_GLOW } from "../../constants/theme";
 import {
   calculateRayTransmissionEfficiency,
   getMaxMeaningfulResearchLevel,
 } from "../../lib/photonGenerationCalculation";
 import { useSettingsStore } from "../../stores/settingsStore";
 import { PROLIFERATOR_DATA, type ProliferatorType } from "../../types/settings";
-import { ItemIcon } from "../ItemIcon";
 import { cn } from "../../utils/classNames";
-import { NEON_GLOW } from "../../constants/theme";
+import { ItemIcon } from "../ItemIcon";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {
@@ -80,7 +80,7 @@ export function PhotonGenerationSettings() {
                     isSelected
                       ? cn(
                           "bg-neon-magenta/30 text-white border-neon-magenta backdrop-blur-sm font-bold scale-105",
-                          NEON_GLOW.purpleStrong
+                          CARD_GLOW.magentaStrong
                         )
                       : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
                   )}
