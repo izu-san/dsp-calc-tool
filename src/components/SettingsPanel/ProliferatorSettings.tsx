@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { CARD_GLOW, NEON_GLOW } from "../../constants/theme";
 import { getEffectiveBonuses } from "../../lib/proliferator";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
-import { ItemIcon } from "../ItemIcon";
 import { cn } from "../../utils/classNames";
-import { NEON_GLOW } from "../../constants/theme";
+import { ItemIcon } from "../ItemIcon";
 
 // Proliferator item IDs
 const PROLIFERATOR_IDS: Record<ProliferatorType, number | null> = {
@@ -77,7 +77,7 @@ export function ProliferatorSettings() {
                   proliferator.type === type
                     ? cn(
                         "bg-neon-magenta/30 text-white border-neon-magenta backdrop-blur-sm font-bold scale-105",
-                        NEON_GLOW.purpleStrong
+                        CARD_GLOW.magentaStrong
                       )
                     : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
                 )}
