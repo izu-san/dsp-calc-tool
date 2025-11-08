@@ -1,14 +1,14 @@
-import { useState, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 import * as Tabs from "@radix-ui/react-tabs";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { BORDER_COLOR, NEON_GLOW } from "../../constants/theme";
+import { useDebounce } from "../../hooks/useDebounce";
+import { useFavoritesStore } from "../../stores/favoritesStore";
 import type { Recipe } from "../../types";
 import { RecipeSelectorTab } from "../../types/ui-tabs";
-import { RecipeGrid } from "./RecipeGrid";
-import { useFavoritesStore } from "../../stores/favoritesStore";
-import { ItemIcon } from "../ItemIcon";
-import { useDebounce } from "../../hooks/useDebounce";
 import { cn } from "../../utils/classNames";
-import { NEON_GLOW, BORDER_COLOR, ICON_GLOW } from "../../constants/theme";
+import { ItemIcon } from "../ItemIcon";
+import { RecipeGrid } from "./RecipeGrid";
 
 interface RecipeSelectorProps {
   recipes: Recipe[];
@@ -196,8 +196,8 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                   }}
                   className={cn(
                     "w-full text-left px-3 py-2 rounded-md text-sm text-space-200 hover:text-white transition-all hover:bg-neon-cyan/30 border-2 border-transparent hover:scale-[1.02] ripple-effect",
-                    `hover:${BORDER_COLOR.cyan}`,
-                    `hover:${ICON_GLOW.cyan}`
+                    "hover:border-neon-cyan/50",
+                    "hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]"
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -342,7 +342,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
             className={cn(
               "px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect",
               "data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan",
-              `data-[state=active]:${ICON_GLOW.cyan}`,
+              "data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]",
               "data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
             )}
           >
@@ -354,7 +354,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
             className={cn(
               "px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect",
               "data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan",
-              `data-[state=active]:${ICON_GLOW.cyan}`,
+              "data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]",
               "data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
             )}
           >

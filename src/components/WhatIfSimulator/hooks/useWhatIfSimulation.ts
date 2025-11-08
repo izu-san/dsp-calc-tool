@@ -7,7 +7,7 @@ import { useNodeOverrideStore } from "../../../stores/nodeOverrideStore";
 import { useRecipeSelectionStore } from "../../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../../stores/settingsStore";
 import type { RecipeTreeNode } from "../../../types";
-import type { Scenario, ScenarioResult, BottleneckSuggestion } from "../types";
+import type { BottleneckSuggestion, Scenario, ScenarioResult } from "../types";
 
 /**
  * WhatIfシミュレーションのロジックを管理するカスタムフック
@@ -263,9 +263,11 @@ export function useWhatIfSimulation() {
         baseResult,
         diff: {
           power: powerDiff,
-          powerPercent: (powerDiff / baseResult.totalPower.total) * 100,
+          powerPercent:
+            baseResult.totalPower.total > 0 ? (powerDiff / baseResult.totalPower.total) * 100 : 0,
           machines: machineDiff,
-          machinePercent: (machineDiff / baseResult.totalMachines) * 100,
+          machinePercent:
+            baseResult.totalMachines > 0 ? (machineDiff / baseResult.totalMachines) * 100 : 0,
           belts: beltDiff,
           beltPercent: baseBelts > 0 ? (beltDiff / baseBelts) * 100 : 0,
         },
