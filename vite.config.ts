@@ -41,6 +41,9 @@ function getAppVersion(): string {
     if (isValidVersion(latestTag)) {
       return latestTag;
     }
+
+    // Gitタグは取得できたが、形式が無効な場合
+    console.warn(`Invalid Git tag format "${latestTag}", falling back to package.json version`);
   } catch (error) {
     // Gitタグが取得できない場合（shallow clone、タグなし、git未使用など）はフォールバック
     // エラーは警告として記録するが、ビルドは続行する

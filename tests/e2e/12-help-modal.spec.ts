@@ -313,8 +313,9 @@ test.describe("ヘルプモーダル", () => {
 
     // タブを切り替えてから閉じる
     await appPage.getByRole("tab", { name: "フィードバック" }).click();
+    // タブパネルが表示されるのを待つ
     const feedbackTab = appPage.getByTestId("help-tab-feedback");
-    await feedbackTab.waitFor({ state: "visible", timeout: 10000 });
+    await expect(feedbackTab).toBeVisible();
     await expect(
       appPage.getByRole("tab", { name: "フィードバック", selected: true })
     ).toBeVisible();
