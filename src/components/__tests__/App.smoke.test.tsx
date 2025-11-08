@@ -17,7 +17,7 @@ vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
-        title: "Dyson Sphere Program - レシピ計算機",
+        title: "DSP Recipe Calculator",
         loadingGameData: "ゲームデータを読み込み中...",
         error: "エラーが発生しました",
         target: "目標",
@@ -195,7 +195,7 @@ describe("App smoke", () => {
   it("renders header and primary panels without crashing", async () => {
     render(<App />);
 
-    expect(screen.getByText("Dyson Sphere Program - レシピ計算機")).toBeInTheDocument();
+    expect(screen.getByText("DSP Recipe Calculator")).toBeInTheDocument();
     expect(screen.getByTestId("language-menu-trigger")).toBeInTheDocument();
     // lazy要素はロード待ち
     expect(await screen.findByTestId("recipe-selector")).toBeInTheDocument();
