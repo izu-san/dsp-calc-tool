@@ -1,5 +1,8 @@
 {
-  "buildTime": "2025-11-06T08:25:13.288Z",
+  "buildTime": "2025-11-08T07:09:16.524Z",
   "appVersion": "0.0.1",
+  "testCoverage": {
+    "percentage": 81.9
+  },
   "dataLastUpdated": "2025-10-28T14:20:00+09:00"
 }

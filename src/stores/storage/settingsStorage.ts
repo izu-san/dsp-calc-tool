@@ -1,4 +1,4 @@
-import type { CustomSettingsTemplate } from "../../types";
+import type { CustomSettingsTemplate, GlobalSettings } from "../../types";
 import { serializeSettings, deserializeSettings } from "../../utils/storageSerializer";
 
 /**
@@ -81,7 +81,7 @@ export function createSettingsStorage() {
 
         const state = value.state as { settings: unknown; customTemplates?: unknown };
         // 型安全なシリアライズ
-        const serialized = serializeSettings(state.settings);
+        const serialized = serializeSettings(state.settings as GlobalSettings);
 
         // customTemplates のシリアライズ
         const serializedCustomTemplates: Record<

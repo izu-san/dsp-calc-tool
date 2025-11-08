@@ -1,13 +1,13 @@
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { PlanDiffView } from "../PlanDiffView";
-import type { PlanDiff } from "../../utils/planDiff";
+import type { PlanDiffEntry } from "../../utils/planDiff";
 
 interface DiffDialogProps {
   isOpen: boolean;
   diffBaseVersion: number | null;
   diffCompareVersion: number | null;
-  diffs: PlanDiff[] | null;
+  diffs: PlanDiffEntry[] | null;
   onClose: () => void;
 }
 

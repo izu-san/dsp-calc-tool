@@ -36,7 +36,7 @@ test.describe("What-If分析", () => {
     await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
 
     // 3. 増産剤最大ボタンを操作する
-    await page.getByTestId("whatif-quick-action-max-proliferator").click();
+    await page.getByTestId("whatif-quick-action-proliferator-mk3").click();
 
     // 期待値
     await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 300");
