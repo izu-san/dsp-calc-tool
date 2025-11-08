@@ -5,7 +5,7 @@ import { parseGridIndex } from "../../utils/grid";
 import { useFavoritesStore } from "../../stores/favoritesStore";
 import { ItemIcon } from "../ItemIcon";
 import { cn } from "../../utils/classNames";
-import { NEON_GLOW, ICON_GLOW, BORDER_COLOR } from "../../constants/theme";
+import { NEON_GLOW } from "../../constants/theme";
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -114,7 +114,8 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
             "border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm": !isSelected,
           },
           isSelected ? NEON_GLOW.cyan : "",
-          !isSelected && `hover:${BORDER_COLOR.cyan} hover:scale-105 hover:${ICON_GLOW.cyan}`
+          !isSelected &&
+            "hover:border-neon-cyan/50 hover:scale-105 hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]"
         )}
         title={recipe.name}
       >
