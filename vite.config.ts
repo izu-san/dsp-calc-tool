@@ -94,7 +94,7 @@ export default defineConfig({
     // テスト環境でのみ使用する環境変数（本番環境では環境変数から読み込む）
     // CI環境では未設定の可能性があるため、テスト用のデフォルト値を設定
     // ただし、本番ビルドには影響しないように、process.env.NODE_ENVが'test'の場合のみ設定
-    ...(process.env.NODE_ENV === "test" || process.env.VITEST
+    ...(process.env.NODE_ENV === "test" || process.env.VITEST !== undefined
       ? {
           "import.meta.env.VITE_GOOGLE_FORM_URL": JSON.stringify(
             process.env.VITE_GOOGLE_FORM_URL ||
