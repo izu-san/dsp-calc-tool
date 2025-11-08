@@ -15,13 +15,22 @@ try {
 
 /**
  * バージョン文字列が有効か検証する
+ * セマンティックバージョニング（SemVer）の仕様に準拠:
+ * - MAJOR.MINOR.PATCH (必須)
+ * - -PRERELEASE (オプション、ハイフンで始まる)
+ * - +BUILD (オプション、プラスで始まる)
  */
 function isValidVersion(version: unknown): version is string {
   if (typeof version !== "string") {
     return false;
   }
   const trimmed = version.trim();
-  return trimmed !== "" && /^\d+\.\d+\.\d+/.test(trimmed);
+  if (trimmed === "") {
+    return false;
+  }
+  // SemVer形式: MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
+  // 例: "1.2.3", "1.2.3-beta.1", "1.2.3+build.123", "1.2.3-beta.1+build.123"
+  return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(trimmed);
 }
 
 /**
