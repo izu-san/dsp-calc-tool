@@ -9,7 +9,7 @@ import type { Recipe } from "../../types";
 import { formatNumber, formatPower } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
 import { cn } from "../../utils/classNames";
-import { CARD_GLOW, TEXT_GLOW } from "../../constants/theme";
+import { CARD_GLOW, TEXT_GLOW, MODAL_GLOW } from "../../constants/theme";
 
 interface RecipeComparisonModalProps {
   itemId: number;

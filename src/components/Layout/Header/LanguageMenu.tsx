@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useGameDataStore } from "../../../stores/gameDataStore";
 import { cn } from "../../../utils/classNames";
-import { CARD_GLOW, ICON_GLOW } from "../../../constants/theme";
+import { CARD_GLOW, ICON_GLOW, MODAL_GLOW } from "../../../constants/theme";
 
 /**
  * 言語切替ドロップダウンメニューコンポーネント

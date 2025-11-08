@@ -8,7 +8,7 @@ import { historyDebouncer } from "../../utils/history/debouncer";
 import { regenerateHistoryDescription } from "../../utils/history/regenerator";
 import { restoreStateFromHistory } from "../../utils/history/restoration";
 import { cn } from "../../utils/classNames";
-import { CARD_GLOW, TEXT_GLOW, NEON_GLOW } from "../../constants/theme";
+import { CARD_GLOW, TEXT_GLOW, NEON_GLOW, MODAL_GLOW } from "../../constants/theme";
 
 interface HistoryDialogProps {
   isOpen: boolean;
