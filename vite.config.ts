@@ -17,7 +17,11 @@ try {
  * バージョン文字列が有効か検証する
  */
 function isValidVersion(version: unknown): version is string {
-  return typeof version === "string" && version.trim() !== "" && /^\d+\.\d+\.\d+/.test(version);
+  if (typeof version !== "string") {
+    return false;
+  }
+  const trimmed = version.trim();
+  return trimmed !== "" && /^\d+\.\d+\.\d+/.test(trimmed);
 }
 
 /**
