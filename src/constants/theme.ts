@@ -46,6 +46,7 @@ export const ICON_GLOW = {
   cyan: "shadow-[0_0_10px_rgba(0,217,255,0.3)]",
   blue: "shadow-[0_0_10px_rgba(0,136,255,0.3)]",
   purple: "shadow-[0_0_10px_rgba(168,85,247,0.3)]",
+  magenta: "shadow-[0_0_10px_rgba(233,53,255,0.3)]",
   green: "shadow-[0_0_10px_rgba(0,255,136,0.3)]",
   orange: "shadow-[0_0_10px_rgba(255,107,53,0.3)]",
   yellow: "shadow-[0_0_10px_rgba(255,215,0,0.5)]",

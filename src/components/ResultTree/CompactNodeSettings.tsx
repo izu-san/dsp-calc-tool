@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ICONS } from "../../constants/icons";
 import { PROLIFERATOR_MODES } from "../../constants/proliferator";
+import { CARD_GLOW, ICON_GLOW } from "../../constants/theme";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
 import { PROLIFERATOR_DATA } from "../../types/settings";
 import { cn } from "../../utils/classNames";
-import { CARD_GLOW, ICON_GLOW } from "../../constants/theme";
 
 interface CompactNodeSettingsProps {
   node: RecipeTreeNode;
@@ -279,7 +279,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                   data-testid="proliferator-type-select"
                   className={cn(
                     "w-full text-xs border border-neon-magenta/40 rounded px-2 py-1 bg-dark-700/50 text-white focus:border-neon-magenta transition-all",
-                    `focus:${ICON_GLOW.purple}`
+                    `focus:${ICON_GLOW.magenta}`
                   )}
                   style={{
                     backgroundColor: "#1E293B",
@@ -339,7 +339,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                                 : proliferatorMode === mode
                                   ? cn(
                                       "bg-neon-magenta/30 border border-neon-magenta text-white",
-                                      ICON_GLOW.purple
+                                      ICON_GLOW.magenta
                                     )
                                   : "bg-dark-700/50 border border-neon-magenta/30 text-space-200 hover:border-neon-magenta/60 hover:bg-neon-magenta/10 hover:text-neon-magenta"
                             )}
