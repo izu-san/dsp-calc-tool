@@ -1,16 +1,32 @@
-import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
-import path from "path";
-import { readFileSync } from "fs";
 import { execSync } from "child_process";
+import { readFileSync } from "fs";
+import path from "path";
+import { defineConfig } from "vitest/config";
 
 // package.jsonからバージョンを取得
-const packageJson = JSON.parse(readFileSync("./package.json", "utf-8"));
+let packageJson: { version?: string };
+try {
+  packageJson = JSON.parse(readFileSync("./package.json", "utf-8"));
+} catch (error) {
+  console.error("Failed to read package.json:", error);
+  packageJson = {};
+}
 
-// Gitの最新タグからバージョンを取得（フォールバック付き）
+/**
+ * バージョン文字列が有効か検証する
+ */
+function isValidVersion(version: unknown): version is string {
+  return typeof version === "string" && version.trim() !== "" && /^\d+\.\d+\.\d+/.test(version);
+}
+
+/**
+ * Gitの最新タグからバージョンを取得（フォールバック付き）
+ * CI/CD環境や shallow clone でも安全に動作するように設計
+ */
 function getAppVersion(): string {
+  // まず Git タグから取得を試みる
   try {
-    // 最新のタグを取得（v0.0.3のような形式）
     const latestTag = execSync("git describe --tags --abbrev=0", {
       encoding: "utf-8",
       stdio: ["ignore", "pipe", "ignore"],
@@ -18,16 +34,25 @@ function getAppVersion(): string {
       .trim()
       .replace(/^v/, ""); // vプレフィックスを除去
 
-    if (latestTag && latestTag !== "") {
+    if (isValidVersion(latestTag)) {
       return latestTag;
     }
   } catch (error) {
-    // Gitタグが取得できない場合はフォールバック
-    console.warn("Failed to get Git tag, using package.json version:", error);
+    // Gitタグが取得できない場合（shallow clone、タグなし、git未使用など）はフォールバック
+    // エラーは警告として記録するが、ビルドは続行する
+    console.warn("Failed to get Git tag, falling back to package.json version:", error);
   }
 
   // フォールバック: package.jsonのバージョンを使用
-  return packageJson.version;
+  if (isValidVersion(packageJson.version)) {
+    return packageJson.version;
+  }
+
+  // 最終フォールバック: 有効なバージョンが取得できない場合
+  console.warn(
+    `Invalid or missing version in package.json (${packageJson.version}), using default "0.0.0"`
+  );
+  return "0.0.0";
 }
 
 const appVersion = getAppVersion();
