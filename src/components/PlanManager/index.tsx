@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { CARD_GLOW, ICON_GLOW, MODAL_GLOW, TEXT_GLOW } from "../../constants/theme";
 import { usePlanExport } from "../../hooks/usePlanExport";
 import { usePlanImport } from "../../hooks/usePlanImport";
 import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
@@ -18,13 +19,12 @@ import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { Recipe, SavedPlan } from "../../types";
 import type { ImageExportOptions } from "../../types/export";
+import { cn } from "../../utils/classNames";
 import { calculatePlanDiff } from "../../utils/planDiff";
 import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
+import { DiffDialog } from "./DiffDialog";
 import { ShareUrlDialog } from "./ShareUrlDialog";
 import { VersionHistoryDialog } from "./VersionHistoryDialog";
-import { DiffDialog } from "./DiffDialog";
-import { cn } from "../../utils/classNames";
-import { CARD_GLOW, TEXT_GLOW, ICON_GLOW, MODAL_GLOW } from "../../constants/theme";
 
 export function PlanManager() {
   const { t } = useTranslation();
@@ -297,6 +297,8 @@ export function PlanManager() {
             updateSettings,
             setNodeOverrides: setAllOverrides,
           },
+          mergeOverrides: dialogs.mergeOverridesOnLoad,
+          currentOverrides: nodeOverrides,
           historyDescription: t("planLoadedFromBrowser", { planName: plan.name, version }),
         });
 
@@ -310,6 +312,7 @@ export function PlanManager() {
     [
       data,
       dialogs,
+      nodeOverrides,
       t,
       loadPlanVersionFromStore,
       setSelectedRecipe,
