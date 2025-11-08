@@ -215,8 +215,12 @@ export function createRawMaterialNode({
   let miningEquipment;
   if (!isCircular) {
     try {
+      // calculateMiningRequirements only uses the rawMaterials property from CalculationResult
+      const partialResult = {
+        rawMaterials: new Map([[itemId, requiredRate]]),
+      };
       const miningCalc = calculateMiningRequirements(
-        { rawMaterials: new Map([[itemId, requiredRate]]) } as CalculationResult,
+        partialResult as CalculationResult, // Safe: function only accesses rawMaterials
         settings.miningSpeedResearch / 100, // Convert percentage to multiplier
         miningSettings.machineType,
         miningSettings.workSpeedMultiplier,
@@ -508,59 +512,33 @@ function buildRecipeTreeInternal({
   };
 }
 
-export function buildRecipeTree(options: BuildRecipeTreeOptions): RecipeTreeNode;
-export function buildRecipeTree(
+/**
+ * Build recipe tree with options object (preferred method)
+ */
+export function buildRecipeTree(options: BuildRecipeTreeOptions): RecipeTreeNode {
+  return buildRecipeTreeInternal(options);
+}
+
+/**
+ * Legacy function signature for backward compatibility with tests
+ * @deprecated Use buildRecipeTree with options object instead
+ */
+export function buildRecipeTreeFromParams(
   recipe: Recipe,
   targetRate: number,
   gameData: GameData,
   settings: GlobalSettings,
-  nodeOverrides: Map<string, NodeOverrideSettings>,
-  depth?: number,
-  maxDepth?: number,
+  nodeOverrides: Map<string, NodeOverrideSettings> = new Map(),
+  depth: number = 0,
+  maxDepth: number = 20,
   nodePath?: string,
   visitingItems?: Set<number>,
-  miningSettings?: TreeBuilderMiningSettings,
+  miningSettings: TreeBuilderMiningSettings = {
+    machineType: "Mining Machine",
+    workSpeedMultiplier: 1,
+  },
   targetItemId?: number
-): RecipeTreeNode;
-export function buildRecipeTree(...args: unknown[]): RecipeTreeNode {
-  if (
-    args.length === 1 &&
-    typeof args[0] === "object" &&
-    args[0] !== null &&
-    "recipe" in (args[0] as Record<string, unknown>)
-  ) {
-    return buildRecipeTreeInternal(args[0] as BuildRecipeTreeOptions);
-  }
-
-  const [
-    recipe,
-    targetRate,
-    gameData,
-    settings,
-    nodeOverrides = new Map<string, NodeOverrideSettings>(),
-    depth = 0,
-    maxDepth = 20,
-    nodePath,
-    visitingItems,
-    miningSettings = {
-      machineType: "Mining Machine" as const,
-      workSpeedMultiplier: 1,
-    },
-    targetItemId,
-  ] = args as [
-    Recipe,
-    number,
-    GameData,
-    GlobalSettings,
-    Map<string, NodeOverrideSettings> | undefined,
-    number | undefined,
-    number | undefined,
-    string | undefined,
-    Set<number> | undefined,
-    TreeBuilderMiningSettings | undefined,
-    number | undefined,
-  ];
-
+): RecipeTreeNode {
   const context: TreeBuilderContext = {
     gameData,
     settings,

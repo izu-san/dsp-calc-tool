@@ -298,7 +298,6 @@ export function ProductionResultsPanel({
                     node={calculationResult.rootNode}
                     collapsedNodes={collapsedNodes}
                     onToggleCollapse={handleToggleCollapse}
-                    nodeId="root"
                   />
                 </div>
               )}

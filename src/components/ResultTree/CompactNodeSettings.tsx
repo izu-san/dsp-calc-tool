@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ICONS } from "../../constants/icons";
+import { PROLIFERATOR_MODES } from "../../constants/proliferator";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
@@ -311,7 +312,7 @@ export function CompactNodeSettings({ node }: CompactNodeSettingsProps) {
                       </div>
                     )}
                     <div className="grid grid-cols-2 gap-1">
-                      {(["production", "speed"] as ProliferatorMode[]).map(mode => {
+                      {PROLIFERATOR_MODES.map(mode => {
                         const isDisabled = mode === "production" && !isProductionAllowed;
                         return (
                           <button

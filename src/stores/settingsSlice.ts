@@ -17,8 +17,6 @@ import type {
 import type { PowerGeneratorType } from "../types/power-generation";
 import {
   CONVEYOR_BELT_DATA,
-  DEFAULT_ALTERNATIVE_RECIPES,
-  DEFAULT_PHOTON_GENERATION_SETTINGS,
   PROLIFERATOR_DATA,
   SORTER_DATA,
   SETTINGS_TEMPLATES,
@@ -48,6 +46,7 @@ import {
   generateCustomTemplateAppliedDescription,
 } from "../utils/history/formatters";
 import { useGameDataStore } from "./gameDataStore";
+import { defaultSettings } from "./defaultSettings";
 
 /**
  * Base settings slice
@@ -68,37 +67,20 @@ export interface SettingsSlice {
   updateSettings: (settings: Partial<GlobalSettings>) => void;
 }
 
-export function createSettingsSlice(
-  set: (
-    partial:
-      | SettingsSlice
-      | Partial<SettingsSlice>
-      | ((state: SettingsSlice) => SettingsSlice | Partial<SettingsSlice>),
-    replace?: boolean | undefined
-  ) => void
-): SettingsSlice {
+/**
+ * Helper type for Zustand set function that accepts partial updates
+ */
+type ZustandSet<T> = (
+  partial: T | Partial<T> | ((state: T) => T | Partial<T>),
+  replace?: boolean | undefined
+) => void;
+
+export function createSettingsSlice(set: ZustandSet<SettingsSlice>): SettingsSlice {
   return {
     settings: {
-      proliferator: {
-        ...PROLIFERATOR_DATA.none,
-        mode: "speed",
-      },
-      machineRank: {
-        Smelt: "arc",
-        Assemble: "mk1",
-        Chemical: "standard",
-        Research: "standard",
-        Refine: "standard",
-        Particle: "standard",
-      },
-      conveyorBelt: CONVEYOR_BELT_DATA.mk3,
-      sorter: SORTER_DATA.pile,
-      alternativeRecipes: new Map(
-        Object.entries(DEFAULT_ALTERNATIVE_RECIPES).map(([k, v]) => [Number(k), v])
-      ),
-      miningSpeedResearch: 100,
-      proliferatorMultiplier: { production: 1, speed: 1 },
-      photonGeneration: DEFAULT_PHOTON_GENERATION_SETTINGS,
+      ...defaultSettings,
+      // Deep clone Map to avoid reference issues
+      alternativeRecipes: new Map(defaultSettings.alternativeRecipes),
     },
 
     setProliferator: (type, mode) =>
@@ -348,10 +330,7 @@ export interface TemplateSlice {
 }
 
 export function createTemplateSlice<T extends TemplateSlice & SettingsSlice>(
-  set: (
-    partial: T | Partial<T> | ((state: T) => T | Partial<T>),
-    replace?: boolean | undefined
-  ) => void,
+  set: ZustandSet<T>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type compatibility, may be used in future
   _get: () => T
 ): TemplateSlice {
@@ -425,13 +404,7 @@ export interface PowerGenerationSlice {
 }
 
 export function createPowerGenerationSlice(
-  set: (
-    partial:
-      | PowerGenerationSlice
-      | Partial<PowerGenerationSlice>
-      | ((state: PowerGenerationSlice) => PowerGenerationSlice | Partial<PowerGenerationSlice>),
-    replace?: boolean | undefined
-  ) => void
+  set: ZustandSet<PowerGenerationSlice>
 ): PowerGenerationSlice {
   return {
     manualPowerGenerator: null,
@@ -528,11 +501,7 @@ export interface CustomTemplateSlice {
 export function createCustomTemplateSlice<
   T extends CustomTemplateSlice & SettingsSlice & TemplateSlice,
 >(
-  set: (
-    partial: T | Partial<T> | ((state: T) => T | Partial<T>),
-    replace?: boolean | undefined
-  ) => void,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type compatibility, may be used in future
+  set: ZustandSet<T>, // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Used for type compatibility, may be used in future
   _get: () => T
 ): CustomTemplateSlice {
   return {

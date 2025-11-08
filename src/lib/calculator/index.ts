@@ -22,6 +22,8 @@ export {
   createRawMaterialNode,
   buildChildNodes,
 } from "./tree-builder";
+// Export legacy function for test compatibility
+export { buildRecipeTreeFromParams } from "./tree-builder";
 export type {
   TreeBuilderContext,
   TreeBuilderMiningSettings,

@@ -18,20 +18,16 @@ export function useProductionCalculation(
   data: GameData | null,
   settings: GlobalSettings,
   nodeOverrides: Map<string, NodeOverrideSettings>,
-  _nodeOverridesVersion: number, // Used by caller to trigger re-calculation
+  nodeOverridesVersion: number, // Used to trigger re-calculation when overrides change
   miningSettings: {
     machineType: "Mining Machine" | "Advanced Mining Machine";
     workSpeedMultiplier: number;
   },
   setCalculationResult: (result: CalculationResult | null) => void
 ) {
+  // Create stable signature for settings to avoid unnecessary recalculations
+  // Only recalculate when settings actually change (by value, not reference)
   const settingsSignature = useMemo(() => createSettingsSignature(settings), [settings]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- settingsSignatureで依存管理
-  const memoizedSettings = useMemo(() => settings, [settingsSignature]);
-  const memoizedNodeOverrides = useMemo(() => nodeOverrides, [nodeOverrides]);
-  const miningSettingsSignature = `${miningSettings.machineType}:${miningSettings.workSpeedMultiplier}`;
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- miningSettingsSignatureで依存管理
-  const memoizedMiningSettings = useMemo(() => miningSettings, [miningSettingsSignature]);
 
   useEffect(() => {
     if (selectedRecipe && data && targetQuantity > 0) {
@@ -39,9 +35,9 @@ export function useProductionCalculation(
         selectedRecipe,
         targetQuantity,
         data,
-        memoizedSettings,
-        memoizedNodeOverrides,
-        memoizedMiningSettings
+        settings,
+        nodeOverrides,
+        miningSettings
       );
 
       if (result.ok) {
@@ -53,14 +49,19 @@ export function useProductionCalculation(
     } else {
       setCalculationResult(null);
     }
+
+    // settingsSignature and nodeOverridesVersion are used to detect changes
+    // without including the objects themselves in the dependency array.
+    // miningSettings.machineType and workSpeedMultiplier are included individually
+    // to avoid unnecessary re-renders when other miningSettings properties change.
   }, [
     selectedRecipe,
     targetQuantity,
     data,
-    memoizedSettings,
-    memoizedNodeOverrides,
-    _nodeOverridesVersion,
-    memoizedMiningSettings,
+    settingsSignature,
+    nodeOverridesVersion,
+    miningSettings.machineType,
+    miningSettings.workSpeedMultiplier,
     setCalculationResult,
   ]);
 }

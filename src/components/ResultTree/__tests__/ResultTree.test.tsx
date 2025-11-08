@@ -199,7 +199,7 @@ describe("ProductionTree", () => {
     // クリックで展開・折りたたみ
     const expandButton = screen.getByRole("button", { name: "collapse" });
     fireEvent.click(expandButton);
-    expect(onToggleCollapse).toHaveBeenCalledWith("root");
+    expect(onToggleCollapse).toHaveBeenCalledWith(mockRecipeNode.nodeId);
   });
 
   it("ノードが折りたたまれている場合でも、入力表示と見出しは残る", () => {
@@ -212,11 +212,10 @@ describe("ProductionTree", () => {
     );
 
     // 折りたみ状態のアイコンが表示される
-    expect(screen.getByText("▼")).toBeInTheDocument();
+    expect(screen.getByText("▶")).toBeInTheDocument();
 
-    // 入力としての Iron Ore と見出しの Iron Ore の2箇所が表示される想定
-    const ironOreElements = screen.getAllByText("Iron Ore");
-    expect(ironOreElements.length).toBeGreaterThanOrEqual(2);
+    // 折りたたみ状態では、入力としての Iron Ore が表示される（子ノードは非表示）
+    expect(screen.getByText("Iron Ore")).toBeInTheDocument();
   });
 
   it("飽和度が表示される", () => {
@@ -382,11 +381,11 @@ describe("ProductionTree", () => {
 
     // Enter キーで展開・折りたたみ
     fireEvent.keyDown(expandButton, { key: "Enter" });
-    expect(onToggleCollapse).toHaveBeenCalledWith("root");
+    expect(onToggleCollapse).toHaveBeenCalledWith(mockRecipeNode.nodeId);
 
     // Space キーで展開・折りたたみ
     fireEvent.keyDown(expandButton, { key: " " });
-    expect(onToggleCollapse).toHaveBeenCalledWith("root");
+    expect(onToggleCollapse).toHaveBeenCalledWith(mockRecipeNode.nodeId);
   });
 
   it("ルートノードの場合、特別なスタイルが適用される", () => {
