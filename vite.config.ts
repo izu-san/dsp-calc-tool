@@ -30,7 +30,13 @@ function isValidVersion(version: unknown): version is string {
   }
   // SemVer形式: MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
   // 例: "1.2.3", "1.2.3-beta.1", "1.2.3+build.123", "1.2.3-beta.1+build.123"
-  return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(trimmed);
+  // prerelease/build識別子は、ドットで区切られた非空の識別子のリストでなければならない
+  // 連続するドット（..）や、ドットで始まる/終わる識別子（.alpha、alpha.）は許可しない
+  // MAJOR、MINOR、PATCHは先頭ゼロを持たない非負整数（SemVer 2.0.0仕様）
+  // (?:0|[1-9]\d*) は 0 または 1-9 で始まる数値（先頭ゼロなし）を許可
+  return /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.test(
+    trimmed
+  );
 }
 
 /**
