@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { BORDER_COLOR, ICON_GLOW, TEXT_GLOW } from "../../constants/theme";
 import type { RecipeTreeNode } from "../../types";
 import { cn } from "../../utils/classNames";
+import { formatBuildingCount } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
-import { TEXT_GLOW, ICON_GLOW, BORDER_COLOR } from "../../constants/theme";
 
 interface RecipeNodeHeaderProps {
   node: RecipeTreeNode;
@@ -96,7 +97,7 @@ export function RecipeNodeHeader({
         <h4 className={cn("font-semibold text-white truncate", TEXT_GLOW.cyan)}>{itemName}</h4>
         <p className="text-sm text-space-300">
           <span data-testid={`machine-count-${node.recipe!.SID}`}>
-            {node.machine!.name} × {Math.ceil(node.machineCount)}
+            {node.machine!.name} × {formatBuildingCount(node.machineCount)}
           </span>
         </p>
       </div>
