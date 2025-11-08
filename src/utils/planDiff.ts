@@ -1,5 +1,5 @@
 import type { SavedPlan, GameData } from "../types";
-import { getMachineRankLabel } from "./historyDescription";
+import { getMachineRankLabel } from "./history/description";
 
 /**
  * Types of changes in a plan

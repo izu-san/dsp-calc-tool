@@ -14,6 +14,8 @@ import type { CalculationResult } from "../../types";
 import { formatBuildingCount, formatPower, formatRate } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
 import { PowerGraphView } from "../PowerGraphView";
+import { cn } from "../../utils/classNames";
+import { CARD_GLOW } from "../../constants/theme";
 
 interface StatisticsViewProps {
   calculationResult: CalculationResult | null;
@@ -112,14 +114,12 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
           <button
             data-testid="statistics-show-power-graph-button"
             onClick={() => setShowPowerGraph(!showPowerGraph)}
-            className={`
-              px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all ripple-effect
-              ${
-                showPowerGraph
-                  ? "bg-neon-purple/30 border-neon-purple text-white shadow-[0_0_15px_rgba(168,85,247,0.5)]"
-                  : "bg-dark-700/50 border-neon-purple/30 text-space-200 hover:border-neon-purple hover:bg-neon-purple/10 hover:text-neon-purple"
-              }
-            `}
+            className={cn(
+              "px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all ripple-effect",
+              showPowerGraph
+                ? cn("bg-neon-purple/30 border-neon-purple text-white", CARD_GLOW.purpleStrong)
+                : "bg-dark-700/50 border-neon-purple/30 text-space-200 hover:border-neon-purple hover:bg-neon-purple/10 hover:text-neon-purple"
+            )}
           >
             ⚡ {showPowerGraph ? t("hide") : t("show")} {t("powerGraph")}
           </button>
@@ -127,7 +127,10 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div
             data-testid="statistics-total-machines"
-            className="bg-neon-blue/20 backdrop-blur-sm border border-neon-blue/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,136,255,0.2)]"
+            className={cn(
+              "bg-neon-blue/20 backdrop-blur-sm border border-neon-blue/40 rounded-lg p-4",
+              CARD_GLOW.blueLight
+            )}
           >
             <div className="text-sm text-space-300">{t("totalMachines")}</div>
             <div className="text-2xl font-bold text-neon-blue">
@@ -142,7 +145,10 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
           </div>
           <div
             data-testid="statistics-total-power"
-            className="bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4 shadow-[0_0_15px_rgba(0,255,136,0.2)]"
+            className={cn(
+              "bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 rounded-lg p-4",
+              CARD_GLOW.greenLight
+            )}
           >
             <div className="text-sm text-space-300">{t("totalPower")}</div>
             <div
@@ -164,7 +170,10 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
           </div>
           <div
             data-testid="statistics-raw-materials"
-            className="bg-neon-yellow/20 backdrop-blur-sm border border-neon-yellow/40 rounded-lg p-4 shadow-[0_0_15px_rgba(255,215,0,0.2)]"
+            className={cn(
+              "bg-neon-yellow/20 backdrop-blur-sm border border-neon-yellow/40 rounded-lg p-4",
+              CARD_GLOW.yellowLight
+            )}
           >
             <div className="text-sm text-space-300">{t("rawMaterials")}</div>
             <div className="text-2xl font-bold text-neon-yellow">{rawMaterials.length}</div>
@@ -177,7 +186,10 @@ export function StatisticsView({ calculationResult, miningCalculation }: Statist
           </div>
           <div
             data-testid="statistics-items-produced"
-            className="bg-neon-purple/20 backdrop-blur-sm border border-neon-purple/40 rounded-lg p-4 shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+            className={cn(
+              "bg-neon-purple/20 backdrop-blur-sm border border-neon-purple/40 rounded-lg p-4",
+              CARD_GLOW.purpleLight
+            )}
           >
             <div className="text-sm text-space-300">{t("itemsProduced")}</div>
             <div className="text-2xl font-bold text-neon-purple">

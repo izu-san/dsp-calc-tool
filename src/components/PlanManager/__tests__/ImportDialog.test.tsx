@@ -174,4 +174,24 @@ describe("ImportDialog", () => {
     render(<ImportDialog {...defaultProps} />);
     expect(screen.getByText(/supportedFormats/i)).toBeInTheDocument();
   });
+
+  it("Escキーでダイアログを閉じる", () => {
+    const onClose = vi.fn();
+    render(<ImportDialog {...defaultProps} isOpen={true} onClose={onClose} />);
+
+    const event = new KeyboardEvent("keydown", { key: "Escape" });
+    window.dispatchEvent(event);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("ダイアログが閉じているときにEscキーを押してもonCloseが呼ばれない", () => {
+    const onClose = vi.fn();
+    render(<ImportDialog {...defaultProps} isOpen={false} onClose={onClose} />);
+
+    const event = new KeyboardEvent("keydown", { key: "Escape" });
+    window.dispatchEvent(event);
+
+    expect(onClose).not.toHaveBeenCalled();
+  });
 });

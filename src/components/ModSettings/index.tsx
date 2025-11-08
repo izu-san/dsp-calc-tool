@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { loadGameData } from "../../lib/parser";
@@ -24,14 +24,11 @@ export function ModSettings() {
   );
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleFileUpload called");
     const file = event.target.files?.[0];
     if (!file) {
-      console.log("No file selected");
       return;
     }
 
-    console.log("File selected:", file.name, file.size);
     setUploadError("");
     setUploadSuccess(false);
 
@@ -49,13 +46,6 @@ export function ModSettings() {
 
     try {
       const text = await file.text();
-
-      // Debug logging
-      console.log("Uploaded file content preview:", text.substring(0, 200));
-      console.log("File length:", text.length);
-      console.log("Contains <?xml:", text.includes("<?xml"));
-      console.log("Contains <ArrayOfRecipe>:", text.includes("<ArrayOfRecipe"));
-      console.log("First 500 characters:", text.substring(0, 500));
 
       // Basic XML validation
       if (!text.includes("<?xml")) {
@@ -111,10 +101,12 @@ export function ModSettings() {
         updateData(customData);
         setUploadSuccess(true);
       } catch (error) {
-        setUploadError(t("failedToParseCustomRecipes") + ": " + (error as Error).message);
+        const message = error instanceof Error ? error.message : String(error);
+        setUploadError(t("failedToParseCustomRecipes") + ": " + message);
       }
     } catch (error) {
-      setUploadError(t("failedToReadFile") + ": " + (error as Error).message);
+      const message = error instanceof Error ? error.message : String(error);
+      setUploadError(t("failedToReadFile") + ": " + message);
     }
 
     // Reset input
@@ -129,6 +121,20 @@ export function ModSettings() {
     setProliferatorError("");
     setProliferatorSuccess(false);
   };
+
+  // Escキーでモーダルを閉じる
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        handleCloseModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   const handleCloseUploadMessage = () => {
     setUploadError("");
@@ -163,7 +169,8 @@ export function ModSettings() {
         updateData(data);
         setUploadSuccess(true);
       } catch (error) {
-        setUploadError(t("failedToReset") + ": " + (error as Error).message);
+        const message = error instanceof Error ? error.message : String(error);
+        setUploadError(t("failedToReset") + ": " + message);
       }
     }
   };

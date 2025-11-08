@@ -8,6 +8,7 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { cn } from "../../utils/classNames";
+import { TEXT_GLOW, NEON_GLOW } from "../../constants/theme";
 
 interface MiningCalculatorProps {
   calculationResult: CalculationResult;
@@ -47,7 +48,12 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
 
   if (miningCalc.rawMaterials.length === 0) {
     return (
-      <div className="bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-yellow/30 shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+      <div
+        className={cn(
+          "bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-yellow/30",
+          NEON_GLOW.yellow
+        )}
+      >
         <h3
           className="text-lg font-semibold text-white mb-4 flex items-center gap-2"
           data-testid="miningCalculator"
@@ -63,7 +69,12 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
   }
 
   return (
-    <div className="bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-yellow/30 shadow-[0_0_20px_rgba(255,215,0,0.2)] space-y-6">
+    <div
+      className={cn(
+        "bg-dark-700/50 backdrop-blur-sm rounded-xl p-6 border border-neon-yellow/30 space-y-6",
+        NEON_GLOW.yellow
+      )}
+    >
       {/* Header */}
       <div>
         <h3
@@ -305,7 +316,7 @@ export function MiningCalculator({ calculationResult }: MiningCalculatorProps) {
                     material.machineType === "Oil Extractor" ? (
                     // Liquid mining equipment (Water, Crude Oil, Sulfuric Acid)
                     <>
-                      <div className="font-bold text-neon-cyan text-lg drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]">
+                      <div className={cn("font-bold text-neon-cyan text-lg", TEXT_GLOW.cyan)}>
                         {formatBuildingCount(material.minersNeeded)}{" "}
                         {material.machineType === "Water Pump"
                           ? t("waterPumps")

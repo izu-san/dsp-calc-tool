@@ -4,6 +4,8 @@ import type { Recipe } from "../../types";
 import { parseGridIndex } from "../../utils/grid";
 import { useFavoritesStore } from "../../stores/favoritesStore";
 import { ItemIcon } from "../ItemIcon";
+import { cn } from "../../utils/classNames";
+import { NEON_GLOW } from "../../constants/theme";
 
 interface RecipeGridProps {
   recipes: Recipe[];
@@ -84,16 +86,18 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
       <div
         data-testid={`favorite-button-${recipe.SID}`}
         onClick={handleFavoriteClick}
-        className={`
-          absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10
-          rounded-bl text-xs transition-all cursor-pointer
-          ${
-            isFavorite(recipe.SID)
-              ? "bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100 shadow-[0_0_10px_rgba(255,215,0,0.5)]"
-              : "bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100"
-          }
-          hover:scale-110 hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]
-        `}
+        className={cn(
+          "absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10 rounded-bl text-xs transition-all cursor-pointer hover:scale-110",
+          {
+            "bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100": isFavorite(recipe.SID),
+            "bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100": !isFavorite(
+              recipe.SID
+            ),
+          },
+          isFavorite(recipe.SID)
+            ? "shadow-[0_0_10px_rgba(255,215,0,0.5)] hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]"
+            : ""
+        )}
         title={isFavorite(recipe.SID) ? t("removeFromFavorites") : t("addToFavorites")}
       >
         ⭐
@@ -103,16 +107,16 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
       <button
         data-testid={`recipe-button-${recipe.SID}`}
         onClick={onClick}
-        className={`
-          w-full h-full rounded border-2 transition-all ripple-effect
-          hover:border-neon-cyan hover:scale-105 hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]
-          focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-1
-          ${
-            isSelected
-              ? "border-neon-cyan bg-neon-cyan/20 backdrop-blur-sm shadow-[0_0_15px_rgba(0,217,255,0.5)] scale-105"
-              : "border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm"
-          }
-        `}
+        className={cn(
+          "w-full h-full rounded border-2 transition-all ripple-effect focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-1",
+          {
+            "border-neon-cyan bg-neon-cyan/20 backdrop-blur-sm scale-105": isSelected,
+            "border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm": !isSelected,
+          },
+          isSelected ? NEON_GLOW.cyan : "",
+          !isSelected &&
+            "hover:border-neon-cyan/50 hover:scale-105 hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]"
+        )}
         title={recipe.name}
       >
         <div className="w-full h-full flex items-center justify-center p-1">

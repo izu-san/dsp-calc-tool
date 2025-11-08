@@ -1,5 +1,5 @@
 {
-  "title": "Dyson Sphere Program - Production Calculator",
+  "title": "DSP Recipe Calculator",
   "loadingGameData": "Loading game data...",
   "selectRecipe": "Select Recipe",
   "target": "Target",
@@ -487,6 +487,44 @@
   "total": "Total",
   "saturation": "Saturation",
   "bottleneckDetected": "Bottleneck detected!",
+  "visualization": {
+    "tabLabel": "Visualization",
+    "filters": {
+      "machineType": "Machine type",
+      "allMachines": "All machines",
+      "materialTypes": "Material categories",
+      "rawMaterials": "Raw materials",
+      "intermediates": "Intermediates",
+      "finalProducts": "Final products",
+      "reset": "Reset filters"
+    },
+    "emptyState": {
+      "noData": "No Sankey data available for the current configuration."
+    },
+    "node": {
+      "machineTitle": "Machine",
+      "itemTitle": "Item",
+      "close": "Close details",
+      "value": "Throughput",
+      "machineType": "Machine type",
+      "machineRank": "Machine rank",
+      "machineName": "Machine name",
+      "machineCount": "Machine count",
+      "recipeType": "Recipe type",
+      "proliferator": "Proliferator",
+      "powerConsumption": "Power consumption",
+      "inputs": "Inputs",
+      "outputs": "Outputs",
+      "noFlows": "No connected flows",
+      "nodeType": "Node type",
+      "types": {
+        "machine": "Machine",
+        "raw-material": "Raw material",
+        "intermediate": "Intermediate",
+        "final-product": "Final product"
+      }
+    }
+  },
   "addToFavorites": "Add to favorites",
   "removeFromFavorites": "Remove from favorites",
   "mostEfficient": "Most efficient",
@@ -582,5 +620,201 @@
     "manualGenerator": "Generator",
     "manualFuel": "Fuel",
     "fuelProliferator": "Proliferator"
-  }
+  },
+  "help": "Help",
+  "about": "About",
+  "changelog": "Changelog",
+  "faqLabel": "FAQ",
+  "gameVersions": "Supported Game Versions List",
+  "supportedVersion": "Supported",
+  "unsupportedVersion": "Unsupported",
+  "primaryVersion": "Latest Supported Version",
+  "dataLastUpdated": "Data Last Updated",
+  "appVersion": "App Version",
+  "buildTime": "Build Time",
+  "buildStatus": "Build Status",
+  "buildStatusSuccess": "Success",
+  "buildStatusFailure": "Failure",
+  "buildStatusUnknown": "Unknown",
+  "testCoverage": "Test Coverage",
+  "testCoveragePercentage": "{{percentage}}%",
+  "qualityPolicy": "Quality Assurance Policy",
+  "qualityPolicyDescription": "This application is developed based on the following quality assurance policy:\n\n• Test coverage target for new code: 85% or higher\n• Critical paths (calculator, parser): 90% or higher\n• E2E tests cover major user flows\n• All PRs must pass unit tests and E2E tests",
+  "designPhilosophy": "Design Philosophy",
+  "designPhilosophyDescription": "This application is implemented based on the following design philosophy:\n\n• Type-safe implementation\n• Functional approach\n• Separation of UI and business logic\n• Testability assurance",
+  "reliabilityIndicator": "Reliability Indicator",
+  "repository": "Repository",
+  "reportIssue": "Report Issue",
+  "changelogNotAvailable": "Changelog is being prepared",
+  "versionInfoNotAvailable": "Failed to load version information",
+  "faq": {
+    "categories": {
+      "calculation": {
+        "title": "Calculation Prerequisites",
+        "questions": [
+          {
+            "question": "About Proliferator Exclusive Mode",
+            "answer": "Proliferators have two modes: \"Extra Production\" and \"Speed Boost\", but they cannot be used simultaneously (exclusive mode). When one is selected, the other is disabled."
+          },
+          {
+            "question": "Belt Speed Calculation Method",
+            "answer": "Belt speed affects item transport speed (items/s). Speed increases in order: Mk.I, Mk.II, Mk.III."
+          },
+          {
+            "question": "How Power Calculation Works",
+            "answer": "Total power consumption is the sum of facility power consumption and sorter power consumption. Facility power consumption varies based on machine rank and proliferator settings."
+          }
+        ]
+      },
+      "limitations": {
+        "title": "Known Limitations",
+        "questions": [
+          {
+            "question": "Calculation Accuracy Limitations",
+            "answer": "Calculation results are theoretical values and may differ slightly from actual in-game behavior. In particular, effects such as belt congestion and sorter processing speed are not considered."
+          },
+          {
+            "question": "Browser Compatibility",
+            "answer": "We recommend the latest versions of modern browsers (Chrome, Firefox, Edge, Safari). Internet Explorer is not supported."
+          }
+        ]
+      },
+      "common": {
+        "title": "Frequently Asked Questions",
+        "questions": [
+          {
+            "question": "What to Do When Calculation Results Don't Match",
+            "answer": "Please check the following:\n1. Is the game version supported?\n2. Are the settings (proliferator, machine rank, etc.) correct?\n3. Is the alternative recipe selection correct?\n4. Are the node-specific settings appropriate?"
+          },
+          {
+            "question": "How to Save and Load Plans",
+            "answer": "You can save plans from the \"💾 Save\" button in the header. Saved plans can be loaded from \"📂 Load\". Plans are saved in the browser's local storage."
+          },
+          {
+            "question": "How to Use URL Sharing",
+            "answer": "From the header \"💾 Save\" → \"🔗 URL Share\", you can share your current plan via URL. When you send the generated URL to other users, they can load the plan with the same settings."
+          }
+        ]
+      },
+      "troubleshooting": {
+        "title": "Troubleshooting",
+        "questions": [
+          {
+            "question": "When Data Cannot Be Loaded",
+            "answer": "Please check the following:\n1. Is your internet connection working?\n2. Clear browser cache\n3. Reload the page (Ctrl+F5 or Cmd+Shift+R)"
+          },
+          {
+            "question": "When Calculations Don't Run",
+            "answer": "Please check if a recipe is selected. Also, verify that the target production quantity is greater than 0."
+          },
+          {
+            "question": "How to Read Error Messages",
+            "answer": "If an error message is displayed, check the error content and reload the page if necessary. If the problem persists, please report it on GitHub Issues."
+          }
+        ]
+      }
+    }
+  },
+  "support": {
+    "title": "Support",
+    "repository": "Repository",
+    "reportIssue": "Report Issue",
+    "bugReportInfo": "Information Required for Bug Reports",
+    "bugReportInfoItems": [
+      "Browser and version you are using",
+      "Game version",
+      "Error message (if any)",
+      "Steps to reproduce"
+    ],
+    "responsePolicy": "Response Policy",
+    "responsePolicyDescription": "We check Issues responses approximately once a week. For urgent matters, please add an \"urgent\" label to the Issue."
+  },
+  "feedback": "Feedback",
+  "feedbackForm": {
+    "title": "Send Feedback",
+    "category": "Category",
+    "category.featureRequest": "Feature Request",
+    "category.dataCorrection": "Data Correction",
+    "category.uiImprovement": "UI Improvement",
+    "category.bugReport": "Bug Report",
+    "category.other": "Other",
+    "title.label": "Title",
+    "title.placeholder": "Enter feedback title",
+    "content.label": "Content",
+    "content.placeholder": "Please describe your feedback in detail",
+    "contact.label": "Contact (Optional)",
+    "contact.placeholder": "Email address or GitHub username",
+    "contact.description": "Only fill in if you need a response",
+    "privacyConsent": "I agree to the Privacy Policy and Terms of Service",
+    "privacyConsent.link": "Privacy Policy and Terms of Service",
+    "privacyConsent.required": "Privacy Policy and Terms of Service agreement is required",
+    "submit": "Submit",
+    "submitting": "Submitting...",
+    "success.github": "Feedback submitted. Redirecting to GitHub Issues page.",
+    "success.form": "Feedback form opened. Please fill in the form.",
+    "success.formPrefilled": "Feedback form opened. Data has been automatically filled in. Please review and submit.",
+    "error": "Failed to submit. Please try again.",
+    "error.formNotConfigured": "Form submission is not configured. Please report via GitHub Issue.",
+    "submitMethod": {
+      "label": "Submit Method",
+      "github": "Report via GitHub Issue (GitHub account required)",
+      "form": "Report via Form (No account required)",
+      "description": "If you report via GitHub Issue, a GitHub account is required. If you don't have an account, please select form submission."
+    },
+    "githubIssue": {
+      "description": "To report via GitHub Issue, please click the button below to go to the GitHub Issue creation page.",
+      "button": "Report Issue"
+    },
+    "googleForm": {
+      "description": "To report via form, please click the button below to open the Google Form.",
+      "button": "Report via Form"
+    },
+    "validation": {
+      "required": "This field is required",
+      "maxLength": "Maximum {{max}} characters allowed",
+      "emailInvalid": "Invalid email address format",
+      "categoryRequired": "Please select a category"
+    }
+  },
+  "keyboardShortcuts": "Keyboard Shortcuts",
+  "shortcuts": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "modSettings": "Open MOD Settings",
+    "languageSwitch": "Switch Language",
+    "helpModal": "Open Help",
+    "closeModal": "Close Modal"
+  },
+  "shortcutKeys": {
+    "ctrlZ": "Ctrl+Z",
+    "ctrlY": "Ctrl+Y",
+    "ctrlShiftM": "Ctrl+Shift+M",
+    "ctrlL": "Ctrl+L",
+    "ctrlQuestion": "Ctrl+?",
+    "f1": "F1",
+    "escape": "Esc"
+  },
+  "accessibility": {
+    "policy": "Accessibility Policy",
+    "keyboardNavigation": "Keyboard Navigation",
+    "screenReader": "Screen Reader Support",
+    "keyboardNavigationDescription": "This application can be operated entirely with a keyboard. Main shortcut keys can be found in the \"Keyboard Shortcuts\" tab of the help modal.",
+    "screenReaderDescription": "This application supports screen readers. Main operations have aria-label attributes set and can be used with screen reading software."
+  },
+  "changeLanguage": "Change Language",
+  "patchDiff": "Patch Diff",
+  "selectVersion": "Select Version",
+  "selectVersionToCompare": "Please select a version to compare",
+  "diffSummary": "Diff Summary",
+  "noDiffFound": "No differences found",
+  "added": "Added",
+  "removed": "Removed",
+  "modified": "Modified",
+  "inputItems": "Input Items",
+  "outputItems": "Output Items",
+  "time": "Time",
+  "recipes": "Recipes",
+  "items": "Items",
+  "machines": "Machines",
+  "failedToLoadVersionData": "Failed to load version data"
 }

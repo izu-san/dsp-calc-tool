@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { calculateProductionRate, calculateConveyorBelts, buildRecipeTree } from "../calculator";
+import {
+  calculateProductionRate,
+  calculateConveyorBelts,
+  buildRecipeTreeFromParams,
+} from "../calculator";
 import {
   createSingleOutputRecipe,
   createMachineByType,
@@ -94,7 +98,7 @@ describe("calculator boundary cases", () => {
     const settings = createMockSettings();
     const overrides = new Map();
     expect(() =>
-      buildRecipeTree(recipe, 1, gameData, settings, overrides, 0, 0, "r-1")
+      buildRecipeTreeFromParams(recipe, 1, gameData, settings, overrides, 0, 0, "r-1")
     ).toThrowError("Maximum recursion depth reached");
   });
 });

@@ -2,6 +2,9 @@ import { Suspense, lazy } from "react";
 import { useTranslation } from "react-i18next";
 import { HistoryToolbar } from "./Header/HistoryToolbar";
 import { LanguageMenu } from "./Header/LanguageMenu";
+import { HelpMenu } from "./Header/HelpMenu";
+import { cn } from "../../utils/classNames";
+import { TEXT_GLOW } from "../../constants/theme";
 
 // Lazy load heavy components
 const PlanManagerMenu = lazy(() =>
@@ -24,7 +27,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(0,217,255,0.6)] animate-fadeIn">
+            <h1 className={cn("text-2xl font-bold text-white animate-fadeIn", TEXT_GLOW.cyan)}>
               {t("title")}
             </h1>
           </div>
@@ -33,6 +36,7 @@ export function Header() {
             <Suspense fallback={<div className="w-8 h-8"></div>}>
               <PlanManagerMenu />
             </Suspense>
+            <HelpMenu />
             <LanguageMenu />
           </div>
         </div>

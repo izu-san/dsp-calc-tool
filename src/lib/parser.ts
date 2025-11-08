@@ -49,6 +49,75 @@ export async function loadGameData(
       }),
   ]);
 
+  return parseGameDataFromXml(itemsXml, recipesXml, machinesXml, locale, true);
+}
+
+/**
+ * 指定されたバージョンのゲームデータを読み込む
+ * @param version - バージョン番号（例: "0.10.33.27024"）
+ * @param locale - ロケール（デフォルト: "ja"）
+ * @returns ゲームデータ
+ */
+export async function loadGameDataVersion(
+  version: string,
+  locale: string = "ja"
+): Promise<GameData> {
+  // バージョン固有のファイルパス
+  const versionPath = `data/versions/${version}`;
+  const itemsPath = getDataPath(`${versionPath}/Items.xml`);
+  const recipesPath = getDataPath(`${versionPath}/Recipes.xml`);
+  const machinesPath = getDataPath(`${versionPath}/Machines.xml`);
+
+  const [itemsXml, recipesXml, machinesXml] = await Promise.all([
+    fetch(itemsPath)
+      .then(r => {
+        if (!r.ok) {
+          throw new Error(`Failed to load Items.xml for version ${version}: ${r.status}`);
+        }
+        return r.text();
+      })
+      .catch(error => {
+        logger.warn(`Failed to load Items.xml for version ${version}: ${error}`);
+        throw error;
+      }),
+    fetch(recipesPath)
+      .then(r => {
+        if (!r.ok) {
+          throw new Error(`Failed to load Recipes.xml for version ${version}: ${r.status}`);
+        }
+        return r.text();
+      })
+      .catch(error => {
+        logger.warn(`Failed to load Recipes.xml for version ${version}: ${error}`);
+        throw error;
+      }),
+    fetch(machinesPath)
+      .then(r => {
+        if (!r.ok) {
+          throw new Error(`Failed to load Machines.xml for version ${version}: ${r.status}`);
+        }
+        return r.text();
+      })
+      .catch(error => {
+        logger.warn(`Failed to load Machines.xml for version ${version}: ${error}`);
+        throw error;
+      }),
+  ]);
+
+  return parseGameDataFromXml(itemsXml, recipesXml, machinesXml, locale, false);
+}
+
+/**
+ * XML文字列からGameDataをパースする共通関数
+ * @param alwaysAddCriticalPhoton - 臨界光子を常に追加するか（既存データは上書き）
+ */
+function parseGameDataFromXml(
+  itemsXml: string,
+  recipesXml: string,
+  machinesXml: string,
+  locale: string,
+  alwaysAddCriticalPhoton: boolean = false
+): GameData {
   const itemsData = parser.parse(itemsXml);
   const recipesData = parser.parse(recipesXml);
   const machinesData = parser.parse(machinesXml);
@@ -180,24 +249,28 @@ export async function loadGameData(
   );
 
   // 臨界光子関連のデータを追加
-  // XMLファイルに存在しないため、定数から登録
-  // ロケールに応じた名前を設定
   const criticalPhotonName = locale === "ja" ? "臨界光子" : "Critical Photon";
   const gravitonLensName = locale === "ja" ? "重力子レンズ" : "Graviton Lens";
   const rayReceiverName = locale === "ja" ? "γ線レシーバー" : "Ray Receiver";
 
-  items.set(CRITICAL_PHOTON_ITEM.id, {
-    ...CRITICAL_PHOTON_ITEM,
-    name: criticalPhotonName,
-  });
-  items.set(GRAVITON_LENS_ITEM.id, {
-    ...GRAVITON_LENS_ITEM,
-    name: gravitonLensName,
-  });
-  machines.set(RAY_RECEIVER_MACHINE.id, {
-    ...RAY_RECEIVER_MACHINE,
-    name: rayReceiverName,
-  });
+  if (alwaysAddCriticalPhoton || !items.has(CRITICAL_PHOTON_ITEM.id)) {
+    items.set(CRITICAL_PHOTON_ITEM.id, {
+      ...CRITICAL_PHOTON_ITEM,
+      name: criticalPhotonName,
+    });
+  }
+  if (alwaysAddCriticalPhoton || !items.has(GRAVITON_LENS_ITEM.id)) {
+    items.set(GRAVITON_LENS_ITEM.id, {
+      ...GRAVITON_LENS_ITEM,
+      name: gravitonLensName,
+    });
+  }
+  if (alwaysAddCriticalPhoton || !machines.has(RAY_RECEIVER_MACHINE.id)) {
+    machines.set(RAY_RECEIVER_MACHINE.id, {
+      ...RAY_RECEIVER_MACHINE,
+      name: rayReceiverName,
+    });
+  }
 
   const photonRecipe: Recipe = {
     ...CRITICAL_PHOTON_RECIPE,
@@ -213,12 +286,17 @@ export async function loadGameData(
       },
     ],
   };
-  recipes.set(CRITICAL_PHOTON_RECIPE.SID, photonRecipe);
+  if (alwaysAddCriticalPhoton || !recipes.has(CRITICAL_PHOTON_RECIPE.SID)) {
+    recipes.set(CRITICAL_PHOTON_RECIPE.SID, photonRecipe);
 
-  // 臨界光子レシピを recipesByItemId に登録
-  const criticalPhotonRecipes = recipesByItemId.get(CRITICAL_PHOTON_ITEM.id) || [];
-  criticalPhotonRecipes.push(photonRecipe);
-  recipesByItemId.set(CRITICAL_PHOTON_ITEM.id, criticalPhotonRecipes);
+    // 臨界光子レシピを recipesByItemId に登録
+    const criticalPhotonRecipes = recipesByItemId.get(CRITICAL_PHOTON_ITEM.id) || [];
+    const existingRecipe = criticalPhotonRecipes.find(r => r.SID === CRITICAL_PHOTON_RECIPE.SID);
+    if (!existingRecipe) {
+      criticalPhotonRecipes.push(photonRecipe);
+      recipesByItemId.set(CRITICAL_PHOTON_ITEM.id, criticalPhotonRecipes);
+    }
+  }
 
   // Create combined map for recipe lookups (items + machines)
   const allItems = new Map<number, Item | Machine>();

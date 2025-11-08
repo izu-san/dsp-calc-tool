@@ -386,6 +386,7 @@ test.describe("メイン機能の確認", () => {
     await appPage.getByTestId("recipe-button-1405").click();
     await appPage.getByTestId("target-quantity-input").fill("3");
 
+    // NOTE: 意図的に.first()を使用 - 同じアイテムが複数の階層に表示されるため
     await expect(appPage.getByTestId("raw-material-node-1006").first()).toBeHidden();
     await appPage.getByTestId("expand-collapse-all-button").click();
     await expect(appPage.getByTestId("raw-material-node-1006").first()).toBeVisible();
@@ -417,6 +418,7 @@ test.describe("メイン機能の確認", () => {
 
     // 現在のグラフェンは通常レシピであること
     await appPage.getByTestId("expand-collapse-all-button").click();
+    // NOTE: 意図的に.first()を使用 - 同じレシピノードが複数表示される可能性があるため
     await expect(appPage.getByTestId("recipe-node-1108").first()).toBeVisible();
 
     // 比較ボタンを開く
@@ -425,6 +427,7 @@ test.describe("メイン機能の確認", () => {
 
     // 期待: 生産チェーンに反映される
     await appPage.getByTestId("expand-collapse-all-button").click();
+    // NOTE: 意図的に.first()を使用 - 同じレシピノードが複数表示される可能性があるため
     await expect(appPage.getByTestId("recipe-node-1208").first()).toBeVisible();
   });
 
@@ -573,6 +576,7 @@ test.describe("メイン機能の確認", () => {
     await appPage.getByTestId("target-quantity-input").fill("6");
 
     // 任意のノードでオーバーライド
+    // NOTE: 意図的に.first()を使用 - ツリー内の最初のカスタム設定トグルを操作
     await appPage.getByTestId("custom-settings-toggle").first().click();
     await appPage.getByTestId("proliferator-type-select").selectOption({ label: "Mk.II" });
     await appPage.getByTestId("proliferator-mode-production").click();

@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { CalculationResult } from "../../types/calculation";
 import type { MiningCalculation } from "../../lib/miningCalculation";
+import { generateRoadmap } from "../../lib/roadmap/roadmapGeneration";
+import { useBuildingRoadmapStore } from "../../stores/buildingRoadmapStore";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
-import { useBuildingRoadmapStore } from "../../stores/buildingRoadmapStore";
-import { generateRoadmap } from "../../lib/roadmap/roadmapGeneration";
+import type { CalculationResult } from "../../types/calculation";
 import { PhaseAccordion } from "./PhaseAccordion";
 import { ProgressBar } from "./ProgressBar";
 
@@ -106,7 +106,9 @@ export function BuildingRoadmapView({
 
   return (
     <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg shadow-panel p-6">
-      <h2 className="text-lg font-semibold text-white mb-4">{t("roadmap.title")}</h2>
+      <h2 data-testid="roadmap-title" className="text-lg font-semibold text-white mb-4">
+        {t("roadmap.title")}
+      </h2>
 
       {/* Overall Progress */}
       <div className="mb-6">
@@ -133,6 +135,7 @@ export function BuildingRoadmapView({
       {/* Action Buttons */}
       <div className="flex gap-2">
         <button
+          data-testid="roadmap-reset-all-button"
           onClick={handleReset}
           className="px-4 py-2 text-sm font-medium rounded-lg border border-neon-red/30 text-neon-red hover:bg-neon-red/10 transition-all"
         >

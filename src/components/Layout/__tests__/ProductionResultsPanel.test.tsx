@@ -14,6 +14,31 @@ vi.mock("react-i18next", () => ({
         buildingCost: "Building Cost",
         "powerGeneration.title": "Power Generation",
         miningCalculator: "Mining Calculator",
+        "visualization.tabLabel": "Visualization",
+        "visualization.filters.machineType": "Machine type",
+        "visualization.filters.allMachines": "All machines",
+        "visualization.filters.materialTypes": "Material categories",
+        "visualization.filters.rawMaterials": "Raw materials",
+        "visualization.filters.intermediates": "Intermediates",
+        "visualization.filters.finalProducts": "Final products",
+        "visualization.filters.reset": "Reset filters",
+        "visualization.emptyState.noData": "No visualization data",
+        "visualization.node.machineTitle": "Machine",
+        "visualization.node.itemTitle": "Item",
+        "visualization.node.close": "Close",
+        "visualization.node.value": "Throughput",
+        "visualization.node.machineType": "Machine type",
+        "visualization.node.machineRank": "Machine rank",
+        "visualization.node.proliferator": "Proliferator",
+        "visualization.node.powerConsumption": "Power",
+        "visualization.node.inputs": "Inputs",
+        "visualization.node.outputs": "Outputs",
+        "visualization.node.noFlows": "No flows",
+        "visualization.node.nodeType": "Node type",
+        "visualization.node.types.machine": "Machine",
+        "visualization.node.types.raw-material": "Raw",
+        "visualization.node.types.intermediate": "Intermediate",
+        "visualization.node.types.final-product": "Final",
         expandAll: "Expand All",
         collapseAll: "Collapse All",
         calculating: "Calculating...",
@@ -116,6 +141,7 @@ describe("ProductionResultsPanel", () => {
     expect(screen.getByRole("button", { name: "Building Cost" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Power Generation" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Mining Calculator" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Visualization" })).toBeInTheDocument();
   });
 
   it("統計タブをクリックすると表示が切り替わる", () => {

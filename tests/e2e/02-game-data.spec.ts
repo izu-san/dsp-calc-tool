@@ -1,22 +1,23 @@
 // spec: docs/testing/TEST_PLAN.md
 import { expect } from "@playwright/test";
-import { test } from "./fixtures";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import { test } from "./fixtures";
+import { ensureRecipeSidsGenerated, extractSidsFromMarkdown } from "./helpers/game-data-helpers";
+
+// ESM環境で__dirnameを解決
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // spec: docs/testing/TEST_PLAN.md
-// このテストは `docs/testing/RECIPE_SIDS.md` を参照して
+// このテストは `tests/e2e/fixtures/RECIPE_SIDS.md` を参照して
 // Items(1xxx) と Buildings(2xxx) の各tab内に全ての recipe-button-<sid> が存在することを確認します。
 
 test.describe("ゲームデータ読み込みと初期表示", () => {
   test("02-01: ゲームデータの初期表示 - 全SIDが各タブで表示されること", async ({ appPage }) => {
     // 大量のレシピボタンをチェックするため、タイムアウトを60秒に設定
     test.setTimeout(60000);
-
-    // waitUntil 'networkidle' to ensure the SPA has finished initial network loading
-    await appPage.goto("http://localhost:5173/", { waitUntil: "networkidle" });
-    // Ensure SPA processes the modal close and any hydration/network activity finishes
-    await appPage.waitForLoadState("networkidle");
 
     // 基本UI要素の存在確認: getByTestId を使って表示されるまで待機する
     await expect(appPage.getByTestId("settings-panel")).toBeVisible();
@@ -25,27 +26,11 @@ test.describe("ゲームデータ読み込みと初期表示", () => {
     await expect(appPage.getByTestId("buildings-tab")).toBeVisible();
 
     // RECIPE_SIDS.md を読み込み、表の左列から SID を抽出する
-    const mdPath = path.resolve(process.cwd(), "docs/testing/RECIPE_SIDS.md");
-    if (!fs.existsSync(mdPath)) {
-      throw new Error(
-        `RECIPE_SIDS.md not found at ${mdPath} - generate it with scripts/generate-recipe-sids.js`
-      );
-    }
+    const mdPath = path.resolve(__dirname, "fixtures/RECIPE_SIDS.md");
+    await ensureRecipeSidsGenerated(mdPath);
 
     const md = fs.readFileSync(mdPath, "utf8");
-    const sids: string[] = [];
-    for (const line of md.split(/\r?\n/)) {
-      // テーブルの行は `| 1101 | 鉄インゴット | Iron Ingot |` のようになっている想定
-      const m = line.match(/^\|\s*(\d{3,4})\s*\|/);
-      if (m) sids.push(m[1]);
-    }
-
-    if (sids.length === 0) {
-      throw new Error("No SIDs found in RECIPE_SIDS.md");
-    }
-
-    const items = sids.filter(s => s.startsWith("1"));
-    const buildings = sids.filter(s => s.startsWith("2"));
+    const { items, buildings } = extractSidsFromMarkdown(md);
 
     // Items タブ内の全SID のボタンが存在することをチェック
     await appPage.getByTestId("items-tab").click();

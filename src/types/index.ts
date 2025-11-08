@@ -1,9 +1,13 @@
 // Re-export all types from a central location
-export * from "./game-data";
-export * from "./settings";
-export * from "./calculation";
-export * from "./saved-plan";
-export * from "./export";
-export * from "./import";
-export * from "./power-generation";
-export * from "./history";
+// Note: 値のexportを避け、型のみをexportすることでツリーシェイクを促進
+export type * from "./game-data";
+export type * from "./settings";
+export type * from "./calculation";
+export type * from "./saved-plan";
+export type * from "./export";
+export type * from "./import";
+export type * from "./power-generation";
+export type * from "./history";
+export type * from "./patch-diff";
+export type * from "./roadmap";
+export type * from "./ui-tabs";

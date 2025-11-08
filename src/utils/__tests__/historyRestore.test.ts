@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { restoreStateFromHistory } from "../historyRestore";
-import { useSettingsStore } from "../../stores/settingsStore";
-import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
-import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useMiningSettingsStore } from "../../stores/miningSettingsStore";
-import { PROLIFERATOR_DATA } from "../../types/settings";
-import type { HistoryEntry } from "../../types/history";
-import { generateUUID, HISTORY_VERSION } from "../historyUtils";
-import { setRestoring } from "../historyRecorder";
-import { serializeSettings } from "../storageSerializer";
+import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
+import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
+import { useSettingsStore } from "../../stores/settingsStore";
 import { createMockGameData, createSingleOutputRecipe } from "../../test/factories/testDataFactory";
+import type { HistoryEntry } from "../../types/history";
+import { PROLIFERATOR_DATA } from "../../types/settings";
+import { generateUUID, HISTORY_VERSION } from "../history/events";
+import { setRestoring } from "../history/recorder";
+import { restoreStateFromHistory } from "../history/restoration";
+import { serializeSettings } from "../storageSerializer";
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -568,7 +568,7 @@ describe("historyRestore", () => {
 
   describe("restoreStateFromHistory - restoring flag", () => {
     it("should set restoring flag during restoration", async () => {
-      const historyRecorder = await import("../historyRecorder");
+      const historyRecorder = await import("../history/recorder");
 
       const entry: HistoryEntry = {
         id: generateUUID(),

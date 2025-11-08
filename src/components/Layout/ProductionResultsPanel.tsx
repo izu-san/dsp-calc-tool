@@ -9,6 +9,7 @@ import { ProductionResultsTab } from "../../types/ui-tabs";
 import { cn } from "../../utils/classNames";
 import { formatNumber } from "../../utils/format";
 import { ItemIcon } from "../ItemIcon";
+import { TEXT_GLOW } from "../../constants/theme";
 
 const ProductionTree = lazy(() =>
   import("../ResultTree").then(m => ({ default: m.ProductionTree }))
@@ -27,6 +28,9 @@ const MiningCalculator = lazy(() =>
 );
 const BuildingRoadmapView = lazy(() =>
   import("../BuildingRoadmapView").then(m => ({ default: m.BuildingRoadmapView }))
+);
+const VisualizationView = lazy(() =>
+  import("../VisualizationView").then(m => ({ default: m.VisualizationView }))
 );
 
 interface ProductionResultsPanelProps {
@@ -101,7 +105,7 @@ export function ProductionResultsPanel({
                       <ItemIcon itemId={result.itemId} alt={result.itemName} size={32} />
                       <div className="flex-1 text-sm font-medium text-white">{result.itemName}</div>
                       <div
-                        className="text-lg font-bold text-neon-cyan drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]"
+                        className={cn("text-lg font-bold text-neon-cyan", TEXT_GLOW.cyan)}
                         data-testid={`output-item-rate-${result.itemId}`}
                       >
                         {formatNumber(result.productionRate)}/s
@@ -129,6 +133,21 @@ export function ProductionResultsPanel({
                 )}
               >
                 {t("productionTree")}
+              </button>
+              <button
+                data-testid="visualization-tab"
+                onClick={() => setActiveTab(ProductionResultsTab.Visualization)}
+                className={cn(
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  {
+                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                      activeTab === ProductionResultsTab.Visualization,
+                    "border-transparent text-space-300 hover:text-neon-cyan":
+                      activeTab !== ProductionResultsTab.Visualization,
+                  }
+                )}
+              >
+                {t("visualization.tabLabel")}
               </button>
               <button
                 data-testid="statistics-tab"
@@ -245,6 +264,16 @@ export function ProductionResultsPanel({
                     miningCalculation={miningCalculation}
                   />
                 </div>
+              ) : activeTab === ProductionResultsTab.Visualization ? (
+                <div id="visualization-view" data-testid="visualization-content">
+                  {calculationResult ? (
+                    <VisualizationView calculationResult={calculationResult} />
+                  ) : (
+                    <div className="py-6 text-center text-sm text-space-300">
+                      {t("visualization.emptyState.noData")}
+                    </div>
+                  )}
+                </div>
               ) : activeTab === ProductionResultsTab.BuildingCost ? (
                 <div id="building-cost-view" data-testid="building-cost-content">
                   <BuildingCostView calculationResult={calculationResult} />
@@ -269,7 +298,6 @@ export function ProductionResultsPanel({
                     node={calculationResult.rootNode}
                     collapsedNodes={collapsedNodes}
                     onToggleCollapse={handleToggleCollapse}
-                    nodeId="root"
                   />
                 </div>
               )}

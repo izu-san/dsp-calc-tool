@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { CARD_GLOW, NEON_GLOW } from "../../constants/theme";
 import { getEffectiveBonuses } from "../../lib/proliferator";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { ProliferatorMode, ProliferatorType } from "../../types/settings";
+import { cn } from "../../utils/classNames";
 import { ItemIcon } from "../ItemIcon";
 
 // Proliferator item IDs
@@ -70,14 +72,15 @@ export function ProliferatorSettings() {
                 key={type}
                 data-testid={`proliferator-type-button-${type}`}
                 onClick={() => handleTypeChange(type)}
-                className={`
-                  px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105
-                  ${
-                    proliferator.type === type
-                      ? "bg-neon-magenta/30 text-white border-neon-magenta shadow-[0_0_20px_rgba(233,53,255,0.6),inset_0_0_20px_rgba(233,53,255,0.2)] backdrop-blur-sm font-bold scale-105"
-                      : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
-                  }
-                `}
+                className={cn(
+                  "px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  proliferator.type === type
+                    ? cn(
+                        "bg-neon-magenta/30 text-white border-neon-magenta backdrop-blur-sm font-bold scale-105",
+                        CARD_GLOW.magentaStrong
+                      )
+                    : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
+                )}
               >
                 <div className="flex flex-col items-center gap-1">
                   {iconId && <ItemIcon itemId={iconId} size={24} />}
@@ -122,16 +125,17 @@ export function ProliferatorSettings() {
                     data-testid={`proliferator-mode-button-${mode}`}
                     onClick={() => !isDisabled && handleModeChange(mode)}
                     disabled={isDisabled}
-                    className={`
-                      px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all duration-200
-                      ${
-                        isDisabled
-                          ? "bg-dark-800/30 text-space-500 border-dark-700 cursor-not-allowed opacity-50 hover:scale-100 hover:bg-dark-800/30"
-                          : proliferator.mode === mode
-                            ? "bg-neon-cyan/30 text-white border-neon-cyan shadow-[0_0_20px_rgba(0,217,255,0.6),inset_0_0_20px_rgba(0,217,255,0.2)] backdrop-blur-sm font-bold scale-105 hover:scale-105"
-                            : "bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan hover:scale-105"
-                      }
-                    `}
+                    className={cn(
+                      "px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all duration-200",
+                      isDisabled
+                        ? "bg-dark-800/30 text-space-500 border-dark-700 cursor-not-allowed opacity-50 hover:scale-100 hover:bg-dark-800/30"
+                        : proliferator.mode === mode
+                          ? cn(
+                              "bg-neon-cyan/30 text-white border-neon-cyan backdrop-blur-sm font-bold scale-105 hover:scale-105",
+                              NEON_GLOW.cyanStrong
+                            )
+                          : "bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan hover:scale-105"
+                    )}
                   >
                     <div className="flex flex-col items-center">
                       <span className="font-semibold">

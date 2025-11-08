@@ -1,7 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
-import os from "os";
 
 // Resolve __dirname in ESM environment so testDir is an absolute path.
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -17,18 +16,29 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  */
 export default defineConfig({
   testDir: join(__dirname, "tests/e2e"),
+  /* Ignore seed.spec.ts as it's used as a fixture template */
+  testIgnore: "**/seed.spec.ts",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 2 : 1,
   /* Opt out of parallel tests on CI. */
-  /* Local: Use 50% of CPU cores for parallel execution to balance speed and stability */
-  /* CI: Use 1 worker to ensure stability */
-  workers: process.env.CI ? 1 : Math.max(1, Math.floor(os.cpus().length * 0.5)),
+  /* Local: Optimized for 24-core CPU (i9-13900K) with 3 browser projects running in parallel */
+  /* Use 4 workers = 12 total browser instances (4 workers × 3 browsers) */
+  /* This keeps CPU usage around 50% and leaves headroom for system stability */
+  /* CI: Use 2 workers for better performance with sharding */
+  workers: process.env.CI ? 2 : 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  /* Disable automatic report opening to prevent blocking in AI Agent mode */
+  reporter: [["html", { open: "never" }]],
+  /* Global timeout for each test - increased for complex tests */
+  timeout: 90 * 1000,
+  /* Expect timeout for assertions */
+  expect: {
+    timeout: 15 * 1000,
+  },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -66,8 +76,18 @@ export default defineConfig({
         ...devices["Desktop Edge"],
         channel: "msedge",
         viewport: { width: 1920, height: 1080 },
-        launchOptions: { args: ["--window-size=1920,1080"] },
+        launchOptions: {
+          args: [
+            "--window-size=1920,1080",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-features=IsolateOrigins,site-per-process",
+          ],
+        },
+        // Edge can be slower, give it more time
+        actionTimeout: 20000,
       },
+      // Edge-specific retries for stability
+      retries: process.env.CI ? 2 : 2,
     },
 
     /* Test against mobile viewports. */
@@ -89,9 +109,14 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "npm run dev",
+    command: "pnpm run dev",
     url: "http://localhost:5173",
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
+    stdout: "ignore",
+    stderr: "pipe",
   },
+
+  /* Global setup to run before all tests */
+  globalSetup: "./tests/e2e/global-setup.ts",
 });

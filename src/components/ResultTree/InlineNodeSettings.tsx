@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ICONS } from "../../constants/icons";
+import { PROLIFERATOR_TYPES, PROLIFERATOR_MODES } from "../../constants/proliferator";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 import type { NodeOverrideSettings, RecipeTreeNode } from "../../types";
@@ -42,7 +43,8 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
       // Sync state when expanded
       const override = nodeOverrides.get(node.nodeId);
       const currentRecipeType = node.recipe?.Type;
-      // Use queueMicrotask to defer state updates
+      // queueMicrotaskを使用することで、React の batch update と競合を避け、
+      // 展開時の状態初期化を次のマイクロタスクに遅延させる
       queueMicrotask(() => {
         setUseOverride(!!override);
         setProliferatorType(override?.proliferator?.type || settings.proliferator.type);
@@ -196,7 +198,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
                   {t("type")}
                 </label>
                 <div className="grid grid-cols-4 gap-1">
-                  {(["none", "mk1", "mk2", "mk3"] as ProliferatorType[]).map(type => (
+                  {PROLIFERATOR_TYPES.map(type => (
                     <button
                       key={type}
                       onClick={() => setProliferatorType(type)}
@@ -239,7 +241,7 @@ export function InlineNodeSettings({ node, isExpanded, onToggle }: InlineNodeSet
                     </div>
                   )}
                   <div className="grid grid-cols-2 gap-1">
-                    {(["production", "speed"] as ProliferatorMode[]).map(mode => {
+                    {PROLIFERATOR_MODES.map(mode => {
                       const isDisabled = mode === "production" && !isProductionAllowed;
                       return (
                         <button

@@ -1,26 +1,30 @@
-import { useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
-import type { ImageExportOptions } from "../../types/export";
+import { HOVER_CARD_GLOW, ICON_GLOW, MODAL_GLOW, TEXT_GLOW } from "../../constants/theme";
+import { usePlanExport } from "../../hooks/usePlanExport";
+import { usePlanImport } from "../../hooks/usePlanImport";
+import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
+import { loadPlanWithHistory } from "../../services/plan-management/planLoadService";
+import {
+  createPlanFromState,
+  getDefaultPlanName,
+  savePlanWithVersion,
+} from "../../services/plan-management/planSaveService";
+import { getRecentPlans } from "../../services/plan-management/planStorageService";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useHistoryStore } from "../../stores/historyStore";
 import { useNodeOverrideStore } from "../../stores/nodeOverrideStore";
 import { useRecipeSelectionStore } from "../../stores/recipeSelectionStore";
 import { useSettingsStore } from "../../stores/settingsStore";
-import type { SavedPlan, Recipe } from "../../types";
-import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
+import type { Recipe, SavedPlan } from "../../types";
+import type { ImageExportOptions } from "../../types/export";
+import { cn } from "../../utils/classNames";
 import { calculatePlanDiff } from "../../utils/planDiff";
-import { PlanDiffView } from "../PlanDiffView";
-import { usePlanManagerDialogs } from "../../hooks/usePlanManagerDialogs";
-import { usePlanExport } from "../../hooks/usePlanExport";
-import { usePlanImport } from "../../hooks/usePlanImport";
-import {
-  savePlanWithVersion,
-  getDefaultPlanName,
-  createPlanFromState,
-} from "../../services/plan-management/planSaveService";
-import { getRecentPlans } from "../../services/plan-management/planStorageService";
-import { loadPlanWithHistory } from "../../services/plan-management/planLoadService";
+import { copyToClipboard, generateShareURL } from "../../utils/urlShare";
+import { DiffDialog } from "./DiffDialog";
+import { ShareUrlDialog } from "./ShareUrlDialog";
+import { VersionHistoryDialog } from "./VersionHistoryDialog";
 
 export function PlanManager() {
   const { t } = useTranslation();
@@ -49,6 +53,32 @@ export function PlanManager() {
 
   // Dialog state management
   const dialogs = usePlanManagerDialogs();
+
+  // Escキーでダイアログを閉じる
+  useEffect(() => {
+    if (!dialogs.activeDialog) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (dialogs.activeDialog === "diff") {
+          dialogs.setDiffVersions(null, null);
+        }
+        if (dialogs.activeDialog === "version") {
+          dialogs.setSelectedPlanId(null);
+        }
+        dialogs.closeDialog();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    dialogs.activeDialog,
+    dialogs.closeDialog,
+    dialogs.setDiffVersions,
+    dialogs.setSelectedPlanId,
+  ]);
 
   // Export functionality
   const planExport = usePlanExport({
@@ -267,6 +297,8 @@ export function PlanManager() {
             updateSettings,
             setNodeOverrides: setAllOverrides,
           },
+          mergeOverrides: dialogs.mergeOverridesOnLoad,
+          currentOverrides: nodeOverrides,
           historyDescription: t("planLoadedFromBrowser", { planName: plan.name, version }),
         });
 
@@ -280,6 +312,7 @@ export function PlanManager() {
     [
       data,
       dialogs,
+      nodeOverrides,
       t,
       loadPlanVersionFromStore,
       setSelectedRecipe,
@@ -348,7 +381,10 @@ export function PlanManager() {
             planExport.setExportErrorMessage("");
           }}
           disabled={!selectedRecipe}
-          className="px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,136,0.4)] disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+          className={cn(
+            "px-4 py-2 bg-neon-green/30 border border-neon-green/50 text-white rounded-lg hover:bg-neon-green/40 hover:border-neon-green disabled:bg-dark-600 disabled:border-neon-green/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
+            HOVER_CARD_GLOW.greenStrong
+          )}
         >
           💾 {t("save")}
         </button>
@@ -360,7 +396,10 @@ export function PlanManager() {
             dialogs.openDialog("load");
             planImport.clearMessages();
           }}
-          className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)] transition-all ripple-effect"
+          className={cn(
+            "px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue transition-all ripple-effect",
+            HOVER_CARD_GLOW.blue
+          )}
         >
           📂 {t("load")}
         </button>
@@ -370,7 +409,10 @@ export function PlanManager() {
           data-testid="url-share-button"
           onClick={handleShareURL}
           disabled={!selectedRecipe}
-          className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+          className={cn(
+            "px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
+            HOVER_CARD_GLOW.purple
+          )}
         >
           🔗 {t("shareURL")}
         </button>
@@ -380,8 +422,19 @@ export function PlanManager() {
       {dialogs.activeDialog === "save" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl shadow-[0_0_30px_rgba(0,255,136,0.3)] max-w-md w-full animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,255,136,0.6)] flex items-center gap-2 px-6 pt-6">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-green/40 rounded-xl max-w-md w-full animate-fadeInScale",
+                MODAL_GLOW.green
+              )}
+            >
+              <h2
+                data-testid="save-dialog-title"
+                className={cn(
+                  "text-2xl font-bold mb-6 text-white flex items-center gap-2 px-6 pt-6",
+                  TEXT_GLOW.green
+                )}
+              >
                 💾 {t("save")}
               </h2>
 
@@ -404,7 +457,11 @@ export function PlanManager() {
                 <button
                   data-testid="save-to-localstorage-button"
                   onClick={handleSaveToLocalStorage}
-                  className="w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,255,136,0.3)] hover:shadow-[0_0_15px_rgba(0,255,136,0.5)] ripple-effect font-medium"
+                  className={cn(
+                    "w-full px-4 py-2 bg-neon-green/20 border-2 border-neon-green/40 text-white rounded-lg hover:bg-neon-green/30 hover:border-neon-green hover:scale-105 active:scale-95 transition-all ripple-effect font-medium",
+                    ICON_GLOW.green,
+                    HOVER_CARD_GLOW.greenStrong
+                  )}
                 >
                   💾 {t("saveToLocalStorage")}
                 </button>
@@ -418,7 +475,11 @@ export function PlanManager() {
                       onClick={() =>
                         handleExport("json", dialogs.planName || getDefaultPlanNameValue())
                       }
-                      className="px-3 py-2 bg-green-500/20 border-2 border-green-500/40 text-white rounded-lg hover:bg-green-500/30 hover:border-green-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(34,197,94,0.3)] hover:shadow-[0_0_15px_rgba(34,197,94,0.5)] ripple-effect text-sm font-medium"
+                      className={cn(
+                        "px-3 py-2 bg-green-500/20 border-2 border-green-500/40 text-white rounded-lg hover:bg-green-500/30 hover:border-green-500 hover:scale-105 active:scale-95 transition-all ripple-effect text-sm font-medium",
+                        ICON_GLOW.green,
+                        HOVER_CARD_GLOW.greenStrong
+                      )}
                     >
                       JSON
                     </button>
@@ -543,8 +604,16 @@ export function PlanManager() {
       {dialogs.activeDialog === "load" &&
         createPortal(
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl shadow-[0_0_30px_rgba(0,136,255,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)] flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6">
+            <div
+              className={cn(
+                "bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale",
+                MODAL_GLOW.blue
+              )}
+            >
+              <h2
+                data-testid="load-dialog-title"
+                className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(0,136,255,0.6)] flex items-center gap-2 sticky top-0 bg-dark-700/95 backdrop-blur-md pb-4 border-b border-neon-blue/30 px-6 pt-6"
+              >
                 📂 {t("load")}
               </h2>
 
@@ -562,7 +631,7 @@ export function PlanManager() {
                     onChange={e => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        handleImportFile(file);
+                        void handleImportFile(file);
                         // Reset file input
                         if (fileInputRef.current) {
                           fileInputRef.current.value = "";
@@ -696,218 +765,61 @@ export function PlanManager() {
         )}
 
       {/* Share URL Dialog */}
-      {dialogs.activeDialog === "share" &&
-        createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-2xl w-full p-6 animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-4 text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)] flex items-center gap-2">
-                🔗 {t("shareURL")}
-              </h2>
-
-              <p className="text-sm text-space-200 mb-4">{t("shareUrlDescription")}</p>
-
-              <div className="mb-4">
-                <label className="block text-sm font-semibold mb-2 text-neon-cyan">
-                  {t("sharedUrl")}
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    data-testid="share-url-input"
-                    type="text"
-                    value={dialogs.shareURL}
-                    readOnly
-                    className="flex-1 px-3 py-2 border-2 border-neon-purple/30 rounded-lg bg-dark-800/50 text-white text-sm font-mono backdrop-blur-sm"
-                    onClick={e => e.currentTarget.select()}
-                  />
-                  <button
-                    data-testid="copy-url-button"
-                    onClick={handleCopyURL}
-                    className={`px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105 active:scale-95 ${
-                      dialogs.copySuccess
-                        ? "bg-green-500/20 border-2 border-green-500/40 shadow-[0_0_15px_rgba(34,197,94,0.5)]"
-                        : "bg-neon-blue/20 border-2 border-neon-blue/40 hover:bg-neon-blue/30 hover:border-neon-blue shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)]"
-                    } ripple-effect`}
-                  >
-                    {dialogs.copySuccess ? `✓ ${t("copied")}` : `📋 ${t("copy")}`}
-                  </button>
-                </div>
-              </div>
-
-              {/* Include overrides in URL */}
-              <div className="mb-4 flex items-center gap-2">
-                <input
-                  data-testid="include-overrides-on-share-checkbox"
-                  id="includeOverridesOnShare"
-                  type="checkbox"
-                  checked={dialogs.includeOverridesOnShare}
-                  onChange={e => dialogs.setIncludeOverridesOnShare(e.target.checked)}
-                  className="h-4 w-4 accent-neon-purple"
-                />
-                <label htmlFor="includeOverridesOnShare" className="text-sm text-white">
-                  {t("includeNodeOverridesInURL")}
-                </label>
-              </div>
-
-              <div className="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-lg p-3 mb-4">
-                <p className="text-sm text-yellow-300">{t("urlWarning")}</p>
-              </div>
-
-              <button
-                data-testid="share-dialog-close-button"
-                onClick={() => dialogs.closeDialog()}
-                className="w-full px-4 py-2 bg-dark-800/50 border-2 border-space-500/40 text-white rounded-lg hover:bg-dark-800 hover:border-space-400 hover:scale-105 active:scale-95 transition-all ripple-effect font-medium"
-              >
-                {t("close")}
-              </button>
-            </div>
-          </div>,
-          document.body
-        )}
+      <ShareUrlDialog
+        isOpen={dialogs.activeDialog === "share"}
+        shareURL={dialogs.shareURL}
+        copySuccess={dialogs.copySuccess}
+        includeOverridesOnShare={dialogs.includeOverridesOnShare}
+        onClose={() => dialogs.closeDialog()}
+        onCopyURL={handleCopyURL}
+        onToggleIncludeOverrides={dialogs.setIncludeOverridesOnShare}
+      />
 
       {/* Version History Dialog */}
-      {dialogs.activeDialog === "version" &&
-        dialogs.selectedPlanId &&
-        createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-dark-700/95 backdrop-blur-md border-2 border-purple-500/40 rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.3)] max-w-2xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
-              <h2 className="text-2xl font-bold mb-6 text-white drop-shadow-[0_0_8px_rgba(168,85,247,0.6)] flex items-center gap-2 px-6 pt-6">
-                📚 {t("versionHistory")}
-              </h2>
-
-              <div className="px-6 pb-6 space-y-6">
-                {(() => {
-                  const versions = getPlanVersions(dialogs.selectedPlanId!);
-                  return versions.length === 0 ? (
-                    <p className="text-space-200 text-sm">{t("noVersions")}</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {versions.map((version, index) => (
-                        <div
-                          key={version.version}
-                          className="p-4 bg-dark-800/50 border border-purple-500/20 rounded-lg hover:bg-dark-800 hover:border-purple-500/40 transition-all"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex-1">
-                              <div className="font-medium text-white">
-                                {t("version")} {version.version}
-                              </div>
-                              <div className="text-sm text-space-200">
-                                {new Date(version.timestamp).toLocaleString()}
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              {index > 0 && (
-                                <button
-                                  onClick={() => {
-                                    dialogs.setDiffVersions(
-                                      versions[index - 1].version,
-                                      version.version
-                                    );
-                                    dialogs.openDialog("diff");
-                                  }}
-                                  className="px-3 py-1 bg-yellow-500/20 border-2 border-yellow-500/40 text-white rounded-lg hover:bg-yellow-500/30 hover:border-yellow-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(251,191,36,0.3)] hover:shadow-[0_0_15px_rgba(251,191,36,0.5)] ripple-effect text-sm font-medium"
-                                >
-                                  🔍 {t("compare")}
-                                </button>
-                              )}
-                              <button
-                                onClick={() =>
-                                  handleLoadVersion(dialogs.selectedPlanId!, version.version)
-                                }
-                                className="px-3 py-1 bg-neon-blue/20 border-2 border-neon-blue/40 text-white rounded-lg hover:bg-neon-blue/30 hover:border-neon-blue hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(0,136,255,0.3)] hover:shadow-[0_0_15px_rgba(0,136,255,0.5)] ripple-effect text-sm font-medium"
-                              >
-                                {t("load")}
-                              </button>
-                            </div>
-                          </div>
-                          {version.description && (
-                            <div className="text-sm text-space-100 mt-2 pt-2 border-t border-purple-500/20">
-                              {version.description}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })()}
-              </div>
-
-              <div className="px-6 pb-6">
-                <button
-                  onClick={() => {
-                    dialogs.closeDialog();
-                    dialogs.setSelectedPlanId(null);
-                  }}
-                  className="w-full px-4 py-2 bg-dark-800/50 border-2 border-space-500/40 text-white rounded-lg hover:bg-dark-800 hover:border-space-400 hover:scale-105 active:scale-95 transition-all ripple-effect font-medium"
-                >
-                  {t("close")}
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+      <VersionHistoryDialog
+        isOpen={dialogs.activeDialog === "version"}
+        selectedPlanId={dialogs.selectedPlanId}
+        versions={dialogs.selectedPlanId ? getPlanVersions(dialogs.selectedPlanId) : []}
+        onClose={() => {
+          dialogs.closeDialog();
+          dialogs.setSelectedPlanId(null);
+        }}
+        onLoadVersion={handleLoadVersion}
+        onCompareVersions={(baseVersion, compareVersion) => {
+          dialogs.setDiffVersions(baseVersion, compareVersion);
+          dialogs.openDialog("diff");
+        }}
+      />
 
       {/* Diff Dialog */}
-      {dialogs.activeDialog === "diff" &&
-        dialogs.selectedPlanId &&
-        dialogs.diffBaseVersion !== null &&
-        dialogs.diffCompareVersion !== null &&
-        createPortal(
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-            <div className="bg-[#070a10] border-2 border-yellow-500/40 rounded-xl shadow-[0_0_30px_rgba(251,191,36,0.3)] max-w-4xl w-full max-h-[80vh] overflow-y-auto animate-fadeInScale">
-              <div className="sticky top-0 bg-[#070a10] border-b border-yellow-500/30 z-10 px-6 pt-6 pb-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] flex items-center gap-2">
-                    🔍 {t("compareVersions")}
-                  </h2>
-                  <button
-                    onClick={() => {
-                      dialogs.closeDialog();
-                      dialogs.setDiffVersions(null, null);
-                    }}
-                    className="px-3 py-1 bg-red-500/20 border-2 border-red-500/40 text-white rounded-lg hover:bg-red-500/30 hover:border-red-500 hover:scale-105 active:scale-95 transition-all shadow-[0_0_10px_rgba(239,68,68,0.3)] hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] ripple-effect text-sm font-medium"
-                  >
-                    {t("close")}
-                  </button>
-                </div>
-              </div>
-
-              <div className="px-6 pb-6 space-y-6">
-                {(() => {
-                  const baseVersion = loadPlanVersionFromStore(
-                    dialogs.selectedPlanId!,
-                    dialogs.diffBaseVersion!
-                  );
-                  const compareVersion = loadPlanVersionFromStore(
-                    dialogs.selectedPlanId!,
-                    dialogs.diffCompareVersion!
-                  );
-
-                  if (!baseVersion || !compareVersion) {
-                    return <p className="text-red-300">{t("versionNotFound")}</p>;
-                  }
-
-                  const diffs = calculatePlanDiff(baseVersion, compareVersion);
-
-                  return (
-                    <>
-                      <div className="bg-yellow-500/10 border-2 border-yellow-500/30 rounded-lg p-4">
-                        <div className="text-sm text-yellow-200">
-                          {t("comparingVersion")} {dialogs.diffBaseVersion} → {t("version")}{" "}
-                          {dialogs.diffCompareVersion}
-                        </div>
-                      </div>
-
-                      <PlanDiffView diffs={diffs} />
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
+      <DiffDialog
+        isOpen={dialogs.activeDialog === "diff"}
+        diffBaseVersion={dialogs.diffBaseVersion}
+        diffCompareVersion={dialogs.diffCompareVersion}
+        diffs={
+          dialogs.selectedPlanId &&
+          dialogs.diffBaseVersion !== null &&
+          dialogs.diffCompareVersion !== null
+            ? (() => {
+                const baseVersion = loadPlanVersionFromStore(
+                  dialogs.selectedPlanId,
+                  dialogs.diffBaseVersion
+                );
+                const compareVersion = loadPlanVersionFromStore(
+                  dialogs.selectedPlanId,
+                  dialogs.diffCompareVersion
+                );
+                return baseVersion && compareVersion
+                  ? calculatePlanDiff(baseVersion, compareVersion)
+                  : null;
+              })()
+            : null
+        }
+        onClose={() => {
+          dialogs.closeDialog();
+          dialogs.setDiffVersions(null, null);
+        }}
+      />
     </>
   );
 }

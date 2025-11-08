@@ -47,6 +47,22 @@ body {
     0 0 20px rgba(0, 136, 255, 0.3);
 }
 
+/* Node detail panel animation */
+@keyframes fadeInSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.node-detail-panel-animate {
+  animation: fadeInSlideDown 0.2s ease-out forwards;
+}
+
 /* Hologram panel effect */
 .hologram-panel {
   background: rgba(13, 17, 23, 0.8);
@@ -311,4 +327,19 @@ body {
 .hover-lift:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(0, 136, 255, 0.3);
+}
+
+/* フォーカスインジケーター */
+*:focus-visible {
+  outline: 2px solid rgba(0, 217, 255, 0.8);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ボタンなどの特定要素 */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(0, 217, 255, 0.8);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
 }

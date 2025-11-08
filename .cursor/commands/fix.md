@@ -5,13 +5,12 @@
 ## 使用方法
 
 ```
-/fix <Issue URL または Issue番号> <簡単な説明>
+/fix <Issue URL または Issue番号>
 ```
 
 **例**:
-- `/fix #78 増産剤計算エラー`
-- `/fix https://github.com/owner/repo/issues/78 増産剤計算エラー`
-- `/fix #78` (説明なしの場合はIssueタイトルを使用)
+- `/fix #78`
+- `/fix https://github.com/owner/repo/issues/78`
 
 ## 実行内容
 
@@ -34,11 +33,20 @@
   - `develop` → `develop` ブランチ
   - その他 → 指定されたベースブランチ
 
-### 3. 必須実行ステップ（全11ステップ）
+### 3. 必須実行ステップ（全13ステップ）
 
 `@development-workflow.mdc` の**全ステップを必ず自動的に実行**：
 
-#### ✅ **ステップ 1**: 作業タイプの判定とブランチ作成 🔴 必須実行
+#### ✅ **ステップ 1**: GitHub Issueの確認と仕様書作成 🔴 必須実行
+- [ ] **GitHub Issueを確認**し、詳細な仕様書を作成する（必ず実行すること）
+- [ ] 内容に不明点や疑問点がある場合、ユーザーに問い合わせて疑問点などが全て解消するまで繰り返し確認する
+- [ ] すべての不明点や疑問点が解消した場合、`docs/` ディレクトリに仕様書をMarkdown形式で保存する
+
+#### ✅ **ステップ 2**: 仕様書の再確認 🔴 必須実行
+- [ ] **作成した仕様書ファイルを再度読み込み**、改めて疑問点がないか確認する（必ず実行すること）
+- [ ] すべての疑問点が解消するまで繰り返す
+
+#### ✅ **ステップ 3**: 作業タイプの判定とブランチ作成 🔴 必須実行
 - [ ] **作業タイプを判定**（必ず実行すること）
   - **不具合修正** (`hotfix/fix-*` → ベースブランチ)
 - [ ] 現在のブランチを確認（必ず実行すること）
@@ -47,7 +55,7 @@
   # デフォルト: mainブランチ
   git checkout main
   git pull origin main
-  
+
   # ユーザー指定がある場合: 指定されたブランチ
   # git checkout <ユーザー指定ブランチ>
   # git pull origin <ユーザー指定ブランチ>
@@ -57,22 +65,22 @@
   git checkout -b hotfix/fix-<問題の説明>
   ```
 
-#### ✅ **ステップ 2**: 既存テストの実行（変更前） 🔴 必須実行
+#### ✅ **ステップ 4**: 既存テストの実行（変更前） 🔴 必須実行
 - [ ] **単体テストを実行**し、全テスト合格を確認（必ず実行すること）
   ```bash
-  npm test
+  pnpm test
   ```
 - [ ] **E2Eテストを実行**し、全テスト合格を確認（必ず実行すること）
   ```bash
   # Windows (PowerShell)
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   Start-Sleep -Seconds 5
-  npm run test:e2e
+  pnpm run test:e2e
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
   ```
 
-#### ✅ **ステップ 3**: コード変更の実施
+#### ✅ **ステップ 5**: コード変更の実施
 - [ ] **バグを再現するテストを追加**（TDD推奨）
 - [ ] 依頼内容に沿ったコード変更を実施
 - [ ] **既存ファイルを削除する場合**（コード統合、ファイル移動などで不要になった場合）
@@ -82,56 +90,56 @@
   ```
 - [ ] TypeScriptのコンパイルエラーがないことを確認
   ```bash
-  npx tsc --noEmit
+  pnpm exec tsc --noEmit
   ```
 
-#### ✅ **ステップ 3.5**: ユーザー確認 🔴 必須実行
+#### ✅ **ステップ 5.5**: ユーザー確認 🔴 必須実行
 - [ ] **変更内容をユーザーに報告**（必ず実行すること）
 - [ ] **ユーザーの承認を待つ**
-  - ✅ **OK**: ステップ4に進む
-  - ❌ **NG**: ステップ3に戻り、フィードバックに基づいて再度変更
+  - ✅ **OK**: ステップ6に進む
+  - ❌ **NG**: ステップ5に戻り、フィードバックに基づいて再度変更
 
-#### ✅ **ステップ 4**: ビルド確認
+#### ✅ **ステップ 6**: ビルド確認
 - [ ] **プロダクションビルドが成功**することを確認
   ```bash
-  npm run build
+  pnpm run build
   ```
 
-#### ✅ **ステップ 5**: 単体テストの再実行（変更後）
+#### ✅ **ステップ 7**: 単体テストの再実行（変更後）
 - [ ] **単体テストを再実行**し、全テスト合格を確認
   ```bash
-  npm test
+  pnpm test
   ```
 
-#### ✅ **ステップ 6**: 単体テストの追加・変更（必要に応じて）
+#### ✅ **ステップ 8**: 単体テストの追加・変更（必要に応じて）
 - [ ] **変更内容に応じて単体テストを追加・変更**する
   - **バグを再現するテストを追加**（TDD推奨）
   - **リグレッションテストとして残す**
 - [ ] **追加・変更が不要な場合は、その理由をユーザーに報告**する
 
-#### ✅ **ステップ 7**: E2Eテストの再実行（変更後） 🔴 必須実行
+#### ✅ **ステップ 9**: E2Eテストの再実行（変更後） 🔴 必須実行
 - [ ] **E2Eテストを再実行**し、全テスト合格を確認（必ず実行すること）
   ```bash
   # Windows (PowerShell)
-  Start-Process pwsh -ArgumentList "-Command", "npm run dev" -WindowStyle Hidden
+  Start-Process pwsh -ArgumentList "-Command", "pnpm run dev" -WindowStyle Hidden
   Start-Sleep -Seconds 5
-  npm run test:e2e
+  pnpm run test:e2e
   $viteProcess = Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
   if ($viteProcess) { Stop-Process -Id $viteProcess -Force -ErrorAction SilentlyContinue }
   ```
 
-#### ✅ **ステップ 8**: 最終確認
+#### ✅ **ステップ 10**: 最終確認
 - [ ] ESLintでコード品質を確認
   ```bash
-  npm run lint
+  pnpm run lint
   ```
 - [ ] ローカル環境でアプリケーションを起動し、動作確認
   ```bash
-  npm run dev
+  pnpm run dev
   ```
 - [ ] **修正した不具合が再現しないことを確認**
 
-#### ✅ **ステップ 9**: コミット前の最終確認 🔴 必須実行
+#### ✅ **ステップ 11**: コミット前の最終確認 🔴 必須実行
 - [ ] 変更内容を確認（必ず実行すること）
   ```bash
   git status
@@ -140,13 +148,13 @@
 - [ ] **削除されたファイルの確認**（ファイル削除を行った場合）
 - [ ] 不要なファイル（一時ファイル、デバッグコードなど）が含まれていないことを確認
 
-#### ✅ **ステップ 9.5**: ユーザー承認 🔴 必須実行
+#### ✅ **ステップ 11.5**: ユーザー承認 🔴 必須実行
 - [ ] **git操作の実行許可をユーザーに確認**（必ず実行すること）
 - [ ] **ユーザーの承認を待つ**
-  - ✅ **OK**: ステップ10に進む
+  - ✅ **OK**: ステップ12に進む
   - ❌ **NG**: 変更内容を修正してから再度確認
 
-#### ✅ **ステップ 10**: コミットとプッシュ 🔴 必須実行
+#### ✅ **ステップ 12**: コミットとプッシュ 🔴 必須実行
 - [ ] 変更をステージングしてコミット（必ず実行すること）
   ```bash
   git add <変更したファイル>
@@ -157,7 +165,7 @@
   git push origin hotfix/fix-<問題の説明>
   ```
 
-#### ✅ **ステップ 11**: プルリクエストの作成 🔴 必須実行
+#### ✅ **ステップ 13**: プルリクエストの作成 🔴 必須実行
 - [ ] プルリクエストを作成（必ず実行すること）
 - [ ] @create-pull-request.mdc の**全ステップを自動実行**すること
 
@@ -246,4 +254,3 @@ fix: <修正内容>
 ---
 
 **このコマンドは `@development-workflow.mdc` と `@create-pull-request.mdc` の全ルールに従って実行されます。**
-

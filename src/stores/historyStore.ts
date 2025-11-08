@@ -6,7 +6,7 @@ import {
   HISTORY_VERSION,
   validateHistoryEntry,
   migrateHistoryEntry,
-} from "../utils/historyUtils";
+} from "../utils/history/events";
 
 /**
  * History store interface

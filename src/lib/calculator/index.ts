@@ -6,7 +6,8 @@ import type {
   NodeOverrideSettings,
   MultiOutputResult,
 } from "../../types";
-import { buildRecipeTree } from "./tree-builder";
+import { buildRecipeTree, type TreeBuilderContext } from "./tree-builder";
+import { wrapResult, type Result } from "./result";
 import { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from "./aggregations";
 
 // Re-export all public functions
@@ -21,7 +22,19 @@ export {
   createRawMaterialNode,
   buildChildNodes,
 } from "./tree-builder";
+// Export legacy function for test compatibility
+export { buildRecipeTreeFromParams } from "./tree-builder";
+export type {
+  TreeBuilderContext,
+  TreeBuilderMiningSettings,
+  BuildRecipeTreeOptions,
+  BuildChildNodesOptions,
+  ProliferatorResolutionOptions,
+  MachineResolutionOptions,
+  RawMaterialNodeOptions,
+} from "./tree-builder";
 export { calculateTotalPower, calculateTotalMachines, calculateRawMaterials } from "./aggregations";
+export type { Result } from "./result";
 
 /**
  * Main calculation function
@@ -43,19 +56,22 @@ export function calculateProductionChain(
   }
   const targetItemId = recipe.Results[0].id;
 
-  const rootNode = buildRecipeTree(
-    recipe,
-    targetRate,
+  const context: TreeBuilderContext = {
     gameData,
     settings,
     nodeOverrides,
-    0,
-    20,
-    `r-${recipe.SID}`,
-    new Set(),
     miningSettings,
-    targetItemId
-  );
+    maxDepth: 20,
+  };
+
+  const rootNode = buildRecipeTree({
+    recipe,
+    targetRate,
+    context,
+    nodePath: `r-${recipe.SID}`,
+    visitingItems: new Set(),
+    targetItemId,
+  });
   const totalPower = calculateTotalPower(rootNode);
   const totalMachines = calculateTotalMachines(rootNode);
   const rawMaterials = calculateRawMaterials(rootNode);
@@ -71,6 +87,22 @@ export function calculateProductionChain(
     rawMaterials,
     multiOutputResults,
   };
+}
+
+export function tryCalculateProductionChain(
+  recipe: Recipe,
+  targetRate: number,
+  gameData: GameData,
+  settings: GlobalSettings,
+  nodeOverrides: Map<string, NodeOverrideSettings> = new Map(),
+  miningSettings: {
+    machineType: "Mining Machine" | "Advanced Mining Machine";
+    workSpeedMultiplier: number;
+  }
+): Result<CalculationResult> {
+  return wrapResult(() =>
+    calculateProductionChain(recipe, targetRate, gameData, settings, nodeOverrides, miningSettings)
+  );
 }
 
 /**

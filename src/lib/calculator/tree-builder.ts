@@ -20,6 +20,56 @@ import { calculateConveyorBelts } from "./belt-calculation";
 import { calculateMachinePower, calculateSorterPower } from "./power-calculation";
 import { calculateProductionRate } from "./production-rate";
 
+function calculateRequiredMachineCount(targetRate: number, ratePerMachine: number): number {
+  if (!Number.isFinite(ratePerMachine) || ratePerMachine <= 0) {
+    throw new Error("Invalid production rate per machine");
+  }
+
+  return Math.ceil(new Decimal(targetRate).div(ratePerMachine).toDecimalPlaces(2).toNumber());
+}
+
+function calculateInputRequirements(
+  recipe: Recipe,
+  targetRate: number,
+  inputMultiplier: number,
+  targetItemId?: number
+): { itemId: number; itemName: string; requiredRate: number }[] {
+  const referenceResult =
+    (targetItemId && recipe.Results?.find(result => result.id === targetItemId)) ||
+    recipe.Results?.[0];
+  const referenceCount = referenceResult?.count ?? 1;
+  const baseRate = new Decimal(targetRate).div(referenceCount || 1);
+
+  return recipe.Items.map(item => ({
+    itemId: item.id,
+    itemName: item.name,
+    requiredRate: new Decimal(item.count).mul(baseRate).mul(inputMultiplier).toNumber(),
+  }));
+}
+
+export interface TreeBuilderMiningSettings {
+  machineType: "Mining Machine" | "Advanced Mining Machine";
+  workSpeedMultiplier: number;
+}
+
+export interface TreeBuilderContext {
+  gameData: GameData;
+  settings: GlobalSettings;
+  nodeOverrides: Map<string, NodeOverrideSettings>;
+  miningSettings: TreeBuilderMiningSettings;
+  maxDepth: number;
+}
+
+export interface BuildRecipeTreeOptions {
+  recipe: Recipe;
+  targetRate: number;
+  context: TreeBuilderContext;
+  depth?: number;
+  nodePath?: string;
+  visitingItems?: Set<number>;
+  targetItemId?: number;
+}
+
 /**
  * Find the appropriate machine for a recipe type
  */
@@ -30,11 +80,17 @@ const getMachineForRecipe = getMachineForRecipeFromConstants;
  * Applies smart mode selection based on recipe capabilities
  * @internal - Exported for testing
  */
-export function resolveProliferatorMode(
-  recipe: Recipe,
-  settings: GlobalSettings,
-  override: NodeOverrideSettings | undefined
-): ProliferatorConfig {
+export interface ProliferatorResolutionOptions {
+  recipe: Recipe;
+  settings: GlobalSettings;
+  override?: NodeOverrideSettings;
+}
+
+export function resolveProliferatorMode({
+  recipe,
+  settings,
+  override,
+}: ProliferatorResolutionOptions): ProliferatorConfig {
   const supportsProduction = recipe.productive === true;
   let proliferator = override?.proliferator || settings.proliferator;
 
@@ -101,12 +157,16 @@ export function resolveMachineByRank(
  * Resolve machine for a recipe, considering overrides
  * @internal - Exported for testing
  */
-export function resolveMachine(
-  recipe: Recipe,
-  gameData: GameData,
-  settings: GlobalSettings,
-  override: NodeOverrideSettings | undefined
-): Machine {
+export interface MachineResolutionOptions extends ProliferatorResolutionOptions {
+  gameData: GameData;
+}
+
+export function resolveMachine({
+  recipe,
+  gameData,
+  settings,
+  override,
+}: MachineResolutionOptions): Machine {
   if (override?.machineRank) {
     // Normalize machineRank: convert "matrixLab" to "standard" for Research type
     let normalizedRank = override.machineRank;
@@ -129,28 +189,38 @@ export function resolveMachine(
  * Create a raw material node
  * @internal - Exported for testing
  */
-export function createRawMaterialNode(
-  itemId: number,
-  itemName: string,
-  requiredRate: number,
-  settings: GlobalSettings,
-  gameData: GameData,
-  nodeId: string,
-  isCircular: boolean,
-  miningSettings: {
-    machineType: "Mining Machine" | "Advanced Mining Machine";
-    workSpeedMultiplier: number;
-  },
-  sourceRecipe?: Recipe
-): RecipeTreeNode {
+export interface RawMaterialNodeOptions {
+  itemId: number;
+  itemName: string;
+  requiredRate: number;
+  nodeId: string;
+  isCircular: boolean;
+  context: TreeBuilderContext;
+  sourceRecipe?: Recipe;
+}
+
+export function createRawMaterialNode({
+  itemId,
+  itemName,
+  requiredRate,
+  nodeId,
+  isCircular,
+  context,
+  sourceRecipe,
+}: RawMaterialNodeOptions): RecipeTreeNode {
+  const { settings, gameData, miningSettings } = context;
   const totalBeltSpeed = settings.conveyorBelt.speed * settings.conveyorBelt.stackCount;
 
   // Calculate mining equipment details for non-circular raw materials
   let miningEquipment;
   if (!isCircular) {
     try {
+      // calculateMiningRequirements only uses the rawMaterials property from CalculationResult
+      const partialResult = {
+        rawMaterials: new Map([[itemId, requiredRate]]),
+      };
       const miningCalc = calculateMiningRequirements(
-        { rawMaterials: new Map([[itemId, requiredRate]]) } as CalculationResult,
+        partialResult as CalculationResult, // Safe: function only accesses rawMaterials
         settings.miningSpeedResearch / 100, // Convert percentage to multiplier
         miningSettings.machineType,
         miningSettings.workSpeedMultiplier,
@@ -235,99 +305,72 @@ export function createRawMaterialNode(
  * Build child nodes for all inputs
  * @internal - Exported for testing
  */
+export interface BuildChildNodesOptions {
+  context: TreeBuilderContext;
+  depth: number;
+  nodeId: string;
+  visitingItems: Set<number>;
+  currentRecipe: Recipe;
+}
+
 export function buildChildNodes(
   inputs: { itemId: number; itemName: string; requiredRate: number }[],
-  gameData: GameData,
-  settings: GlobalSettings,
-  nodeOverrides: Map<string, NodeOverrideSettings>,
-  depth: number,
-  maxDepth: number,
-  nodeId: string,
-  visitingItems: Set<number>,
-  currentRecipe: Recipe,
-  miningSettings: {
-    machineType: "Mining Machine" | "Advanced Mining Machine";
-    workSpeedMultiplier: number;
-  }
+  { context, depth, nodeId, visitingItems, currentRecipe }: BuildChildNodesOptions
 ): RecipeTreeNode[] {
+  const { gameData, settings } = context;
   const children: RecipeTreeNode[] = [];
 
   for (const input of inputs) {
     const inputItem = gameData.allItems.get(input.itemId);
     if (!inputItem) continue;
 
-    // Check for alternative recipe preference (-1 means mining)
-    // If not set and item can be mined, default to mining (-1)
     let preferredRecipeId = settings.alternativeRecipes.get(input.itemId);
     if (preferredRecipeId === undefined && isRawMaterial(input.itemId)) {
-      // Default to mining for raw materials if not explicitly set
       preferredRecipeId = -1;
     }
     const forceMining = preferredRecipeId === -1;
     const forceRecipe = preferredRecipeId && preferredRecipeId > 0;
 
-    // Check for circular dependency: if input item is currently being visited, treat as raw material
     const isCircular = visitingItems.has(input.itemId);
-
-    // Check if this item can be produced by recipes
     const producerRecipes = gameData.recipesByItemId.get(input.itemId);
     const canBeProduced = producerRecipes && producerRecipes.length > 0;
 
-    // Only treat as raw material if:
-    // 1. It's a raw material AND (forced to mine OR no recipes available OR circular dependency)
-    // 2. Explicitly forced to mine
-    // 3. Circular dependency
     if (
       (isRawMaterial(input.itemId) && (forceMining || !canBeProduced || isCircular)) ||
       forceMining ||
       isCircular
     ) {
-      // Create a leaf node for raw material or circular dependency
       const rawNodeId = `${nodeId}/raw-${input.itemId}`;
-
-      // For circular dependency, use the current recipe itself
-      const rawNode = createRawMaterialNode(
-        input.itemId,
-        input.itemName,
-        input.requiredRate,
-        settings,
-        gameData,
-        rawNodeId,
+      const rawNode = createRawMaterialNode({
+        itemId: input.itemId,
+        itemName: input.itemName,
+        requiredRate: input.requiredRate,
+        nodeId: rawNodeId,
         isCircular,
-        miningSettings,
-        isCircular ? currentRecipe : undefined
-      );
+        context,
+        sourceRecipe: isCircular ? currentRecipe : undefined,
+      });
 
-      // If item has miningFrom, use it
       if (inputItem.miningFrom && !isCircular) {
         rawNode.miningFrom = inputItem.miningFrom;
       }
 
       children.push(rawNode);
-    } else {
-      // Find recipe to produce this item
-      const producerRecipes = gameData.recipesByItemId.get(input.itemId);
-      if (producerRecipes && producerRecipes.length > 0) {
-        // Use preferred recipe if specified, otherwise use first recipe
-        const selectedRecipe = forceRecipe
-          ? producerRecipes.find(r => r.SID === preferredRecipeId) || producerRecipes[0]
-          : producerRecipes[0];
+    } else if (producerRecipes && producerRecipes.length > 0) {
+      const selectedRecipe = forceRecipe
+        ? producerRecipes.find(r => r.SID === preferredRecipeId) || producerRecipes[0]
+        : producerRecipes[0];
 
-        const childNode = buildRecipeTree(
-          selectedRecipe,
-          input.requiredRate,
-          gameData,
-          settings,
-          nodeOverrides,
-          depth + 1,
-          maxDepth,
-          `${nodeId}/r-${selectedRecipe.SID}`,
-          visitingItems,
-          miningSettings,
-          input.itemId // Pass the target item ID
-        );
-        children.push(childNode);
-      }
+      const childNode = buildRecipeTreeInternal({
+        recipe: selectedRecipe,
+        targetRate: input.requiredRate,
+        context,
+        depth: depth + 1,
+        nodePath: `${nodeId}/r-${selectedRecipe.SID}`,
+        visitingItems,
+        targetItemId: input.itemId,
+      });
+      children.push(childNode);
     }
   }
 
@@ -338,22 +381,17 @@ export function buildChildNodes(
  * Build recipe tree recursively
  * @internal - Exported for testing purposes only
  */
-export function buildRecipeTree(
-  recipe: Recipe,
-  targetRate: number,
-  gameData: GameData,
-  settings: GlobalSettings,
-  nodeOverrides: Map<string, NodeOverrideSettings>,
-  depth: number = 0,
-  maxDepth: number = 20,
-  nodePath: string = `r-${recipe.SID}`,
-  visitingItems: Set<number> = new Set(),
-  miningSettings: {
-    machineType: "Mining Machine" | "Advanced Mining Machine";
-    workSpeedMultiplier: number;
-  },
-  targetItemId?: number // Which item this recipe is producing (for multi-output recipes)
-): RecipeTreeNode {
+function buildRecipeTreeInternal({
+  recipe,
+  targetRate,
+  context,
+  depth = 0,
+  nodePath = `r-${recipe.SID}`,
+  visitingItems = new Set<number>(),
+  targetItemId,
+}: BuildRecipeTreeOptions): RecipeTreeNode {
+  const { gameData, settings, nodeOverrides, maxDepth } = context;
+
   if (depth > maxDepth) {
     throw new Error("Maximum recursion depth reached");
   }
@@ -373,10 +411,10 @@ export function buildRecipeTree(
   const override = nodeOverrides.get(nodeId);
 
   // Resolve proliferator mode
-  const proliferator = resolveProliferatorMode(recipe, settings, override);
+  const proliferator = resolveProliferatorMode({ recipe, settings, override });
 
   // Resolve machine
-  const machine = resolveMachine(recipe, gameData, settings, override);
+  const machine = resolveMachine({ recipe, gameData, settings, override });
 
   // Calculate production rate per machine
   const ratePerMachine = calculateProductionRate(
@@ -388,9 +426,7 @@ export function buildRecipeTree(
   );
 
   // Calculate required machines (ceiling to integer for realistic building count)
-  const machineCount = Math.ceil(
-    new Decimal(targetRate).div(ratePerMachine).toDecimalPlaces(2).toNumber()
-  );
+  const machineCount = calculateRequiredMachineCount(targetRate, ratePerMachine);
 
   // Calculate power
   const machinePowerResult = calculateMachinePower(
@@ -420,15 +456,7 @@ export function buildRecipeTree(
       ? 1 / (1 + effectiveProductionBonus) // e.g., +25% production means 80% input (1/1.25)
       : 1;
 
-  const inputs = recipe.Items.map(item => ({
-    itemId: item.id,
-    itemName: item.name,
-    requiredRate: new Decimal(item.count)
-      .mul(targetRate)
-      .div(recipe.Results[0]?.count || 1)
-      .mul(inputMultiplier) // Apply production bonus to reduce input
-      .toNumber(),
-  }));
+  const inputs = calculateInputRequirements(recipe, targetRate, inputMultiplier, targetItemId);
 
   // PhotonGeneration: 重力子レンズを使用する場合、インプットに追加
   if (recipe.Type === "PhotonGeneration" && settings.photonGeneration.useGravitonLens) {
@@ -452,18 +480,13 @@ export function buildRecipeTree(
   }
 
   // Build child nodes for all inputs
-  const children = buildChildNodes(
-    inputs,
-    gameData,
-    settings,
-    nodeOverrides,
+  const children = buildChildNodes(inputs, {
+    context,
     depth,
-    maxDepth,
     nodeId,
-    newVisitingItems,
-    recipe,
-    miningSettings
-  );
+    visitingItems: newVisitingItems,
+    currentRecipe: recipe,
+  });
 
   // Build overrideSettings if override exists
   const overrideSettings = override
@@ -487,4 +510,50 @@ export function buildRecipeTree(
     targetItemId, // Which item this recipe is producing (for multi-output recipes)
     overrideSettings,
   };
+}
+
+/**
+ * Build recipe tree with options object (preferred method)
+ */
+export function buildRecipeTree(options: BuildRecipeTreeOptions): RecipeTreeNode {
+  return buildRecipeTreeInternal(options);
+}
+
+/**
+ * Legacy function signature for backward compatibility with tests
+ * @deprecated Use buildRecipeTree with options object instead
+ */
+export function buildRecipeTreeFromParams(
+  recipe: Recipe,
+  targetRate: number,
+  gameData: GameData,
+  settings: GlobalSettings,
+  nodeOverrides: Map<string, NodeOverrideSettings> = new Map(),
+  depth: number = 0,
+  maxDepth: number = 20,
+  nodePath?: string,
+  visitingItems?: Set<number>,
+  miningSettings: TreeBuilderMiningSettings = {
+    machineType: "Mining Machine",
+    workSpeedMultiplier: 1,
+  },
+  targetItemId?: number
+): RecipeTreeNode {
+  const context: TreeBuilderContext = {
+    gameData,
+    settings,
+    nodeOverrides,
+    miningSettings,
+    maxDepth,
+  };
+
+  return buildRecipeTreeInternal({
+    recipe,
+    targetRate,
+    context,
+    depth,
+    nodePath: nodePath ?? `r-${recipe.SID}`,
+    visitingItems: visitingItems ?? new Set<number>(),
+    targetItemId,
+  });
 }

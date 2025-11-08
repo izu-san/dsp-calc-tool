@@ -6,6 +6,8 @@
 
 import type { GlobalSettings } from "../types";
 import { CONVEYOR_BELT_DATA, DEFAULT_PHOTON_GENERATION_SETTINGS } from "../types/settings";
+import { ok, err, type Result } from "../lib/calculator/result";
+import { logger } from "./logger";
 
 /**
  * localStorage に保存される settings の中間形式
@@ -39,11 +41,24 @@ export function serializeSettings(settings: GlobalSettings): SerializedSettings 
 }
 
 /**
+ * GlobalSettings を localStorage 保存用にシリアライズ（Result型）
+ */
+export function trySerializeSettings(settings: GlobalSettings): Result<SerializedSettings> {
+  try {
+    return ok(serializeSettings(settings));
+  } catch (error) {
+    logger.error("Failed to serialize settings:", error);
+    return err(error instanceof Error ? error : new Error(String(error)));
+  }
+}
+
+/**
  * localStorage から読み込んだデータを GlobalSettings にデシリアライズ
  */
 export function deserializeSettings(serialized: unknown): GlobalSettings | null {
   // 型ガード: 基本構造の検証
   if (!isSerializedSettings(serialized)) {
+    logger.warn("Invalid serialized settings format:", serialized);
     return null;
   }
 
@@ -61,6 +76,7 @@ export function deserializeSettings(serialized: unknown): GlobalSettings | null 
       ...conveyorBelt,
       stackCount: 1, // デフォルト値
     };
+    logger.debug("Applied fallback for conveyorBelt.stackCount");
   }
 
   return {
@@ -73,6 +89,22 @@ export function deserializeSettings(serialized: unknown): GlobalSettings | null 
     proliferatorMultiplier: serialized.proliferatorMultiplier,
     photonGeneration: serialized.photonGeneration || DEFAULT_PHOTON_GENERATION_SETTINGS,
   };
+}
+
+/**
+ * localStorage から読み込んだデータを GlobalSettings にデシリアライズ（Result型）
+ */
+export function tryDeserializeSettings(serialized: unknown): Result<GlobalSettings> {
+  try {
+    const result = deserializeSettings(serialized);
+    if (result === null) {
+      return err(new Error("Failed to deserialize settings: invalid format"));
+    }
+    return ok(result);
+  } catch (error) {
+    logger.error("Failed to deserialize settings:", error);
+    return err(error instanceof Error ? error : new Error(String(error)));
+  }
 }
 
 /**

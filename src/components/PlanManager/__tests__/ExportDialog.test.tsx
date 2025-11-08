@@ -179,4 +179,24 @@ describe("ExportDialog", () => {
     }) as HTMLInputElement;
     expect(checkbox.checked).toBe(false);
   });
+
+  it("Escキーでダイアログを閉じる", () => {
+    const onClose = vi.fn();
+    render(<ExportDialog {...defaultProps} isOpen={true} onClose={onClose} />);
+
+    const event = new KeyboardEvent("keydown", { key: "Escape" });
+    window.dispatchEvent(event);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("ダイアログが閉じているときにEscキーを押してもonCloseが呼ばれない", () => {
+    const onClose = vi.fn();
+    render(<ExportDialog {...defaultProps} isOpen={false} onClose={onClose} />);
+
+    const event = new KeyboardEvent("keydown", { key: "Escape" });
+    window.dispatchEvent(event);
+
+    expect(onClose).not.toHaveBeenCalled();
+  });
 });

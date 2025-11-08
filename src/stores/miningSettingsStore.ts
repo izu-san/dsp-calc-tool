@@ -5,7 +5,7 @@ import {
   generateMiningMachineTypeDescription,
   generateMiningWorkSpeedDescription,
   generateMiningSettingsBatchDescription,
-} from "../utils/historyDescriptionHelper";
+} from "../utils/history/formatters";
 import i18n from "../i18n";
 
 export interface MiningSettings {

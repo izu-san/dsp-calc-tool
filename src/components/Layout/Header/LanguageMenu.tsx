@@ -1,6 +1,9 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useGameDataStore } from "../../../stores/gameDataStore";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useGameDataStore } from "../../../stores/gameDataStore";
+import { cn } from "../../../utils/classNames";
+import { HOVER_CARD_GLOW, ICON_GLOW, MODAL_GLOW } from "../../../constants/theme";
 
 /**
  * 言語切替ドロップダウンメニューコンポーネント
@@ -14,25 +17,65 @@ export function LanguageMenu() {
     { code: "en", label: "English", flag: "🇺🇸" },
   ];
 
+  const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
+
+  // Ctrl+L で言語切り替え
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === "l") {
+          e.preventDefault();
+          const currentLocale = locale;
+          const nextLocale = currentLocale === "ja" ? "en" : "ja";
+          setLocale(nextLocale);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [locale, setLocale]);
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <button
           data-testid="language-menu-trigger"
           disabled={isLoading}
-          className="px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan hover:shadow-[0_0_15px_rgba(0,217,255,0.4)] disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2"
+          className={cn(
+            "px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2",
+            HOVER_CARD_GLOW.cyan
+          )}
           title={t("changeLanguage")}
+          aria-label={t("changeLanguage")}
         >
           <span>🌐</span>
+          <span>{currentLanguage.flag}</span>
+          <span>{currentLanguage.label}</span>
           {isLoading && (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-neon-cyan shadow-[0_0_8px_rgba(0,217,255,0.4)]"></div>
+            <div
+              className={cn(
+                "animate-spin rounded-full h-4 w-4 border-b-2 border-neon-cyan",
+                ICON_GLOW.cyan
+              )}
+            ></div>
           )}
         </button>
       </DropdownMenu.Trigger>
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg shadow-[0_0_30px_rgba(0,136,255,0.3)] animate-fadeInScale z-50"
+          className={cn(
+            "min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg animate-fadeInScale z-50",
+            MODAL_GLOW.blue
+          )}
           align="end"
           sideOffset={5}
         >

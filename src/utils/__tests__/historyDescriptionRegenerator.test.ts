@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../i18n";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import type { HistoryEntry } from "../../types/history";
-import { regenerateHistoryDescription } from "../historyDescriptionRegenerator";
+import { regenerateHistoryDescription } from "../history/regenerator";
 
 // Mock stores and modules
 vi.mock("../../i18n", () => ({

@@ -3,9 +3,19 @@
 
 import { expect } from "@playwright/test";
 import { test } from "./fixtures";
+import {
+  confirmApplyTemplate,
+  confirmDeleteTemplate,
+  createTemplate,
+  getAllTemplateCards,
+  getFirstTemplateApplyButton,
+  getFirstTemplateCard,
+  getFirstTemplateDeleteButton,
+  getFirstTemplateEditButton,
+} from "./helpers/template-helpers";
 
 test.describe("カスタムテンプレート機能", () => {
-  test.beforeEach(async ({ appPage, clearLocalStorage, reloadPage }) => {
+  test.beforeEach(async ({ clearLocalStorage, reloadPage }) => {
     // LocalStorageをクリアして初期状態に
     await clearLocalStorage();
     await reloadPage();
@@ -91,12 +101,8 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("1.4 同名テンプレートの上書き確認", async ({ appPage }) => {
       // 1. テンプレート「高速モード」を作成（増産剤: なし、コンベアベルト: Mk.3）
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("高速モード");
-      await appPage.getByTestId("create-template-save-button").click();
-      await expect(
-        appPage.locator('[data-testid^="custom-template-card-"]').first().getByText("高速モード")
-      ).toBeVisible();
+      await createTemplate(appPage, "高速モード", undefined, false);
+      await expect(getFirstTemplateCard(appPage).getByText("高速モード")).toBeVisible();
 
       // 2. 設定パネルで増産剤を「増産剤 Mk.III」に変更
       await appPage.getByTestId("proliferator-type-button-mk3").click();
@@ -119,8 +125,7 @@ test.describe("カスタムテンプレート機能", () => {
       await appPage.getByRole("button", { name: "上書き" }).click();
 
       // 8. テンプレート一覧で「高速モード」が1件のみ存在することを確認
-      const templateCards = appPage.locator('[data-testid^="custom-template-card-"]');
-      await expect(templateCards).toHaveCount(1);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(1);
     });
   });
 
@@ -145,15 +150,10 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("2.2 カスタムテンプレートカードの表示", async ({ appPage }) => {
       // 1. カスタムテンプレート「省電力モード」（メモ付き）を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("省電力モード");
-      await appPage.getByTestId("template-note-input").fill("電力消費を最小化");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "省電力モード", "電力消費を最小化");
 
       // 2. カスタムテンプレート「高速モード」（メモなし）を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("高速モード");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "高速モード");
 
       // 3. 各テンプレートカードにテンプレート名が表示されることを確認
       await expect(appPage.getByText("省電力モード")).toBeVisible();
@@ -163,24 +163,20 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(appPage.getByText("電力消費を最小化")).toBeVisible();
 
       // 5. 各カードに「適用」ボタンとメニューボタン（編集・削除）が表示されることを確認
-      const templateCards = appPage.locator('[data-testid^="custom-template-card-"]');
-      await expect(templateCards).toHaveCount(2);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(2);
     });
   });
 
   test.describe("3. テンプレート適用機能", () => {
     test("3.1 カスタムテンプレートの適用", async ({ appPage }) => {
       // 1. カスタムテンプレート「省電力モード」を作成（増産剤: なし）
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("省電力モード");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "省電力モード");
 
       // 2. 設定パネルで増産剤を「増産剤 Mk.III」に変更
       await appPage.getByTestId("proliferator-type-button-mk3").click();
 
       // 3. カスタムテンプレート「省電力モード」の「適用」ボタンをクリック
-      const applyButton = appPage.locator('[data-testid^="custom-template-apply-button-"]').first();
-      await applyButton.click();
+      await getFirstTemplateApplyButton(appPage).click();
 
       // 4. 適用確認モーダルが表示されることを確認
       await expect(
@@ -191,7 +187,7 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(appPage.getByText("コンベアベルト:")).toBeVisible();
 
       // 6. 「適用」ボタンをクリック
-      await appPage.getByRole("button", { name: "適用" }).click();
+      await confirmApplyTemplate(appPage);
 
       // 7. 設定が反映されることを確認（増産剤が「なし」に戻る）
       await expect(appPage.getByRole("button", { name: "なし" })).toBeVisible();
@@ -216,16 +212,13 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("3.3 テンプレート適用のキャンセル", async ({ appPage }) => {
       // 1. カスタムテンプレート「省電力モード」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("省電力モード");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "省電力モード");
 
       // 2. 設定パネルで増産剤を「増産剤 Mk.III」に変更
       await appPage.getByTestId("proliferator-type-button-mk3").click();
 
       // 3. 「適用」ボタンをクリック
-      const applyButton = appPage.locator('[data-testid^="custom-template-apply-button-"]').first();
-      await applyButton.click();
+      await getFirstTemplateApplyButton(appPage).click();
 
       // 4. 確認モーダルで「キャンセル」ボタンをクリック
       await appPage.getByTestId("custom-template-confirm-cancel-button").click();
@@ -238,14 +231,10 @@ test.describe("カスタムテンプレート機能", () => {
   test.describe("4. テンプレート編集機能", () => {
     test("4.1 テンプレート名とメモの編集", async ({ appPage }) => {
       // 1. カスタムテンプレート「省電力モード」を作成（メモ付き）
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("省電力モード");
-      await appPage.getByTestId("template-note-input").fill("電力を抑える");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "省電力モード", "電力を抑える");
 
       // 2. 編集メニューを開く
-      const editButton = appPage.locator('[data-testid^="edit-custom-template-"]').first();
-      await editButton.click();
+      await getFirstTemplateEditButton(appPage).click();
 
       // 3. 編集モーダルが表示されることを確認
       await expect(appPage.getByTestId("edit-template-modal")).toBeVisible();
@@ -271,16 +260,13 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("4.2 現在の設定で上書き", async ({ appPage }) => {
       // 1. カスタムテンプレート「高速モード」を作成（増産剤: なし、コンベアベルト: Mk.III）
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("高速モード");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "高速モード");
 
       // 2. 設定パネルで増産剤を「増産剤 Mk.III」に変更
       await appPage.getByTestId("proliferator-type-button-mk3").click();
 
       // 3. 編集モーダルを開く
-      const editButton = appPage.locator('[data-testid^="edit-custom-template-"]').first();
-      await editButton.click();
+      await getFirstTemplateEditButton(appPage).click();
 
       // 4. 「現在の設定で上書き」ボタンをクリック（保存ボタンは不要）
       await appPage.getByTestId("overwrite-with-current-button").click();
@@ -289,9 +275,8 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(appPage.getByTestId("edit-template-modal")).not.toBeVisible();
 
       // 6. テンプレート「高速モード」を適用
-      const applyButton = appPage.locator('[data-testid^="custom-template-apply-button-"]').first();
-      await applyButton.click();
-      await appPage.getByRole("button", { name: "適用" }).click();
+      await getFirstTemplateApplyButton(appPage).click();
+      await confirmApplyTemplate(appPage);
 
       // 7. 設定が正しく反映されることを確認（増産剤: 増産剤 Mk.III）
       await expect(appPage.getByTestId("proliferator-type-button-mk3")).toBeVisible();
@@ -299,14 +284,10 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("4.3 編集時の名称重複チェック", async ({ appPage }) => {
       // 1. カスタムテンプレート「モードA」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("モードA");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "モードA");
 
       // 2. カスタムテンプレート「モードB」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("モードB");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "モードB");
 
       // 3. テンプレート「モードA」の編集モーダルを開く
       const editButtons = appPage.locator('[data-testid^="edit-custom-template-"]');
@@ -330,13 +311,10 @@ test.describe("カスタムテンプレート機能", () => {
   test.describe("5. テンプレート削除機能", () => {
     test("5.1 テンプレートの削除", async ({ appPage }) => {
       // 1. カスタムテンプレート「削除テスト」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("削除テスト");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "削除テスト");
 
       // 2. 削除メニューを開く
-      const deleteButton = appPage.locator('[data-testid^="delete-custom-template-"]').first();
-      await deleteButton.click();
+      await getFirstTemplateDeleteButton(appPage).click();
 
       // 3. 削除確認モーダルが表示されることを確認
       await expect(appPage.getByTestId("delete-template-modal")).toBeVisible();
@@ -359,13 +337,10 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("5.2 削除のキャンセル", async ({ appPage }) => {
       // 1. カスタムテンプレート「キャンセルテスト」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("キャンセルテスト");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "キャンセルテスト");
 
       // 2. 削除メニューを開く
-      const deleteButton = appPage.locator('[data-testid^="delete-custom-template-"]').first();
-      await deleteButton.click();
+      await getFirstTemplateDeleteButton(appPage).click();
 
       // 3. 削除確認モーダルで「キャンセル」ボタンをクリック
       await appPage.getByTestId("delete-template-cancel-button").click();
@@ -380,22 +355,18 @@ test.describe("カスタムテンプレート機能", () => {
     test("5.3 適用中テンプレートの削除", async ({ appPage }) => {
       // 1. カスタムテンプレート「適用中モード」を作成（増産剤: 増産剤 Mk.III）
       await appPage.getByTestId("proliferator-type-button-mk3").click();
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("適用中モード");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "適用中モード");
 
       // 2. テンプレート「適用中モード」を適用
-      const applyButton = appPage.locator('[data-testid^="custom-template-apply-button-"]').first();
-      await applyButton.click();
+      await getFirstTemplateApplyButton(appPage).click();
       await appPage.getByTestId("custom-template-confirm-apply-button").click();
 
       // 3. 設定パネルで増産剤が「増産剤 Mk.III」になっていることを確認
       await expect(appPage.getByTestId("proliferator-type-button-mk3")).toBeVisible();
 
       // 4. テンプレートを削除
-      const deleteButton = appPage.locator('[data-testid^="delete-custom-template-"]').first();
-      await deleteButton.click();
-      await appPage.getByTestId("delete-template-confirm-button").click();
+      await getFirstTemplateDeleteButton(appPage).click();
+      await confirmDeleteTemplate(appPage);
 
       // 5. テンプレートが削除されることを確認
       await expect(appPage.getByText("適用中モード")).not.toBeVisible();
@@ -408,12 +379,10 @@ test.describe("カスタムテンプレート機能", () => {
   test.describe("6. 履歴連携機能", () => {
     test("6.1 テンプレート作成の履歴記録", async ({ appPage }) => {
       // 1. カスタムテンプレート「履歴テスト1」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("履歴テスト1");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "履歴テスト1");
 
       // 2. ヘッダーの「📜 履歴」ボタンをクリック
-      await appPage.getByRole("button", { name: "📜 履歴" }).click();
+      await appPage.getByTestId("history-dialog-button").click();
 
       // 3. 履歴パネルが開くことを確認
       await expect(appPage.getByRole("heading", { name: "履歴" })).toBeVisible();
@@ -427,45 +396,34 @@ test.describe("カスタムテンプレート機能", () => {
       await expect(appPage.getByTestId("custom-template-empty-state")).toBeVisible();
 
       // 2. カスタムテンプレート「Undo/Redoテスト」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("Undo/Redoテスト");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "Undo/Redoテスト");
 
       // 3. カスタムテンプレートが1件表示されることを確認
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(1);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(1);
 
       // 4. ヘッダーの「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 5. カスタムテンプレートが0件に戻ることを確認（テンプレートが消える）
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(0);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(0);
 
       // 6. 空状態メッセージが表示されることを確認
       await expect(appPage.getByTestId("custom-template-empty-state")).toBeVisible();
 
       // 7. 「↷ やり直し」ボタンをクリック
-      await appPage.getByRole("button", { name: "↷ やり直し" }).click();
+      await appPage.getByTestId("redo-button").click();
 
       // 8. カスタムテンプレート「Undo/Redoテスト」が再び表示されることを確認
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(1);
-      await expect(
-        appPage
-          .locator('[data-testid^="custom-template-card-"]')
-          .first()
-          .getByText("Undo/Redoテスト")
-      ).toBeVisible();
+      await expect(getAllTemplateCards(appPage)).toHaveCount(1);
+      await expect(getFirstTemplateCard(appPage).getByText("Undo/Redoテスト")).toBeVisible();
     });
 
     test("6.3 履歴の Undo/Redo（テンプレート編集）", async ({ appPage }) => {
       // 1. カスタムテンプレート「編集前」を作成（メモ: 「初期メモ」）
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("編集前");
-      await appPage.getByTestId("template-note-input").fill("初期メモ");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "編集前", "初期メモ");
 
       // 2. テンプレートを編集（名称: 「編集後」、メモ: 「更新メモ」）
-      const editButton = appPage.locator('[data-testid^="edit-custom-template-"]').first();
-      await editButton.click();
+      await getFirstTemplateEditButton(appPage).click();
       await appPage.getByTestId("edit-template-name-input").clear();
       await appPage.getByTestId("edit-template-name-input").fill("編集後");
       await appPage.getByTestId("edit-template-note-input").clear();
@@ -473,19 +431,19 @@ test.describe("カスタムテンプレート機能", () => {
       await appPage.getByTestId("edit-template-save-button").click();
 
       // 3. テンプレート名とメモが更新されていることを確認
-      const templateCard = appPage.locator('[data-testid^="custom-template-card-"]').first();
+      const templateCard = getFirstTemplateCard(appPage);
       await expect(templateCard.getByText("編集後")).toBeVisible();
       await expect(templateCard.getByText("更新メモ")).toBeVisible();
 
       // 4. 「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 5. テンプレート名が「編集前」、メモが「初期メモ」に戻ることを確認
       await expect(templateCard.getByText("編集前")).toBeVisible();
       await expect(templateCard.getByText("初期メモ")).toBeVisible();
 
       // 6. 「↷ やり直し」ボタンをクリック
-      await appPage.getByRole("button", { name: "↷ やり直し" }).click();
+      await appPage.getByTestId("redo-button").click();
 
       // 7. テンプレート名が「編集後」、メモが「更新メモ」に戻ることを確認
       await expect(templateCard.getByText("編集後")).toBeVisible();
@@ -494,53 +452,41 @@ test.describe("カスタムテンプレート機能", () => {
 
     test("6.4 履歴の Undo/Redo（テンプレート削除）", async ({ appPage }) => {
       // 1. カスタムテンプレート「削除Undoテスト」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("削除Undoテスト");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "削除Undoテスト");
 
       // 2. テンプレートを削除
-      const deleteButton = appPage.locator('[data-testid^="delete-custom-template-"]').first();
-      await deleteButton.click();
-      await appPage.getByTestId("delete-template-confirm-button").click();
+      await getFirstTemplateDeleteButton(appPage).click();
+      await confirmDeleteTemplate(appPage);
 
       // 3. テンプレートが一覧から消えることを確認
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(0);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(0);
 
       // 4. 「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 5. テンプレート「削除Undoテスト」が復元されることを確認
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(1);
-      await expect(
-        appPage
-          .locator('[data-testid^="custom-template-card-"]')
-          .first()
-          .getByText("削除Undoテスト")
-      ).toBeVisible();
+      await expect(getAllTemplateCards(appPage)).toHaveCount(1);
+      await expect(getFirstTemplateCard(appPage).getByText("削除Undoテスト")).toBeVisible();
 
       // 6. 「↷ やり直し」ボタンをクリック
-      await appPage.getByRole("button", { name: "↷ やり直し" }).click();
+      await appPage.getByTestId("redo-button").click();
 
       // 7. テンプレートが再び削除されることを確認
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(0);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(0);
     });
   });
 
   test.describe("7. データ永続化機能", () => {
     test("7.1 LocalStorageへの保存とページリロード後の復元", async ({ appPage }) => {
       // 1. カスタムテンプレート「永続化テスト1」を作成（メモ: 「リロードテスト」）
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("永続化テスト1");
-      await appPage.getByTestId("template-note-input").fill("リロードテスト");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "永続化テスト1", "リロードテスト");
 
       // 2. カスタムテンプレート「永続化テスト2」を作成
-      await appPage.getByTestId("create-custom-template-button").click();
-      await appPage.getByTestId("template-name-input").fill("永続化テスト2");
-      await appPage.getByTestId("create-template-save-button").click();
+      await createTemplate(appPage, "永続化テスト2");
 
       // 3. テンプレート「永続化テスト1」を適用
       const applyButtons = appPage.locator('[data-testid^="custom-template-apply-button-"]');
+      // NOTE: 意図的に.first()を使用 - 複数テンプレートから最初のものを選択
       await applyButtons.first().click();
       await appPage.getByTestId("custom-template-confirm-apply-button").click();
 
@@ -548,8 +494,7 @@ test.describe("カスタムテンプレート機能", () => {
       await appPage.reload();
 
       // 5. カスタムテンプレートセクションに2件のテンプレートが表示されることを確認
-      const templateCards = appPage.locator('[data-testid^="custom-template-card-"]');
-      await expect(templateCards).toHaveCount(2);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(2);
 
       // 6. テンプレート名とメモが正しく表示されることを確認
       await expect(appPage.getByText("永続化テスト1")).toBeVisible();
@@ -652,6 +597,9 @@ test.describe("カスタムテンプレート機能", () => {
     });
 
     test("8.6 最大テンプレート数制限（50件）", async ({ appPage }) => {
+      // タイムアウトを120秒に設定（50個のテンプレート作成）
+      test.setTimeout(120000);
+
       // 1. 50個のテンプレートを作成
       for (let i = 1; i <= 50; i++) {
         await appPage.getByTestId("create-custom-template-button").click();
@@ -696,6 +644,9 @@ test.describe("カスタムテンプレート機能", () => {
 
   test.describe("9. 統合テスト", () => {
     test("9.1 テンプレートのライフサイクル全体", async ({ appPage }) => {
+      // タイムアウトを120秒に設定（多数の操作とリロードを含む）
+      test.setTimeout(120000);
+
       // 1. アプリケーションを起動し、カスタムテンプレートが0件であることを確認
       await expect(appPage.getByTestId("custom-template-empty-state")).toBeVisible();
 
@@ -738,23 +689,20 @@ test.describe("カスタムテンプレート機能", () => {
       await appPage.reload();
 
       // 10. テンプレート「統合テスト」が保持されていることを確認
-      await expect(
-        appPage.locator('[data-testid^="custom-template-card-"]').first().getByText("統合テスト")
-      ).toBeVisible();
+      await expect(getFirstTemplateCard(appPage).getByText("統合テスト")).toBeVisible();
 
       // 11. テンプレートを削除
-      const deleteButton = appPage.locator('[data-testid^="delete-custom-template-"]').first();
-      await deleteButton.click();
-      await appPage.getByTestId("delete-template-confirm-button").click();
+      await getFirstTemplateDeleteButton(appPage).click();
+      await confirmDeleteTemplate(appPage);
 
       // 12. 「↶ 元に戻す」ボタンをクリック
-      await appPage.getByRole("button", { name: "↶ 元に戻す" }).click();
+      await appPage.getByTestId("undo-button").click();
 
       // 13. テンプレートが復元されることを確認
-      await expect(appPage.locator('[data-testid^="custom-template-card-"]')).toHaveCount(1);
+      await expect(getAllTemplateCards(appPage)).toHaveCount(1);
 
       // 14. 「📜 履歴」ボタンをクリック
-      await appPage.getByRole("button", { name: "📜 履歴" }).click();
+      await appPage.getByTestId("history-dialog-button").click();
 
       // 15. すべての操作が履歴に記録されていることを確認
       await expect(appPage.getByRole("heading", { name: "履歴" })).toBeVisible();

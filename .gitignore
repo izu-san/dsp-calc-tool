@@ -7,6 +7,10 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Package manager lock files (keep only pnpm-lock.yaml)
+package-lock.json
+yarn.lock
+
 node_modules
 dist
 dist-ssr
@@ -44,6 +48,7 @@ coverage/
 # Playwright test results and reports
 playwright-report/
 test-results/
+tests/e2e/fixtures/RECIPE_SIDS.md
 
 # Deployment
 .vercel

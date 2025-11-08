@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-// SetupファイルのhistoryRecorderモックを解除して実際のhistoryRecorderを使用
-vi.unmock("../historyRecorder");
 import { useHistoryStore } from "../../stores/historyStore";
-import { historyDebouncer } from "../historyDebouncer";
+import { historyDebouncer } from "../history/debouncer";
 import {
   generateSettingsDescription,
   isInternal,
@@ -12,7 +9,10 @@ import {
   recordPlanSaveEntry,
   setInternal,
   setRestoring,
-} from "../historyRecorder";
+} from "../history/recorder";
+
+// SetupファイルのhistoryRecorderモックを解除して実際のhistoryRecorderを使用
+vi.unmock("../history/recorder");
 
 // Mock localStorage
 const localStorageMock = (() => {

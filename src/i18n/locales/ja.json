@@ -1,5 +1,5 @@
 {
-  "title": "Dyson Sphere Program - レシピ計算機",
+  "title": "DSP Recipe Calculator",
   "loadingGameData": "ゲームデータを読み込み中...",
   "selectRecipe": "レシピ選択",
   "target": "目標",
@@ -487,6 +487,44 @@
   "total": "合計",
   "saturation": "飽和度",
   "bottleneckDetected": "ボトルネック検出！",
+  "visualization": {
+    "tabLabel": "可視化",
+    "filters": {
+      "machineType": "設備タイプ",
+      "allMachines": "すべての設備",
+      "materialTypes": "材料カテゴリ",
+      "rawMaterials": "原材料",
+      "intermediates": "中間材",
+      "finalProducts": "最終製品",
+      "reset": "フィルタをリセット"
+    },
+    "emptyState": {
+      "noData": "現在の設定で表示できるサンキーダイアグラムはありません。"
+    },
+    "node": {
+      "machineTitle": "設備",
+      "itemTitle": "アイテム",
+      "close": "詳細を閉じる",
+      "value": "スループット",
+      "machineType": "設備タイプ",
+      "machineRank": "設備ランク",
+      "machineName": "設備名",
+      "machineCount": "設備数",
+      "recipeType": "レシピタイプ",
+      "proliferator": "増産剤",
+      "powerConsumption": "消費電力",
+      "inputs": "入力",
+      "outputs": "出力",
+      "noFlows": "接続されているフローはありません",
+      "nodeType": "ノード種別",
+      "types": {
+        "machine": "設備",
+        "raw-material": "原材料",
+        "intermediate": "中間材",
+        "final-product": "最終製品"
+      }
+    }
+  },
   "addToFavorites": "お気に入りに追加",
   "removeFromFavorites": "お気に入りから削除",
   "mostEfficient": "最も効率的",
@@ -582,5 +620,201 @@
     "manualGenerator": "発電設備",
     "manualFuel": "燃料",
     "fuelProliferator": "増産剤"
-  }
+  },
+  "help": "ヘルプ",
+  "about": "アバウト",
+  "changelog": "更新履歴",
+  "faqLabel": "よくある質問",
+  "gameVersions": "対応ゲームバージョン一覧",
+  "supportedVersion": "サポート中",
+  "unsupportedVersion": "サポート終了",
+  "primaryVersion": "最新対応バージョン",
+  "dataLastUpdated": "データ最終更新日",
+  "appVersion": "アプリバージョン",
+  "buildTime": "ビルド日時",
+  "buildStatus": "ビルドステータス",
+  "buildStatusSuccess": "成功",
+  "buildStatusFailure": "失敗",
+  "buildStatusUnknown": "不明",
+  "testCoverage": "テストカバレッジ",
+  "testCoveragePercentage": "{{percentage}}%",
+  "qualityPolicy": "品質保証ポリシー",
+  "qualityPolicyDescription": "このアプリケーションは、以下の品質保証ポリシーに基づいて開発されています：\n\n• 新規コードのテストカバレッジ目標: 85%以上\n• クリティカルパス（calculator, parser）: 90%以上\n• E2Eテストで主要なユーザーフローをカバー\n• 全てのPRで単体テストとE2Eテストが合格することを必須とする",
+  "designPhilosophy": "設計思想",
+  "designPhilosophyDescription": "このアプリケーションは、以下の設計思想に基づいて実装されています：\n\n• 型安全性を重視した実装\n• 関数型アプローチの採用\n• UIとビジネスロジックの分離\n• テスト容易性の確保",
+  "reliabilityIndicator": "信頼性インジケータ",
+  "repository": "リポジトリ",
+  "reportIssue": "イシューを報告",
+  "changelogNotAvailable": "チェンジログは準備中です",
+  "versionInfoNotAvailable": "バージョン情報を読み込めませんでした",
+  "faq": {
+    "categories": {
+      "calculation": {
+        "title": "計算の前提条件",
+        "questions": [
+          {
+            "question": "増産剤の排他モードについて",
+            "answer": "増産剤は「追加生産」と「速度上昇」の2つのモードがありますが、同時に使用することはできません（排他モード）。一方を選択すると、もう一方は無効になります。"
+          },
+          {
+            "question": "ベルト速度の計算方法",
+            "answer": "ベルト速度は、アイテムの搬送速度（個/秒）に影響します。Mk.I、Mk.II、Mk.IIIの順に速度が上がります。"
+          },
+          {
+            "question": "電力計算の仕組み",
+            "answer": "合計電力消費は、施設の電力消費とソーターの電力消費の合計です。施設の電力消費は、マシンランクと増産剤設定に応じて変化します。"
+          }
+        ]
+      },
+      "limitations": {
+        "title": "既知の制限事項",
+        "questions": [
+          {
+            "question": "計算精度の制限",
+            "answer": "計算結果は理論値であり、実際のゲーム内での動作とは若干異なる場合があります。特に、ベルトの混雑やソーターの処理速度などによる影響は考慮していません。"
+          },
+          {
+            "question": "ブラウザ互換性",
+            "answer": "モダンブラウザ（Chrome、Firefox、Edge、Safari）の最新版を推奨します。Internet Explorerには対応していません。"
+          }
+        ]
+      },
+      "common": {
+        "title": "よくある質問",
+        "questions": [
+          {
+            "question": "計算結果が合わない場合の対処法",
+            "answer": "以下の点を確認してください：\n1. ゲームバージョンが対応しているか\n2. 設定（増産剤、マシンランクなど）が正しいか\n3. 代替レシピの選択が正しいか\n4. ノード別設定が適切か"
+          },
+          {
+            "question": "プランの保存・読み込み方法",
+            "answer": "ヘッダーの「💾 保存」ボタンからプランを保存できます。保存したプランは「📂 読み込み」から読み込むことができます。プランはブラウザのローカルストレージに保存されます。"
+          },
+          {
+            "question": "URL共有の使い方",
+            "answer": "ヘッダーの「💾 保存」→「🔗 URL共有」から、現在のプランをURLで共有できます。生成されたURLを他のユーザーに送ると、同じ設定でプランを読み込むことができます。"
+          }
+        ]
+      },
+      "troubleshooting": {
+        "title": "トラブルシューティング",
+        "questions": [
+          {
+            "question": "データが読み込めない場合",
+            "answer": "以下の点を確認してください：\n1. インターネット接続が正常か\n2. ブラウザのキャッシュをクリア\n3. ページを再読み込み（Ctrl+F5 または Cmd+Shift+R）"
+          },
+          {
+            "question": "計算が実行されない場合",
+            "answer": "レシピが選択されているか確認してください。また、目標生産量が0より大きい値になっているか確認してください。"
+          },
+          {
+            "question": "エラーメッセージの見方",
+            "answer": "エラーメッセージが表示された場合は、エラーの内容を確認し、必要に応じてページを再読み込みしてください。問題が解決しない場合は、GitHubのIssuesで報告してください。"
+          }
+        ]
+      }
+    }
+  },
+  "support": {
+    "title": "サポート",
+    "repository": "リポジトリ",
+    "reportIssue": "イシューを報告",
+    "bugReportInfo": "バグ報告時に必要な情報",
+    "bugReportInfoItems": [
+      "使用しているブラウザとバージョン",
+      "ゲームバージョン",
+      "エラーメッセージ（もしあれば）",
+      "再現手順"
+    ],
+    "responsePolicy": "返信ポリシー",
+    "responsePolicyDescription": "Issuesへの返信は週1回程度確認しています。緊急の場合は、Issueに「urgent」ラベルを付けてください。"
+  },
+  "feedback": "フィードバック",
+  "feedbackForm": {
+    "title": "フィードバックを送信",
+    "category": "カテゴリ",
+    "category.featureRequest": "機能追加",
+    "category.dataCorrection": "データ訂正",
+    "category.uiImprovement": "UI改善",
+    "category.bugReport": "バグ報告",
+    "category.other": "その他",
+    "title.label": "タイトル",
+    "title.placeholder": "フィードバックのタイトルを入力",
+    "content.label": "内容",
+    "content.placeholder": "フィードバックの内容を詳しく記入してください",
+    "contact.label": "連絡先（任意）",
+    "contact.placeholder": "メールアドレスまたはGitHubユーザー名",
+    "contact.description": "返信が必要な場合のみ入力してください",
+    "privacyConsent": "プライバシーポリシーと利用規約に同意します",
+    "privacyConsent.link": "プライバシーポリシーと利用規約",
+    "privacyConsent.required": "プライバシーポリシーと利用規約への同意は必須です",
+    "submit": "送信",
+    "submitting": "送信中...",
+    "success.github": "フィードバックを送信しました。GitHubのIssueページに移動します。",
+    "success.form": "フィードバックフォームを開きました。フォームに入力してください。",
+    "success.formPrefilled": "フィードバックフォームを開きました。データが自動入力されています。内容を確認して送信してください。",
+    "error": "送信に失敗しました。もう一度お試しください。",
+    "error.formNotConfigured": "フォーム送信が設定されていません。GitHub Issueで報告してください。",
+    "submitMethod": {
+      "label": "送信方法",
+      "github": "GitHub Issueで報告（GitHubアカウントが必要）",
+      "form": "フォームで報告（アカウント不要）",
+      "description": "GitHub Issueで報告する場合は、GitHubアカウントが必要です。アカウントがない場合は、フォームで報告を選択してください。"
+    },
+    "githubIssue": {
+      "description": "GitHub Issueで報告する場合は、以下のボタンをクリックしてGitHubのIssue作成ページに移動してください。",
+      "button": "イシューを報告"
+    },
+    "googleForm": {
+      "description": "フォームで報告する場合は、以下のボタンをクリックしてGoogle Formを開いてください。",
+      "button": "フォームで報告"
+    },
+    "validation": {
+      "required": "この項目は必須です",
+      "maxLength": "最大{{max}}文字まで入力できます",
+      "emailInvalid": "メールアドレスの形式が正しくありません",
+      "categoryRequired": "カテゴリを選択してください"
+    }
+  },
+  "keyboardShortcuts": "キーボードショートカット",
+  "shortcuts": {
+    "undo": "元に戻す",
+    "redo": "やり直し",
+    "modSettings": "MOD設定を開く",
+    "languageSwitch": "言語を切り替える",
+    "helpModal": "ヘルプを開く",
+    "closeModal": "モーダルを閉じる"
+  },
+  "shortcutKeys": {
+    "ctrlZ": "Ctrl+Z",
+    "ctrlY": "Ctrl+Y",
+    "ctrlShiftM": "Ctrl+Shift+M",
+    "ctrlL": "Ctrl+L",
+    "ctrlQuestion": "Ctrl+?",
+    "f1": "F1",
+    "escape": "Esc"
+  },
+  "accessibility": {
+    "policy": "アクセシビリティ方針",
+    "keyboardNavigation": "キーボード操作",
+    "screenReader": "スクリーンリーダー対応",
+    "keyboardNavigationDescription": "このアプリケーションはキーボードのみで操作可能です。主要なショートカットキーはヘルプモーダルの「キーボードショートカット」タブで確認できます。",
+    "screenReaderDescription": "このアプリケーションはスクリーンリーダーに対応しています。主要な操作にはaria-labelが設定されており、音声読み上げソフトウェアで使用できます。"
+  },
+  "changeLanguage": "言語を切り替える",
+  "patchDiff": "パッチ差分",
+  "selectVersion": "バージョン選択",
+  "selectVersionToCompare": "比較するバージョンを選択してください",
+  "diffSummary": "差分サマリー",
+  "noDiffFound": "差分が見つかりません",
+  "added": "追加",
+  "removed": "削除",
+  "modified": "変更",
+  "inputItems": "材料",
+  "outputItems": "生産物",
+  "time": "時間",
+  "recipes": "レシピ",
+  "items": "アイテム",
+  "machines": "機械",
+  "failedToLoadVersionData": "バージョンデータの読み込みに失敗しました"
 }

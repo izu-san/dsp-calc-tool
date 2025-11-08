@@ -1,11 +1,13 @@
-import { useEffect, useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { HOVER_CARD_GLOW } from "../../../constants/theme";
 import { useHistoryStore } from "../../../stores/historyStore";
-import { restoreStateFromHistory } from "../../../utils/historyRestore";
-import { historyDebouncer } from "../../../utils/historyDebouncer";
+import { cn } from "../../../utils/classNames";
+import { historyDebouncer } from "../../../utils/history/debouncer";
+import { regenerateHistoryDescription } from "../../../utils/history/regenerator";
+import { restoreStateFromHistory } from "../../../utils/history/restoration";
 import { HistoryDialog } from "../../HistoryDialog";
 import { useToast } from "../../ToastProvider/useToast";
-import { regenerateHistoryDescription } from "../../../utils/historyDescriptionRegenerator";
 
 /**
  * 履歴操作ツールバーコンポーネント
@@ -117,8 +119,12 @@ export function HistoryToolbar() {
           data-testid="undo-button"
           onClick={handleUndo}
           disabled={!canUndo()}
-          className="px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue hover:shadow-[0_0_15px_rgba(0,136,255,0.4)] disabled:bg-dark-600 disabled:border-neon-blue/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+          className={cn(
+            "px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue disabled:bg-dark-600 disabled:border-neon-blue/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
+            HOVER_CARD_GLOW.blue
+          )}
           title={canUndo() ? t("undo") : t("cannotUndo")}
+          aria-label={canUndo() ? t("undo") : t("cannotUndo")}
         >
           ↶ {t("undo")}
         </button>
@@ -127,8 +133,12 @@ export function HistoryToolbar() {
           data-testid="redo-button"
           onClick={handleRedo}
           disabled={!canRedo()}
-          className="px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect"
+          className={cn(
+            "px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
+            HOVER_CARD_GLOW.purple
+          )}
           title={canRedo() ? t("redo") : t("cannotRedo")}
+          aria-label={canRedo() ? t("redo") : t("cannotRedo")}
         >
           ↷ {t("redo")}
         </button>
@@ -136,8 +146,12 @@ export function HistoryToolbar() {
         <button
           data-testid="history-dialog-button"
           onClick={() => setIsHistoryDialogOpen(true)}
-          className="px-4 py-2 bg-dark-600/50 border border-neon-blue/30 text-white rounded-lg hover:bg-dark-600/70 hover:border-neon-blue/50 hover:shadow-[0_0_15px_rgba(0,136,255,0.3)] transition-all ripple-effect"
+          className={cn(
+            "px-4 py-2 bg-dark-600/50 border border-neon-blue/30 text-white rounded-lg hover:bg-dark-600/70 hover:border-neon-blue/50 transition-all ripple-effect",
+            HOVER_CARD_GLOW.blue
+          )}
           title={t("showHistory")}
+          aria-label={t("showHistory")}
         >
           📜 {t("history")}
         </button>

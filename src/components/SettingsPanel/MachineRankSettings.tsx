@@ -9,6 +9,7 @@ import type {
 import { ItemIcon } from "../ItemIcon";
 import { cn } from "../../utils/classNames";
 import { getMachineById } from "../../stores/gameDataStore";
+import { NEON_GLOW } from "../../constants/theme";
 
 interface MachineOption {
   value: string;
@@ -88,12 +89,13 @@ export function MachineRankSettings() {
                 onClick={() => handleRankChange("Smelt", option.value as SmelterRank)}
                 className={cn(
                   "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
-                  {
-                    "bg-neon-orange/30 text-white border-neon-orange shadow-[0_0_20px_rgba(255,107,53,0.6),inset_0_0_20px_rgba(255,107,53,0.2)] backdrop-blur-sm font-bold scale-105":
-                      machineRank.Smelt === option.value,
-                    "bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange":
-                      machineRank.Smelt !== option.value,
-                  }
+                  machineRank.Smelt === option.value &&
+                    cn(
+                      "bg-neon-orange/30 text-white border-neon-orange backdrop-blur-sm font-bold scale-105",
+                      NEON_GLOW.orangeStrong
+                    ),
+                  machineRank.Smelt !== option.value &&
+                    "bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange"
                 )}
               >
                 <div className="flex flex-col items-center gap-1">
@@ -123,12 +125,13 @@ export function MachineRankSettings() {
                 onClick={() => handleRankChange("Assemble", option.value as AssemblerRank)}
                 className={cn(
                   "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
-                  {
-                    "bg-neon-blue/30 text-white border-neon-blue shadow-[0_0_20px_rgba(0,136,255,0.6),inset_0_0_20px_rgba(0,136,255,0.2)] backdrop-blur-sm font-bold scale-105":
-                      machineRank.Assemble === option.value,
-                    "bg-dark-700/50 text-space-200 border-neon-blue/20 hover:bg-neon-blue/10 hover:border-neon-blue/50 hover:text-neon-blue":
-                      machineRank.Assemble !== option.value,
-                  }
+                  machineRank.Assemble === option.value &&
+                    cn(
+                      "bg-neon-blue/30 text-white border-neon-blue backdrop-blur-sm font-bold scale-105",
+                      NEON_GLOW.blueStrong
+                    ),
+                  machineRank.Assemble !== option.value &&
+                    "bg-dark-700/50 text-space-200 border-neon-blue/20 hover:bg-neon-blue/10 hover:border-neon-blue/50 hover:text-neon-blue"
                 )}
               >
                 <div className="flex flex-col items-center gap-1">
@@ -158,12 +161,13 @@ export function MachineRankSettings() {
                 onClick={() => handleRankChange("Chemical", option.value as ChemicalPlantRank)}
                 className={cn(
                   "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
-                  {
-                    "bg-neon-green/30 text-white border-neon-green shadow-[0_0_20px_rgba(0,255,136,0.6),inset_0_0_20px_rgba(0,255,136,0.2)] backdrop-blur-sm font-bold scale-105":
-                      machineRank.Chemical === option.value,
-                    "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green":
-                      machineRank.Chemical !== option.value,
-                  }
+                  machineRank.Chemical === option.value &&
+                    cn(
+                      "bg-neon-green/30 text-white border-neon-green backdrop-blur-sm font-bold scale-105",
+                      NEON_GLOW.greenStrong
+                    ),
+                  machineRank.Chemical !== option.value &&
+                    "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green"
                 )}
               >
                 <div className="flex flex-col items-center gap-1">
@@ -193,12 +197,13 @@ export function MachineRankSettings() {
                 onClick={() => handleRankChange("Research", option.value as MatrixLabRank)}
                 className={cn(
                   "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
-                  {
-                    "bg-neon-purple/30 text-white border-neon-purple shadow-[0_0_20px_rgba(168,85,247,0.6),inset_0_0_20px_rgba(168,85,247,0.2)] backdrop-blur-sm font-bold scale-105":
-                      machineRank.Research === option.value,
-                    "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple":
-                      machineRank.Research !== option.value,
-                  }
+                  machineRank.Research === option.value &&
+                    cn(
+                      "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                      NEON_GLOW.purpleStrong
+                    ),
+                  machineRank.Research !== option.value &&
+                    "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
                 )}
               >
                 <div className="flex flex-col items-center gap-1">
