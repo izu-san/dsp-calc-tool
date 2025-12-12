@@ -17,10 +17,7 @@ import { defaultSettings } from "./defaultSettings";
 import { createSettingsStorage } from "./storage/settingsStorage";
 
 interface SettingsStore
-  extends SettingsSlice,
-    TemplateSlice,
-    PowerGenerationSlice,
-    CustomTemplateSlice {
+  extends SettingsSlice, TemplateSlice, PowerGenerationSlice, CustomTemplateSlice {
   resetSettings: () => void;
 }
 

@@ -82,9 +82,8 @@ describe("PatchInfoView", () => {
   });
 
   it("バージョン選択時に差分が計算される", async () => {
-    const { calculateRecipeDiff, calculateItemDiff, calculateMachineDiff } = await import(
-      "../../../lib/patchDiff"
-    );
+    const { calculateRecipeDiff, calculateItemDiff, calculateMachineDiff } =
+      await import("../../../lib/patchDiff");
 
     render(<PatchInfoView />);
 
@@ -152,9 +151,8 @@ describe("PatchInfoView", () => {
   });
 
   it("差分タブが切り替えられる", async () => {
-    const { calculateRecipeDiff, calculateItemDiff, calculateMachineDiff } = await import(
-      "../../../lib/patchDiff"
-    );
+    const { calculateRecipeDiff, calculateItemDiff, calculateMachineDiff } =
+      await import("../../../lib/patchDiff");
     vi.mocked(calculateRecipeDiff).mockReturnValueOnce([
       {
         recipeSID: 1,
