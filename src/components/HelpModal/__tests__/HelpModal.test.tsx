@@ -213,8 +213,9 @@ describe("HelpModal", () => {
 
     // FAQコンテンツが表示されることを確認（タブの切り替えが完了するまで待つ）
     await waitFor(
-      () => {
-        expect(screen.getByText("計算の前提条件")).toBeInTheDocument();
+      async () => {
+        const faqTitle = await screen.findByText("計算の前提条件");
+        expect(faqTitle).toBeInTheDocument();
       },
       { timeout: 3000 }
     );
