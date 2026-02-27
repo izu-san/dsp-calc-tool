@@ -58,7 +58,7 @@ jobs:
         run: pnpm exec playwright test --project=chromium --shard=${{ matrix.shard }}/4
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report-shard-${{ matrix.shard }}
@@ -66,7 +66,7 @@ jobs:
           retention-days: 30
 
       - name: Upload test results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-results-shard-${{ matrix.shard }}
