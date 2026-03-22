@@ -4,15 +4,13 @@ import {
   calculateUnifiedPower,
   type UnifiedPowerResult,
 } from "../../../lib/unifiedPowerCalculation";
-import type { CalculationResult, RecipeTreeNode } from "../../../types/calculation";
-import { formatNumber, formatPower } from "../../../utils/format";
 import { createRecipeNode } from "../../../test/factories/testDataFactory";
+import type { CalculationResult } from "../../../types/calculation";
+import { formatNumber, formatPower } from "../../../utils/format";
 import { PowerGraphView } from "../index";
 
 // Mock dependencies
 vi.mock("../../../lib/unifiedPowerCalculation");
-vi.mock("../../../stores/gameDataStore");
-vi.mock("../../../stores/settingsStore");
 vi.mock("react-chartjs-2", () => ({
   Pie: vi.fn(() => <div data-testid="pie-chart">Mocked Pie Chart</div>),
 }));
