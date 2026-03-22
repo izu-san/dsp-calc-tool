@@ -1,12 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { MiningCalculator } from "../index";
-import type {
-  CalculationResult,
-  RecipeTreeNode,
-  PowerConsumption,
-} from "../../../types/calculation";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createRecipeNode } from "../../../test/factories/testDataFactory";
+import type { CalculationResult, PowerConsumption } from "../../../types/calculation";
+import { MiningCalculator } from "../index";
 
 // Mock dependencies
 vi.mock("../../../lib/miningCalculation");
