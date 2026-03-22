@@ -92,6 +92,34 @@ function getAppVersion(): string {
 
 const appVersion = getAppVersion();
 
+const manualChunkGroups = {
+  "react-vendor": ["react", "react-dom"],
+  "ui-vendor": [
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-label",
+    "@radix-ui/react-select",
+    "@radix-ui/react-switch",
+    "@radix-ui/react-tabs",
+    "@radix-ui/react-tooltip",
+  ],
+  "chart-vendor": ["chart.js", "react-chartjs-2", "d3-sankey", "d3-zoom"],
+  "utils-vendor": ["decimal.js", "dompurify", "fast-xml-parser", "lz-string", "js-cookie", "zod"],
+  "i18n-vendor": ["i18next", "react-i18next"],
+  "state-vendor": ["zustand"],
+} as const;
+
+function getManualChunkName(moduleId: string): string | undefined {
+  const normalizedId = moduleId.replaceAll("\\", "/");
+
+  for (const [chunkName, packages] of Object.entries(manualChunkGroups)) {
+    if (packages.some(packageName => normalizedId.includes(`/node_modules/${packageName}/`))) {
+      return chunkName;
+    }
+  }
+
+  return undefined;
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   // カスタムドメイン (dsp-calc.com) を使用
@@ -130,16 +158,10 @@ export default defineConfig({
       "**/*.e2e.spec.ts",
     ],
     // ワーカープロセスのクラッシュを防ぐための設定
-    // threadsプールを使用（forksより安定）
+    // threadsプールを使用しつつ、並列度を抑えてメモリ不足を防ぐ
     pool: "threads",
-    // @ts-expect-error - Vitestの型定義が不完全
-    poolOptions: {
-      threads: {
-        singleThread: false,
-        maxThreads: 2, // 並列実行数を大幅に制限してメモリ不足を防ぐ
-        minThreads: 1,
-      },
-    },
+    maxWorkers: 2,
+    fileParallelism: true,
     // テストタイムアウトを増やして重いテストの強制終了を防ぐ
     testTimeout: 15000,
     hookTimeout: 15000,
@@ -163,34 +185,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // React core libraries
-          "react-vendor": ["react", "react-dom"],
-          // UI component libraries
-          "ui-vendor": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-label",
-            "@radix-ui/react-select",
-            "@radix-ui/react-switch",
-            "@radix-ui/react-tabs",
-            "@radix-ui/react-tooltip",
-          ],
-          // Chart and visualization
-          "chart-vendor": ["chart.js", "react-chartjs-2", "d3-sankey", "d3-zoom"],
-          // Utilities and parsers
-          "utils-vendor": [
-            "decimal.js",
-            "dompurify",
-            "fast-xml-parser",
-            "lz-string",
-            "js-cookie",
-            "zod",
-          ],
-          // Internationalization
-          "i18n-vendor": ["i18next", "react-i18next"],
-          // State management
-          "state-vendor": ["zustand"],
-        },
+        manualChunks: getManualChunkName,
       },
     },
     // Increase chunk size warning limit to 800KB
