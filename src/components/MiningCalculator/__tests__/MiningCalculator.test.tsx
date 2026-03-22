@@ -10,8 +10,6 @@ import { createRecipeNode } from "../../../test/factories/testDataFactory";
 
 // Mock dependencies
 vi.mock("../../../lib/miningCalculation");
-vi.mock("../../../stores/settingsStore");
-vi.mock("../../../stores/miningSettingsStore");
 
 // Mock useSettingsStore
 const mockSetMiningSpeedResearch = vi.fn();
