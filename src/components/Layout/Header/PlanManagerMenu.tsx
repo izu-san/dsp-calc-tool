@@ -18,6 +18,7 @@ import {
 import { importFromMarkdown } from "../../../lib/import/markdownImporter";
 import { buildPlanFromImport } from "../../../lib/import/planBuilder";
 import { validatePlanInfo } from "../../../lib/import/validation";
+import { loadPlanWithHistory } from "../../../services/plan-management/planLoadService";
 import { useGameDataStore } from "../../../stores/gameDataStore";
 import { useHistoryStore } from "../../../stores/historyStore";
 import { useNodeOverrideStore } from "../../../stores/nodeOverrideStore";
@@ -534,46 +535,23 @@ export function PlanManagerMenu() {
       return;
     }
 
-    setInternal(true);
-
-    if (mergeOverridesOnLoad) {
-      const merged = new Map(nodeOverrides);
-      Object.entries(plan.nodeOverrides).forEach(([k, v]) => merged.set(k, v));
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
+    loadPlanWithHistory({
+      plan,
+      recipe,
+      callbacks: {
+        setRecipe: setSelectedRecipe,
         setTargetQuantity,
         updateSettings,
-        setAllOverrides
-      );
-      setAllOverrides(merged);
-    } else {
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
-        setTargetQuantity,
-        updateSettings,
-        setAllOverrides
-      );
-    }
-
-    const historyDescription = t("planLoadedFromBrowser", {
-      planName: plan.name,
-      version: plan.version,
-    });
-    pushEntry({
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: "plan",
-      description: historyDescription,
-      changes: {},
-      previousChanges: {},
-      version: HISTORY_VERSION,
-      planSnapshot: plan,
-      locale: i18n.language,
+        setNodeOverrides: setAllOverrides,
+      },
+      mergeOverrides: mergeOverridesOnLoad,
+      currentOverrides: nodeOverrides,
+      historyDescription: t("planLoadedFromBrowser", {
+        planName: plan.name,
+        version: plan.version,
+      }),
     });
 
-    setInternal(false);
     setShowLoadDialog(false);
     setImportSuccessMessage("");
     setImportErrorMessage("");
@@ -598,46 +576,23 @@ export function PlanManagerMenu() {
       return;
     }
 
-    setInternal(true);
-
-    if (mergeOverridesOnLoad) {
-      const merged = new Map(nodeOverrides);
-      Object.entries(plan.nodeOverrides).forEach(([k, v]) => merged.set(k, v));
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
+    loadPlanWithHistory({
+      plan,
+      recipe,
+      callbacks: {
+        setRecipe: setSelectedRecipe,
         setTargetQuantity,
         updateSettings,
-        setAllOverrides
-      );
-      setAllOverrides(merged);
-    } else {
-      restorePlan(
-        plan,
-        () => setSelectedRecipe(recipe),
-        setTargetQuantity,
-        updateSettings,
-        setAllOverrides
-      );
-    }
-
-    const historyDescription = t("planLoadedFromBrowser", {
-      planName: plan.name,
-      version: plan.version || 1,
-    });
-    pushEntry({
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: "plan",
-      description: historyDescription,
-      changes: {},
-      previousChanges: {},
-      version: HISTORY_VERSION,
-      planSnapshot: plan,
-      locale: i18n.language,
+        setNodeOverrides: setAllOverrides,
+      },
+      mergeOverrides: mergeOverridesOnLoad,
+      currentOverrides: nodeOverrides,
+      historyDescription: t("planLoadedFromBrowser", {
+        planName: plan.name,
+        version: plan.version || 1,
+      }),
     });
 
-    setInternal(false);
     setShowLoadDialog(false);
     setImportSuccessMessage("");
     setImportErrorMessage("");
@@ -669,29 +624,18 @@ export function PlanManagerMenu() {
       return;
     }
 
-    setInternal(true);
-    restorePlan(
+    loadPlanWithHistory({
       plan,
-      () => setSelectedRecipe(recipe),
-      setTargetQuantity,
-      updateSettings,
-      setAllOverrides
-    );
-
-    const historyDescription = t("planLoadedFromBrowser", { planName: plan.name, version });
-    pushEntry({
-      id: crypto.randomUUID(),
-      timestamp: Date.now(),
-      type: "plan",
-      description: historyDescription,
-      changes: {},
-      previousChanges: {},
-      version: HISTORY_VERSION,
-      planSnapshot: plan,
-      locale: i18n.language,
+      recipe,
+      callbacks: {
+        setRecipe: setSelectedRecipe,
+        setTargetQuantity,
+        updateSettings,
+        setNodeOverrides: setAllOverrides,
+      },
+      historyDescription: t("planLoadedFromBrowser", { planName: plan.name, version }),
     });
 
-    setInternal(false);
     setShowVersionDialog(false);
     setShowLoadDialog(false);
     alert(`${t("versionLoaded", { version })}`);

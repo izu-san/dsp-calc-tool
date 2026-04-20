@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { tryCalculateProductionChain } from "../lib/calculator";
 import type {
   CalculationResult,
@@ -25,10 +25,6 @@ export function useProductionCalculation(
   },
   setCalculationResult: (result: CalculationResult | null) => void
 ) {
-  // Create stable signature for settings to avoid unnecessary recalculations
-  // Only recalculate when settings actually change (by value, not reference)
-  const settingsSignature = useMemo(() => createSettingsSignature(settings), [settings]);
-
   useEffect(() => {
     if (selectedRecipe && data && targetQuantity > 0) {
       const result = tryCalculateProductionChain(
@@ -49,36 +45,14 @@ export function useProductionCalculation(
     } else {
       setCalculationResult(null);
     }
-
-    // settingsSignature and nodeOverridesVersion are used to detect changes
-    // without including the objects themselves in the dependency array.
-    // miningSettings.machineType and workSpeedMultiplier are included individually
-    // to avoid unnecessary re-renders when other miningSettings properties change.
   }, [
     selectedRecipe,
     targetQuantity,
     data,
-    settingsSignature,
+    settings,
+    nodeOverrides,
     nodeOverridesVersion,
-    miningSettings.machineType,
-    miningSettings.workSpeedMultiplier,
+    miningSettings,
     setCalculationResult,
   ]);
-}
-
-function createSettingsSignature(settings: GlobalSettings): string {
-  const alternativeEntries = settings.alternativeRecipes
-    ? Array.from(settings.alternativeRecipes.entries()).sort(([a], [b]) => a - b)
-    : [];
-
-  return JSON.stringify({
-    proliferator: settings.proliferator,
-    machineRank: settings.machineRank,
-    conveyorBelt: settings.conveyorBelt,
-    sorter: settings.sorter,
-    alternativeRecipes: alternativeEntries,
-    miningSpeedResearch: settings.miningSpeedResearch,
-    proliferatorMultiplier: settings.proliferatorMultiplier,
-    photonGeneration: settings.photonGeneration,
-  });
 }
