@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { loadGameData } from "../../lib/parser";
+import { CUSTOM_RECIPES_XML_STORAGE_KEY } from "../../constants/storageKeys";
 import { useGameDataStore } from "../../stores/gameDataStore";
 import { useSettingsStore } from "../../stores/settingsStore";
 
@@ -12,7 +13,7 @@ export function ModSettings() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [proliferatorError, setProliferatorError] = useState<string>("");
   const [proliferatorSuccess, setProliferatorSuccess] = useState(false);
-  const { updateData } = useGameDataStore();
+  const { updateData, locale } = useGameDataStore();
   const { settings, setProliferatorMultiplier } = useSettingsStore();
 
   // Custom proliferator multipliers (with fallback for old saved data)
@@ -96,8 +97,9 @@ export function ModSettings() {
       // Update game data with custom recipes
       try {
         // Parse with custom recipes XML
-        const customData = await loadGameData(text);
+        const customData = await loadGameData(text, locale);
 
+        localStorage.setItem(CUSTOM_RECIPES_XML_STORAGE_KEY, text);
         updateData(customData);
         setUploadSuccess(true);
       } catch (error) {
@@ -165,7 +167,8 @@ export function ModSettings() {
   const handleResetToDefault = async () => {
     if (confirm(t("confirmResetToDefault"))) {
       try {
-        const data = await loadGameData();
+        localStorage.removeItem(CUSTOM_RECIPES_XML_STORAGE_KEY);
+        const data = await loadGameData(undefined, locale);
         updateData(data);
         setUploadSuccess(true);
       } catch (error) {

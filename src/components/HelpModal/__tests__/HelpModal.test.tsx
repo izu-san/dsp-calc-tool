@@ -245,6 +245,23 @@ describe("HelpModal", () => {
     });
   });
 
+  it("アプリバージョンは固定値を表示する", async () => {
+    mocks.mockLoadVersionInfo.mockResolvedValue({
+      ...mockVersionInfo,
+      appVersion: "9.9.9",
+    });
+    mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);
+
+    render(<HelpModal isOpen={true} onClose={vi.fn()} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("help")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("0.0.5")).toBeInTheDocument();
+    expect(screen.queryByText("9.9.9")).not.toBeInTheDocument();
+  });
+
   it("Feedbackタブにバグ報告情報と返信ポリシーが表示される", async () => {
     mocks.mockLoadVersionInfo.mockResolvedValue(mockVersionInfo);
     mocks.mockLoadChangelog.mockResolvedValue(mockChangelog);

@@ -173,7 +173,7 @@ describe("ProductionTree", () => {
   it("レシピノードの場合、レシピ情報と機械情報が表示される", () => {
     render(<ProductionTree node={mockRecipeNode} />);
 
-    expect(screen.getByText("Iron Ingot")).toBeInTheDocument();
+    expect(screen.getAllByText("Iron Ingot")[0]).toBeInTheDocument();
     expect(screen.getByText("Arc Smelter × 1")).toBeInTheDocument();
     expect(screen.getAllByText("60.0/s")[0]).toBeInTheDocument();
     expect(screen.getAllByText("120.0 kW")[0]).toBeInTheDocument();
@@ -215,7 +215,7 @@ describe("ProductionTree", () => {
     expect(screen.getByText("▶")).toBeInTheDocument();
 
     // 折りたたみ状態では、入力としての Iron Ore が表示される（子ノードは非表示）
-    expect(screen.getByText("Iron Ore")).toBeInTheDocument();
+    expect(screen.getAllByText("Iron Ore")[0]).toBeInTheDocument();
   });
 
   it("飽和度が表示される", () => {
@@ -346,6 +346,17 @@ describe("ProductionTree", () => {
   it("入力・出力・電力の詳細情報が表示される", () => {
     render(<ProductionTree node={mockRecipeNode} />);
 
+    // レシピ定義情報
+    expect(screen.getByText("recipe")).toBeInTheDocument();
+    expect(screen.getByText("inputItems")).toBeInTheDocument();
+    expect(screen.getByText("outputItems")).toBeInTheDocument();
+    expect(screen.getByText("time:")).toBeInTheDocument();
+    expect(screen.getByTestId("recipe-input-item-2001-1001")).toHaveTextContent("x1");
+    expect(screen.getByTestId("recipe-output-item-2001-1002")).toHaveTextContent("x1");
+    expect(screen.getByTestId("recipe-time-2001")).toHaveTextContent("1.0s");
+    expect(screen.getAllByTestId("item-icon-1001").length).toBeGreaterThan(0);
+    expect(screen.getAllByTestId("item-icon-1002").length).toBeGreaterThan(0);
+
     // 入力情報
     expect(screen.getAllByText("Iron Ore")[0]).toBeInTheDocument(); // Use getAllByText to avoid ambiguity
     expect(screen.getAllByText("60.0/s")[0]).toBeInTheDocument();
@@ -392,7 +403,7 @@ describe("ProductionTree", () => {
     render(<ProductionTree node={mockRecipeNode} depth={0} />);
 
     // ルートノードの特別なスタイル（ボーダーが太い）
-    const rootNode = screen.getByText("Iron Ingot").closest(".border-2");
+    const rootNode = screen.getAllByText("Iron Ingot")[0].closest(".border-2");
     expect(rootNode).toBeInTheDocument();
   });
 

@@ -5,6 +5,7 @@ vi.unmock("../../utils/logger");
 import { useGameDataStore, getMachineById } from "../gameDataStore";
 import type { GameData } from "../../types";
 import { createMockGameData, createMachineByType } from "../../test/factories/testDataFactory";
+import { CUSTOM_RECIPES_XML_STORAGE_KEY } from "../../constants/storageKeys";
 
 // Mock i18n
 vi.mock("../../i18n", () => ({
@@ -163,6 +164,20 @@ describe("gameDataStore", () => {
       await loadData();
 
       expect(loadGameData).toHaveBeenCalledWith(undefined, "ja");
+    });
+
+    it("should load persisted custom recipes xml when present", async () => {
+      const { loadGameData } = await import("../../lib/parser");
+      const mockData = createMockGameData();
+      const customRecipesXml = '<?xml version="1.0"?><ArrayOfRecipe><Recipe /></ArrayOfRecipe>';
+
+      localStorage.setItem(CUSTOM_RECIPES_XML_STORAGE_KEY, customRecipesXml);
+      vi.mocked(loadGameData).mockResolvedValue(mockData);
+
+      const { loadData } = useGameDataStore.getState();
+      await loadData("en");
+
+      expect(loadGameData).toHaveBeenCalledWith(customRecipesXml, "en");
     });
   });
 

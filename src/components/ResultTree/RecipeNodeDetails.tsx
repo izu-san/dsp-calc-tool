@@ -1,11 +1,34 @@
 import { useTranslation } from "react-i18next";
 import type { RecipeTreeNode } from "../../types";
 import { cn } from "../../utils/classNames";
-import { formatRate, formatPower } from "../../utils/format";
+import { formatNumber, formatPower, formatRate } from "../../utils/format";
 import { getSaturationColor } from "../../constants/theme";
+import { ItemIcon } from "../ItemIcon";
 
 interface RecipeNodeDetailsProps {
   node: RecipeTreeNode;
+}
+
+interface ItemRowProps {
+  itemId: number;
+  name: string;
+  value: string;
+  valueClassName: string;
+  testId?: string;
+}
+
+function ItemRow({ itemId, name, value, valueClassName, testId }: ItemRowProps) {
+  return (
+    <div className="flex items-center justify-between text-xs gap-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <ItemIcon itemId={itemId} alt={name} size={16} className="flex-shrink-0" />
+        <span className="text-space-200 truncate">{name}</span>
+      </div>
+      <span data-testid={testId} className={cn("font-medium ml-2 flex-shrink-0", valueClassName)}>
+        {value}
+      </span>
+    </div>
+  );
 }
 
 /**
@@ -13,26 +36,78 @@ interface RecipeNodeDetailsProps {
  */
 export function RecipeNodeDetails({ node }: RecipeNodeDetailsProps) {
   const { t } = useTranslation();
+  const recipeTimeSeconds = node.recipe ? node.recipe.TimeSpend / 60 : 0;
 
   return (
     <div
       id={`node-${node.nodeId}`}
-      className="grid grid-cols-3 gap-2 text-sm border-t border-neon-cyan/20 pt-2 mt-2 relative z-10"
+      className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2 text-sm border-t border-neon-cyan/20 pt-2 mt-2 relative z-10"
     >
+      {/* Recipe Definition */}
+      <div>
+        <div className="text-xs font-medium text-neon-cyan mb-1">{t("recipe")}</div>
+        <div className="space-y-2 text-xs">
+          <div>
+            <div className="text-space-300 mb-1">{t("inputItems")}</div>
+            <div className="space-y-1">
+              {node.recipe?.Items.length ? (
+                node.recipe.Items.map(item => (
+                  <ItemRow
+                    key={`recipe-input-${node.recipe!.SID}-${item.id}`}
+                    itemId={item.id}
+                    name={item.name}
+                    value={`x${Math.trunc(item.count)}`}
+                    valueClassName="text-neon-green"
+                    testId={`recipe-input-item-${node.recipe!.SID}-${item.id}`}
+                  />
+                ))
+              ) : (
+                <div className="text-space-400">{t("noInputsRequired")}</div>
+              )}
+            </div>
+          </div>
+
+          <div className="border-t border-neon-cyan/20 pt-2">
+            <div className="text-space-300 mb-1">{t("outputItems")}</div>
+            <div className="space-y-1">
+              {node.recipe?.Results.map(item => (
+                <ItemRow
+                  key={`recipe-output-${node.recipe!.SID}-${item.id}`}
+                  itemId={item.id}
+                  name={item.name}
+                  value={`x${Math.trunc(item.count)}`}
+                  valueClassName="text-neon-blue"
+                  testId={`recipe-output-item-${node.recipe!.SID}-${item.id}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-between border-t border-neon-cyan/20 pt-2">
+            <span className="text-space-300">{t("time")}:</span>
+            <span
+              data-testid={`recipe-time-${node.recipe!.SID}`}
+              className="font-medium text-white"
+            >
+              {formatNumber(recipeTimeSeconds)}s
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Inputs */}
       <div>
         <div className="text-xs font-medium text-neon-green mb-1">{t("inputs")}</div>
         <div className="space-y-1">
           {node.inputs.map(input => (
-            <div key={input.itemId} className="flex justify-between text-xs">
-              <span className="text-space-200 truncate">{input.itemName}</span>
-              <span
-                data-testid={`recipe-input-rate-${node.recipe!.SID}-${input.itemId}`}
-                className="font-medium text-neon-orange ml-2 flex-shrink-0"
-              >
-                {formatRate(input.requiredRate)}
-              </span>
-            </div>
+            <ItemRow
+              key={input.itemId}
+              itemId={input.itemId}
+              name={input.itemName}
+              value={formatRate(input.requiredRate)}
+              valueClassName="text-neon-orange"
+              testId={`recipe-input-rate-${node.recipe!.SID}-${input.itemId}`}
+            />
           ))}
         </div>
       </div>
