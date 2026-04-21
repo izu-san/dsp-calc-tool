@@ -34,8 +34,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
 
   const githubRepoUrl =
     import.meta.env.GITHUB_REPO_URL || "https://github.com/izu-san/dsp-calc-tool";
-  // version-info.jsonのappVersionを優先、なければビルド時のAPP_VERSIONを使用
-  const appVersion = versionInfo?.appVersion || import.meta.env.APP_VERSION || "0.0.0";
+  const appVersion = "0.0.5";
   const buildTime = import.meta.env.BUILD_TIME || "";
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
