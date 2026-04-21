@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import React, { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { actAsync } from "../../../test/helpers/actHelpers";
+import { CUSTOM_RECIPES_XML_STORAGE_KEY } from "../../../constants/storageKeys";
 import { ModSettings } from "../index";
 
 // i18n モック
@@ -23,7 +24,7 @@ vi.mock("../../../lib/parser", () => ({
 // stores モック
 const updateData = vi.fn();
 vi.mock("../../../stores/gameDataStore", () => ({
-  useGameDataStore: () => ({ updateData }),
+  useGameDataStore: () => ({ updateData, locale: "en" }),
 }));
 
 const settingsMock = {
@@ -39,6 +40,7 @@ describe("ModSettings", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     updateData.mockReset();
     setProliferatorMultiplier.mockReset();
     loadGameData.mockReset();
@@ -104,9 +106,10 @@ describe("ModSettings", () => {
     const okXmlText = '<?xml version="1.0"?><ArrayOfRecipe><Recipe id="1"/></ArrayOfRecipe>';
     const okXml = new File([okXmlText], "recipes.xml", { type: "text/xml" });
     await fireEvent.change(input, { target: { files: [okXml] } });
-    await waitFor(() => expect(loadGameData).toHaveBeenCalled());
+    await waitFor(() => expect(loadGameData).toHaveBeenCalledWith(okXmlText, "en"));
     await waitFor(() => expect(updateData).toHaveBeenCalledWith({ some: "data" }));
     await waitFor(() => expect(screen.getByText(/recipesUpdatedSuccessfully/)).toBeInTheDocument());
+    expect(localStorage.getItem(CUSTOM_RECIPES_XML_STORAGE_KEY)).toBe(okXmlText);
   });
 
   it("applyCustomMultipliers で setProliferatorMultiplier が呼ばれる", async () => {
@@ -129,16 +132,18 @@ describe("ModSettings", () => {
     openModal();
     confirmMock.mockReturnValueOnce(true);
     loadGameData.mockResolvedValueOnce({ base: "data" });
+    localStorage.setItem(CUSTOM_RECIPES_XML_STORAGE_KEY, "<xml />");
 
     await actAsync(() => {
       fireEvent.click(screen.getByTestId("mod-settings-reset-to-default-button"));
     });
 
     await waitFor(() => {
-      expect(loadGameData).toHaveBeenCalled();
+      expect(loadGameData).toHaveBeenCalledWith(undefined, "en");
       expect(updateData).toHaveBeenCalledWith({ base: "data" });
       expect(screen.getByText(/recipesUpdatedSuccessfully/)).toBeInTheDocument();
     });
+    expect(localStorage.getItem(CUSTOM_RECIPES_XML_STORAGE_KEY)).toBeNull();
   });
 
   it("resetToDefault で confirm がキャンセルされた場合は何もしない", () => {

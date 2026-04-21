@@ -4,6 +4,7 @@ import { loadGameData, loadGameDataVersion } from "../lib/parser";
 import i18n from "../i18n";
 import { handleError } from "../utils/errorHandler";
 import { createSelectors } from "./createSelectors";
+import { CUSTOM_RECIPES_XML_STORAGE_KEY } from "../constants/storageKeys";
 
 interface GameDataStore {
   data: GameData | null;
@@ -33,9 +34,10 @@ const useGameDataStoreBase = create<GameDataStore>((set, get) => {
 
     loadData: async (locale?: string) => {
       const currentLocale = locale || get().locale;
+      const customRecipesXml = localStorage.getItem(CUSTOM_RECIPES_XML_STORAGE_KEY) || undefined;
       set({ isLoading: true, error: null, selectedVersion: null });
       try {
-        const data = await loadGameData(undefined, currentLocale);
+        const data = await loadGameData(customRecipesXml, currentLocale);
         set({ data, isLoading: false, locale: currentLocale });
         localStorage.setItem("dsp_locale", currentLocale);
       } catch (error) {
