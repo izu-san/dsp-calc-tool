@@ -1,3 +1,10 @@
+## [0.0.5] - 2026-04-21
+
+### Added
+
+- Added recipe details and item icons to the recipe tree
+- Persisted mod settings
+
 ## [0.0.4] - 2025-11-08
 
 ### Added
