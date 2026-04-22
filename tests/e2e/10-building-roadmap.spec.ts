@@ -234,7 +234,7 @@ test.describe("建設ロードマップ機能", () => {
 
       // アイテム名、施設タイプ、施設数が含まれる
       expect(magnetText).toContain("磁石");
-      expect(magnetText).toMatch(/アーク製錬所|製錬所/);
+      expect(magnetText).toMatch(/アーク溶鉱炉|溶鉱炉/);
       expect(magnetText).toMatch(/×\s*[\d.]+/);
     });
   });
