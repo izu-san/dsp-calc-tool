@@ -44,7 +44,7 @@ export const POWER_GENERATORS: Record<PowerGeneratorType, PowerGeneratorInfo> = 
   },
   solarPanel: {
     machineId: 2205,
-    machineName: "ソーラーパネル",
+    machineName: "恒星光パネル",
     type: "solarPanel",
     baseOutput: 360, // kW (6000 * 60 / 1000)
     efficiency: 1.0,
@@ -66,7 +66,7 @@ export const POWER_GENERATORS: Record<PowerGeneratorType, PowerGeneratorInfo> = 
   },
   artificialStar: {
     machineId: 2210,
-    machineName: "人工恒星",
+    machineName: "人造恒星",
     type: "artificialStar",
     baseOutput: 72000, // kW (1200000 * 60 / 1000) - Antimatter Fuel Rod使用時
     efficiency: 1.0, // 100% (1200000 / 1200000)
@@ -135,7 +135,7 @@ export const FUEL_ITEMS: Record<string, FuelItem> = {
   },
   hydrogenFuelRod: {
     itemId: 1801,
-    itemName: "水素燃料棒",
+    itemName: "液化水素燃料棒",
     fuelType: "chemical",
     heatValue: 54000000,
     energyPerItem: 54.0,
@@ -143,7 +143,7 @@ export const FUEL_ITEMS: Record<string, FuelItem> = {
   // Chemical Fuels (後半)
   crystalExplosiveUnit: {
     itemId: 1130,
-    itemName: "結晶性爆発ユニット",
+    itemName: "クリスタル爆発ユニット",
     fuelType: "chemical",
     heatValue: 54000000,
     energyPerItem: 54.0,
@@ -151,7 +151,7 @@ export const FUEL_ITEMS: Record<string, FuelItem> = {
   // Nuclear Fuels (後半)
   deuteronFuelRod: {
     itemId: 1802,
-    itemName: "重水素燃料棒",
+    itemName: "重陽子燃料棒",
     fuelType: "nuclear",
     heatValue: 600000000,
     energyPerItem: 600,
@@ -166,7 +166,7 @@ export const FUEL_ITEMS: Record<string, FuelItem> = {
   },
   strangeAnnihilationFuelRod: {
     itemId: 1804,
-    itemName: "ストレンジ物質対消滅燃料棒",
+    itemName: "ストレンジ対消滅燃料棒",
     fuelType: "mass",
     heatValue: 72000000000,
     energyPerItem: 72000,
@@ -203,7 +203,7 @@ export const TEMPLATE_POWER_GENERATORS: Record<string, PowerGeneratorType[]> = {
  * テンプレート別の使用可能な燃料
  */
 export const TEMPLATE_FUELS: Record<string, string[]> = {
-  // デフォルト（初期状態）: 終盤からストレンジ物質対消滅燃料棒を除外
+  // デフォルト（初期状態）: 終盤からストレンジ対消滅燃料棒を除外
   default: [
     "coal",
     "crudeOil",

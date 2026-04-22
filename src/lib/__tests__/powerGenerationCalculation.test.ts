@@ -45,7 +45,7 @@ describe("calculatePowerGeneration", () => {
       expect(result.totalGenerators).toBe(2);
     });
 
-    it("重水素燃料棒を燃料として使用する", () => {
+    it("重陽子燃料棒を燃料として使用する", () => {
       const result = calculatePowerGeneration(20000, "lateGame");
 
       expect(result.generators[0].fuel).not.toBeNull();
@@ -77,7 +77,7 @@ describe("calculatePowerGeneration", () => {
       expect(result.totalGenerators).toBe(1);
     });
 
-    it("ストレンジ物質対消滅燃料棒を使用する", () => {
+    it("ストレンジ対消滅燃料棒を使用する", () => {
       const result = calculatePowerGeneration(100000, "endGame");
 
       expect(result.generators[0].fuel?.itemId).toBe(1804); // Strange Annihilation Fuel Rod
@@ -107,7 +107,7 @@ describe("calculatePowerGeneration", () => {
       expect(output).toBe(72000); // kW
     });
 
-    it("ストレンジ物質対消滅燃料棒使用時は144MW", () => {
+    it("ストレンジ対消滅燃料棒使用時は144MW", () => {
       const artificialStar = POWER_GENERATORS.artificialStar;
       const strangeAnnihilationFuelRod = FUEL_ITEMS.strangeAnnihilationFuelRod;
 
@@ -162,7 +162,7 @@ describe("calculatePowerGeneration", () => {
     it("終盤では最高効率の燃料が選択される", () => {
       const result = calculatePowerGeneration(100000, "endGame");
 
-      // 質量エネルギー燃料の中で最も効率が良いのはストレンジ物質対消滅燃料棒
+      // 質量エネルギー燃料の中で最も効率が良いのはストレンジ対消滅燃料棒
       expect(result.generators[0].fuel?.itemId).toBe(1804);
     });
   });
@@ -270,7 +270,7 @@ describe("増産剤の適用", () => {
         0 // 追加生産ボーナス（人工恒星では出力に適用されない）
       );
 
-      // ストレンジ物質対消滅燃料棒: 基本144MW * 速度倍率2.0 = 288MW
+      // ストレンジ対消滅燃料棒: 基本144MW * 速度倍率2.0 = 288MW
       expect(result.generators[0].actualOutputPerUnit).toBeCloseTo(288000, 1);
       // 200000kW / 288000kW = 1台（切り上げ）
       expect(result.generators[0].count).toBe(1);
@@ -402,7 +402,7 @@ describe("手動選択ロジック", () => {
       const result = calculatePowerGeneration(100000, "earlyGame", "artificialStar", null);
 
       expect(result.generators[0].generator.type).toBe("artificialStar");
-      // 全燃料から最もエネルギー効率が良い燃料（ストレンジ物質対消滅燃料棒）が選択される
+      // 全燃料から最もエネルギー効率が良い燃料（ストレンジ対消滅燃料棒）が選択される
       expect(result.generators[0].fuel?.itemId).toBe(1804);
     });
   });
@@ -416,7 +416,7 @@ describe("手動選択ロジック", () => {
     });
 
     it("発電設備が自動で燃料を手動選択しても、テンプレートの発電設備が使用される", () => {
-      // 後半テンプレート + 発電設備自動 + 重水素燃料棒（手動）
+      // 後半テンプレート + 発電設備自動 + 重陽子燃料棒（手動）
       const result = calculatePowerGeneration(15000, "lateGame", null, "deuteronFuelRod");
 
       // テンプレートからミニ核融合発電所が選択される
@@ -427,7 +427,7 @@ describe("手動選択ロジック", () => {
   });
 
   describe("燃料が1種類しかない場合", () => {
-    it("ミニ核融合発電所は重水素燃料棒のみ使用可能", () => {
+    it("ミニ核融合発電所は重陽子燃料棒のみ使用可能", () => {
       const result = calculatePowerGeneration(15000, "lateGame", "miniFusion");
 
       expect(result.generators[0].fuel?.itemId).toBe(1802);

@@ -19,13 +19,13 @@ test.describe("What-If分析", () => {
 
     // 2. 目標のテキストフィールドに `100` を入力する
     await page.getByTestId("target-quantity-input").fill("100");
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     // 3. すべて修正ボタンを操作
     await page.getByTestId("whatif-fix-all-bottlenecks-button").click();
 
     // 期待値
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 300");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 38");
     await expect(page.getByTestId("whatif-no-bottlenecks-message")).toBeVisible();
   });
 
@@ -33,13 +33,13 @@ test.describe("What-If分析", () => {
     await page.getByTestId("recipe-button-1802").click();
     await page.getByTestId("target-quantity-input").fill("100");
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     // 3. 増産剤最大ボタンを操作する
     await page.getByTestId("whatif-quick-action-proliferator-mk3").click();
 
     // 期待値
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 300");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 38");
     await expect(page.getByTestId("whatif-no-bottlenecks-message")).toBeVisible();
   });
 
@@ -47,14 +47,14 @@ test.describe("What-If分析", () => {
     await page.getByTestId("recipe-button-1802").click();
     await page.getByTestId("target-quantity-input").fill("100");
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     // 電力最小化
     await page.getByTestId("whatif-optimization-goal-power").click();
     await page.getByTestId("whatif-apply-best-button").click();
 
     // 期待値
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 300");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 38");
     await expect(page.getByTestId("whatif-no-bottlenecks-message")).toBeVisible();
   });
 
@@ -62,14 +62,14 @@ test.describe("What-If分析", () => {
     await page.getByTestId("recipe-button-1802").click();
     await page.getByTestId("target-quantity-input").fill("100");
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     // 施設最小化
     await page.getByTestId("whatif-optimization-goal-machines").click();
     await page.getByTestId("whatif-apply-best-button").click();
 
     // 期待値
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 300");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 38");
     await expect(page.getByTestId("whatif-no-bottlenecks-message")).toBeVisible();
   });
 
@@ -77,28 +77,28 @@ test.describe("What-If分析", () => {
     await page.getByTestId("recipe-button-1802").click();
     await page.getByTestId("target-quantity-input").fill("100");
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     // 効率最大化
     await page.getByTestId("whatif-optimization-goal-efficiency").click();
     await page.getByTestId("whatif-apply-best-button").click();
 
     // 期待値
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
   });
 
   test("08-06: 最適化エンジン (バランス)", async ({ page }) => {
     await page.getByTestId("recipe-button-1802").click();
     await page.getByTestId("target-quantity-input").fill("100");
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     // バランス
     await page.getByTestId("whatif-optimization-goal-balanced").click();
     await page.getByTestId("whatif-apply-best-button").click();
 
     // 期待値
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
   });
 
   test("08-07: アップグレードの個別適用 (増産剤Mk.III)", async ({ page }) => {
@@ -106,11 +106,11 @@ test.describe("What-If分析", () => {
     await page.getByTestId("recipe-button-1802").click();
     await page.getByTestId("target-quantity-input").fill("100");
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 600");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");
 
     await page.getByTestId("whatif-scenario-apply-button-proliferator_mk3").click();
 
-    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリックスラボ × 300");
+    await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 38");
     await expect(page.getByTestId("whatif-no-bottlenecks-message")).toBeVisible();
   });
 });

@@ -41,9 +41,9 @@ vi.mock("@/stores/gameDataStore", () => ({
           [2203, { name: "風力タービン" }],
           [2204, { name: "火力発電所" }],
           [2213, { name: "地熱発電所" }],
-          [2205, { name: "ソーラーパネル" }],
+          [2205, { name: "恒星光パネル" }],
           [2211, { name: "ミニ核融合発電所" }],
-          [2210, { name: "人工恒星" }],
+          [2210, { name: "人造恒星" }],
         ]),
         items: new Map([
           [1006, { name: "石炭" }],
@@ -53,8 +53,8 @@ vi.mock("@/stores/gameDataStore", () => ({
           [1120, { name: "水素" }],
           [1128, { name: "燃焼ユニット" }],
           [1129, { name: "爆発ユニット" }],
-          [1801, { name: "水素燃料棒" }],
-          [1130, { name: "結晶性爆発ユニット" }],
+          [1801, { name: "液化水素燃料棒" }],
+          [1130, { name: "クリスタル爆発ユニット" }],
         ]),
       },
     };
@@ -818,7 +818,7 @@ describe("PowerGenerationView", () => {
             generator: {
               type: "solar",
               machineId: 2205,
-              machineName: "ソーラーパネル",
+              machineName: "恒星光パネル",
               baseOutput: 360,
               operatingRate: 1.0,
               isVariableOutput: true,
@@ -835,7 +835,7 @@ describe("PowerGenerationView", () => {
 
       render(<PowerGenerationView calculationResult={mockResult} />);
 
-      expect(screen.getByText(/ソーラーパネル は出力が変動します/)).toBeTruthy();
+      expect(screen.getByText(/恒星光パネル は出力が変動します/)).toBeTruthy();
     });
   });
 

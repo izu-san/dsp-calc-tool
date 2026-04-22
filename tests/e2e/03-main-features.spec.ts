@@ -169,7 +169,7 @@ test.describe("メイン機能の確認", () => {
   });
 
   test("03-06: 増産剤の設定（追加生産が使えないアイテム）", async ({ appPage }) => {
-    // 1. `ストレンジ物質対消滅燃料棒` を選択する
+    // 1. `ストレンジ対消滅燃料棒` を選択する
     await appPage.getByTestId("recipe-button-1612").click();
 
     // 2. 目標のテキストフィールドに `2` を入力する
@@ -290,7 +290,7 @@ test.describe("メイン機能の確認", () => {
     }
   });
 
-  test("03-10: マトリックスラボの設定 (情報マトリックス)", async ({ appPage }) => {
+  test("03-10: マトリクス研究所の設定 (情報マトリクス)", async ({ appPage }) => {
     await appPage.getByTestId("recipe-button-1804").click();
     await appPage.getByTestId("target-quantity-input").fill("10");
 
@@ -300,7 +300,7 @@ test.describe("メイン機能の確認", () => {
 
     await expect(appPage.getByTestId("statistics-total-machines")).toBeVisible();
 
-    // 検証: マトリックスラボのランク（standard / self-evolution）を切り替えて再計算が走ることを確認
+    // 検証: マトリクス研究所のランク（standard / self-evolution）を切り替えて再計算が走ることを確認
     const researchRanks = ["standard", "self-evolution"];
     for (const rank of researchRanks) {
       // baseline: 別のランクを一旦選択してから目的のランクに切り替えることで確実に再計算させる
@@ -431,12 +431,12 @@ test.describe("メイン機能の確認", () => {
     await expect(appPage.getByTestId("recipe-node-1208").first()).toBeVisible();
   });
 
-  test("03-17: レシピ検索機能 (鉄 -> 鋼鉄)", async ({ appPage }) => {
+  test("03-17: レシピ検索機能 (鉄 -> 鋼材)", async ({ appPage }) => {
     await appPage.getByTestId("recipe-search-input").fill("鉄");
     // 追加: 検索結果の件数表示は data-testid 'recipe-search-results-count' を使用
-    // 期待: 件数テキストに「49 レシピ 見つかりました」が含まれること
+    // 期待: 件数テキストに「28 レシピ 見つかりました」が含まれること
     await expect(appPage.getByTestId("recipe-search-results-count")).toHaveText(
-      /49 レシピ 見つかりました/
+      /28 レシピ 見つかりました/
     );
 
     await appPage.getByTestId("recipe-button-1301").click();

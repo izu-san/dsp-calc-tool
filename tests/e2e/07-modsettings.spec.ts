@@ -19,8 +19,8 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await appPage.getByTestId("recipe-button-1101").click();
     await appPage.getByTestId("target-quantity-input").fill("99");
 
-    // デフォルトは 99.0/s であることを確認
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("99.0/s");
+    // デフォルトは 24.8/s であることを確認
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("24.8/s");
 
     // 1. Ctrl+Shift+Mを押下する（単一コマンドで安定化）
     await appPage.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
@@ -57,7 +57,7 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await appPage.getByTestId("recipe-button-1101").click();
     await appPage.getByTestId("target-quantity-input").fill("99");
 
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("99.0/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("24.8/s");
 
     // 1-2. モッド画面を開く
     await appPage.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
@@ -85,9 +85,9 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     });
     await appPage.getByTestId("mod-settings-close-button").click();
 
-    // デフォルトの 99.0/s であることを確認
+    // デフォルトの 24.8/s であることを確認
     await appPage.reload();
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("99.0/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("24.8/s");
   });
 
   test("07-05: カスタム増産剤倍率を適用", async ({ appPage }) => {
@@ -98,11 +98,11 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     // Mk.IIIの生産速度上昇
     await appPage.getByTestId("proliferator-type-button-mk3").click();
     await appPage.getByTestId("proliferator-mode-button-speed").click();
-    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク製錬所 × 50");
+    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク溶鉱炉 × 13");
 
     // Mk.IIIの追加生産
     await appPage.getByTestId("proliferator-mode-button-production").click();
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("79.2/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("19.8/s");
 
     // 1. Ctrl+Shift+Mを押下する（単一コマンドで安定化）
     await appPage.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
@@ -120,11 +120,11 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     // Mk.IIIの生産速度上昇
     await appPage.getByTestId("proliferator-type-button-mk3").click();
     await appPage.getByTestId("proliferator-mode-button-speed").click();
-    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク製錬所 × 25");
+    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク溶鉱炉 × 7");
 
     // Mk.IIIの追加生産
     await appPage.getByTestId("proliferator-mode-button-production").click();
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("49.5/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("12.4/s");
   });
 
   test("07-06: カスタム増産剤倍率をリセット", async ({ appPage }) => {
@@ -135,11 +135,11 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     // Mk.IIIの生産速度上昇
     await appPage.getByTestId("proliferator-type-button-mk3").click();
     await appPage.getByTestId("proliferator-mode-button-speed").click();
-    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク製錬所 × 50");
+    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク溶鉱炉 × 13");
 
     // Mk.IIIの追加生産
     await appPage.getByTestId("proliferator-mode-button-production").click();
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("79.2/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("19.8/s");
 
     // 1. Ctrl+Shift+Mを押下する
     await appPage.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
@@ -157,11 +157,11 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     // Mk.IIIの生産速度上昇
     await appPage.getByTestId("proliferator-type-button-mk3").click();
     await appPage.getByTestId("proliferator-mode-button-speed").click();
-    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク製錬所 × 25");
+    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク溶鉱炉 × 7");
 
     // Mk.IIIの追加生産
     await appPage.getByTestId("proliferator-mode-button-production").click();
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("49.5/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("12.4/s");
 
     // 1. Ctrl+Shift+Mを押下する
     await appPage.getByTestId("mod-settings-trigger").waitFor({ state: "attached" });
@@ -186,10 +186,10 @@ test.describe("ModSettings とカスタム XML アップロード", () => {
     await appPage.getByTestId("target-quantity-input").fill("99");
     await appPage.getByTestId("proliferator-type-button-mk3").click();
     await appPage.getByTestId("proliferator-mode-button-speed").click();
-    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク製錬所 × 50");
+    await expect(appPage.getByTestId("machine-count-1101")).toHaveText("アーク溶鉱炉 × 13");
 
     // Mk.IIIの追加生産
     await appPage.getByTestId("proliferator-mode-button-production").click();
-    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("79.2/s");
+    await expect(appPage.getByTestId("recipe-input-rate-1101-1001")).toHaveText("19.8/s");
   });
 });
