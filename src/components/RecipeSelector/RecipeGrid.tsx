@@ -70,9 +70,8 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
     return <div className="aspect-square bg-dark-800/30 rounded border border-dark-600/50" />;
   }
 
-  // Determine the icon ID based on recipe type
-  // Explicit recipes use recipe SID, implicit recipes use first result item ID
-  const itemId = recipe.Explicit ? recipe.SID : recipe.Results[0]?.id || recipe.SID;
+  // Recipe grid cells represent recipes, so use recipe SID for the icon.
+  const itemId = recipe.SID;
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -120,7 +119,7 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
         title={recipe.name}
       >
         <div className="w-full h-full flex items-center justify-center p-1">
-          <ItemIcon itemId={itemId} alt={recipe.name} preferRecipes={recipe.Explicit} size="auto" />
+          <ItemIcon itemId={itemId} alt={recipe.name} preferRecipes={true} size="auto" />
         </div>
       </button>
     </div>

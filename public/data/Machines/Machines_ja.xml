@@ -2,12 +2,14 @@
 <ArrayOfMachine xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Machine>
     <id>2011</id>
-    <name>ソーターMK.I</name>
+    <name>仕分機</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>300</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -20,12 +22,14 @@
   </Machine>
   <Machine>
     <id>2012</id>
-    <name>ソーターMK.II</name>
+    <name>高速仕分機</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -38,12 +42,14 @@
   </Machine>
   <Machine>
     <id>2013</id>
-    <name>ソーターMK.III</name>
+    <name>超速仕分機</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1200</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -56,12 +62,14 @@
   </Machine>
   <Machine>
     <id>2014</id>
-    <name>集積ソーター</name>
+    <name>集積仕分機</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -80,6 +88,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -92,12 +102,14 @@
   </Machine>
   <Machine>
     <id>2030</id>
-    <name>トラフィックモニター</name>
+    <name>通過量計測機</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -116,6 +128,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1500</workEnergyPerTick>
     <idleEnergyPerTick>75</idleEnergyPerTick>
@@ -128,12 +142,14 @@
   </Machine>
   <Machine>
     <id>2107</id>
-    <name>物流配送器</name>
+    <name>物流配送機</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -146,12 +162,14 @@
   </Machine>
   <Machine>
     <id>2303</id>
-    <name>組立機 Mk.I</name>
+    <name>組立機 Mk.I</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>7500</assemblerSpeed>
     <workEnergyPerTick>4500</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -164,12 +182,14 @@
   </Machine>
   <Machine>
     <id>2304</id>
-    <name>組立機 Mk.II</name>
+    <name>組立機 Mk.II</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>9000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -182,12 +202,14 @@
   </Machine>
   <Machine>
     <id>2305</id>
-    <name>組立機 Mk.III</name>
+    <name>組立機 Mk.III</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>15000</assemblerSpeed>
     <workEnergyPerTick>18000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -206,9 +228,31 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>30000</assemblerSpeed>
     <workEnergyPerTick>45000</workEnergyPerTick>
     <idleEnergyPerTick>900</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2401</id>
+    <name>ホログラムビーコン</name>
+    <count>0</count>
+    <Type>Decoration</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2000</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
     <genEnergyPerTick>0</genEnergyPerTick>
     <useFuelPerTick>0</useFuelPerTick>
@@ -224,6 +268,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -242,6 +288,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -260,6 +308,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -278,6 +328,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -290,12 +342,14 @@
   </Machine>
   <Machine>
     <id>2301</id>
-    <name>採掘機</name>
+    <name>採鉱機</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>7000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -308,12 +362,14 @@
   </Machine>
   <Machine>
     <id>2316</id>
-    <name>高度採掘機</name>
+    <name>大型採鉱機</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>49000</workEnergyPerTick>
     <idleEnergyPerTick>2800</idleEnergyPerTick>
@@ -326,12 +382,14 @@
   </Machine>
   <Machine>
     <id>2306</id>
-    <name>ウォーターポンプ</name>
+    <name>抽水所</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>5000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -344,12 +402,14 @@
   </Machine>
   <Machine>
     <id>2302</id>
-    <name>アーク製錬所</name>
+    <name>アーク溶鉱炉</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>6000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -362,12 +422,14 @@
   </Machine>
   <Machine>
     <id>2315</id>
-    <name>プレーン製錬所</name>
+    <name>プレーン溶鉱炉</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>20000</assemblerSpeed>
     <workEnergyPerTick>24000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
@@ -380,12 +442,14 @@
   </Machine>
   <Machine>
     <id>2319</id>
-    <name>負エントロピー製錬所</name>
+    <name>負エントロピー溶鉱炉</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>30000</assemblerSpeed>
     <workEnergyPerTick>48000</workEnergyPerTick>
     <idleEnergyPerTick>1600</idleEnergyPerTick>
@@ -398,12 +462,14 @@
   </Machine>
   <Machine>
     <id>2307</id>
-    <name>オイル抽出器</name>
+    <name>原油汲取所</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>14000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -416,12 +482,14 @@
   </Machine>
   <Machine>
     <id>2308</id>
-    <name>製油所</name>
+    <name>原油精製所</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>16000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -434,12 +502,14 @@
   </Machine>
   <Machine>
     <id>2309</id>
-    <name>化学プラント</name>
+    <name>化学工場</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -452,12 +522,14 @@
   </Machine>
   <Machine>
     <id>2317</id>
-    <name>量子化学プラント</name>
+    <name>量子化学工場</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>20000</assemblerSpeed>
     <workEnergyPerTick>36000</workEnergyPerTick>
     <idleEnergyPerTick>600</idleEnergyPerTick>
@@ -470,12 +542,14 @@
   </Machine>
   <Machine>
     <id>2314</id>
-    <name>分留器</name>
+    <name>分留施設</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -488,12 +562,14 @@
   </Machine>
   <Machine>
     <id>2205</id>
-    <name>ソーラーパネル</name>
+    <name>恒星光パネル</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -506,12 +582,14 @@
   </Machine>
   <Machine>
     <id>2311</id>
-    <name>EMレールイジェクタ</name>
+    <name>電磁軌道射出機</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -524,12 +602,14 @@
   </Machine>
   <Machine>
     <id>2208</id>
-    <name>γ線レシーバー</name>
+    <name>放射線レシーバー</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -548,6 +628,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>300000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -560,12 +642,14 @@
   </Machine>
   <Machine>
     <id>2209</id>
-    <name>エネルギー交換器</name>
+    <name>エネルギー中枢</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -578,12 +662,14 @@
   </Machine>
   <Machine>
     <id>2310</id>
-    <name>小型粒子衝突型加速器</name>
+    <name>ミニ粒子衝突型加速機</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
@@ -596,12 +682,14 @@
   </Machine>
   <Machine>
     <id>2210</id>
-    <name>人工恒星</name>
+    <name>人造恒星</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -620,6 +708,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -638,6 +728,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1000000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -650,12 +742,14 @@
   </Machine>
   <Machine>
     <id>2901</id>
-    <name>マトリックスラボ</name>
+    <name>マトリクス研究所</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>8000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -668,12 +762,14 @@
   </Machine>
   <Machine>
     <id>2902</id>
-    <name>自己進化ラボ</name>
+    <name>自己進化研究所</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>32000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
@@ -686,12 +782,14 @@
   </Machine>
   <Machine>
     <id>3001</id>
-    <name>ガウスタレット</name>
+    <name>ガウス砲台</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>3500</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -704,12 +802,14 @@
   </Machine>
   <Machine>
     <id>3002</id>
-    <name>レーザータレット</name>
+    <name>高周波レーザータワー</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>50000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
@@ -722,12 +822,14 @@
   </Machine>
   <Machine>
     <id>3003</id>
-    <name>炸裂砲</name>
+    <name>爆縮キャノン砲</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>12500</workEnergyPerTick>
     <idleEnergyPerTick>500</idleEnergyPerTick>
@@ -740,12 +842,14 @@
   </Machine>
   <Machine>
     <id>3004</id>
-    <name>プラズマタレット</name>
+    <name>磁化プラズマ砲</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>28000</workEnergyPerTick>
     <idleEnergyPerTick>1400</idleEnergyPerTick>
@@ -758,12 +862,14 @@
   </Machine>
   <Machine>
     <id>3005</id>
-    <name>ミサイルタレット</name>
+    <name>ミサイル防衛タワー</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>10000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -776,12 +882,14 @@
   </Machine>
   <Machine>
     <id>3006</id>
-    <name>ジャミングタワー</name>
+    <name>ジャマータワー</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>20000</workEnergyPerTick>
     <idleEnergyPerTick>1500</idleEnergyPerTick>
@@ -800,6 +908,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>400000</workEnergyPerTick>
     <idleEnergyPerTick>200000</idleEnergyPerTick>
@@ -812,12 +922,14 @@
   </Machine>
   <Machine>
     <id>3009</id>
-    <name>戦場分析基地</name>
+    <name>戦場解析基地</name>
     <count>0</count>
     <Type>Defense</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>40000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -830,12 +942,14 @@
   </Machine>
   <Machine>
     <id>3010</id>
-    <name>近距離プラズマタレット</name>
+    <name>近距離プラズマタワー</name>
     <count>0</count>
     <Type>Turret</Type>
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>70000</workEnergyPerTick>
     <idleEnergyPerTick>35000</idleEnergyPerTick>

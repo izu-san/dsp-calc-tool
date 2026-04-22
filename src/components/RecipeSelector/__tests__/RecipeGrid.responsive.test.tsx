@@ -85,6 +85,35 @@ describe("RecipeGrid Responsive Design", () => {
     });
   });
 
+  it("should use recipe SID icons for implicit recipes", () => {
+    const implicitRecipe = createSingleOutputRecipe({
+      SID: 2410,
+      name: "Holo Beacon",
+      gridIndex: "1201",
+      explicit: false,
+      type: "Assemble",
+      inputId: 1101,
+      inputName: "Iron Ingot",
+      inputCount: 1,
+      outputId: 2401,
+      outputName: "Holo Beacon",
+      outputCount: 4,
+    });
+
+    render(
+      <RecipeGrid
+        recipes={[implicitRecipe]}
+        tab={1}
+        onRecipeSelect={vi.fn()}
+        selectedRecipeId={undefined}
+      />
+    );
+
+    const icon = screen.getByTestId("item-icon");
+    expect(icon).toHaveAttribute("data-item-id", "2410");
+    expect(icon).toHaveAttribute("data-prefer-recipes", "true");
+  });
+
   it("should maintain aspect ratio for recipe cells", () => {
     const { container } = render(
       <RecipeGrid

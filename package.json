@@ -1,6 +1,6 @@
 {
   "name": "DSP Recipe Calculator",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "type": "module",
   "license": "MIT",
   "packageManager": "pnpm@9.15.0",
@@ -88,6 +88,7 @@
     "postcss": "^8.5.10",
     "prettier": "^3.8.3",
     "sharp": "^0.34.5",
+    "spritesmith": "^3.5.1",
     "tailwindcss": "^4.2.2",
     "tsx": "^4.21.0",
     "typescript": "~6.0.3",

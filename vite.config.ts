@@ -1,5 +1,4 @@
 import react from "@vitejs/plugin-react";
-import { execSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
 import { defineConfig } from "vitest/config";
@@ -40,45 +39,9 @@ function isValidVersion(version: unknown): version is string {
 }
 
 /**
- * Gitの最新タグからバージョンを取得（フォールバック付き）
- * CI/CD環境や shallow clone でも安全に動作するように設計
+ * package.jsonからアプリバージョンを取得
  */
 function getAppVersion(): string {
-  // テスト環境では execSync を避けて package.json のバージョンを直接使用
-  // これによりテスト実行時の副作用を防ぐ
-  // process.env.VITEST は vitest が自動的に設定する環境変数（GitHub ActionsのCI環境でも設定される）
-  // process.env.NODE_ENV === "test" もチェックして、より確実にテスト環境を検出
-  const isTestEnv = process.env.NODE_ENV === "test" || process.env.VITEST !== undefined;
-
-  if (isTestEnv) {
-    if (isValidVersion(packageJson.version)) {
-      return packageJson.version;
-    }
-    return "0.0.0";
-  }
-
-  // まず Git タグから取得を試みる
-  try {
-    const latestTag = execSync("git describe --tags --abbrev=0", {
-      encoding: "utf-8",
-      stdio: ["ignore", "pipe", "ignore"],
-    })
-      .trim()
-      .replace(/^v/, ""); // vプレフィックスを除去
-
-    if (isValidVersion(latestTag)) {
-      return latestTag;
-    }
-
-    // Gitタグは取得できたが、形式が無効な場合
-    console.warn(`Invalid Git tag format "${latestTag}", falling back to package.json version`);
-  } catch (error) {
-    // Gitタグが取得できない場合（shallow clone、タグなし、git未使用など）はフォールバック
-    // エラーは警告として記録するが、ビルドは続行する
-    console.warn("Failed to get Git tag, falling back to package.json version:", error);
-  }
-
-  // フォールバック: package.jsonのバージョンを使用
   if (isValidVersion(packageJson.version)) {
     return packageJson.version;
   }

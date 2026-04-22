@@ -8,6 +8,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>300</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -26,6 +28,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -44,6 +48,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1200</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -62,6 +68,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -80,6 +88,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -98,6 +108,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -116,6 +128,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1500</workEnergyPerTick>
     <idleEnergyPerTick>75</idleEnergyPerTick>
@@ -134,6 +148,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -152,6 +168,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>7500</assemblerSpeed>
     <workEnergyPerTick>4500</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -170,6 +188,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>9000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -188,6 +208,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>15000</assemblerSpeed>
     <workEnergyPerTick>18000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -206,9 +228,31 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>30000</assemblerSpeed>
     <workEnergyPerTick>45000</workEnergyPerTick>
     <idleEnergyPerTick>900</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2401</id>
+    <name>Holo Beacon</name>
+    <count>0</count>
+    <Type>Decoration</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2000</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
     <genEnergyPerTick>0</genEnergyPerTick>
     <useFuelPerTick>0</useFuelPerTick>
@@ -224,6 +268,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -242,6 +288,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -260,6 +308,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -278,6 +328,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -296,6 +348,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>7000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -314,6 +368,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>49000</workEnergyPerTick>
     <idleEnergyPerTick>2800</idleEnergyPerTick>
@@ -332,6 +388,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>5000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -350,6 +408,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>6000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -368,6 +428,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>20000</assemblerSpeed>
     <workEnergyPerTick>24000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
@@ -386,6 +448,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>30000</assemblerSpeed>
     <workEnergyPerTick>48000</workEnergyPerTick>
     <idleEnergyPerTick>1600</idleEnergyPerTick>
@@ -404,6 +468,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>14000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -422,6 +488,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>16000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -440,6 +508,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
@@ -458,6 +528,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>20000</assemblerSpeed>
     <workEnergyPerTick>36000</workEnergyPerTick>
     <idleEnergyPerTick>600</idleEnergyPerTick>
@@ -476,6 +548,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -494,6 +568,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -512,6 +588,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -530,6 +608,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -548,6 +628,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>300000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -566,6 +648,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -584,6 +668,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
@@ -602,6 +688,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
@@ -620,6 +708,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -638,6 +728,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1000000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -656,6 +748,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>8000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
@@ -674,6 +768,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>32000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
@@ -692,6 +788,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>3500</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
@@ -710,6 +808,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>50000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
@@ -728,6 +828,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>12500</workEnergyPerTick>
     <idleEnergyPerTick>500</idleEnergyPerTick>
@@ -746,6 +848,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>28000</workEnergyPerTick>
     <idleEnergyPerTick>1400</idleEnergyPerTick>
@@ -764,6 +868,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>10000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
@@ -782,6 +888,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>20000</workEnergyPerTick>
     <idleEnergyPerTick>1500</idleEnergyPerTick>
@@ -800,6 +908,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>400000</workEnergyPerTick>
     <idleEnergyPerTick>200000</idleEnergyPerTick>
@@ -818,6 +928,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>40000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
@@ -836,6 +948,8 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>70000</workEnergyPerTick>
     <idleEnergyPerTick>35000</idleEnergyPerTick>

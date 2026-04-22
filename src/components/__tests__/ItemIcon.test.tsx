@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { ItemIcon } from "../ItemIcon";
 import { getDataPath } from "../../utils/paths";
 
@@ -57,7 +57,14 @@ describe("ItemIcon", () => {
       expect(img).toHaveAttribute("src", getDataPath("data/Items/Icons/2001.webp"));
     });
 
-    it("エラー時にフォールバック処理が動作する", () => {
+    it("preferRecipesがtrueの場合はRecipes folderを最初に使う", () => {
+      render(<ItemIcon itemId={2410} preferRecipes={true} alt="Holo Beacon" />);
+
+      const img = screen.getByAltText("Holo Beacon");
+      expect(img).toHaveAttribute("src", getDataPath("data/Recipes/Icons/2410.webp"));
+    });
+
+    it("エラー時にフォールバック処理が動作する", async () => {
       const { container } = render(<ItemIcon itemId={9999} alt="Unknown" />);
       const img = container.querySelector("img") as HTMLImageElement;
 
@@ -68,8 +75,27 @@ describe("ItemIcon", () => {
       const event = new Event("error");
       img.dispatchEvent(event);
 
-      // WebP対応により、機械フォルダのWebPパスが設定されている
-      expect(img.src).toContain(getDataPath("data/Machines/Icons/9999.webp"));
+      await waitFor(() => {
+        expect(img.src).toContain(getDataPath("data/Machines/Icons/9999.webp"));
+      });
+    });
+
+    it("エラー時にpictureのsourceも次のフォールバック先へ切り替わる", async () => {
+      const { container } = render(<ItemIcon itemId={2401} alt="Holo Beacon" />);
+      const img = container.querySelector("img") as HTMLImageElement;
+      const picture = img.parentElement;
+      const webpSource = picture?.querySelector('source[type="image/webp"]');
+      const pngSource = picture?.querySelector('source[type="image/png"]');
+
+      expect(webpSource).toHaveAttribute("srcset", getDataPath("data/Items/Icons/2401.webp"));
+
+      img.dispatchEvent(new Event("error"));
+
+      await waitFor(() => {
+        expect(webpSource).toHaveAttribute("srcset", getDataPath("data/Machines/Icons/2401.webp"));
+        expect(pngSource).toHaveAttribute("srcset", getDataPath("data/Machines/Icons/2401.png"));
+        expect(img.src).toContain(getDataPath("data/Machines/Icons/2401.webp"));
+      });
     });
 
     it("altテキストが空の場合でもレンダリングできる", () => {
