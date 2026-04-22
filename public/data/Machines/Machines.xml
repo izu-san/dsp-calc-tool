@@ -8,12 +8,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>300</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2012</id>
@@ -23,12 +28,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2013</id>
@@ -38,12 +48,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1200</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2014</id>
@@ -53,12 +68,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2040</id>
@@ -68,12 +88,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>2400</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2030</id>
@@ -83,12 +108,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>600</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2313</id>
@@ -98,12 +128,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1500</workEnergyPerTick>
     <idleEnergyPerTick>75</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2107</id>
@@ -113,12 +148,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2303</id>
@@ -128,12 +168,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>7500</assemblerSpeed>
     <workEnergyPerTick>4500</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2304</id>
@@ -143,12 +188,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>9000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2305</id>
@@ -158,12 +208,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>15000</assemblerSpeed>
     <workEnergyPerTick>18000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2318</id>
@@ -173,12 +228,117 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>30000</assemblerSpeed>
     <workEnergyPerTick>45000</workEnergyPerTick>
     <idleEnergyPerTick>900</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2401</id>
+    <name>Holo Beacon</name>
+    <count>0</count>
+    <Type>Decoration</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>2000</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>true</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2203</id>
+    <name>Wind Turbine</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>5000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2204</id>
+    <name>Thermal Power Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>36000</genEnergyPerTick>
+    <useFuelPerTick>45000</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2211</id>
+    <name>Mini Fusion Power Plant</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>250000</genEnergyPerTick>
+    <useFuelPerTick>250000</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2213</id>
+    <name>Geothermal Power Station</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>80000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2301</id>
@@ -188,12 +348,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>7000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2316</id>
@@ -203,12 +368,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>49000</workEnergyPerTick>
     <idleEnergyPerTick>2800</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2306</id>
@@ -218,12 +388,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>5000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2302</id>
@@ -233,12 +408,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>6000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2315</id>
@@ -248,12 +428,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>20000</assemblerSpeed>
     <workEnergyPerTick>24000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2319</id>
@@ -263,12 +448,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>30000</assemblerSpeed>
     <workEnergyPerTick>48000</workEnergyPerTick>
     <idleEnergyPerTick>1600</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2307</id>
@@ -278,12 +468,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>14000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2308</id>
@@ -293,12 +488,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>16000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2309</id>
@@ -308,12 +508,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2317</id>
@@ -323,12 +528,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>20000</assemblerSpeed>
     <workEnergyPerTick>36000</workEnergyPerTick>
     <idleEnergyPerTick>600</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2314</id>
@@ -338,12 +548,37 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>12000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2205</id>
+    <name>Solar Panel</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>6000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2311</id>
@@ -353,12 +588,37 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>30000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2208</id>
+    <name>Ray Receiver</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>100000</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2312</id>
@@ -368,12 +628,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>300000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2209</id>
@@ -383,12 +648,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>0</workEnergyPerTick>
     <idleEnergyPerTick>0</idleEnergyPerTick>
     <exchangeEnergyPerTick>900000</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>false</isPowerConsumer>
     <isPowerExchanger>true</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2310</id>
@@ -398,12 +668,37 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>10000</assemblerSpeed>
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
+  </Machine>
+  <Machine>
+    <id>2210</id>
+    <name>Artificial Star</name>
+    <count>0</count>
+    <Type>Production</Type>
+    <miningFrom />
+    <produceFrom />
+    <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
+    <workEnergyPerTick>0</workEnergyPerTick>
+    <idleEnergyPerTick>0</idleEnergyPerTick>
+    <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>1200000</genEnergyPerTick>
+    <useFuelPerTick>1200000</useFuelPerTick>
+    <isPowerConsumer>false</isPowerConsumer>
+    <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>true</isPowerGen>
   </Machine>
   <Machine>
     <id>2103</id>
@@ -413,12 +708,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>200000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2104</id>
@@ -428,12 +728,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>1000000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2901</id>
@@ -443,12 +748,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
-    <assemblerSpeed>10000</assemblerSpeed>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>8000</workEnergyPerTick>
     <idleEnergyPerTick>200</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>2902</id>
@@ -458,12 +768,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
-    <assemblerSpeed>30000</assemblerSpeed>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
+    <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>32000</workEnergyPerTick>
     <idleEnergyPerTick>800</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3001</id>
@@ -473,12 +788,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>3500</workEnergyPerTick>
     <idleEnergyPerTick>150</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3002</id>
@@ -488,12 +808,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>50000</workEnergyPerTick>
     <idleEnergyPerTick>2000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3003</id>
@@ -503,12 +828,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>12500</workEnergyPerTick>
     <idleEnergyPerTick>500</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3004</id>
@@ -518,12 +848,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>28000</workEnergyPerTick>
     <idleEnergyPerTick>1400</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3005</id>
@@ -533,12 +868,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>10000</workEnergyPerTick>
     <idleEnergyPerTick>300</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3006</id>
@@ -548,12 +888,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>20000</workEnergyPerTick>
     <idleEnergyPerTick>1500</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3008</id>
@@ -563,12 +908,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>400000</workEnergyPerTick>
     <idleEnergyPerTick>200000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3009</id>
@@ -578,12 +928,17 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>40000</workEnergyPerTick>
     <idleEnergyPerTick>1000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
   <Machine>
     <id>3010</id>
@@ -593,11 +948,16 @@
     <miningFrom />
     <produceFrom />
     <isRaw>false</isRaw>
+    <isFluid>false</isFluid>
+    <HeatValue>0</HeatValue>
     <assemblerSpeed>0</assemblerSpeed>
     <workEnergyPerTick>70000</workEnergyPerTick>
     <idleEnergyPerTick>35000</idleEnergyPerTick>
     <exchangeEnergyPerTick>0</exchangeEnergyPerTick>
+    <genEnergyPerTick>0</genEnergyPerTick>
+    <useFuelPerTick>0</useFuelPerTick>
     <isPowerConsumer>true</isPowerConsumer>
     <isPowerExchanger>false</isPowerExchanger>
+    <isPowerGen>false</isPowerGen>
   </Machine>
 </ArrayOfMachine>

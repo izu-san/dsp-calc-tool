@@ -54,16 +54,8 @@ describe("useSpriteData", () => {
     expect(mockFetch).toHaveBeenCalledWith(getDataPath("data/sprites/items-sprite.json"));
   });
 
-  it("Recipes スプライトからアイコンデータを取得できる", async () => {
+  it("preferRecipes=true の場合は Recipes スプライトからアイコンデータを取得できる", async () => {
     const { useSpriteData } = await import("../useSpriteData");
-
-    const mockItemsSprite = {
-      width: 1146,
-      height: 1064,
-      coordinates: {
-        "1001": { x: 0, y: 0, width: 80, height: 80 },
-      },
-    };
 
     const mockRecipesSprite = {
       width: 1064,
@@ -73,19 +65,12 @@ describe("useSpriteData", () => {
       },
     };
 
-    // Items スプライトには存在しない
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockItemsSprite,
-    });
-
-    // Recipes スプライトに存在する
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockRecipesSprite,
     });
 
-    const { result } = renderHook(() => useSpriteData(5001));
+    const { result } = renderHook(() => useSpriteData(5001, true));
 
     await waitFor(() => {
       expect(result.current).not.toBeNull();
@@ -97,10 +82,56 @@ describe("useSpriteData", () => {
       spriteData: mockRecipesSprite,
     });
 
-    // Items と Recipes の両方がリクエストされる（Itemsにない場合）
-    expect(mockFetch).toHaveBeenCalledTimes(2);
-    expect(mockFetch).toHaveBeenNthCalledWith(1, getDataPath("data/sprites/items-sprite.json"));
-    expect(mockFetch).toHaveBeenNthCalledWith(2, getDataPath("data/sprites/recipes-sprite.json"));
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(mockFetch).toHaveBeenCalledWith(getDataPath("data/sprites/recipes-sprite.json"));
+  });
+
+  it("preferRecipes=false の場合は Recipes スプライトへフォールバックしない", async () => {
+    const { useSpriteData } = await import("../useSpriteData");
+
+    const mockItemsSprite = {
+      width: 1146,
+      height: 1064,
+      coordinates: {},
+    };
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockItemsSprite,
+    });
+
+    const { result } = renderHook(() => useSpriteData(5001));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    expect(result.current).toBeNull();
+    expect(mockFetch).toHaveBeenCalledWith(getDataPath("data/sprites/items-sprite.json"));
+    expect(mockFetch).not.toHaveBeenCalledWith(getDataPath("data/sprites/recipes-sprite.json"));
+  });
+
+  it("アイテム/機械IDとレシピSIDが衝突しても preferRecipes=false では Recipes 座標を返さない", async () => {
+    const { useSpriteData } = await import("../useSpriteData");
+
+    const mockItemsSprite = {
+      width: 1146,
+      height: 1064,
+      coordinates: {},
+    };
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockItemsSprite,
+    });
+
+    const { result } = renderHook(() => useSpriteData(2401));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    expect(result.current).toBeNull();
   });
 
   it("Machines スプライトへのリクエストが存在しない（Items と統合されている）", async () => {
@@ -145,31 +176,18 @@ describe("useSpriteData", () => {
       },
     };
 
-    const mockRecipesSprite = {
-      width: 1064,
-      height: 1064,
-      coordinates: {
-        "5001": { x: 0, y: 0, width: 80, height: 80 },
-      },
-    };
-
     mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockItemsSprite,
     });
 
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockRecipesSprite,
-    });
-
     const { result } = renderHook(() => useSpriteData(9999));
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
-    // どのスプライトにも存在しない場合はnull
+    // Items スプライトに存在しない場合はnull
     expect(result.current).toBeNull();
   });
 
@@ -187,36 +205,36 @@ describe("useSpriteData", () => {
     expect(result.current).toBeNull();
   });
 
-  it("スプライトファイルが404の場合は次のスプライトを試す", async () => {
+  it("preferRecipes=true で Recipes スプライトが404の場合は Items スプライトを試す", async () => {
     const { useSpriteData } = await import("../useSpriteData");
 
-    const mockRecipesSprite = {
-      width: 1064,
+    const mockItemsSprite = {
+      width: 1146,
       height: 1064,
       coordinates: {
         "5001": { x: 0, y: 0, width: 80, height: 80 },
       },
     };
 
-    // Items スプライトが404
+    // Recipes スプライトが404
     mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 404,
     });
 
-    // Recipes スプライトは成功
+    // Items スプライトは成功
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => mockRecipesSprite,
+      json: async () => mockItemsSprite,
     });
 
-    const { result } = renderHook(() => useSpriteData(5001));
+    const { result } = renderHook(() => useSpriteData(5001, true));
 
     await waitFor(() => {
       expect(result.current).not.toBeNull();
     });
 
-    expect(result.current?.spriteUrl).toBe(getDataPath("data/sprites/recipes-sprite.webp"));
+    expect(result.current?.spriteUrl).toBe(getDataPath("data/sprites/items-sprite.webp"));
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 

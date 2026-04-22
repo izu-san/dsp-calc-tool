@@ -14,21 +14,27 @@ interface SpriteResult {
 }
 
 async function generateSprite(
-  inputDir: string,
+  inputDirs: string | string[],
   outputImage: string,
   outputJson: string,
   name: string
 ): Promise<void> {
   console.log(`🎨 Generating ${name} sprite...`);
 
-  // すべてのPNGファイルを取得
-  const iconFiles = fs
-    .readdirSync(inputDir)
-    .filter(f => f.endsWith(".png"))
-    .map(f => path.join(inputDir, f));
+  // すべてのPNGファイルを取得。同名IDは先に指定したディレクトリを優先する。
+  const dirs = Array.isArray(inputDirs) ? inputDirs : [inputDirs];
+  const iconFileMap = new Map<string, string>();
+  for (const inputDir of dirs) {
+    for (const fileName of fs.readdirSync(inputDir).filter(f => f.endsWith(".png"))) {
+      if (!iconFileMap.has(fileName)) {
+        iconFileMap.set(fileName, path.join(inputDir, fileName));
+      }
+    }
+  }
+  const iconFiles = Array.from(iconFileMap.values());
 
   if (iconFiles.length === 0) {
-    console.warn(`⚠️  No PNG files found in ${inputDir}`);
+    console.warn(`⚠️  No PNG files found in ${dirs.join(", ")}`);
     return;
   }
 
@@ -93,10 +99,9 @@ async function main() {
   const publicDir = path.join(__dirname, "../public/data");
 
   // Items スプライト（Items + Machines を統合）
-  // Note: Items/Icons と Machines/Icons は同一のアイコンセットなので、
-  // Items スプライトのみを生成し、両方で共有する
+  // Items/Icons を優先し、Items に存在しない Machines/Icons を追加する
   await generateSprite(
-    path.join(publicDir, "Items/Icons"),
+    [path.join(publicDir, "Items/Icons"), path.join(publicDir, "Machines/Icons")],
     path.join(publicDir, "sprites/items-sprite.png"),
     path.join(publicDir, "sprites/items-sprite.json"),
     "Items (used for both Items and Machines)"
