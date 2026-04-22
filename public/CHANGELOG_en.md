@@ -1,3 +1,9 @@
+## [0.0.6] - 2026-04-22
+
+### Added
+
+- Added support for the latest in-game version
+
 ## [0.0.5] - 2026-04-21
 
 ### Added

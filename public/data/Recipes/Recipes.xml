@@ -13,15 +13,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1101</GridIndex>
@@ -32,7 +36,7 @@
     <name>Magnet</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>90</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1001</id>
@@ -40,15 +44,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1102</id>
         <name>Magnet</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1201</GridIndex>
@@ -67,15 +75,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1102</GridIndex>
@@ -94,15 +106,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1105</GridIndex>
@@ -121,15 +137,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1401</GridIndex>
@@ -145,9 +165,11 @@
       <Item>
         <id>1102</id>
         <name>Magnet</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
@@ -155,15 +177,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1202</GridIndex>
@@ -174,14 +200,16 @@
     <name>Wind Turbine</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
@@ -189,22 +217,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2203</id>
         <name>Wind Turbine</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2104</GridIndex>
@@ -220,9 +254,11 @@
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
@@ -230,15 +266,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2201</id>
         <name>Tesla Tower</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2101</GridIndex>
@@ -249,7 +289,7 @@
     <name>Electromagnetic Matrix</name>
     <Type>Research</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1202</id>
@@ -257,6 +297,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
@@ -264,15 +306,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>6001</id>
         <name>Electromagnetic Matrix</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1801</GridIndex>
@@ -283,44 +329,54 @@
     <name>Matrix Lab</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2901</id>
         <name>Matrix Lab</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2408</GridIndex>
@@ -331,23 +387,27 @@
     <name>Prism</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1111</id>
         <name>Prism</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1305</GridIndex>
@@ -358,30 +418,36 @@
     <name>Plasma Exciter</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1111</id>
         <name>Prism</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1501</GridIndex>
@@ -392,7 +458,7 @@
     <name>Wireless Power Tower</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>2201</id>
@@ -400,22 +466,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2202</id>
         <name>Wireless Power Tower</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2102</GridIndex>
@@ -426,44 +498,54 @@
     <name>Oil Extractor</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2307</id>
         <name>Oil Extractor</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2308</GridIndex>
@@ -474,44 +556,54 @@
     <name>Oil Refinery</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2308</id>
         <name>Oil Refinery</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2309</GridIndex>
@@ -522,30 +614,36 @@
     <name>Plasma Refining</name>
     <Type>Refine</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1007</id>
         <name>Crude Oil</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1114</id>
         <name>Refined Oil</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1107</GridIndex>
@@ -556,23 +654,27 @@
     <name>Energetic Graphite</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1006</id>
         <name>Coal</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1109</id>
         <name>Energetic Graphite</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1106</GridIndex>
@@ -583,30 +685,36 @@
     <name>Energy Matrix</name>
     <Type>Research</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1109</id>
         <name>Energetic Graphite</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>6002</id>
         <name>Energy Matrix</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1802</GridIndex>
@@ -617,7 +725,7 @@
     <name>Hydrogen Fuel Rod</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1106</id>
@@ -625,22 +733,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1801</id>
         <name>Hydrogen Fuel Rod</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1609</GridIndex>
@@ -651,30 +765,36 @@
     <name> - Thruster</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1405</id>
         <name>Thruster</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1311</GridIndex>
@@ -685,30 +805,36 @@
     <name>Reinforced Thruster</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1204</id>
         <name>Electromagnetic Turbine</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1406</id>
         <name>Reinforced Thruster</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1312</GridIndex>
@@ -719,44 +845,54 @@
     <name>Chemical Plant</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2309</id>
         <name>Chemical Plant</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2311</GridIndex>
@@ -767,14 +903,16 @@
     <name>Plastic</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1114</id>
         <name>Refined Oil</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1109</id>
@@ -782,15 +920,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1115</id>
         <name>Plastic</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1109</GridIndex>
@@ -801,37 +943,45 @@
     <name>Sulfuric Acid</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1114</id>
         <name>Refined Oil</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1005</id>
         <name>Stone</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1000</id>
         <name>Water</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1116</id>
         <name>Sulfuric Acid</name>
-        <count>4</count>
+        <count>16</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1406</GridIndex>
@@ -842,14 +992,16 @@
     <name>Organic Crystal</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1115</id>
         <name>Plastic</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1114</id>
@@ -857,6 +1009,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1000</id>
@@ -864,15 +1018,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1117</id>
         <name>Organic Crystal</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1209</GridIndex>
@@ -883,7 +1041,7 @@
     <name>Titanium Crystal</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1117</id>
@@ -891,22 +1049,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1118</id>
         <name>Titanium Crystal</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1308</GridIndex>
@@ -917,7 +1081,7 @@
     <name>Structure Matrix</name>
     <Type>Research</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1112</id>
@@ -925,6 +1089,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1118</id>
@@ -932,15 +1098,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>6003</id>
         <name>Structure Matrix</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1803</GridIndex>
@@ -951,7 +1121,7 @@
     <name>Casimir Crystal</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1118</id>
@@ -959,29 +1129,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1126</id>
         <name>Casimir Crystal</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1505</GridIndex>
@@ -992,37 +1170,45 @@
     <name>Casimir Crystal (advanced)</name>
     <Type>Assemble</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1014</id>
         <name>Grating Crystal</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1126</id>
         <name>Casimir Crystal</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1605</GridIndex>
@@ -1033,37 +1219,45 @@
     <name>Titanium Glass</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1000</id>
         <name>Water</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1119</id>
         <name>Titanium Glass</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1304</GridIndex>
@@ -1074,14 +1268,16 @@
     <name>Graphene</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1109</id>
         <name>Energetic Graphite</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1116</id>
@@ -1089,15 +1285,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1108</GridIndex>
@@ -1108,30 +1308,36 @@
     <name>Graphene (advanced)</name>
     <Type>Chemical</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1011</id>
         <name>Fire Ice</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1208</GridIndex>
@@ -1142,14 +1348,16 @@
     <name>Carbon Nanotube</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1106</id>
@@ -1157,15 +1365,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1124</id>
         <name>Carbon Nanotube</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1408</GridIndex>
@@ -1176,23 +1388,27 @@
     <name>Silicon Ore</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>1005</id>
         <name>Stone</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1003</id>
         <name>Silicon Ore</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1403</GridIndex>
@@ -1203,23 +1419,27 @@
     <name>Carbon Nanotube (advanced)</name>
     <Type>Chemical</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1015</id>
         <name>Stalagmite Crystal</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1124</id>
         <name>Carbon Nanotube</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1508</GridIndex>
@@ -1230,21 +1450,25 @@
     <name>Particle Broadband</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1124</id>
         <name>Carbon Nanotube</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1113</id>
         <name>Crystal Silicon</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1115</id>
@@ -1252,15 +1476,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1402</id>
         <name>Particle Broadband</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1503</GridIndex>
@@ -1271,7 +1499,7 @@
     <name>Crystal Silicon</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1105</id>
@@ -1279,15 +1507,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1113</id>
         <name>Crystal Silicon</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1203</GridIndex>
@@ -1298,7 +1530,7 @@
     <name>Plane Filter</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>720</TimeSpend>
+    <TimeSpend>360</TimeSpend>
     <Items>
       <Item>
         <id>1126</id>
@@ -1306,22 +1538,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1119</id>
         <name>Titanium Glass</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1304</id>
         <name>Plane Filter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1607</GridIndex>
@@ -1332,51 +1570,63 @@
     <name>Miniature Particle Collider</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>900</TimeSpend>
+    <TimeSpend>450</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>25</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2310</id>
         <name>Miniature Particle Collider</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2313</GridIndex>
@@ -1387,23 +1637,27 @@
     <name>Deuterium</name>
     <Type>Particle</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>150</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1121</id>
         <name>Deuterium</name>
-        <count>5</count>
+        <count>20</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1507</GridIndex>
@@ -1414,7 +1668,7 @@
     <name>Deuteron Fuel Rod</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>720</TimeSpend>
+    <TimeSpend>360</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
@@ -1422,13 +1676,17 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1121</id>
         <name>Deuterium</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -1436,15 +1694,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1802</id>
         <name>Deuteron Fuel Rod</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1610</GridIndex>
@@ -1455,7 +1717,7 @@
     <name>Annihilation Constraint Sphere</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1200</TimeSpend>
+    <TimeSpend>600</TimeSpend>
     <Items>
       <Item>
         <id>1206</id>
@@ -1463,6 +1725,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
@@ -1470,15 +1734,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1403</id>
         <name>Annihilation Constraint Sphere</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1608</GridIndex>
@@ -1489,44 +1757,54 @@
     <name>Artificial Star</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1800</TimeSpend>
+    <TimeSpend>900</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1403</id>
         <name>Annihilation Constraint Sphere</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2210</id>
         <name>Artificial Star</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2112</GridIndex>
@@ -1537,21 +1815,25 @@
     <name>Antimatter Fuel Rod</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1440</TimeSpend>
+    <TimeSpend>720</TimeSpend>
     <Items>
       <Item>
         <id>1122</id>
         <name>Antimatter</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1403</id>
@@ -1559,6 +1841,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1107</id>
@@ -1566,15 +1850,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1803</id>
         <name>Antimatter Fuel Rod</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1611</GridIndex>
@@ -1585,37 +1873,45 @@
     <name>Assembling Machine Mk.I</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2303</id>
         <name>Assembling Machine Mk.I</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2404</GridIndex>
@@ -1626,7 +1922,7 @@
     <name>Assembling Machine Mk.II</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>2303</id>
@@ -1634,29 +1930,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2304</id>
         <name>Assembling Machine Mk.II</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2405</GridIndex>
@@ -1667,7 +1971,7 @@
     <name>Assembling Machine Mk.III</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>2304</id>
@@ -1675,29 +1979,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1402</id>
         <name>Particle Broadband</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2305</id>
         <name>Assembling Machine Mk.III</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2406</GridIndex>
@@ -1708,44 +2020,54 @@
     <name>Mining Machine</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2301</id>
         <name>Mining Machine</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2305</GridIndex>
@@ -1756,44 +2078,54 @@
     <name>Water Pump</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1203</id>
         <name>Electric Motor</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2306</id>
         <name>Water Pump</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2307</GridIndex>
@@ -1809,9 +2141,11 @@
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
@@ -1819,15 +2153,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1404</GridIndex>
@@ -1838,30 +2176,36 @@
     <name>Processor</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1302</id>
         <name>Microcrystalline Component</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1504</GridIndex>
@@ -1872,30 +2216,36 @@
     <name>Quantum Chip</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1304</id>
         <name>Plane Filter</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1604</GridIndex>
@@ -1906,14 +2256,16 @@
     <name>Microcrystalline Component</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1105</id>
         <name>High-purity Silicon</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
@@ -1921,15 +2273,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1302</id>
         <name>Microcrystalline Component</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1603</GridIndex>
@@ -1940,37 +2296,45 @@
     <name>Organic Crystal (original)</name>
     <Type>Assemble</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1030</id>
         <name>Log</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1031</id>
         <name>Plant Fuel</name>
-        <count>30</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1000</id>
         <name>Water</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1117</id>
         <name>Organic Crystal</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1309</GridIndex>
@@ -1981,14 +2345,16 @@
     <name>Information Matrix</name>
     <Type>Research</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1402</id>
@@ -1996,15 +2362,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>6004</id>
         <name>Information Matrix</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1804</GridIndex>
@@ -2015,44 +2385,54 @@
     <name>Arc Smelter</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2302</id>
         <name>Arc Smelter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2401</GridIndex>
@@ -2063,23 +2443,27 @@
     <name>Glass</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1005</id>
         <name>Stone</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1205</GridIndex>
@@ -2090,7 +2474,7 @@
     <name>X-ray Cracking</name>
     <Type>Refine</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1114</id>
@@ -2098,29 +2482,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>3</count>
+        <count>12</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1109</id>
         <name>Energetic Graphite</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1207</GridIndex>
@@ -2131,23 +2523,27 @@
     <name>High-purity Silicon</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1003</id>
         <name>Silicon Ore</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1105</id>
         <name>High-purity Silicon</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1103</GridIndex>
@@ -2158,7 +2554,7 @@
     <name>Diamond</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1109</id>
@@ -2166,15 +2562,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1112</id>
         <name>Diamond</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1206</GridIndex>
@@ -2185,7 +2585,7 @@
     <name>Diamond (advanced)</name>
     <Type>Smelt</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>90</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1012</id>
@@ -2193,15 +2593,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1112</id>
         <name>Diamond</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1306</GridIndex>
@@ -2212,7 +2616,7 @@
     <name>Crystal Silicon (advanced)</name>
     <Type>Assemble</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>90</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1013</id>
@@ -2220,15 +2624,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1113</id>
         <name>Crystal Silicon</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1303</GridIndex>
@@ -2239,23 +2647,27 @@
     <name>Steel</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1301</GridIndex>
@@ -2266,44 +2678,54 @@
     <name>Thermal Power Plant</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2204</id>
         <name>Thermal Power Plant</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2105</GridIndex>
@@ -2314,23 +2736,27 @@
     <name>Titanium Ingot</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1004</id>
         <name>Titanium Ore</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1104</GridIndex>
@@ -2341,37 +2767,45 @@
     <name>Titanium Alloy</name>
     <Type>Smelt</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>720</TimeSpend>
+    <TimeSpend>360</TimeSpend>
     <Items>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1116</id>
         <name>Sulfuric Acid</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>4</count>
+        <count>16</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1204</GridIndex>
@@ -2382,37 +2816,45 @@
     <name>Solar Panel</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1105</id>
         <name>High-purity Silicon</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2205</id>
         <name>Solar Panel</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2106</GridIndex>
@@ -2423,14 +2865,16 @@
     <name>Photon Combiner</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1111</id>
         <name>Prism</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
@@ -2438,15 +2882,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1404</id>
         <name>Photon Combiner</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1601</GridIndex>
@@ -2457,7 +2905,7 @@
     <name>Photon Combiner (advanced)</name>
     <Type>Assemble</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1014</id>
@@ -2465,6 +2913,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
@@ -2472,15 +2922,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1404</id>
         <name>Photon Combiner</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1602</GridIndex>
@@ -2491,7 +2945,7 @@
     <name>Solar Sail</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1123</id>
@@ -2499,6 +2953,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1404</id>
@@ -2506,15 +2962,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1501</id>
         <name>Solar Sail</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1509</GridIndex>
@@ -2525,44 +2985,54 @@
     <name>EM-Rail Ejector</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2311</id>
         <name>EM-Rail Ejector</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2411</GridIndex>
@@ -2573,51 +3043,63 @@
     <name>Ray Receiver</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1105</id>
         <name>High-purity Silicon</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1404</id>
         <name>Photon Combiner</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2208</id>
         <name>Ray Receiver</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2111</GridIndex>
@@ -2628,7 +3110,7 @@
     <name>Satellite Substation</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>2202</id>
@@ -2636,29 +3118,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2212</id>
         <name>Satellite Substation</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2103</GridIndex>
@@ -2669,30 +3159,36 @@
     <name>Mass-energy Storage</name>
     <Type>Particle</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1208</id>
         <name>Critical Photon</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1122</id>
         <name>Antimatter</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1708</GridIndex>
@@ -2703,7 +3199,7 @@
     <name>Universe Matrix</name>
     <Type>Research</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>900</TimeSpend>
+    <TimeSpend>450</TimeSpend>
     <Items>
       <Item>
         <id>6001</id>
@@ -2711,6 +3207,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>6002</id>
@@ -2718,6 +3216,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>6003</id>
@@ -2725,6 +3225,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>6004</id>
@@ -2732,6 +3234,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>6005</id>
@@ -2739,6 +3243,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1122</id>
@@ -2746,15 +3252,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>6006</id>
         <name>Universe Matrix</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1806</GridIndex>
@@ -2765,14 +3275,16 @@
     <name>Accumulator</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -2780,22 +3292,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1113</id>
         <name>Crystal Silicon</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2206</id>
         <name>Accumulator</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2107</GridIndex>
@@ -2806,44 +3324,54 @@
     <name>Energy Exchanger</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>900</TimeSpend>
+    <TimeSpend>450</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2209</id>
         <name>Energy Exchanger</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2110</GridIndex>
@@ -2854,7 +3382,7 @@
     <name>Space Warper</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>1209</id>
@@ -2862,15 +3390,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1210</id>
         <name>Space Warper</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1706</GridIndex>
@@ -2881,7 +3413,7 @@
     <name>Space Warper (advanced)</name>
     <Type>Assemble</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>6005</id>
@@ -2889,15 +3421,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1210</id>
         <name>Space Warper</name>
-        <count>8</count>
+        <count>32</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1707</GridIndex>
@@ -2908,14 +3444,16 @@
     <name>Frame Material</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1124</id>
         <name>Carbon Nanotube</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1107</id>
@@ -2923,6 +3461,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1105</id>
@@ -2930,15 +3470,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1510</GridIndex>
@@ -2949,37 +3493,45 @@
     <name>Dyson Sphere Component</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1501</id>
         <name>Solar Sail</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1502</id>
         <name>Dyson Sphere Component</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1511</GridIndex>
@@ -2990,44 +3542,54 @@
     <name>Vertical Launching Silo</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1800</TimeSpend>
+    <TimeSpend>900</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>80</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>30</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1209</id>
         <name>Graviton Lens</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2312</id>
         <name>Vertical Launching Silo</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2412</GridIndex>
@@ -3038,37 +3600,45 @@
     <name>Small Carrier Rocket</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1502</id>
         <name>Dyson Sphere Component</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1802</id>
         <name>Deuteron Fuel Rod</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1503</id>
         <name>Small Carrier Rocket</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1512</GridIndex>
@@ -3084,9 +3654,11 @@
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
@@ -3094,15 +3666,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2001</id>
         <name>Conveyor Belt Mk.I</name>
-        <count>3</count>
+        <count>12</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2201</GridIndex>
@@ -3121,6 +3697,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
@@ -3128,15 +3706,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2011</id>
         <name>Sorter Mk.I</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2301</GridIndex>
@@ -3147,30 +3729,36 @@
     <name>Depot Mk.I</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2101</id>
         <name>Depot Mk.I</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2208</GridIndex>
@@ -3181,21 +3769,25 @@
     <name>Splitter</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
@@ -3203,15 +3795,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2020</id>
         <name>Splitter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2204</GridIndex>
@@ -3227,9 +3823,11 @@
       <Item>
         <id>2011</id>
         <name>Sorter Mk.I</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1203</id>
@@ -3237,15 +3835,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2012</id>
         <name>Sorter Mk.II</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2302</GridIndex>
@@ -3261,9 +3863,11 @@
       <Item>
         <id>2001</id>
         <name>Conveyor Belt Mk.I</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1204</id>
@@ -3271,15 +3875,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2002</id>
         <name>Conveyor Belt Mk.II</name>
-        <count>3</count>
+        <count>12</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2202</GridIndex>
@@ -3295,9 +3903,11 @@
       <Item>
         <id>2012</id>
         <name>Sorter Mk.II</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1204</id>
@@ -3305,15 +3915,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2013</id>
         <name>Sorter Mk.III</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2303</GridIndex>
@@ -3324,30 +3938,36 @@
     <name>Depot Mk.II</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2102</id>
         <name>Depot Mk.II</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2209</GridIndex>
@@ -3363,9 +3983,11 @@
       <Item>
         <id>2002</id>
         <name>Conveyor Belt Mk.II</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -3373,6 +3995,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1123</id>
@@ -3380,15 +4004,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2003</id>
         <name>Conveyor Belt Mk.III</name>
-        <count>3</count>
+        <count>12</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2203</GridIndex>
@@ -3399,44 +4027,54 @@
     <name>Planetary Logistics Station</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1200</TimeSpend>
+    <TimeSpend>600</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2103</id>
         <name>Planetary Logistics Station</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2212</GridIndex>
@@ -3447,37 +4085,45 @@
     <name>Logistics Drone</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1405</id>
         <name>Thruster</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5001</id>
         <name>Logistics Drone</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1411</GridIndex>
@@ -3488,7 +4134,7 @@
     <name>Interstellar Logistics Station</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1800</TimeSpend>
+    <TimeSpend>900</TimeSpend>
     <Items>
       <Item>
         <id>2103</id>
@@ -3496,29 +4142,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2104</id>
         <name>Interstellar Logistics Station</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2213</GridIndex>
@@ -3529,37 +4183,45 @@
     <name>Interstellar Logistics Vessel</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1406</id>
         <name>Reinforced Thruster</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5002</id>
         <name>Interstellar Logistics Vessel</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1412</GridIndex>
@@ -3570,14 +4232,16 @@
     <name>Electric Motor</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
@@ -3585,6 +4249,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
@@ -3592,15 +4258,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1203</id>
         <name>Electric Motor</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1302</GridIndex>
@@ -3611,30 +4281,36 @@
     <name>Electromagnetic Turbine</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1203</id>
         <name>Electric Motor</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1204</id>
         <name>Electromagnetic Turbine</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1402</GridIndex>
@@ -3645,37 +4321,45 @@
     <name>Particle Container</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1204</id>
         <name>Electromagnetic Turbine</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1123</id>
         <name>Graphene</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1506</GridIndex>
@@ -3686,30 +4370,36 @@
     <name>Particle Container (advanced)</name>
     <Type>Assemble</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1016</id>
         <name>Unipolar Magnet</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1606</GridIndex>
@@ -3720,14 +4410,16 @@
     <name>Graviton Lens</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1112</id>
         <name>Diamond</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1127</id>
@@ -3735,15 +4427,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1209</id>
         <name>Graviton Lens</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1405</GridIndex>
@@ -3754,7 +4450,7 @@
     <name>Gravity Matrix</name>
     <Type>Research</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1440</TimeSpend>
+    <TimeSpend>720</TimeSpend>
     <Items>
       <Item>
         <id>1209</id>
@@ -3762,6 +4458,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
@@ -3769,15 +4467,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>6005</id>
         <name>Gravity Matrix</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1805</GridIndex>
@@ -3788,21 +4490,25 @@
     <name>Super-magnetic Ring</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1204</id>
         <name>Electromagnetic Turbine</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1102</id>
         <name>Magnet</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1109</id>
@@ -3810,15 +4516,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1502</GridIndex>
@@ -3829,37 +4539,45 @@
     <name>Strange Matter</name>
     <Type>Particle</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1121</id>
         <name>Deuterium</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1127</id>
         <name>Strange Matter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1409</GridIndex>
@@ -3870,7 +4588,7 @@
     <name>Proliferator Mk.I</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>30</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1006</id>
@@ -3878,15 +4596,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1141</id>
         <name>Proliferator Mk.I</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1110</GridIndex>
@@ -3902,9 +4624,11 @@
       <Item>
         <id>1141</id>
         <name>Proliferator Mk.I</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1112</id>
@@ -3912,15 +4636,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1142</id>
         <name>Proliferator Mk.II</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1111</GridIndex>
@@ -3931,14 +4659,16 @@
     <name>Proliferator Mk.III</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1142</id>
         <name>Proliferator Mk.II</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1124</id>
@@ -3946,15 +4676,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1143</id>
         <name>Proliferator Mk.III</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1112</GridIndex>
@@ -3965,44 +4699,54 @@
     <name>Spray Coater</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1302</id>
         <name>Microcrystalline Component</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2313</id>
         <name>Spray Coater</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2207</GridIndex>
@@ -4013,28 +4757,34 @@
     <name>Fractionator</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
@@ -4042,15 +4792,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2314</id>
         <name>Fractionator</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2310</GridIndex>
@@ -4061,7 +4815,7 @@
     <name>Orbital Collector</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1800</TimeSpend>
+    <TimeSpend>900</TimeSpend>
     <Items>
       <Item>
         <id>2104</id>
@@ -4069,36 +4823,46 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>50</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1406</id>
         <name>Reinforced Thruster</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>2207</id>
         <name>Accumulator (full)</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2105</id>
         <name>Orbital Collector</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2214</GridIndex>
@@ -4114,9 +4878,11 @@
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1103</id>
@@ -4124,15 +4890,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1131</id>
         <name>Foundation</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1714</GridIndex>
@@ -4143,44 +4913,54 @@
     <name>Mini Fusion Power Plant</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1124</id>
         <name>Carbon Nanotube</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2211</id>
         <name>Mini Fusion Power Plant</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2109</GridIndex>
@@ -4191,37 +4971,45 @@
     <name>Storage Tank</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1108</id>
         <name>Stone Brick</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1110</id>
         <name>Glass</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2106</id>
         <name>Storage Tank</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2210</GridIndex>
@@ -4232,23 +5020,27 @@
     <name>Deuterium Fractionation</name>
     <Type>Fractionate</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>1</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>100</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1121</id>
         <name>Deuterium</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1407</GridIndex>
@@ -4259,7 +5051,7 @@
     <name>Plane Smelter</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>2302</id>
@@ -4267,36 +5059,46 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1304</id>
         <name>Plane Filter</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1016</id>
         <name>Unipolar Magnet</name>
-        <count>15</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2315</id>
         <name>Plane Smelter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2402</GridIndex>
@@ -4307,21 +5109,25 @@
     <name>Traffic Monitor</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1110</id>
@@ -4329,22 +5135,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2030</id>
         <name>Traffic Monitor</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2206</GridIndex>
@@ -4355,28 +5167,34 @@
     <name>Geothermal Power Station</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>15</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1404</id>
         <name>Photon Combiner</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -4384,15 +5202,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2213</id>
         <name>Geothermal Power Station</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2108</GridIndex>
@@ -4403,51 +5225,63 @@
     <name>Advanced Mining Machine</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1200</TimeSpend>
+    <TimeSpend>600</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1014</id>
         <name>Grating Crystal</name>
-        <count>40</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2316</id>
         <name>Advanced Mining Machine</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2306</GridIndex>
@@ -4458,21 +5292,25 @@
     <name>Automatic Piler</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -4480,22 +5318,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2040</id>
         <name>Automatic Piler</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2205</GridIndex>
@@ -4506,14 +5350,16 @@
     <name>Reformed Refinement</name>
     <Type>Refine</Type>
     <Explicit>true</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1114</id>
         <name>Refined Oil</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
@@ -4521,6 +5367,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1006</id>
@@ -4528,15 +5376,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1114</id>
         <name>Refined Oil</name>
-        <count>3</count>
+        <count>12</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1307</GridIndex>
@@ -4547,37 +5399,45 @@
     <name>Logistics Distributor</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2107</id>
         <name>Logistics Distributor</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2211</GridIndex>
@@ -4588,14 +5448,16 @@
     <name>Logistics Bot</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1407</id>
@@ -4603,6 +5465,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
@@ -4610,15 +5474,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5003</id>
         <name>Logistics Bot</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1410</GridIndex>
@@ -4629,7 +5497,7 @@
     <name>Quantum Chemical Plant</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>2309</id>
@@ -4637,36 +5505,46 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1119</id>
         <name>Titanium Glass</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1127</id>
         <name>Strange Matter</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2317</id>
         <name>Quantum Chemical Plant</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2312</GridIndex>
@@ -4677,44 +5555,54 @@
     <name>Gauss Turret</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1201</id>
         <name>Gear</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1202</id>
         <name>Magnetic Coil</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3001</id>
         <name>Gauss Turret</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2501</GridIndex>
@@ -4725,44 +5613,54 @@
     <name>Laser Turret</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>9</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1404</id>
         <name>Photon Combiner</name>
-        <count>9</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3002</id>
         <name>Laser Turret</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2504</GridIndex>
@@ -4773,44 +5671,54 @@
     <name>Implosion Cannon</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1203</id>
         <name>Electric Motor</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3003</id>
         <name>Implosion Cannon</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2503</GridIndex>
@@ -4821,51 +5729,63 @@
     <name>Plasma Turret</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1119</id>
         <name>Titanium Glass</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3004</id>
         <name>Plasma Turret</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2505</GridIndex>
@@ -4876,44 +5796,54 @@
     <name>Missile Turret</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1203</id>
         <name>Electric Motor</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1407</id>
         <name>Engine</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3005</id>
         <name>Missile Turret</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2502</GridIndex>
@@ -4924,44 +5854,54 @@
     <name>Jammer Tower</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>9</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1112</id>
         <name>Diamond</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3006</id>
         <name>Jammer Tower</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2508</GridIndex>
@@ -4972,37 +5912,45 @@
     <name>Signal Tower</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>2202</id>
         <name>Wireless Power Tower</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1113</id>
         <name>Crystal Silicon</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3007</id>
         <name>Signal Tower</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2509</GridIndex>
@@ -5013,44 +5961,54 @@
     <name>Planetary Shield Generator</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>600</TimeSpend>
+    <TimeSpend>300</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1204</id>
         <name>Electromagnetic Turbine</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3008</id>
         <name>Planetary Shield Generator</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2510</GridIndex>
@@ -5061,23 +6019,27 @@
     <name>Combustible Unit</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1006</id>
         <name>Coal</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1128</id>
         <name>Combustible Unit</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1210</GridIndex>
@@ -5088,21 +6050,25 @@
     <name>Explosive Unit</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1128</id>
         <name>Combustible Unit</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1115</id>
         <name>Plastic</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1116</id>
@@ -5110,15 +6076,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1129</id>
         <name>Explosive Unit</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1211</GridIndex>
@@ -5129,14 +6099,16 @@
     <name>Crystal Explosive Unit</name>
     <Type>Chemical</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1440</TimeSpend>
+    <TimeSpend>720</TimeSpend>
     <Items>
       <Item>
         <id>1129</id>
         <name>Explosive Unit</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1126</id>
@@ -5144,22 +6116,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1113</id>
         <name>Crystal Silicon</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1130</id>
         <name>Crystal Explosive Unit</name>
-        <count>8</count>
+        <count>32</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1212</GridIndex>
@@ -5175,18 +6153,22 @@
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1601</id>
         <name>Magnum Ammo Box</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1113</GridIndex>
@@ -5197,7 +6179,7 @@
     <name>Titanium Ammo Box</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1601</id>
@@ -5205,22 +6187,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1602</id>
         <name>Titanium Ammo Box</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1213</GridIndex>
@@ -5231,7 +6219,7 @@
     <name>Superalloy Ammo Box</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1602</id>
@@ -5239,6 +6227,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1107</id>
@@ -5246,15 +6236,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1603</id>
         <name>Superalloy Ammo Box</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1313</GridIndex>
@@ -5265,30 +6259,36 @@
     <name>Shell Set</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>90</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>9</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1128</id>
         <name>Combustible Unit</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1604</id>
         <name>Shell Set</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1414</GridIndex>
@@ -5299,7 +6299,7 @@
     <name>High-Explosive Shell Set</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1604</id>
@@ -5307,29 +6307,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1106</id>
         <name>Titanium Ingot</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1129</id>
         <name>Explosive Unit</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1605</id>
         <name>High-Explosive Shell Set</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1514</GridIndex>
@@ -5340,7 +6348,7 @@
     <name>Crystal Shell Set</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1605</id>
@@ -5348,29 +6356,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1130</id>
         <name>Crystal Explosive Unit</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1606</id>
         <name>Crystal Shell Set</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1614</GridIndex>
@@ -5381,7 +6397,7 @@
     <name>Plasma Capsule</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1123</id>
@@ -5389,29 +6405,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1102</id>
         <name>Magnet</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1121</id>
         <name>Deuterium</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1607</id>
         <name>Plasma Capsule</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1413</GridIndex>
@@ -5422,7 +6446,7 @@
     <name>Antimatter Capsule</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1607</id>
@@ -5430,6 +6454,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
@@ -5437,29 +6463,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1122</id>
         <name>Antimatter</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1608</id>
         <name>Antimatter Capsule</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1513</GridIndex>
@@ -5470,28 +6504,34 @@
     <name>Missile Set</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1128</id>
         <name>Combustible Unit</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1407</id>
@@ -5499,15 +6539,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1609</id>
         <name>Missile Set</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1114</GridIndex>
@@ -5518,44 +6562,54 @@
     <name>Supersonic Missile Set</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>1609</id>
         <name>Missile Set</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1129</id>
         <name>Explosive Unit</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1405</id>
         <name>Thruster</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1610</id>
         <name>Supersonic Missile Set</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1214</GridIndex>
@@ -5566,37 +6620,45 @@
     <name>Gravity Missile Set</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1610</id>
         <name>Supersonic Missile Set</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1130</id>
         <name>Crystal Explosive Unit</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1127</id>
         <name>Strange Matter</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1611</id>
         <name>Gravity Missile Set</name>
-        <count>3</count>
+        <count>12</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1314</GridIndex>
@@ -5607,14 +6669,16 @@
     <name>Prototype</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1101</id>
         <name>Iron Ingot</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1407</id>
@@ -5622,13 +6686,17 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
@@ -5636,15 +6704,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5101</id>
         <name>Prototype</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1701</GridIndex>
@@ -5655,7 +6727,7 @@
     <name>Precision Drone</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>5101</id>
@@ -5663,6 +6735,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1204</id>
@@ -5670,29 +6744,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1404</id>
         <name>Photon Combiner</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5102</id>
         <name>Precision Drone</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1702</GridIndex>
@@ -5703,7 +6785,7 @@
     <name>Attack Drone</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>5101</id>
@@ -5711,6 +6793,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1204</id>
@@ -5718,6 +6802,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
@@ -5725,6 +6811,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
@@ -5732,15 +6820,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5103</id>
         <name>Attack Drone</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1703</GridIndex>
@@ -5751,14 +6843,16 @@
     <name>Corvette</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>1107</id>
         <name>Titanium Alloy</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1406</id>
@@ -5766,29 +6860,37 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1206</id>
         <name>Particle Container</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5111</id>
         <name>Corvette</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1704</GridIndex>
@@ -5799,28 +6901,34 @@
     <name>Destroyer</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1125</id>
         <name>Frame Material</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1406</id>
         <name>Reinforced Thruster</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1127</id>
@@ -5828,15 +6936,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>5112</id>
         <name>Destroyer</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1705</GridIndex>
@@ -5847,7 +6959,7 @@
     <name>Engine</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>180</TimeSpend>
+    <TimeSpend>90</TimeSpend>
     <Items>
       <Item>
         <id>1202</id>
@@ -5855,22 +6967,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1104</id>
         <name>Copper Ingot</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1407</id>
         <name>Engine</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1310</GridIndex>
@@ -5881,44 +6999,54 @@
     <name>Battlefield Analysis Base</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1301</id>
         <name>Circuit Board</name>
-        <count>18</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1302</id>
         <name>Microcrystalline Component</name>
-        <count>6</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1407</id>
         <name>Engine</name>
-        <count>12</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3009</id>
         <name>Battlefield Analysis Base</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2507</GridIndex>
@@ -5929,7 +7057,7 @@
     <name>Self-evolution Lab</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>240</TimeSpend>
+    <TimeSpend>120</TimeSpend>
     <Items>
       <Item>
         <id>2901</id>
@@ -5937,36 +7065,46 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5202</id>
         <name>Silicon-based Neuron</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5201</id>
         <name>Dark Fog Matrix</name>
-        <count>20</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2902</id>
         <name>Self-evolution Lab</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2409</GridIndex>
@@ -5977,7 +7115,7 @@
     <name>Re-composing Assembler</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>300</TimeSpend>
+    <TimeSpend>150</TimeSpend>
     <Items>
       <Item>
         <id>2305</id>
@@ -5985,36 +7123,46 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5203</id>
         <name>Matter Recombinator</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5206</id>
         <name>Energy Shard</name>
-        <count>30</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2318</id>
         <name>Re-composing Assembler</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2407</GridIndex>
@@ -6025,7 +7173,7 @@
     <name>Negentropy Smelter</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>360</TimeSpend>
+    <TimeSpend>180</TimeSpend>
     <Items>
       <Item>
         <id>2315</id>
@@ -6033,36 +7181,46 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5204</id>
         <name>Negentropy Singularity</name>
-        <count>10</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5206</id>
         <name>Energy Shard</name>
-        <count>30</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1305</id>
         <name>Quantum Chip</name>
-        <count>4</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2319</id>
         <name>Negentropy Smelter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2403</GridIndex>
@@ -6073,14 +7231,16 @@
     <name>Strange Annihilation Fuel Rod</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>1920</TimeSpend>
+    <TimeSpend>960</TimeSpend>
     <Items>
       <Item>
         <id>1803</id>
         <name>Antimatter Fuel Rod</name>
-        <count>8</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>5205</id>
@@ -6088,13 +7248,17 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1127</id>
         <name>Strange Matter</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1125</id>
@@ -6102,15 +7266,19 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1804</id>
         <name>Strange Annihilation Fuel Rod</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1612</GridIndex>
@@ -6121,44 +7289,54 @@
     <name>SR Plasma Turret</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1103</id>
         <name>Steel</name>
-        <count>15</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
         <name>Super-magnetic Ring</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
         <name>Plasma Exciter</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
         <name>Processor</name>
-        <count>5</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>3010</id>
         <name>SR Plasma Turret</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2506</GridIndex>
@@ -6169,7 +7347,7 @@
     <name>Jamming Capsule</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>120</TimeSpend>
+    <TimeSpend>60</TimeSpend>
     <Items>
       <Item>
         <id>1204</id>
@@ -6177,6 +7355,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1401</id>
@@ -6184,22 +7364,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1120</id>
         <name>Hydrogen</name>
-        <count>3</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>true</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1612</id>
         <name>Jamming Capsule</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1613</GridIndex>
@@ -6210,14 +7396,16 @@
     <name>Suppressing Capsule</name>
     <Type>Assemble</Type>
     <Explicit>false</Explicit>
-    <TimeSpend>480</TimeSpend>
+    <TimeSpend>240</TimeSpend>
     <Items>
       <Item>
         <id>1612</id>
         <name>Jamming Capsule</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -6225,22 +7413,28 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1119</id>
         <name>Titanium Glass</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>1613</id>
         <name>Suppressing Capsule</name>
-        <count>2</count>
+        <count>8</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>1713</GridIndex>
@@ -6256,9 +7450,11 @@
       <Item>
         <id>2013</id>
         <name>Sorter Mk.III</name>
-        <count>2</count>
+        <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1205</id>
@@ -6266,6 +7462,8 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
       <Item>
         <id>1303</id>
@@ -6273,18 +7471,80 @@
         <count>1</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Items>
     <Results>
       <Item>
         <id>2014</id>
         <name>Pile Sorter</name>
-        <count>1</count>
+        <count>4</count>
         <Type>Unknown</Type>
         <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
       </Item>
     </Results>
     <GridIndex>2304</GridIndex>
     <productive>false</productive>
+  </Recipe>
+  <Recipe>
+    <SID>2410</SID>
+    <name>Holo Beacon</name>
+    <Type>Assemble</Type>
+    <Explicit>false</Explicit>
+    <TimeSpend>120</TimeSpend>
+    <Items>
+      <Item>
+        <id>1101</id>
+        <name>Iron Ingot</name>
+        <count>1</count>
+        <Type>Unknown</Type>
+        <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
+      </Item>
+      <Item>
+        <id>1111</id>
+        <name>Prism</name>
+        <count>1</count>
+        <Type>Unknown</Type>
+        <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
+      </Item>
+      <Item>
+        <id>1401</id>
+        <name>Plasma Exciter</name>
+        <count>1</count>
+        <Type>Unknown</Type>
+        <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
+      </Item>
+      <Item>
+        <id>1301</id>
+        <name>Circuit Board</name>
+        <count>1</count>
+        <Type>Unknown</Type>
+        <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
+      </Item>
+    </Items>
+    <Results>
+      <Item>
+        <id>2401</id>
+        <name>Holo Beacon</name>
+        <count>4</count>
+        <Type>Unknown</Type>
+        <isRaw>false</isRaw>
+        <isFluid>false</isFluid>
+        <HeatValue>0</HeatValue>
+      </Item>
+    </Results>
+    <GridIndex>2410</GridIndex>
+    <productive>true</productive>
   </Recipe>
 </ArrayOfRecipe>

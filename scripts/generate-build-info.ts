@@ -1,27 +1,10 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
-import { execSync } from "child_process";
 import path from "path";
 
 // package.jsonからバージョンを取得
 const packageJson = JSON.parse(readFileSync("./package.json", "utf-8"));
 
-// Gitの最新タグからバージョンを取得（フォールバック付き）
 function getAppVersion(): string {
-  try {
-    const latestTag = execSync("git describe --tags --abbrev=0", {
-      encoding: "utf-8",
-      stdio: ["ignore", "pipe", "ignore"],
-    })
-      .trim()
-      .replace(/^v/, "");
-
-    if (latestTag && latestTag !== "") {
-      return latestTag;
-    }
-  } catch (error) {
-    console.warn("Failed to get Git tag, using package.json version:", error);
-  }
-
   return packageJson.version;
 }
 

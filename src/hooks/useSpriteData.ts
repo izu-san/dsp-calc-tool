@@ -55,9 +55,10 @@ export function useSpriteData(itemId: number, preferRecipes = false): SpriteInfo
 
   // itemId を文字列に変換（JSONキーは文字列）
   const itemKey = String(itemId);
-  // preferRecipes に基づいてチェック順を決める（安定化のため useMemo を使用）
+  // 通常のアイテム/機械IDとレシピSIDは衝突し得るため、Recipesスプライトは明示的に
+  // preferRecipesが指定された場合だけ見る。
   const spritesToCheck = useMemo(
-    () => (preferRecipes ? (["recipes", "items"] as const) : (["items", "recipes"] as const)),
+    () => (preferRecipes ? (["recipes", "items"] as const) : (["items"] as const)),
     [preferRecipes]
   );
 

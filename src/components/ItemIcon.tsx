@@ -29,6 +29,9 @@ export function ItemIcon({
   const spriteInfo = useSpriteData(itemId, preferRecipes);
   const containerRef = useRef<HTMLDivElement>(null);
   const [actualSize, setActualSize] = useState(80);
+  const fallbackKey = `${itemId}:${preferRecipes}`;
+  const [fallbackState, setFallbackState] = useState({ key: fallbackKey, index: 0 });
+  const fallbackIndex = fallbackState.key === fallbackKey ? fallbackState.index : 0;
 
   // レスポンシブサイズの場合、親コンテナのサイズを監視
   useEffect(() => {
@@ -38,7 +41,7 @@ export function ItemIcon({
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect();
         const minSize = Math.min(width, height);
-        setActualSize(Math.min(Math.max(minSize, 32), 80));
+        setActualSize(Math.round(Math.min(Math.max(minSize, 32), 80)));
       }
     };
 
@@ -95,20 +98,24 @@ export function ItemIcon({
   }
 
   // フォールバック: 個別画像（スプライトがロード中または利用不可の場合）
+  const recipeIconPathPng = getDataPath(`data/Recipes/Icons/${itemId}.png`);
   const itemIconPathPng = getDataPath(`data/Items/Icons/${itemId}.png`);
   const machineIconPathPng = getDataPath(`data/Machines/Icons/${itemId}.png`);
+  const fallbackIconPaths = preferRecipes
+    ? [recipeIconPathPng, itemIconPathPng, machineIconPathPng]
+    : [itemIconPathPng, machineIconPathPng, recipeIconPathPng];
+  const currentIconPathPng = fallbackIconPaths[fallbackIndex] || fallbackIconPaths[0];
 
   // WebP対応のソースセットを取得
-  const itemSources = getImageSourceSet(itemIconPathPng);
-  const machineSources = getImageSourceSet(machineIconPathPng);
+  const currentSources = getImageSourceSet(currentIconPathPng);
 
   return (
     <picture>
       {/* WebP形式を優先 */}
-      <source srcSet={itemSources.webp} type="image/webp" />
-      <source srcSet={itemSources.png} type="image/png" />
+      <source srcSet={currentSources.webp} type="image/webp" />
+      <source srcSet={currentSources.png} type="image/png" />
       <img
-        src={getOptimalImagePath(itemIconPathPng)}
+        src={getOptimalImagePath(currentIconPathPng)}
         alt={alt}
         width={size === "auto" ? undefined : size}
         height={size === "auto" ? undefined : size}
@@ -118,17 +125,13 @@ export function ItemIcon({
         data-prefer-recipes={preferRecipes ? "true" : "false"}
         data-alt={alt}
         data-size={size}
+        data-fallback-index={fallbackIndex}
         onError={e => {
-          // アイテム画像が失敗したらマシン画像を試す
           const target = e.target as HTMLImageElement;
-          const currentSrc = target.src;
+          const currentIndex = Number(target.dataset.fallbackIndex || "0");
 
-          // まだマシン画像を試していない場合
-          if (
-            !currentSrc.includes(machineIconPathPng) &&
-            !currentSrc.includes(machineSources.webp)
-          ) {
-            target.src = getOptimalImagePath(machineIconPathPng);
+          if (fallbackIconPaths[currentIndex + 1]) {
+            setFallbackState({ key: fallbackKey, index: currentIndex + 1 });
           }
         }}
       />

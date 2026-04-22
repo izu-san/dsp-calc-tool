@@ -68,7 +68,7 @@
   </Item>
   <Item>
     <id>1030</id>
-    <name>原木</name>
+    <name>木材</name>
     <count>0</count>
     <Type>Resource</Type>
     <miningFrom>木</miningFrom>
@@ -93,7 +93,7 @@
     <name>メタンハイドレート</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>メタンハイドレート鉱脈&lt;color="#FFFFFFC1"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>メタンハイドレート鉱石&lt;color="#FFFFFFC1"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
@@ -101,10 +101,10 @@
   </Item>
   <Item>
     <id>1012</id>
-    <name>キンバーライト鉱石</name>
+    <name>キンバーライト</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>キンバーライト鉱脈&lt;color="#B9DFFFC4"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>キンバーライト鉱石&lt;color="#B9DFFFC4"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
@@ -115,7 +115,7 @@
     <name>フラクタルシリコン</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>フラクタルシリコン鉱脈&lt;color="#43FF89D4"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>フラクタルシリコン鉱石&lt;color="#43FF89D4"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
@@ -126,7 +126,7 @@
     <name>光格子結晶</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>光格子結晶鉱脈&lt;color="#E37AFFDA"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>光格子結晶鉱石&lt;color="#E37AFFDA"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
@@ -137,7 +137,7 @@
     <name>紡錘状石筍結晶</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>紡錘状石筍結晶鉱脈&lt;color="#7AF0FFC8"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>紡錘状石筍結晶鉱石&lt;color="#7AF0FFC8"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
@@ -148,7 +148,7 @@
     <name>単極磁石</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>単極磁石鉱脈&lt;color="#FFA086C8"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>単極磁石鉱石&lt;color="#FFA086C8"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
@@ -178,7 +178,7 @@
   </Item>
   <Item>
     <id>1105</id>
-    <name>高純度シリコン</name>
+    <name>高純度シリコンインゴット</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -222,7 +222,7 @@
   </Item>
   <Item>
     <id>1103</id>
-    <name>鋼鉄</name>
+    <name>鋼材</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -255,7 +255,7 @@
   </Item>
   <Item>
     <id>1119</id>
-    <name>チタンガラス</name>
+    <name>チタン化ガラス</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -288,7 +288,7 @@
   </Item>
   <Item>
     <id>1113</id>
-    <name>結晶シリコン</name>
+    <name>クリスタルシリコン</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -299,7 +299,7 @@
   </Item>
   <Item>
     <id>1201</id>
-    <name>歯車</name>
+    <name>ギア</name>
     <count>0</count>
     <Type>Component</Type>
     <miningFrom />
@@ -321,7 +321,7 @@
   </Item>
   <Item>
     <id>1202</id>
-    <name>磁気コイル</name>
+    <name>コイル</name>
     <count>0</count>
     <Type>Component</Type>
     <miningFrom />
@@ -332,7 +332,7 @@
   </Item>
   <Item>
     <id>1203</id>
-    <name>電動モーター</name>
+    <name>モーター</name>
     <count>0</count>
     <Type>Component</Type>
     <miningFrom />
@@ -489,7 +489,7 @@
     <name>水</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>海洋</miningFrom>
+    <miningFrom>海</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>true</isFluid>
@@ -500,7 +500,7 @@
     <name>原油</name>
     <count>0</count>
     <Type>Resource</Type>
-    <miningFrom>油田</miningFrom>
+    <miningFrom>原油産出地</miningFrom>
     <produceFrom />
     <isRaw>true</isRaw>
     <isFluid>true</isFluid>
@@ -545,7 +545,7 @@
     <count>0</count>
     <Type>Material</Type>
     <miningFrom>巨大ガス惑星軌道</miningFrom>
-    <produceFrom>分留器</produceFrom>
+    <produceFrom>分留施設</produceFrom>
     <isRaw>true</isRaw>
     <isFluid>true</isFluid>
     <HeatValue>9000000</HeatValue>
@@ -567,14 +567,14 @@
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
-    <produceFrom>γ線レシーバー</produceFrom>
+    <produceFrom>放射線レシーバー</produceFrom>
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
     <HeatValue>0</HeatValue>
   </Item>
   <Item>
     <id>1801</id>
-    <name>水素燃料棒</name>
+    <name>液化水素燃料棒</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -585,7 +585,7 @@
   </Item>
   <Item>
     <id>1802</id>
-    <name>重水素燃料棒</name>
+    <name>重陽子燃料棒</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -607,7 +607,7 @@
   </Item>
   <Item>
     <id>1804</id>
-    <name>ストレンジ物質対消滅燃料棒</name>
+    <name>ストレンジ対消滅燃料棒</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -654,7 +654,7 @@
     <name>有機結晶</name>
     <count>0</count>
     <Type>Material</Type>
-    <miningFrom>有機結晶鉱脈&lt;color="#F5FF4FC1"&gt;(レア)&lt;/color&gt;</miningFrom>
+    <miningFrom>有機結晶鉱石&lt;color="#F5FF4FC1"&gt;（レア）&lt;/color&gt;</miningFrom>
     <produceFrom />
     <isRaw>false</isRaw>
     <isFluid>false</isFluid>
@@ -662,7 +662,7 @@
   </Item>
   <Item>
     <id>1118</id>
-    <name>チタン結晶</name>
+    <name>チタンクリスタル</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -706,7 +706,7 @@
   </Item>
   <Item>
     <id>1130</id>
-    <name>結晶性爆発ユニット</name>
+    <name>クリスタル爆発ユニット</name>
     <count>0</count>
     <Type>Component</Type>
     <miningFrom />
@@ -717,7 +717,7 @@
   </Item>
   <Item>
     <id>1209</id>
-    <name>重力子レンズ</name>
+    <name>引力レンズ</name>
     <count>0</count>
     <Type>Component</Type>
     <miningFrom />
@@ -783,7 +783,7 @@
   </Item>
   <Item>
     <id>5003</id>
-    <name>物流ボット</name>
+    <name>配送ボット</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -805,7 +805,7 @@
   </Item>
   <Item>
     <id>5002</id>
-    <name>物流船</name>
+    <name>星間輸送船</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -816,7 +816,7 @@
   </Item>
   <Item>
     <id>1125</id>
-    <name>フレーム材料</name>
+    <name>フレーム材</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -827,7 +827,7 @@
   </Item>
   <Item>
     <id>1502</id>
-    <name>ダイソンスフィアの部品</name>
+    <name>ダイソンスフィアパーツ</name>
     <count>0</count>
     <Type>Component</Type>
     <miningFrom />
@@ -849,7 +849,7 @@
   </Item>
   <Item>
     <id>1131</id>
-    <name>土台</name>
+    <name>ベース</name>
     <count>0</count>
     <Type>Decoration</Type>
     <miningFrom />
@@ -860,7 +860,7 @@
   </Item>
   <Item>
     <id>1141</id>
-    <name>増産剤 Mk.I</name>
+    <name>増産剤 Mk.I</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -871,7 +871,7 @@
   </Item>
   <Item>
     <id>1142</id>
-    <name>増産剤 Mk.II</name>
+    <name>増産剤 Mk.II</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -882,7 +882,7 @@
   </Item>
   <Item>
     <id>1143</id>
-    <name>増産剤 Mk.III</name>
+    <name>増産剤 Mk.III</name>
     <count>0</count>
     <Type>Material</Type>
     <miningFrom />
@@ -893,7 +893,7 @@
   </Item>
   <Item>
     <id>1601</id>
-    <name>マグナム弾の弾薬箱</name>
+    <name>マグナム弾薬箱</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -904,7 +904,7 @@
   </Item>
   <Item>
     <id>1602</id>
-    <name>チタン弾の弾薬箱</name>
+    <name>チタン弾薬箱</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -915,7 +915,7 @@
   </Item>
   <Item>
     <id>1603</id>
-    <name>超合金弾の弾薬箱</name>
+    <name>超合金弾薬箱</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -937,7 +937,7 @@
   </Item>
   <Item>
     <id>1605</id>
-    <name>高爆発性砲弾セット</name>
+    <name>高爆発砲弾セット</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -948,7 +948,7 @@
   </Item>
   <Item>
     <id>1606</id>
-    <name>結晶性砲弾セット</name>
+    <name>結晶砲弾セット</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -1003,7 +1003,7 @@
   </Item>
   <Item>
     <id>1611</id>
-    <name>重力ミサイルセット</name>
+    <name>引力ミサイルセット</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -1014,7 +1014,7 @@
   </Item>
   <Item>
     <id>1612</id>
-    <name>妨害カプセル</name>
+    <name>ジャマーカプセル</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -1069,7 +1069,7 @@
   </Item>
   <Item>
     <id>5111</id>
-    <name>コルベット</name>
+    <name>護衛艦</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -1080,7 +1080,7 @@
   </Item>
   <Item>
     <id>5112</id>
-    <name>デストロイヤー</name>
+    <name>駆逐艦</name>
     <count>0</count>
     <Type>Product</Type>
     <miningFrom />
@@ -1091,7 +1091,7 @@
   </Item>
   <Item>
     <id>5201</id>
-    <name>ダークフォグマトリックス</name>
+    <name>ダークフォグマトリクス</name>
     <count>0</count>
     <Type>DarkFog</Type>
     <miningFrom>ダークフォグの残骸</miningFrom>
@@ -1102,7 +1102,7 @@
   </Item>
   <Item>
     <id>5202</id>
-    <name>ケイ素ニューロン</name>
+    <name>シリコンニューロン</name>
     <count>0</count>
     <Type>DarkFog</Type>
     <miningFrom>ダークフォグの残骸</miningFrom>
@@ -1113,7 +1113,7 @@
   </Item>
   <Item>
     <id>5203</id>
-    <name>物質再結合器</name>
+    <name>物質再構成機</name>
     <count>0</count>
     <Type>DarkFog</Type>
     <miningFrom>ダークフォグの残骸</miningFrom>
@@ -1157,7 +1157,7 @@
   </Item>
   <Item>
     <id>2001</id>
-    <name>コンベアベルトMK.I</name>
+    <name>ベルトコンベア</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -1168,7 +1168,7 @@
   </Item>
   <Item>
     <id>2002</id>
-    <name>コンベアベルトMK.II</name>
+    <name>高速ベルトコンベア</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -1179,7 +1179,7 @@
   </Item>
   <Item>
     <id>2003</id>
-    <name>コンベアベルト MK.III</name>
+    <name>超速ベルトコンベア</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -1201,7 +1201,7 @@
   </Item>
   <Item>
     <id>2101</id>
-    <name>ストレージMK.I</name>
+    <name>小型貯蔵庫</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -1212,7 +1212,7 @@
   </Item>
   <Item>
     <id>2102</id>
-    <name>ストレージMK.II</name>
+    <name>大型貯蔵庫</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
@@ -1311,7 +1311,7 @@
   </Item>
   <Item>
     <id>2205</id>
-    <name>ソーラーパネル</name>
+    <name>恒星光パネル</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
@@ -1333,18 +1333,18 @@
   </Item>
   <Item>
     <id>2207</id>
-    <name>蓄電器 (満充電)</name>
+    <name>蓄電器（満）</name>
     <count>0</count>
     <Type>Logistics</Type>
     <miningFrom />
-    <produceFrom>エネルギー交換器</produceFrom>
+    <produceFrom>エネルギー中枢</produceFrom>
     <isRaw>true</isRaw>
     <isFluid>false</isFluid>
     <HeatValue>540000000</HeatValue>
   </Item>
   <Item>
     <id>2208</id>
-    <name>γ線レシーバー</name>
+    <name>放射線レシーバー</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
@@ -1355,7 +1355,7 @@
   </Item>
   <Item>
     <id>2210</id>
-    <name>人工恒星</name>
+    <name>人造恒星</name>
     <count>0</count>
     <Type>Production</Type>
     <miningFrom />
@@ -1388,7 +1388,7 @@
   </Item>
   <Item>
     <id>6001</id>
-    <name>電磁マトリックス</name>
+    <name>電磁マトリクス</name>
     <count>0</count>
     <Type>Matrix</Type>
     <miningFrom />
@@ -1399,7 +1399,7 @@
   </Item>
   <Item>
     <id>6002</id>
-    <name>エネルギーマトリックス</name>
+    <name>エネルギーマトリクス</name>
     <count>0</count>
     <Type>Matrix</Type>
     <miningFrom />
@@ -1410,7 +1410,7 @@
   </Item>
   <Item>
     <id>6003</id>
-    <name>構造マトリックス</name>
+    <name>構造マトリクス</name>
     <count>0</count>
     <Type>Matrix</Type>
     <miningFrom />
@@ -1421,7 +1421,7 @@
   </Item>
   <Item>
     <id>6004</id>
-    <name>情報マトリックス</name>
+    <name>情報マトリクス</name>
     <count>0</count>
     <Type>Matrix</Type>
     <miningFrom />
@@ -1432,7 +1432,7 @@
   </Item>
   <Item>
     <id>6005</id>
-    <name>重力マトリックス</name>
+    <name>引力マトリクス</name>
     <count>0</count>
     <Type>Matrix</Type>
     <miningFrom />
@@ -1443,7 +1443,7 @@
   </Item>
   <Item>
     <id>6006</id>
-    <name>宇宙マトリックス</name>
+    <name>宇宙マトリクス</name>
     <count>0</count>
     <Type>Matrix</Type>
     <miningFrom />
@@ -1454,7 +1454,7 @@
   </Item>
   <Item>
     <id>1099</id>
-    <name>土壌</name>
+    <name>土砂</name>
     <count>0</count>
     <Type>Resource</Type>
     <miningFrom />
