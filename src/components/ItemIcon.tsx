@@ -85,8 +85,9 @@ export function ItemIcon({
             backgroundRepeat: "no-repeat",
             imageRendering: "auto",
           }}
-          role="img"
-          aria-label={alt}
+          role={alt ? "img" : undefined}
+          aria-label={alt || undefined}
+          aria-hidden={alt ? undefined : true}
           title={alt}
           data-testid={dataTestId}
           data-prefer-recipes={preferRecipes ? "true" : "false"}

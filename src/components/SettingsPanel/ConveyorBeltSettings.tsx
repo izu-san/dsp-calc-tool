@@ -105,37 +105,46 @@ export function ConveyorBeltSettings() {
 
       {/* Belt Tier Selection */}
       <div>
-        <label className="block text-sm font-medium text-neon-cyan mb-2">{t("beltTier")}</label>
+        <label className="block text-sm font-medium text-space-100 mb-2">{t("beltTier")}</label>
         <div className="grid grid-cols-3 gap-2">
           {CONVEYOR_BELT_OPTIONS.map(option => (
             <button
               key={option.tier}
               data-testid={`conveyor-belt-button-${option.tier}`}
               onClick={() => setConveyorBelt(option.tier, conveyorBelt.stackCount)}
+              aria-pressed={conveyorBelt.tier === option.tier}
               className={cn(
-                "px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                "relative px-2 py-3 text-xs font-medium rounded-md border transition-colors",
                 conveyorBelt.tier === option.tier &&
                   option.color === "yellow" &&
                   cn(
-                    "bg-neon-yellow/30 text-white border-neon-yellow backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.yellowStrong
                   ),
                 conveyorBelt.tier === option.tier &&
                   option.color === "blue" &&
                   cn(
-                    "bg-neon-blue/30 text-white border-neon-blue backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.blueStrong
                   ),
                 conveyorBelt.tier === option.tier &&
                   option.color === "purple" &&
                   cn(
-                    "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.purpleStrong
                   ),
                 conveyorBelt.tier !== option.tier &&
-                  "bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan"
+                  "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
               )}
             >
+              {conveyorBelt.tier === option.tier && (
+                <span
+                  className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+              )}
               <div className="flex flex-col items-center gap-1">
                 <ItemIcon itemId={option.iconId} size={28} />
                 <span className="font-semibold text-[10px]">{option.label}</span>
@@ -148,24 +157,30 @@ export function ConveyorBeltSettings() {
 
       {/* Stack Count Selection */}
       <div>
-        <label className="block text-sm font-medium text-neon-green mb-2">{t("stackCount")}</label>
+        <label className="block text-sm font-medium text-space-100 mb-2">{t("stackCount")}</label>
         <div className="grid grid-cols-4 gap-2">
           {[1, 2, 3, 4].map(count => (
             <button
               key={count}
               data-testid={`conveyor-belt-stack-button-${count}`}
               onClick={() => handleStackCountChange(count)}
+              aria-pressed={conveyorBelt.stackCount === count}
               className={cn(
-                "px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-110",
+                "relative px-3 py-2 text-sm font-medium rounded-md border transition-colors",
                 conveyorBelt.stackCount === count &&
                   cn(
-                    "bg-neon-green/30 text-white border-neon-green backdrop-blur-sm font-bold scale-110",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.greenStrong
                   ),
                 conveyorBelt.stackCount !== count &&
-                  "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green"
+                  "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
               )}
             >
+              {conveyorBelt.stackCount === count && (
+                <span className="absolute top-1 right-1 text-primary-200" aria-hidden="true">
+                  ✓
+                </span>
+              )}
               ×{count}
             </button>
           ))}
@@ -174,13 +189,13 @@ export function ConveyorBeltSettings() {
 
       <div
         className={cn(
-          "bg-neon-cyan/10 rounded-lg p-3 border border-neon-cyan/40 backdrop-blur-sm",
+          "bg-dark-800/60 rounded-md p-3 border border-space-700/70",
           CARD_GLOW.cyanLight
         )}
       >
-        <div className="text-xs font-semibold text-neon-cyan mb-1">{t("totalBeltSpeed")}</div>
+        <div className="text-xs font-semibold text-space-100 mb-1">{t("totalBeltSpeed")}</div>
         <div className="text-sm text-white">
-          <span className="font-bold text-neon-cyan">{totalSpeed}</span> {t("itemsPerSecond")}
+          <span className="font-semibold text-primary-200">{totalSpeed}</span> {t("itemsPerSecond")}
           {stackCount > 1 && (
             <span className="text-xs ml-2 text-space-200">
               ({speed}/s × {stackCount})
@@ -191,43 +206,52 @@ export function ConveyorBeltSettings() {
 
       {/* Sorter Rank Selection */}
       <div>
-        <label className="block text-sm font-medium text-neon-orange mb-2">{t("sorterRank")}</label>
+        <label className="block text-sm font-medium text-space-100 mb-2">{t("sorterRank")}</label>
         <div className="grid grid-cols-4 gap-2">
           {SORTER_OPTIONS.map(option => (
             <button
               key={option.tier}
               data-testid={`sorter-button-${option.tier}`}
               onClick={() => setSorter(option.tier)}
+              aria-pressed={sorter.tier === option.tier}
               className={cn(
-                "px-2 py-3 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                "relative px-2 py-3 text-xs font-medium rounded-md border transition-colors",
                 sorter.tier === option.tier &&
                   option.color === "yellow" &&
                   cn(
-                    "bg-neon-yellow/30 text-white border-neon-yellow backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.yellowStrong
                   ),
                 sorter.tier === option.tier &&
                   option.color === "blue" &&
                   cn(
-                    "bg-neon-blue/30 text-white border-neon-blue backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.blueStrong
                   ),
                 sorter.tier === option.tier &&
                   option.color === "purple" &&
                   cn(
-                    "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.purpleStrong
                   ),
                 sorter.tier === option.tier &&
                   option.color === "green" &&
                   cn(
-                    "bg-neon-green/30 text-white border-neon-green backdrop-blur-sm font-bold scale-105",
+                    "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                     NEON_GLOW.greenStrong
                   ),
                 sorter.tier !== option.tier &&
-                  "bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange"
+                  "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
               )}
             >
+              {sorter.tier === option.tier && (
+                <span
+                  className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+              )}
               <div className="flex flex-col items-center gap-1">
                 <ItemIcon itemId={option.iconId} size={24} />
                 <span className="font-semibold text-[10px]">{t(option.labelKey)}</span>

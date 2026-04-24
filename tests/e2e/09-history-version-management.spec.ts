@@ -149,8 +149,8 @@ test.describe("履歴・バージョン管理機能", () => {
       // Undo が実行されたことを確認（増産剤がなしに戻る）
       // 設定パネルで「なし」ボタンが選択されていることを確認
       const noneButton = appPage.getByTestId("proliferator-type-button-none");
-      // 選択されたボタンには特定のCSSクラスが付与される
-      await expect(noneButton).toHaveClass(/bg-neon-magenta\/30/);
+      await expect(noneButton).toHaveAttribute("aria-pressed", "true");
+      await expect(noneButton).toContainText("✓");
 
       // Redo ボタンが有効になる
       await expect(redoButton).toBeEnabled();
@@ -708,7 +708,7 @@ test.describe("履歴・バージョン管理機能", () => {
       }
 
       // 2. お気に入り登録
-      const favoriteButton = appPage.getByRole("button", { name: /お気に入りに追加/ });
+      const favoriteButton = appPage.getByTestId("favorite-button-1101");
       if (await favoriteButton.isVisible()) {
         await favoriteButton.click();
         await appPage.waitForTimeout(300);

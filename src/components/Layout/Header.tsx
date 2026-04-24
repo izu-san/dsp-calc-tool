@@ -18,16 +18,17 @@ export function Header() {
   const { t } = useTranslation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-dark-600/90 shadow-panel border-b border-neon-blue/30">
-      {/* Animated background line */}
+    <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-dark-600/95 border-b border-space-700/80">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neon-cyan to-transparent opacity-50 animate-pulse-slow"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-space-500/35"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className={cn("text-2xl font-bold text-white animate-fadeIn", TEXT_GLOW.cyan)}>
+            <h1
+              className={cn("text-xl font-semibold tracking-normal text-space-50", TEXT_GLOW.cyan)}
+            >
               {t("title")}
             </h1>
           </div>

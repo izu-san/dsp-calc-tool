@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Dyson Sphere Program SF Theme - Global Styles */
+/* Dyson Sphere Program operational space theme - Global Styles */
 
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
@@ -29,22 +29,17 @@
   color: #ffffff;
 }
 
-/* Base body styling with space background */
 body {
-  background: #0d1117;
+  background: #080c12;
   background-image:
-    radial-gradient(circle at 20% 30%, rgba(0, 136, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(0, 217, 255, 0.03) 0%, transparent 70%);
+    radial-gradient(circle at 18% 12%, rgba(41, 98, 146, 0.14) 0%, transparent 34%),
+    linear-gradient(180deg, #0b1118 0%, #080c12 48%, #06080d 100%);
   background-attachment: fixed;
   color: #e8ecf1;
 }
 
-/* Glowing text effect utility class */
 .text-glow {
-  text-shadow:
-    0 0 10px rgba(0, 136, 255, 0.5),
-    0 0 20px rgba(0, 136, 255, 0.3);
+  text-shadow: none;
 }
 
 /* Node detail panel animation */
@@ -63,22 +58,18 @@ body {
   animation: fadeInSlideDown 0.2s ease-out forwards;
 }
 
-/* Hologram panel effect */
 .hologram-panel {
-  background: rgba(13, 17, 23, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 136, 255, 0.2);
-  box-shadow:
-    0 0 20px rgba(0, 136, 255, 0.1),
-    inset 0 0 20px rgba(0, 136, 255, 0.03);
+  background: rgba(10, 16, 24, 0.88);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(116, 147, 177, 0.18);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
 }
 
-/* Grid background pattern */
 .grid-bg {
   background-image:
-    linear-gradient(to right, rgba(0, 136, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 136, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
+    linear-gradient(to right, rgba(122, 157, 191, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(122, 157, 191, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 /* Scanline effect for retro-futuristic look */
@@ -97,7 +88,7 @@ body {
   background: linear-gradient(
     to bottom,
     transparent 50%,
-    rgba(0, 136, 255, 0.02) 51%,
+    rgba(122, 157, 191, 0.018) 51%,
     transparent 52%
   );
   background-size: 100% 4px;
@@ -119,22 +110,17 @@ body {
 }
 
 .energy-pulse {
-  animation: energy-pulse 2s ease-in-out infinite;
+  animation: none;
 }
 
-/* Neon border effect */
 .neon-border {
-  border: 1px solid rgba(0, 136, 255, 0.4);
-  box-shadow:
-    0 0 5px rgba(0, 136, 255, 0.3),
-    inset 0 0 5px rgba(0, 136, 255, 0.1);
+  border: 1px solid rgba(122, 157, 191, 0.28);
+  box-shadow: none;
 }
 
 .neon-border:hover {
-  border-color: rgba(0, 136, 255, 0.6);
-  box-shadow:
-    0 0 10px rgba(0, 136, 255, 0.5),
-    inset 0 0 10px rgba(0, 136, 255, 0.2);
+  border-color: rgba(135, 173, 209, 0.45);
+  box-shadow: none;
 }
 
 /* Smooth transitions */
@@ -190,19 +176,19 @@ body {
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.18s ease-out;
 }
 
 .animate-fadeInScale {
-  animation: fadeInScale 0.4s ease-out;
+  animation: fadeInScale 0.16s ease-out;
 }
 
 .animate-slideInRight {
-  animation: slideInFromRight 0.5s ease-out;
+  animation: none;
 }
 
 .animate-slideInLeft {
-  animation: slideInFromLeft 0.5s ease-out;
+  animation: none;
 }
 
 /* Ripple effect */
@@ -223,22 +209,11 @@ body {
 }
 
 .ripple-effect::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(0, 217, 255, 0.5);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
+  content: none;
 }
 
 .ripple-effect:active::after {
-  width: 100px;
-  height: 100px;
-  animation: ripple 0.6s ease-out;
+  animation: none;
 }
 
 /* Data stream effect */
@@ -320,19 +295,19 @@ body {
 /* Hover lift effect */
 .hover-lift {
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .hover-lift:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 136, 255, 0.3);
+  transform: none;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
 }
 
 /* フォーカスインジケーター */
 *:focus-visible {
-  outline: 2px solid rgba(0, 217, 255, 0.8);
-  outline-offset: 2px;
+  outline: 2px solid rgba(104, 179, 232, 0.95);
+  outline-offset: 3px;
   border-radius: 2px;
 }
 
@@ -341,5 +316,16 @@ button:focus-visible,
 a:focus-visible {
   outline: 2px solid rgba(0, 217, 255, 0.8);
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(104, 179, 232, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

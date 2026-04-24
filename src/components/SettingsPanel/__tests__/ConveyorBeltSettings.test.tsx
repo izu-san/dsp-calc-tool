@@ -66,8 +66,9 @@ describe("ConveyorBeltSettings", () => {
       render(<ConveyorBeltSettings />);
 
       const mk1Button = screen.getByText("Mk.I").closest("button");
-      expect(mk1Button).toHaveClass("bg-neon-yellow/30");
-      expect(mk1Button).toHaveClass("border-neon-yellow");
+      expect(mk1Button).toHaveAttribute("aria-pressed", "true");
+      expect(mk1Button).toHaveClass("ring-1", "border-primary-300");
+      expect(mk1Button).toHaveTextContent("✓");
     });
 
     it("Mk.II Tierを選択できる", () => {
@@ -128,8 +129,9 @@ describe("ConveyorBeltSettings", () => {
       render(<ConveyorBeltSettings />);
 
       const stackButton = screen.getByText("×1").closest("button");
-      expect(stackButton).toHaveClass("bg-neon-green/30");
-      expect(stackButton).toHaveClass("border-neon-green");
+      expect(stackButton).toHaveAttribute("aria-pressed", "true");
+      expect(stackButton).toHaveClass("ring-1", "border-primary-300");
+      expect(stackButton).toHaveTextContent("✓");
     });
 
     it("stackCountを2に変更できる", () => {
@@ -349,32 +351,32 @@ describe("ConveyorBeltSettings", () => {
   });
 
   describe("UI Interaction", () => {
-    it("Tier選択ボタンがホバー可能である", () => {
+    it("Tier選択ボタンがホバー状態を持つ", () => {
       render(<ConveyorBeltSettings />);
 
       const mk2Button = screen.getByText("Mk.II").closest("button");
-      expect(mk2Button).toHaveClass("hover:scale-105");
+      expect(mk2Button).toHaveClass("transition-colors");
     });
 
-    it("stackCountボタンがホバー可能である", () => {
+    it("stackCountボタンがホバー状態を持つ", () => {
       render(<ConveyorBeltSettings />);
 
       const stack2Button = screen.getByText("×2").closest("button");
-      expect(stack2Button).toHaveClass("hover:scale-110");
+      expect(stack2Button).toHaveClass("transition-colors");
     });
 
-    it("選択されたTierが視覚的に強調される（scale-105）", () => {
+    it("選択されたTierが視覚的に強調される", () => {
       render(<ConveyorBeltSettings />);
 
       const mk1Button = screen.getByText("Mk.I").closest("button");
-      expect(mk1Button).toHaveClass("scale-105");
+      expect(mk1Button).toHaveClass("ring-1", "border-primary-300");
     });
 
-    it("選択されたstackCountが視覚的に強調される（scale-110）", () => {
+    it("選択されたstackCountが視覚的に強調される", () => {
       render(<ConveyorBeltSettings />);
 
       const stack1Button = screen.getByText("×1").closest("button");
-      expect(stack1Button).toHaveClass("scale-110");
+      expect(stack1Button).toHaveClass("ring-1", "border-primary-300");
     });
   });
 
@@ -396,8 +398,9 @@ describe("ConveyorBeltSettings", () => {
       render(<ConveyorBeltSettings />);
 
       const mk1Button = screen.getByTestId("sorter-button-mk1");
-      expect(mk1Button).toHaveClass("bg-neon-yellow/30");
-      expect(mk1Button).toHaveClass("border-neon-yellow");
+      expect(mk1Button).toHaveAttribute("aria-pressed", "true");
+      expect(mk1Button).toHaveClass("ring-1", "border-primary-300");
+      expect(mk1Button).toHaveTextContent("✓");
     });
 
     it("Mk.II ソーターランクを選択できる", () => {
@@ -447,8 +450,9 @@ describe("ConveyorBeltSettings", () => {
       render(<ConveyorBeltSettings />);
 
       const mk3Button = screen.getByTestId("sorter-button-mk3");
-      expect(mk3Button).toHaveClass("bg-neon-purple/30");
-      expect(mk3Button).toHaveClass("border-neon-purple");
+      expect(mk3Button).toHaveAttribute("aria-pressed", "true");
+      expect(mk3Button).toHaveClass("ring-1", "border-primary-300");
+      expect(mk3Button).toHaveTextContent("✓");
     });
   });
 });

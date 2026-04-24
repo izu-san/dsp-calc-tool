@@ -107,7 +107,7 @@ describe("RecipeSelector", () => {
     expect(searchInput).toHaveValue("iron");
 
     // クリアボタンをクリック
-    const clearButton = screen.getByRole("button", { name: "✕" });
+    const clearButton = screen.getByRole("button", { name: "clear" });
     fireEvent.click(clearButton);
 
     await waitFor(() => {
@@ -121,7 +121,7 @@ describe("RecipeSelector", () => {
     );
 
     // カテゴリボタンが存在することを確認
-    const categoryButtons = container.querySelectorAll('button[role="tab"]');
+    const categoryButtons = container.querySelectorAll("button");
     expect(categoryButtons.length).toBeGreaterThan(0);
   });
 
@@ -250,7 +250,8 @@ describe("RecipeSelector", () => {
     fireEvent.click(smeltButton);
 
     // カテゴリが選択されたことを確認
-    expect(smeltButton).toHaveClass("bg-neon-blue/40");
+    expect(smeltButton).toHaveAttribute("aria-pressed", "true");
+    expect(smeltButton).toHaveClass("bg-primary-900/45");
   });
 
   it("お気に入りフィルタが正しく動作する", () => {
@@ -270,7 +271,8 @@ describe("RecipeSelector", () => {
     fireEvent.click(favoritesButton);
 
     // お気に入りフィルタが有効になったことを確認
-    expect(favoritesButton).toHaveClass("bg-neon-yellow/40");
+    expect(favoritesButton).toHaveAttribute("aria-pressed", "true");
+    expect(favoritesButton).toHaveClass("bg-space-600/80");
   });
 
   it("検索クエリが2文字未満の場合はサジェスチョンを表示しない", async () => {
@@ -340,7 +342,7 @@ describe("RecipeSelector", () => {
     fireEvent.click(buildingsTab);
 
     // Buildings タブが選択されたことを確認
-    expect(buildingsTab).toHaveClass("data-[state=active]:text-neon-cyan");
+    expect(buildingsTab).toHaveClass("data-[state=active]:text-primary-100");
   });
 
   it("検索クエリが空の場合は全てのレシピが表示される", () => {

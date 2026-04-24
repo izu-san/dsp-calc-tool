@@ -297,11 +297,7 @@ describe("App smoke", () => {
         }),
       }));
     });
-    expect(
-      screen.getByText((content, element) => {
-        return element?.textContent === "⚠ エラーが発生しました";
-      })
-    ).toBeInTheDocument();
+    expect(screen.getByText("エラーが発生しました")).toBeInTheDocument();
     expect(screen.getByText("Test error message")).toBeInTheDocument();
   });
 
@@ -461,7 +457,7 @@ describe("App smoke", () => {
       }));
     });
 
-    const statisticsTab = await screen.findByRole("button", { name: "統計" });
+    const statisticsTab = await screen.findByRole("tab", { name: "統計" });
     fireEvent.click(statisticsTab);
 
     await waitFor(() => {
@@ -513,7 +509,7 @@ describe("App smoke", () => {
       }));
     });
 
-    const buildingCostTab = await screen.findByRole("button", { name: "建設コスト" });
+    const buildingCostTab = await screen.findByRole("tab", { name: "建設コスト" });
     fireEvent.click(buildingCostTab);
 
     await waitFor(() => {
@@ -565,7 +561,7 @@ describe("App smoke", () => {
       }));
     });
 
-    const productionTreeTab = await screen.findByRole("button", { name: "生産チェーン" });
+    const productionTreeTab = await screen.findByRole("tab", { name: "生産チェーン" });
     fireEvent.click(productionTreeTab);
 
     await waitFor(() => {

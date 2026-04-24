@@ -171,8 +171,7 @@ describe("ProliferatorSettings", () => {
 
     render(<ProliferatorSettings />);
 
-    const buttons = screen.getAllByText(/productionMode/);
-    const productionButton = buttons.find(el => el.textContent?.includes("🏭"))?.closest("button");
+    const productionButton = screen.getByTestId("proliferator-mode-button-production");
     expect(productionButton).toBeDisabled();
   });
 

@@ -39,15 +39,6 @@ const MACHINE_OPTIONS: Record<string, MachineOption[]> = {
   ],
 };
 
-const MACHINE_ICONS: Record<string, string> = {
-  Smelt: "🔥",
-  Assemble: "⚙️",
-  Chemical: "🧪",
-  Research: "🔬",
-  Refine: "🛢️",
-  Particle: "⚛️",
-};
-
 export function MachineRankSettings() {
   const { t } = useTranslation();
   const { settings, setMachineRank } = useSettingsStore();
@@ -78,8 +69,8 @@ export function MachineRankSettings() {
       <div className="space-y-4">
         {/* Smelter */}
         <div>
-          <label className="block text-sm font-medium text-neon-orange mb-2">
-            {MACHINE_ICONS.Smelt} {MACHINE_LABELS_I18N.Smelt}
+          <label className="block text-sm font-medium text-space-100 mb-2">
+            {MACHINE_LABELS_I18N.Smelt}
           </label>
           <div className="grid grid-cols-3 gap-2">
             {MACHINE_OPTIONS.Smelt.map(option => (
@@ -87,17 +78,26 @@ export function MachineRankSettings() {
                 key={option.value}
                 data-testid={`machine-rank-button-smelt-${option.value}`}
                 onClick={() => handleRankChange("Smelt", option.value as SmelterRank)}
+                aria-pressed={machineRank.Smelt === option.value}
                 className={cn(
-                  "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  "relative px-2 py-2 text-xs font-medium rounded-md border transition-colors",
                   machineRank.Smelt === option.value &&
                     cn(
-                      "bg-neon-orange/30 text-white border-neon-orange backdrop-blur-sm font-bold scale-105",
+                      "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                       NEON_GLOW.orangeStrong
                     ),
                   machineRank.Smelt !== option.value &&
-                    "bg-dark-700/50 text-space-200 border-neon-orange/20 hover:bg-neon-orange/10 hover:border-neon-orange/50 hover:text-neon-orange"
+                    "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
                 )}
               >
+                {machineRank.Smelt === option.value && (
+                  <span
+                    className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                )}
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">
@@ -114,8 +114,8 @@ export function MachineRankSettings() {
 
         {/* Assembler */}
         <div>
-          <label className="block text-sm font-medium text-neon-blue mb-2">
-            {MACHINE_ICONS.Assemble} {MACHINE_LABELS_I18N.Assemble}
+          <label className="block text-sm font-medium text-space-100 mb-2">
+            {MACHINE_LABELS_I18N.Assemble}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {MACHINE_OPTIONS.Assemble.map(option => (
@@ -123,17 +123,26 @@ export function MachineRankSettings() {
                 key={option.value}
                 data-testid={`machine-rank-button-assemble-${option.value}`}
                 onClick={() => handleRankChange("Assemble", option.value as AssemblerRank)}
+                aria-pressed={machineRank.Assemble === option.value}
                 className={cn(
-                  "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  "relative px-2 py-2 text-xs font-medium rounded-md border transition-colors",
                   machineRank.Assemble === option.value &&
                     cn(
-                      "bg-neon-blue/30 text-white border-neon-blue backdrop-blur-sm font-bold scale-105",
+                      "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                       NEON_GLOW.blueStrong
                     ),
                   machineRank.Assemble !== option.value &&
-                    "bg-dark-700/50 text-space-200 border-neon-blue/20 hover:bg-neon-blue/10 hover:border-neon-blue/50 hover:text-neon-blue"
+                    "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
                 )}
               >
+                {machineRank.Assemble === option.value && (
+                  <span
+                    className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                )}
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">
@@ -150,8 +159,8 @@ export function MachineRankSettings() {
 
         {/* Chemical Plant */}
         <div>
-          <label className="block text-sm font-medium text-neon-green mb-2">
-            {MACHINE_ICONS.Chemical} {MACHINE_LABELS_I18N.Chemical}
+          <label className="block text-sm font-medium text-space-100 mb-2">
+            {MACHINE_LABELS_I18N.Chemical}
           </label>
           <div className="grid grid-cols-2 gap-2">
             {MACHINE_OPTIONS.Chemical.map(option => (
@@ -159,17 +168,26 @@ export function MachineRankSettings() {
                 key={option.value}
                 data-testid={`machine-rank-button-chemical-${option.value}`}
                 onClick={() => handleRankChange("Chemical", option.value as ChemicalPlantRank)}
+                aria-pressed={machineRank.Chemical === option.value}
                 className={cn(
-                  "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  "relative px-2 py-2 text-xs font-medium rounded-md border transition-colors",
                   machineRank.Chemical === option.value &&
                     cn(
-                      "bg-neon-green/30 text-white border-neon-green backdrop-blur-sm font-bold scale-105",
+                      "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                       NEON_GLOW.greenStrong
                     ),
                   machineRank.Chemical !== option.value &&
-                    "bg-dark-700/50 text-space-200 border-neon-green/20 hover:bg-neon-green/10 hover:border-neon-green/50 hover:text-neon-green"
+                    "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
                 )}
               >
+                {machineRank.Chemical === option.value && (
+                  <span
+                    className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                )}
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">
@@ -186,8 +204,8 @@ export function MachineRankSettings() {
 
         {/* Matrix Lab */}
         <div>
-          <label className="block text-sm font-medium text-neon-purple mb-2">
-            {MACHINE_ICONS.Research} {MACHINE_LABELS_I18N.Research}
+          <label className="block text-sm font-medium text-space-100 mb-2">
+            {MACHINE_LABELS_I18N.Research}
           </label>
           <div className="grid grid-cols-2 gap-2">
             {MACHINE_OPTIONS.Research.map(option => (
@@ -195,17 +213,26 @@ export function MachineRankSettings() {
                 key={option.value}
                 data-testid={`machine-rank-button-research-${option.value}`}
                 onClick={() => handleRankChange("Research", option.value as MatrixLabRank)}
+                aria-pressed={machineRank.Research === option.value}
                 className={cn(
-                  "px-2 py-2 text-xs font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  "relative px-2 py-2 text-xs font-medium rounded-md border transition-colors",
                   machineRank.Research === option.value &&
                     cn(
-                      "bg-neon-purple/30 text-white border-neon-purple backdrop-blur-sm font-bold scale-105",
+                      "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                       NEON_GLOW.purpleStrong
                     ),
                   machineRank.Research !== option.value &&
-                    "bg-dark-700/50 text-space-200 border-neon-purple/20 hover:bg-neon-purple/10 hover:border-neon-purple/50 hover:text-neon-purple"
+                    "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
                 )}
               >
+                {machineRank.Research === option.value && (
+                  <span
+                    className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                )}
                 <div className="flex flex-col items-center gap-1">
                   <ItemIcon itemId={option.iconId} size={28} />
                   <span className="font-semibold text-[10px] leading-tight text-center">

@@ -82,39 +82,38 @@ function RecipeCell({ recipe, isSelected, onClick }: RecipeCellProps) {
   return (
     <div className="relative aspect-square group">
       {/* Favorite Star Button */}
-      <div
+      <button
+        type="button"
         data-testid={`favorite-button-${recipe.SID}`}
         onClick={handleFavoriteClick}
+        aria-pressed={isFavorite(recipe.SID)}
+        aria-label={isFavorite(recipe.SID) ? t("removeFromFavorites") : t("addToFavorites")}
         className={cn(
-          "absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10 rounded-bl text-xs transition-all cursor-pointer hover:scale-110",
+          "absolute top-0 right-0 w-6 h-6 flex items-center justify-center z-10 rounded-bl text-xs transition-colors cursor-pointer",
           {
-            "bg-neon-yellow/80 backdrop-blur-sm text-white opacity-100": isFavorite(recipe.SID),
-            "bg-dark-700/50 text-space-400 opacity-0 group-hover:opacity-100": !isFavorite(
-              recipe.SID
-            ),
-          },
-          isFavorite(recipe.SID)
-            ? "shadow-[0_0_10px_rgba(255,215,0,0.5)] hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]"
-            : ""
+            "bg-space-500/90 text-white opacity-100": isFavorite(recipe.SID),
+            "bg-dark-700/80 text-space-300 opacity-0 group-hover:opacity-100 focus:opacity-100":
+              !isFavorite(recipe.SID),
+          }
         )}
         title={isFavorite(recipe.SID) ? t("removeFromFavorites") : t("addToFavorites")}
       >
-        ⭐
-      </div>
+        <span aria-hidden="true">★</span>
+      </button>
 
       {/* Recipe Button */}
       <button
         data-testid={`recipe-button-${recipe.SID}`}
         onClick={onClick}
+        aria-pressed={isSelected}
         className={cn(
-          "w-full h-full rounded border-2 transition-all ripple-effect focus:outline-none focus:ring-2 focus:ring-neon-blue focus:ring-offset-1",
+          "w-full h-full rounded-md border transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-1 focus:ring-offset-dark-800",
           {
-            "border-neon-cyan bg-neon-cyan/20 backdrop-blur-sm scale-105": isSelected,
-            "border-neon-blue/20 bg-dark-700/50 backdrop-blur-sm": !isSelected,
+            "border-primary-300 bg-primary-900/35": isSelected,
+            "border-space-700 bg-dark-700/60": !isSelected,
           },
           isSelected ? NEON_GLOW.cyan : "",
-          !isSelected &&
-            "hover:border-neon-cyan/50 hover:scale-105 hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]"
+          !isSelected && "hover:border-space-500 hover:bg-dark-600/70"
         )}
         title={recipe.name}
       >

@@ -10,33 +10,33 @@
  * ボックスシャドウ用の定義
  */
 export const NEON_GLOW = {
-  cyan: "shadow-[0_0_20px_rgba(0,217,255,0.3)]",
-  cyanStrong: "shadow-[0_0_25px_rgba(0,217,255,0.4)]",
-  blue: "shadow-[0_0_20px_rgba(0,136,255,0.3)]",
-  blueStrong: "shadow-[0_0_25px_rgba(0,136,255,0.4)]",
-  purple: "shadow-[0_0_20px_rgba(168,85,247,0.3)]",
-  purpleStrong: "shadow-[0_0_25px_rgba(168,85,247,0.4)]",
-  green: "shadow-[0_0_20px_rgba(0,255,136,0.3)]",
-  greenStrong: "shadow-[0_0_25px_rgba(0,255,136,0.4)]",
-  orange: "shadow-[0_0_20px_rgba(255,107,53,0.3)]",
-  orangeStrong: "shadow-[0_0_25px_rgba(255,107,53,0.4)]",
-  yellow: "shadow-[0_0_20px_rgba(255,215,0,0.3)]",
-  yellowStrong: "shadow-[0_0_20px_rgba(255,215,0,0.6)]",
-  red: "shadow-[0_0_20px_rgba(255,0,0,0.3)]",
-  redStrong: "shadow-[0_0_20px_rgba(255,0,0,0.6)]",
+  cyan: "shadow-none",
+  cyanStrong: "shadow-none",
+  blue: "shadow-none",
+  blueStrong: "shadow-none",
+  purple: "shadow-none",
+  purpleStrong: "shadow-none",
+  green: "shadow-none",
+  greenStrong: "shadow-none",
+  orange: "shadow-none",
+  orangeStrong: "shadow-none",
+  yellow: "shadow-none",
+  yellowStrong: "shadow-none",
+  red: "shadow-none",
+  redStrong: "shadow-none",
 } as const;
 
 /**
  * テキストドロップシャドウ
  */
 export const TEXT_GLOW = {
-  cyan: "drop-shadow-[0_0_4px_rgba(0,217,255,0.6)]",
-  blue: "drop-shadow-[0_0_4px_rgba(0,136,255,0.6)]",
-  purple: "drop-shadow-[0_0_4px_rgba(168,85,247,0.6)]",
-  green: "drop-shadow-[0_0_4px_rgba(0,255,136,0.6)]",
-  orange: "drop-shadow-[0_0_4px_rgba(255,107,53,0.6)]",
-  yellow: "drop-shadow-[0_0_8px_rgba(255,255,0,0.6)]",
-  red: "drop-shadow-[0_0_8px_rgba(255,0,0,0.6)]",
+  cyan: "drop-shadow-none",
+  blue: "drop-shadow-none",
+  purple: "drop-shadow-none",
+  green: "drop-shadow-none",
+  orange: "drop-shadow-none",
+  yellow: "drop-shadow-none",
+  red: "drop-shadow-none",
 } as const;
 
 /**
@@ -100,7 +100,7 @@ export const BORDER_COLOR = {
 /**
  * ホバー時のシャドウ
  */
-export const HOVER_SHADOW = "hover:shadow-[0_0_20px_rgba(0,217,255,0.3)]" as const;
+export const HOVER_SHADOW = "hover:border-space-400/50" as const;
 
 /**
  * アニメーション
@@ -135,38 +135,38 @@ export function getSaturationColor(saturation: number): string {
  * モーダルグロー (大)
  */
 export const MODAL_GLOW = {
-  cyan: "shadow-[0_0_30px_rgba(0,217,255,0.3)]",
-  blue: "shadow-[0_0_30px_rgba(0,136,255,0.3)]",
-  purple: "shadow-[0_0_30px_rgba(168,85,247,0.3)]",
-  green: "shadow-[0_0_30px_rgba(0,255,136,0.3)]",
-  yellow: "shadow-[0_0_30px_rgba(255,255,0,0.3)]",
-  red: "shadow-[0_0_30px_rgba(255,0,0,0.3)]",
+  cyan: "shadow-[0_24px_64px_rgba(0,0,0,0.45)]",
+  blue: "shadow-[0_24px_64px_rgba(0,0,0,0.45)]",
+  purple: "shadow-[0_24px_64px_rgba(0,0,0,0.45)]",
+  green: "shadow-[0_24px_64px_rgba(0,0,0,0.45)]",
+  yellow: "shadow-[0_24px_64px_rgba(0,0,0,0.45)]",
+  red: "shadow-[0_24px_64px_rgba(0,0,0,0.45)]",
 } as const;
 
 /**
  * カードグロー (中)
  */
 export const CARD_GLOW = {
-  cyan: "shadow-[0_0_15px_rgba(0,217,255,0.3)]",
-  cyanLight: "shadow-[0_0_15px_rgba(0,217,255,0.2)]",
-  blue: "shadow-[0_0_15px_rgba(0,136,255,0.3)]",
-  blueLight: "shadow-[0_0_15px_rgba(0,136,255,0.2)]",
-  blueStrong: "shadow-[0_0_15px_rgba(0,136,255,0.5)]",
-  purple: "shadow-[0_0_15px_rgba(168,85,247,0.3)]",
-  purpleLight: "shadow-[0_0_15px_rgba(168,85,247,0.2)]",
-  purpleStrong: "shadow-[0_0_15px_rgba(168,85,247,0.5)]",
-  magenta: "shadow-[0_0_15px_rgba(233,53,255,0.3)]",
-  magentaLight: "shadow-[0_0_15px_rgba(233,53,255,0.2)]",
-  magentaStrong: "shadow-[0_0_15px_rgba(233,53,255,0.5)]",
-  green: "shadow-[0_0_15px_rgba(0,255,136,0.3)]",
-  greenLight: "shadow-[0_0_15px_rgba(0,255,136,0.2)]",
-  greenStrong: "shadow-[0_0_15px_rgba(0,255,136,0.4)]",
-  yellow: "shadow-[0_0_15px_rgba(255,215,0,0.3)]",
-  yellowLight: "shadow-[0_0_15px_rgba(255,215,0,0.2)]",
-  yellowStrong: "shadow-[0_0_15px_rgba(255,215,0,0.6)]",
-  red: "shadow-[0_0_15px_rgba(255,0,0,0.3)]",
-  redLight: "shadow-[0_0_15px_rgba(255,0,0,0.2)]",
-  redStrong: "shadow-[0_0_15px_rgba(255,0,0,0.4)]",
+  cyan: "shadow-none",
+  cyanLight: "shadow-none",
+  blue: "shadow-none",
+  blueLight: "shadow-none",
+  blueStrong: "shadow-none",
+  purple: "shadow-none",
+  purpleLight: "shadow-none",
+  purpleStrong: "shadow-none",
+  magenta: "shadow-none",
+  magentaLight: "shadow-none",
+  magentaStrong: "shadow-none",
+  green: "shadow-none",
+  greenLight: "shadow-none",
+  greenStrong: "shadow-none",
+  yellow: "shadow-none",
+  yellowLight: "shadow-none",
+  yellowStrong: "shadow-none",
+  red: "shadow-none",
+  redLight: "shadow-none",
+  redStrong: "shadow-none",
 } as const;
 
 /**
@@ -174,26 +174,26 @@ export const CARD_GLOW = {
  * TailwindのJITコンパイラが検出できるように、hover:プレフィックスを含めた完全なクラス名を定義
  */
 export const HOVER_CARD_GLOW = {
-  cyan: "hover:shadow-[0_0_15px_rgba(0,217,255,0.3)]",
-  cyanLight: "hover:shadow-[0_0_15px_rgba(0,217,255,0.2)]",
-  blue: "hover:shadow-[0_0_15px_rgba(0,136,255,0.3)]",
-  blueLight: "hover:shadow-[0_0_15px_rgba(0,136,255,0.2)]",
-  blueStrong: "hover:shadow-[0_0_15px_rgba(0,136,255,0.5)]",
-  purple: "hover:shadow-[0_0_15px_rgba(168,85,247,0.3)]",
-  purpleLight: "hover:shadow-[0_0_15px_rgba(168,85,247,0.2)]",
-  purpleStrong: "hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]",
-  magenta: "hover:shadow-[0_0_15px_rgba(233,53,255,0.3)]",
-  magentaLight: "hover:shadow-[0_0_15px_rgba(233,53,255,0.2)]",
-  magentaStrong: "hover:shadow-[0_0_15px_rgba(233,53,255,0.5)]",
-  green: "hover:shadow-[0_0_15px_rgba(0,255,136,0.3)]",
-  greenLight: "hover:shadow-[0_0_15px_rgba(0,255,136,0.2)]",
-  greenStrong: "hover:shadow-[0_0_15px_rgba(0,255,136,0.4)]",
-  yellow: "hover:shadow-[0_0_15px_rgba(255,215,0,0.3)]",
-  yellowLight: "hover:shadow-[0_0_15px_rgba(255,215,0,0.2)]",
-  yellowStrong: "hover:shadow-[0_0_15px_rgba(255,215,0,0.6)]",
-  red: "hover:shadow-[0_0_15px_rgba(255,0,0,0.3)]",
-  redLight: "hover:shadow-[0_0_15px_rgba(255,0,0,0.2)]",
-  redStrong: "hover:shadow-[0_0_15px_rgba(255,0,0,0.4)]",
+  cyan: "hover:border-space-400/50",
+  cyanLight: "hover:border-space-400/50",
+  blue: "hover:border-space-400/50",
+  blueLight: "hover:border-space-400/50",
+  blueStrong: "hover:border-space-400/50",
+  purple: "hover:border-space-400/50",
+  purpleLight: "hover:border-space-400/50",
+  purpleStrong: "hover:border-space-400/50",
+  magenta: "hover:border-space-400/50",
+  magentaLight: "hover:border-space-400/50",
+  magentaStrong: "hover:border-space-400/50",
+  green: "hover:border-space-400/50",
+  greenLight: "hover:border-space-400/50",
+  greenStrong: "hover:border-space-400/50",
+  yellow: "hover:border-space-400/50",
+  yellowLight: "hover:border-space-400/50",
+  yellowStrong: "hover:border-space-400/50",
+  red: "hover:border-space-400/50",
+  redLight: "hover:border-space-400/50",
+  redStrong: "hover:border-space-400/50",
 } as const;
 
 /**

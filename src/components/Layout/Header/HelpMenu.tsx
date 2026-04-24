@@ -38,13 +38,13 @@ export function HelpMenu() {
         data-testid="help-menu-trigger"
         onClick={() => setIsOpen(true)}
         className={cn(
-          "px-4 py-2 bg-neon-purple/30 border border-neon-purple/40 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple transition-all ripple-effect flex items-center gap-2",
+          "px-3 py-2 bg-dark-700/80 border border-space-600/70 text-space-100 rounded-md hover:bg-dark-600 hover:border-space-500 transition-colors flex items-center gap-2",
           HOVER_CARD_GLOW.purple
         )}
         title={t("help")}
         aria-label={t("help")}
       >
-        <span>📖</span>
+        <span aria-hidden="true">?</span>
         {t("help")}
       </button>
 
