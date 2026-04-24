@@ -16,12 +16,11 @@ describe("BackgroundEffects", () => {
     expect(fixedContainer).toBeInTheDocument();
   });
 
-  it("nebula-gradientの背景要素が存在する", () => {
+  it("宇宙背景のラジアルグラデーション要素が存在する", () => {
     const { container } = render(<BackgroundEffects />);
 
-    const nebulaGradient = container.querySelector(".bg-nebula-gradient");
-    expect(nebulaGradient).toBeInTheDocument();
-    expect(nebulaGradient).toHaveClass("opacity-40");
+    const radialGradient = container.querySelector('[class*="radial-gradient"]');
+    expect(radialGradient).toBeInTheDocument();
   });
 
   it("grid-bgの背景要素が存在する", () => {
@@ -29,7 +28,7 @@ describe("BackgroundEffects", () => {
 
     const gridBg = container.querySelector(".grid-bg");
     expect(gridBg).toBeInTheDocument();
-    expect(gridBg).toHaveClass("opacity-30");
+    expect(gridBg).toHaveClass("opacity-45");
   });
 
   it("ポインターイベントが無効化されている", () => {

@@ -1,9 +1,28 @@
 // spec: docs/testing/HELP_MODAL_TEST_PLAN.md
-import { expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { test } from "./fixtures";
 import { disableAnimations } from "./helpers/ui-stability";
 
 test.describe("ヘルプモーダル", () => {
+  const openHelpModal = async (appPage: Page) => {
+    await appPage.getByTestId("help-menu-trigger").click();
+    const modal = appPage.getByTestId("help-modal");
+    await expect(modal).toBeVisible();
+    return modal;
+  };
+
+  const selectHelpTab = async (appPage: Page, name: string, panelTestId: string) => {
+    const tab = appPage.getByRole("tab", { name });
+    await expect(tab).toBeVisible();
+    await tab.scrollIntoViewIfNeeded();
+    await tab.click({ force: true });
+    await expect(tab).toHaveAttribute("data-state", "active");
+
+    const panel = appPage.getByTestId(panelTestId);
+    await expect(panel).toBeVisible();
+    return panel;
+  };
+
   test.beforeEach(async ({ appPage }) => {
     // localStorageにWelcomeモーダルを表示済みフラグを設定
     await appPage.addInitScript(() => {
@@ -99,15 +118,10 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-04: 更新履歴タブの表示と内容確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. 「更新履歴」タブをクリック
-    await appPage.getByRole("tab", { name: "更新履歴" }).click();
-
-    // 3. 「更新履歴」タブが選択されることを確認
-    await expect(appPage.getByRole("tab", { name: "更新履歴", selected: true })).toBeVisible();
-    const changelogTab = appPage.getByTestId("help-tab-changelog");
-    await expect(changelogTab).toBeVisible();
+    await selectHelpTab(appPage, "更新履歴", "help-tab-changelog");
 
     // 4. 更新履歴の見出しが表示されることを確認
     await expect(appPage.getByRole("heading", { name: "更新履歴", level: 3 })).toBeVisible();
@@ -130,15 +144,10 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-05: よくある質問タブの表示と内容確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. 「よくある質問」タブをクリック
-    await appPage.getByRole("tab", { name: "よくある質問" }).click();
-
-    // 3. 「よくある質問」タブが選択されることを確認
-    await expect(appPage.getByRole("tab", { name: "よくある質問", selected: true })).toBeVisible();
-    const faqTab = appPage.getByTestId("help-tab-faq");
-    await expect(faqTab).toBeVisible();
+    await selectHelpTab(appPage, "よくある質問", "help-tab-faq");
 
     // 4. よくある質問の見出しが表示されることを確認
     await expect(appPage.getByRole("heading", { name: "よくある質問", level: 3 })).toBeVisible();
@@ -162,15 +171,10 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-06: フィードバックタブの表示と内容確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. 「フィードバック」タブをクリック
-    const feedbackTabButton = appPage.getByRole("tab", { name: "フィードバック" });
-    await feedbackTabButton.click();
-
-    // 3. 「フィードバック」タブパネルが表示されるまで待つ
-    const feedbackTab = appPage.getByTestId("help-tab-feedback");
-    await feedbackTab.waitFor({ state: "visible", timeout: 10000 });
+    const feedbackTab = await selectHelpTab(appPage, "フィードバック", "help-tab-feedback");
 
     // 4. フィードバックの見出しが表示されることを確認
     await expect(
@@ -197,17 +201,14 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-06-2: キーボードショートカットタブのアクセシビリティ方針確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. 「キーボードショートカット」タブをクリック
-    const keyboardShortcutsTabButton = appPage.getByRole("tab", {
-      name: "キーボードショートカット",
-    });
-    await keyboardShortcutsTabButton.click();
-
-    // 3. 「キーボードショートカット」タブパネルが表示されるまで待つ
-    const keyboardShortcutsTab = appPage.getByTestId("help-tab-keyboard-shortcuts");
-    await keyboardShortcutsTab.waitFor({ state: "visible", timeout: 10000 });
+    const keyboardShortcutsTab = await selectHelpTab(
+      appPage,
+      "キーボードショートカット",
+      "help-tab-keyboard-shortcuts"
+    );
 
     // 4. 「アクセシビリティ方針」セクションが表示されることを確認
     await expect(
@@ -227,33 +228,27 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-07: タブ間の切り替え", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. アバウトタブが選択されていることを確認
     await expect(appPage.getByRole("tab", { name: "アバウト", selected: true })).toBeVisible();
 
     // 3. 更新履歴タブをクリック
-    await appPage.getByRole("tab", { name: "更新履歴" }).click();
-    await expect(appPage.getByRole("tab", { name: "更新履歴", selected: true })).toBeVisible();
+    await selectHelpTab(appPage, "更新履歴", "help-tab-changelog");
     await expect(appPage.getByRole("heading", { name: "更新履歴", level: 3 })).toBeVisible();
 
     // 4. よくある質問タブをクリック
-    await appPage.getByRole("tab", { name: "よくある質問" }).click();
-    await expect(appPage.getByRole("tab", { name: "よくある質問", selected: true })).toBeVisible();
+    await selectHelpTab(appPage, "よくある質問", "help-tab-faq");
     await expect(appPage.getByRole("heading", { name: "よくある質問", level: 3 })).toBeVisible();
 
     // 5. フィードバックタブをクリック
-    await appPage.getByRole("tab", { name: "フィードバック" }).click();
-    await expect(
-      appPage.getByRole("tab", { name: "フィードバック", selected: true })
-    ).toBeVisible();
+    await selectHelpTab(appPage, "フィードバック", "help-tab-feedback");
     await expect(
       appPage.getByRole("heading", { name: "フィードバックを送信", level: 3 })
     ).toBeVisible();
 
     // 6. 再度アバウトタブをクリック
-    await appPage.getByRole("tab", { name: "アバウト" }).click();
-    await expect(appPage.getByRole("tab", { name: "アバウト", selected: true })).toBeVisible();
+    await selectHelpTab(appPage, "アバウト", "help-tab-about");
     await expect(appPage.getByText("最新対応バージョン")).toBeVisible();
   });
 
@@ -262,7 +257,7 @@ test.describe("ヘルプモーダル", () => {
     // 矢印キーでタブを移動すると自動的にアクティブになります
 
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. アバウトタブが選択されていることを確認
     const aboutTab = appPage.getByRole("tab", { name: "アバウト" });
@@ -296,7 +291,7 @@ test.describe("ヘルプモーダル", () => {
     const modal = appPage.getByTestId("help-modal");
 
     // 1回目の開閉
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
     await expect(modal).toBeVisible();
     await appPage.getByTestId("help-modal-close").click();
     await expect(modal).toBeHidden();
@@ -376,12 +371,7 @@ test.describe("ヘルプモーダル", () => {
     await appPage.getByTestId("help-menu-trigger").click();
 
     // 2. よくある質問タブを開く
-    const faqTabButton = appPage.getByRole("tab", { name: "よくある質問" });
-    await faqTabButton.click();
-
-    // 3. よくある質問タブパネルが表示されるまで待つ
-    const modalContent = appPage.getByTestId("help-tab-faq");
-    await modalContent.waitFor({ state: "visible", timeout: 10000 });
+    const modalContent = await selectHelpTab(appPage, "よくある質問", "help-tab-faq");
 
     // 4. 最初のカテゴリが表示されることを確認
     await expect(
@@ -404,18 +394,10 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-12: パッチ差分タブの表示と内容確認", async ({ appPage }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
+    await openHelpModal(appPage);
 
     // 2. パッチ差分タブが表示されることを確認
-    const patchDiffTabButton = appPage.getByRole("tab", { name: "パッチ差分" });
-    await expect(patchDiffTabButton).toBeVisible();
-
-    // 3. パッチ差分タブをクリック
-    await patchDiffTabButton.click();
-
-    // 4. パッチ差分タブパネルが表示されるまで待つ
-    const patchDiffTab = appPage.getByTestId("help-tab-patch-diff");
-    await patchDiffTab.waitFor({ state: "visible", timeout: 10000 });
+    const patchDiffTab = await selectHelpTab(appPage, "パッチ差分", "help-tab-patch-diff");
 
     // 5. パッチ差分ビューが表示されることを確認
     const patchInfoView = patchDiffTab.getByTestId("patch-info-view");
@@ -435,18 +417,10 @@ test.describe("ヘルプモーダル", () => {
 
   test("12-08: フィードバックタブの表示とリンク動作", async ({ appPage, context }) => {
     // 1. ヘルプモーダルを開く
-    await appPage.getByTestId("help-menu-trigger").click();
-    const modal = appPage.getByTestId("help-modal");
-    await expect(modal).toBeVisible();
+    await openHelpModal(appPage);
 
     // 2. フィードバックタブをクリック
-    await appPage.getByRole("tab", { name: "フィードバック" }).click();
-
-    // 3. フィードバックタブが選択されていることを確認
-    await expect(
-      appPage.getByRole("tab", { name: "フィードバック", selected: true })
-    ).toBeVisible();
-    await expect(appPage.getByTestId("help-tab-feedback")).toBeVisible();
+    await selectHelpTab(appPage, "フィードバック", "help-tab-feedback");
 
     // 4. フィードバックフォームが表示されることを確認
     const feedbackForm = appPage.getByTestId("feedback-form");

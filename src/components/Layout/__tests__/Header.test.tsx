@@ -73,11 +73,11 @@ describe("Header", () => {
     expect(container).toBeInTheDocument();
   });
 
-  it("アニメーション背景ラインが存在する", () => {
+  it("静的な境界ラインが存在する", () => {
     const { container } = render(<Header />);
 
-    const animatedLine = container.querySelector(".animate-pulse-slow");
-    expect(animatedLine).toBeInTheDocument();
+    const borderLine = container.querySelector(".bg-space-500\\/35");
+    expect(borderLine).toBeInTheDocument();
   });
 
   it("max-widthコンテナが存在する", () => {

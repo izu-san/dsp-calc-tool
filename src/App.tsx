@@ -121,7 +121,7 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark-500">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neon-blue shadow-neon-blue mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-300 mx-auto"></div>
           <p className="mt-4 text-space-200">{t("loadingGameData")}</p>
         </div>
       </div>
@@ -132,7 +132,7 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark-500">
         <div className="text-center">
-          <div className="text-neon-orange text-xl mb-4">⚠ {t("error")}</div>
+          <div className="text-orange-300 text-xl mb-4">{t("error")}</div>
           <p className="text-space-200">{error}</p>
         </div>
       </div>
@@ -155,7 +155,7 @@ function App() {
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           <Suspense
             fallback={
-              <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg p-6 animate-pulse">
+              <div className="bg-dark-700/50 backdrop-blur-sm border border-space-700 rounded-md p-6 animate-pulse">
                 <div className="h-8 bg-dark-600 rounded mb-4"></div>
                 <div className="space-y-3">
                   <div className="h-4 bg-dark-600 rounded"></div>
@@ -174,7 +174,7 @@ function App() {
           <div className="xl:col-span-3 space-y-6 animate-slideInRight">
             <Suspense
               fallback={
-                <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg p-6 animate-pulse">
+                <div className="bg-dark-700/50 backdrop-blur-sm border border-space-700 rounded-md p-6 animate-pulse">
                   <div className="h-8 bg-dark-600 rounded mb-4"></div>
                   <div className="grid grid-cols-4 gap-4">
                     {[...Array(8)].map((_, i) => (
@@ -193,7 +193,7 @@ function App() {
 
             <Suspense
               fallback={
-                <div className="bg-dark-700/50 backdrop-blur-sm border border-neon-blue/30 rounded-lg p-6 animate-pulse">
+                <div className="bg-dark-700/50 backdrop-blur-sm border border-space-700 rounded-md p-6 animate-pulse">
                   <div className="h-8 bg-dark-600 rounded mb-4"></div>
                   <div className="space-y-3">
                     <div className="h-32 bg-dark-600 rounded"></div>

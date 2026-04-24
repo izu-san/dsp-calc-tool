@@ -23,8 +23,13 @@ export function RecipeSelectorSection({
   const { t } = useTranslation();
 
   return (
-    <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
-      <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t("selectRecipe")}</h2>
+    <section
+      className="hologram-panel rounded-md p-6 hover-lift"
+      aria-labelledby="recipe-select-heading"
+    >
+      <h2 id="recipe-select-heading" className="text-lg font-semibold text-space-50 mb-4">
+        {t("selectRecipe")}
+      </h2>
       <Suspense fallback={<div className="text-center py-4">{t("loading")}</div>}>
         <RecipeSelector
           recipes={recipes}
@@ -32,6 +37,6 @@ export function RecipeSelectorSection({
           selectedRecipeId={selectedRecipeId}
         />
       </Suspense>
-    </div>
+    </section>
   );
 }

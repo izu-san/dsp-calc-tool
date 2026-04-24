@@ -136,12 +136,12 @@ describe("ProductionResultsPanel", () => {
       />
     );
 
-    expect(screen.getByRole("button", { name: "Production Tree" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Statistics" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Building Cost" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Power Generation" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Mining Calculator" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Visualization" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Production Tree" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Statistics" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Building Cost" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Power Generation" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Mining Calculator" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Visualization" })).toBeInTheDocument();
   });
 
   it("統計タブをクリックすると表示が切り替わる", () => {
@@ -156,11 +156,11 @@ describe("ProductionResultsPanel", () => {
       />
     );
 
-    const statisticsButton = screen.getByRole("button", { name: "Statistics" });
+    const statisticsButton = screen.getByRole("tab", { name: "Statistics" });
     fireEvent.click(statisticsButton);
 
-    // 統計タブがアクティブになることを確認（クラスで判定）
-    expect(statisticsButton).toHaveClass("border-neon-blue");
+    expect(statisticsButton).toHaveAttribute("aria-selected", "true");
+    expect(statisticsButton).toHaveClass("border-primary-300");
   });
 
   it("建設コストタブをクリックすると表示が切り替わる", () => {
@@ -175,10 +175,11 @@ describe("ProductionResultsPanel", () => {
       />
     );
 
-    const buildingCostButton = screen.getByRole("button", { name: "Building Cost" });
+    const buildingCostButton = screen.getByRole("tab", { name: "Building Cost" });
     fireEvent.click(buildingCostButton);
 
-    expect(buildingCostButton).toHaveClass("border-neon-blue");
+    expect(buildingCostButton).toHaveAttribute("aria-selected", "true");
+    expect(buildingCostButton).toHaveClass("border-primary-300");
   });
 
   it("採掘計算機タブをクリックすると表示が切り替わる", () => {
@@ -193,10 +194,11 @@ describe("ProductionResultsPanel", () => {
       />
     );
 
-    const miningCalculatorButton = screen.getByRole("button", { name: "Mining Calculator" });
+    const miningCalculatorButton = screen.getByRole("tab", { name: "Mining Calculator" });
     fireEvent.click(miningCalculatorButton);
 
-    expect(miningCalculatorButton).toHaveClass("border-neon-blue");
+    expect(miningCalculatorButton).toHaveAttribute("aria-selected", "true");
+    expect(miningCalculatorButton).toHaveClass("border-primary-300");
   });
 
   it("生産ツリータブでは展開/折りたたみボタンが表示される", () => {
@@ -331,17 +333,20 @@ describe("ProductionResultsPanel", () => {
     );
 
     // 初期状態: Production Treeがアクティブ
-    const productionTreeButton = screen.getByRole("button", { name: "Production Tree" });
-    expect(productionTreeButton).toHaveClass("border-neon-blue");
+    const productionTreeButton = screen.getByRole("tab", { name: "Production Tree" });
+    expect(productionTreeButton).toHaveAttribute("aria-selected", "true");
+    expect(productionTreeButton).toHaveClass("border-primary-300");
 
     // Statisticsに切り替え
-    const statisticsButton = screen.getByRole("button", { name: "Statistics" });
+    const statisticsButton = screen.getByRole("tab", { name: "Statistics" });
     fireEvent.click(statisticsButton);
-    expect(statisticsButton).toHaveClass("border-neon-blue");
+    expect(statisticsButton).toHaveAttribute("aria-selected", "true");
+    expect(statisticsButton).toHaveClass("border-primary-300");
 
     // Production Treeに戻る
     fireEvent.click(productionTreeButton);
-    expect(productionTreeButton).toHaveClass("border-neon-blue");
+    expect(productionTreeButton).toHaveAttribute("aria-selected", "true");
+    expect(productionTreeButton).toHaveClass("border-primary-300");
   });
 
   it("複数出力レシピの場合、Multi-Output Itemsセクションを表示する", () => {

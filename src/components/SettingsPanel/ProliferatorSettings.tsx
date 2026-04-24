@@ -57,7 +57,7 @@ export function ProliferatorSettings() {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-neon-magenta mb-2">
+        <label className="block text-sm font-medium text-space-100 mb-2">
           {t("proliferatorType")}
         </label>
         <div className="grid grid-cols-4 gap-2">
@@ -72,16 +72,25 @@ export function ProliferatorSettings() {
                 key={type}
                 data-testid={`proliferator-type-button-${type}`}
                 onClick={() => handleTypeChange(type)}
+                aria-pressed={proliferator.type === type}
                 className={cn(
-                  "px-3 py-2 text-sm font-medium rounded-lg border-2 transition-all duration-200 hover:scale-105",
+                  "relative px-3 py-2 text-sm font-medium rounded-md border transition-colors",
                   proliferator.type === type
                     ? cn(
-                        "bg-neon-magenta/30 text-white border-neon-magenta backdrop-blur-sm font-bold scale-105",
+                        "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                         CARD_GLOW.magentaStrong
                       )
-                    : "bg-dark-700/50 text-space-200 border-neon-magenta/20 hover:bg-neon-magenta/10 hover:border-neon-magenta/50 hover:text-neon-magenta"
+                    : "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
                 )}
               >
+                {proliferator.type === type && (
+                  <span
+                    className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                    aria-hidden="true"
+                  >
+                    ✓
+                  </span>
+                )}
                 <div className="flex flex-col items-center gap-1">
                   {iconId && <ItemIcon itemId={iconId} size={24} />}
                   <span className="text-xs leading-tight text-center">
@@ -97,7 +106,7 @@ export function ProliferatorSettings() {
       {proliferator.type !== "none" && (
         <>
           <div>
-            <label className="block text-sm font-medium text-neon-cyan mb-2">
+            <label className="block text-sm font-medium text-space-100 mb-2">
               {t("proliferatorMode")}{" "}
               <span className="text-xs text-space-300">({t("exclusive")})</span>
             </label>
@@ -125,23 +134,30 @@ export function ProliferatorSettings() {
                     data-testid={`proliferator-mode-button-${mode}`}
                     onClick={() => !isDisabled && handleModeChange(mode)}
                     disabled={isDisabled}
+                    aria-pressed={proliferator.mode === mode}
                     className={cn(
-                      "px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all duration-200",
+                      "relative px-4 py-3 text-sm font-medium rounded-md border transition-colors",
                       isDisabled
-                        ? "bg-dark-800/30 text-space-500 border-dark-700 cursor-not-allowed opacity-50 hover:scale-100 hover:bg-dark-800/30"
+                        ? "bg-dark-800/30 text-space-500 border-dark-700 cursor-not-allowed opacity-60"
                         : proliferator.mode === mode
                           ? cn(
-                              "bg-neon-cyan/30 text-white border-neon-cyan backdrop-blur-sm font-bold scale-105 hover:scale-105",
+                              "bg-primary-900/55 text-white border-primary-300 font-semibold ring-1 ring-primary-300/70",
                               NEON_GLOW.cyanStrong
                             )
-                          : "bg-dark-700/50 text-space-200 border-neon-cyan/20 hover:bg-neon-cyan/10 hover:border-neon-cyan/50 hover:text-neon-cyan hover:scale-105"
+                          : "bg-dark-700/60 text-space-200 border-space-700 hover:bg-dark-600 hover:border-space-500 hover:text-space-100"
                     )}
                   >
+                    {proliferator.mode === mode && (
+                      <span
+                        className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-300 text-[11px] font-bold leading-none text-dark-900"
+                        aria-hidden="true"
+                      >
+                        ✓
+                      </span>
+                    )}
                     <div className="flex flex-col items-center">
                       <span className="font-semibold">
-                        {mode === "production"
-                          ? `🏭 ${t("productionMode")}`
-                          : `⚡ ${t("speedMode")}`}
+                        {mode === "production" ? t("productionMode") : t("speedMode")}
                       </span>
                       <span className="text-xs mt-1">
                         {mode === "production"
@@ -167,15 +183,15 @@ export function ProliferatorSettings() {
               <div className="flex justify-between">
                 <span className="text-gray-700 dark:text-gray-300">
                   {proliferator.mode === "production"
-                    ? `📦 ${t("productionBonus")}:`
-                    : `⚡ ${t("speedBonus")}:`}
+                    ? `${t("productionBonus")}:`
+                    : `${t("speedBonus")}:`}
                 </span>
                 <span className="font-semibold text-purple-700 dark:text-purple-400">
                   +{proliferator.mode === "production" ? productionBonus : speedBonus}%
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-700 dark:text-gray-300">⚠️ {t("powerIncrease")}:</span>
+                <span className="text-gray-700 dark:text-gray-300">{t("powerIncrease")}:</span>
                 <span className="font-semibold text-orange-600 dark:text-orange-400">
                   +{powerIncrease}%
                 </span>

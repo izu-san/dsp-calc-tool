@@ -76,8 +76,9 @@ describe("MachineRankSettings", () => {
       render(<MachineRankSettings />);
 
       const arcButton = screen.getByText("Arc Smelter").closest("button");
-      expect(arcButton).toHaveClass("bg-neon-orange/30");
-      expect(arcButton).toHaveClass("border-neon-orange");
+      expect(arcButton).toHaveAttribute("aria-pressed", "true");
+      expect(arcButton).toHaveClass("ring-1", "border-primary-300");
+      expect(arcButton).toHaveTextContent("✓");
     });
 
     it("Plane Smelterを選択できる", () => {
@@ -121,8 +122,9 @@ describe("MachineRankSettings", () => {
       render(<MachineRankSettings />);
 
       const mk1Button = screen.getByText("Assembling Machine Mk.I").closest("button");
-      expect(mk1Button).toHaveClass("bg-neon-blue/30");
-      expect(mk1Button).toHaveClass("border-neon-blue");
+      expect(mk1Button).toHaveAttribute("aria-pressed", "true");
+      expect(mk1Button).toHaveClass("ring-1", "border-primary-300");
+      expect(mk1Button).toHaveTextContent("✓");
     });
 
     it("Assembler Mk.IIを選択できる", () => {
@@ -174,8 +176,9 @@ describe("MachineRankSettings", () => {
       render(<MachineRankSettings />);
 
       const standardButton = screen.getByText("Chemical Plant").closest("button");
-      expect(standardButton).toHaveClass("bg-neon-green/30");
-      expect(standardButton).toHaveClass("border-neon-green");
+      expect(standardButton).toHaveAttribute("aria-pressed", "true");
+      expect(standardButton).toHaveClass("ring-1", "border-primary-300");
+      expect(standardButton).toHaveTextContent("✓");
     });
 
     it("Quantum Chemical Plantを選択できる", () => {
@@ -207,8 +210,9 @@ describe("MachineRankSettings", () => {
       render(<MachineRankSettings />);
 
       const standardButton = screen.getByText("Matrix Lab").closest("button");
-      expect(standardButton).toHaveClass("bg-neon-purple/30");
-      expect(standardButton).toHaveClass("border-neon-purple");
+      expect(standardButton).toHaveAttribute("aria-pressed", "true");
+      expect(standardButton).toHaveClass("ring-1", "border-primary-300");
+      expect(standardButton).toHaveTextContent("✓");
     });
 
     it("Self-evolution Labを選択できる", () => {
@@ -241,18 +245,18 @@ describe("MachineRankSettings", () => {
   });
 
   describe("UI Interaction", () => {
-    it("すべてのボタンがホバー可能である", () => {
+    it("すべてのボタンがホバー状態を持つ", () => {
       render(<MachineRankSettings />);
 
       const arcButton = screen.getByText("Arc Smelter").closest("button");
-      expect(arcButton).toHaveClass("hover:scale-105");
+      expect(arcButton).toHaveClass("transition-colors");
     });
 
-    it("選択されたボタンが視覚的に強調される（scale-105）", () => {
+    it("選択されたボタンが視覚的に強調される", () => {
       render(<MachineRankSettings />);
 
       const arcButton = screen.getByText("Arc Smelter").closest("button");
-      expect(arcButton).toHaveClass("scale-105");
+      expect(arcButton).toHaveClass("ring-1", "border-primary-300");
     });
 
     it("複数のmachineTypeを独立して設定できる", () => {
@@ -301,7 +305,8 @@ describe("MachineRankSettings", () => {
       render(<MachineRankSettings />);
 
       const planeButton = screen.getByText("Plane Smelter").closest("button");
-      expect(planeButton).toHaveClass("bg-neon-orange/30");
+      expect(planeButton).toHaveAttribute("aria-pressed", "true");
+      expect(planeButton).toHaveTextContent("✓");
     });
 
     it("すべて最高ランクが選択されている場合", () => {
@@ -321,17 +326,21 @@ describe("MachineRankSettings", () => {
 
       render(<MachineRankSettings />);
 
-      expect(screen.getByText("Negentropy Smelter").closest("button")).toHaveClass(
-        "bg-neon-orange/30"
+      expect(screen.getByText("Negentropy Smelter").closest("button")).toHaveAttribute(
+        "aria-pressed",
+        "true"
       );
-      expect(screen.getByText("Re-composing Assembler").closest("button")).toHaveClass(
-        "bg-neon-blue/30"
+      expect(screen.getByText("Re-composing Assembler").closest("button")).toHaveAttribute(
+        "aria-pressed",
+        "true"
       );
-      expect(screen.getByText("Quantum Chemical Plant").closest("button")).toHaveClass(
-        "bg-neon-green/30"
+      expect(screen.getByText("Quantum Chemical Plant").closest("button")).toHaveAttribute(
+        "aria-pressed",
+        "true"
       );
-      expect(screen.getByText("Self-evolution Lab").closest("button")).toHaveClass(
-        "bg-neon-purple/30"
+      expect(screen.getByText("Self-evolution Lab").closest("button")).toHaveAttribute(
+        "aria-pressed",
+        "true"
       );
     });
   });
@@ -350,17 +359,16 @@ describe("MachineRankSettings", () => {
       expect(labelTexts.some(text => text?.includes("matrixLab"))).toBe(true);
     });
 
-    it("各セクションのラベルに絵文字が含まれる", () => {
+    it("各セクションのラベルに装飾絵文字を含めない", () => {
       const { container } = render(<MachineRankSettings />);
 
-      // labelタグ内に絵文字が含まれていることを確認
       const labels = container.querySelectorAll("label");
       const labelTexts = Array.from(labels).map(label => label.textContent);
 
-      expect(labelTexts.some(text => text?.includes("🔥"))).toBe(true); // Smelt
-      expect(labelTexts.some(text => text?.includes("⚙️"))).toBe(true); // Assemble
-      expect(labelTexts.some(text => text?.includes("🧪"))).toBe(true); // Chemical
-      expect(labelTexts.some(text => text?.includes("🔬"))).toBe(true); // Research
+      expect(labelTexts.some(text => text?.includes("🔥"))).toBe(false);
+      expect(labelTexts.some(text => text?.includes("⚙️"))).toBe(false);
+      expect(labelTexts.some(text => text?.includes("🧪"))).toBe(false);
+      expect(labelTexts.some(text => text?.includes("🔬"))).toBe(false);
     });
   });
 });

@@ -1,8 +1,25 @@
 // spec: docs/ACCESSIBILITY_I18N_SPEC.md
-import { expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { test } from "./fixtures";
 
 test.describe("14: アクセシビリティ & 多言語対応", () => {
+  const openHelpModal = async (appPage: Page) => {
+    await appPage.getByTestId("help-menu-trigger").click();
+    await expect(appPage.getByTestId("help-modal")).toBeVisible();
+  };
+
+  const selectHelpTab = async (appPage: Page, name: string, panelTestId: string) => {
+    const tab = appPage.getByRole("tab", { name });
+    await expect(tab).toBeVisible();
+    await tab.scrollIntoViewIfNeeded();
+    await tab.click({ force: true });
+    await expect(tab).toHaveAttribute("data-state", "active");
+
+    const panel = appPage.getByTestId(panelTestId);
+    await expect(panel).toBeVisible();
+    return panel;
+  };
+
   test("14-01: キーボードショートカットで言語切り替え", async ({ appPage }) => {
     // 初期状態で日本語が選択されていることを確認
     const languageTrigger = appPage.getByTestId("language-menu-trigger");
@@ -46,6 +63,7 @@ test.describe("14: アクセシビリティ & 多言語対応", () => {
   test("14-03: F1キーでHelpModalを開く", async ({ appPage }) => {
     // 初期状態でモーダルが閉じていることを確認
     await expect(appPage.getByTestId("help-modal")).not.toBeVisible();
+    await appPage.locator("body").click();
 
     // F1キーを押下
     await appPage.keyboard.press("F1");
@@ -54,6 +72,7 @@ test.describe("14: アクセシビリティ & 多言語対応", () => {
     await expect(appPage.getByTestId("help-modal")).toBeVisible();
 
     // 再度F1キーを押下して閉じる
+    await appPage.locator("body").click();
     await appPage.keyboard.press("F1");
     await expect(appPage.getByTestId("help-modal")).not.toBeVisible();
   });
@@ -71,16 +90,14 @@ test.describe("14: アクセシビリティ & 多言語対応", () => {
 
   test("14-05: HelpModalにキーボードショートカットタブが表示される", async ({ appPage }) => {
     // HelpModalを開く
-    await appPage.getByTestId("help-menu-trigger").click();
-    await expect(appPage.getByTestId("help-modal")).toBeVisible();
+    await openHelpModal(appPage);
 
     // キーボードショートカットタブをクリック
-    const shortcutsTab = appPage.getByRole("tab", { name: "キーボードショートカット" });
-    await shortcutsTab.click();
-
-    // ショートカット一覧が表示されることを確認
-    await expect(appPage.getByTestId("help-tab-keyboard-shortcuts")).toBeVisible();
-    const shortcutsContent = appPage.getByTestId("help-tab-keyboard-shortcuts");
+    const shortcutsContent = await selectHelpTab(
+      appPage,
+      "キーボードショートカット",
+      "help-tab-keyboard-shortcuts"
+    );
     await expect(shortcutsContent.getByText("元に戻す")).toBeVisible();
     await expect(shortcutsContent.getByText("やり直し")).toBeVisible();
     await expect(shortcutsContent.getByText("言語を切り替える")).toBeVisible();
@@ -90,16 +107,14 @@ test.describe("14: アクセシビリティ & 多言語対応", () => {
     appPage,
   }) => {
     // HelpModalを開く
-    await appPage.getByTestId("help-menu-trigger").click();
-    await expect(appPage.getByTestId("help-modal")).toBeVisible();
+    await openHelpModal(appPage);
 
     // キーボードショートカットタブをクリック
-    const keyboardShortcutsTab = appPage.getByRole("tab", { name: "キーボードショートカット" });
-    await keyboardShortcutsTab.click();
-
-    // キーボードショートカットタブパネルが表示されるまで待つ
-    const keyboardShortcutsContent = appPage.getByTestId("help-tab-keyboard-shortcuts");
-    await keyboardShortcutsContent.waitFor({ state: "visible", timeout: 10000 });
+    const keyboardShortcutsContent = await selectHelpTab(
+      appPage,
+      "キーボードショートカット",
+      "help-tab-keyboard-shortcuts"
+    );
 
     // アクセシビリティ方針が表示されることを確認
     await expect(

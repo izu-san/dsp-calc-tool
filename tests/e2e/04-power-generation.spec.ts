@@ -104,9 +104,11 @@ test.describe("発電設備機能", () => {
   });
 
   test("04-03: 増産剤を設定（火力発電所）", async ({ appPage }) => {
-    // 1-2. デストロイヤー選択/タブ
-    await appPage.getByTestId("recipe-search-input").fill("デストロイヤー");
-    await appPage.getByTestId("recipe-button-1705").click();
+    // 1-2. 駆逐艦選択/タブ
+    await appPage.getByTestId("recipe-search-input").fill("駆逐艦");
+    const destroyerButton = appPage.getByTestId("recipe-button-1705");
+    await destroyerButton.scrollIntoViewIfNeeded();
+    await destroyerButton.click();
     await appPage.getByTestId("power-generation-tab").click();
 
     // 3. 火力発電所を選択
@@ -125,9 +127,11 @@ test.describe("発電設備機能", () => {
   });
 
   test("04-04: 増産剤を設定（人造恒星）", async ({ appPage }) => {
-    // 1-2. デストロイヤー選択/タブ
-    await appPage.getByTestId("recipe-search-input").fill("デストロイヤー");
-    await appPage.getByTestId("recipe-button-1705").click();
+    // 1-2. 駆逐艦選択/タブ
+    await appPage.getByTestId("recipe-search-input").fill("駆逐艦");
+    const destroyerButton = appPage.getByTestId("recipe-button-1705");
+    await destroyerButton.scrollIntoViewIfNeeded();
+    await destroyerButton.click();
     await appPage.getByTestId("power-generation-tab").click();
 
     // 3. 人造恒星を選択

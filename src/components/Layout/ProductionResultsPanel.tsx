@@ -80,32 +80,37 @@ export function ProductionResultsPanel({
   ]);
 
   return (
-    <div className="hologram-panel rounded-lg shadow-panel p-6 border border-neon-blue/20 hover-lift">
-      <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t("productionTree")}</h2>
+    <section
+      className="hologram-panel rounded-md p-6 hover-lift"
+      aria-labelledby="production-results-heading"
+    >
+      <h2 id="production-results-heading" className="text-lg font-semibold text-space-50 mb-4">
+        {t("productionTree")}
+      </h2>
       {calculationResult ? (
         <div className="space-y-4">
           {/* Multi-output results display */}
           {calculationResult.multiOutputResults &&
             calculationResult.multiOutputResults.length > 0 && (
               <div
-                className="bg-neon-green/10 border border-neon-green/30 rounded-lg p-4 backdrop-blur-sm"
+                className="bg-dark-800/60 border border-space-600/60 rounded-md p-4"
                 data-testid="multiple-output-items-section"
               >
-                <h3 className="text-sm font-semibold text-neon-green mb-3 flex items-center gap-2">
-                  <span>📦</span>
+                <h3 className="text-sm font-semibold text-space-100 mb-3 flex items-center gap-2">
+                  <span aria-hidden="true">Output</span>
                   {t("multiOutputResults")}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {calculationResult.multiOutputResults.map(result => (
                     <div
                       key={result.itemId}
-                      className="flex items-center gap-3 p-3 bg-dark-700/50 rounded-lg border border-neon-green/20 hover:border-neon-green/40 transition-all"
+                      className="flex items-center gap-3 p-3 bg-dark-700/60 rounded-md border border-space-700/70 hover:border-space-500 transition-colors"
                       data-testid={`output-item-${result.itemId}`}
                     >
                       <ItemIcon itemId={result.itemId} alt={result.itemName} size={32} />
                       <div className="flex-1 text-sm font-medium text-white">{result.itemName}</div>
                       <div
-                        className={cn("text-lg font-bold text-neon-cyan", TEXT_GLOW.cyan)}
+                        className={cn("text-lg font-semibold text-primary-200", TEXT_GLOW.cyan)}
                         data-testid={`output-item-rate-${result.itemId}`}
                       >
                         {formatNumber(result.productionRate)}/s
@@ -117,17 +122,24 @@ export function ProductionResultsPanel({
             )}
 
           <div>
-            {/* Tab Buttons */}
-            <div className="flex items-center gap-2 mb-4 border-b border-neon-blue/20">
+            <div
+              className="flex items-center gap-2 mb-4 border-b border-space-700/80 overflow-x-auto"
+              role="tablist"
+              aria-label={t("productionTree")}
+            >
               <button
                 data-testid="production-chain-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.ProductionTree)}
+                role="tab"
+                id="tab-production-tree"
+                aria-selected={activeTab === ProductionResultsTab.ProductionTree}
+                aria-controls="production-tree-view"
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.ProductionTree,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.ProductionTree,
                   }
                 )}
@@ -137,12 +149,16 @@ export function ProductionResultsPanel({
               <button
                 data-testid="visualization-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.Visualization)}
+                role="tab"
+                id="tab-visualization"
+                aria-selected={activeTab === ProductionResultsTab.Visualization}
+                aria-controls="visualization-view"
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.Visualization,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.Visualization,
                   }
                 )}
@@ -152,12 +168,16 @@ export function ProductionResultsPanel({
               <button
                 data-testid="statistics-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.Statistics)}
+                role="tab"
+                id="tab-statistics"
+                aria-selected={activeTab === ProductionResultsTab.Statistics}
+                aria-controls="statistics-view"
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.Statistics,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.Statistics,
                   }
                 )}
@@ -167,12 +187,16 @@ export function ProductionResultsPanel({
               <button
                 data-testid="building-cost-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.BuildingCost)}
+                role="tab"
+                id="tab-building-cost"
+                aria-selected={activeTab === ProductionResultsTab.BuildingCost}
+                aria-controls="building-cost-view"
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.BuildingCost,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.BuildingCost,
                   }
                 )}
@@ -182,12 +206,16 @@ export function ProductionResultsPanel({
               <button
                 data-testid="power-generation-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.PowerGeneration)}
+                role="tab"
+                id="tab-power-generation"
+                aria-selected={activeTab === ProductionResultsTab.PowerGeneration}
+                aria-controls="power-generation-view"
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.PowerGeneration,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.PowerGeneration,
                   }
                 )}
@@ -197,12 +225,15 @@ export function ProductionResultsPanel({
               <button
                 data-testid="mining-calculator-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.MiningCalculator)}
+                role="tab"
+                id="tab-mining-calculator"
+                aria-selected={activeTab === ProductionResultsTab.MiningCalculator}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.MiningCalculator,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.MiningCalculator,
                   }
                 )}
@@ -212,12 +243,15 @@ export function ProductionResultsPanel({
               <button
                 data-testid="roadmap-tab"
                 onClick={() => setActiveTab(ProductionResultsTab.Roadmap)}
+                role="tab"
+                id="tab-roadmap"
+                aria-selected={activeTab === ProductionResultsTab.Roadmap}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium border-b-2 transition-all ripple-effect",
+                  "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                   {
-                    "border-neon-blue text-neon-cyan shadow-neon-blue":
+                    "border-primary-300 text-primary-100":
                       activeTab === ProductionResultsTab.Roadmap,
-                    "border-transparent text-space-300 hover:text-neon-cyan":
+                    "border-transparent text-space-300 hover:text-space-100":
                       activeTab !== ProductionResultsTab.Roadmap,
                   }
                 )}
@@ -230,12 +264,13 @@ export function ProductionResultsPanel({
                 <button
                   data-testid="expand-collapse-all-button"
                   onClick={handleToggleAll}
+                  aria-expanded={isTreeExpanded}
                   className={cn(
-                    "ml-auto px-4 py-2 text-sm font-medium rounded-lg border transition-all duration-300 ease-in-out ripple-effect",
+                    "ml-auto px-4 py-2 text-sm font-medium rounded-md border transition-colors whitespace-nowrap",
                     {
-                      "bg-neon-blue/20 text-neon-cyan border-neon-blue shadow-neon-blue hover:bg-neon-blue/30":
+                      "bg-primary-900/30 text-primary-100 border-primary-500/60 hover:bg-primary-900/45":
                         isTreeExpanded,
-                      "bg-dark-700/50 text-space-200 border-neon-blue/30 hover:bg-dark-600 hover:border-neon-blue/50 hover:text-neon-cyan":
+                      "bg-dark-700/70 text-space-200 border-space-600/70 hover:bg-dark-600 hover:border-space-500":
                         !isTreeExpanded,
                     }
                   )}
@@ -247,7 +282,7 @@ export function ProductionResultsPanel({
                         "rotate-0": !isTreeExpanded,
                       })}
                     >
-                      ▼
+                      <span aria-hidden="true">▼</span>
                     </span>
                     <span>{isTreeExpanded ? t("collapseAll") : t("expandAll")}</span>
                   </span>
@@ -258,14 +293,24 @@ export function ProductionResultsPanel({
             {/* Content */}
             <Suspense fallback={<div className="text-center py-4">{t("loading")}</div>}>
               {activeTab === ProductionResultsTab.Statistics ? (
-                <div id="statistics-view" data-testid="statistics-tab-content">
+                <div
+                  id="statistics-view"
+                  data-testid="statistics-tab-content"
+                  role="tabpanel"
+                  aria-labelledby="tab-statistics"
+                >
                   <StatisticsView
                     calculationResult={calculationResult}
                     miningCalculation={miningCalculation}
                   />
                 </div>
               ) : activeTab === ProductionResultsTab.Visualization ? (
-                <div id="visualization-view" data-testid="visualization-content">
+                <div
+                  id="visualization-view"
+                  data-testid="visualization-content"
+                  role="tabpanel"
+                  aria-labelledby="tab-visualization"
+                >
                   {calculationResult ? (
                     <VisualizationView calculationResult={calculationResult} />
                   ) : (
@@ -275,11 +320,21 @@ export function ProductionResultsPanel({
                   )}
                 </div>
               ) : activeTab === ProductionResultsTab.BuildingCost ? (
-                <div id="building-cost-view" data-testid="building-cost-content">
+                <div
+                  id="building-cost-view"
+                  data-testid="building-cost-content"
+                  role="tabpanel"
+                  aria-labelledby="tab-building-cost"
+                >
                   <BuildingCostView calculationResult={calculationResult} />
                 </div>
               ) : activeTab === ProductionResultsTab.PowerGeneration ? (
-                <div id="power-generation-view" data-testid="power-generation-content">
+                <div
+                  id="power-generation-view"
+                  data-testid="power-generation-content"
+                  role="tabpanel"
+                  aria-labelledby="tab-power-generation"
+                >
                   <PowerGenerationView
                     calculationResult={calculationResult}
                     miningCalculation={miningCalculation}
@@ -293,7 +348,12 @@ export function ProductionResultsPanel({
                   miningCalculation={miningCalculation}
                 />
               ) : (
-                <div id="production-tree-view" data-testid="production-tree-content">
+                <div
+                  id="production-tree-view"
+                  data-testid="production-tree-content"
+                  role="tabpanel"
+                  aria-labelledby="tab-production-tree"
+                >
                   <ProductionTree
                     node={calculationResult.rootNode}
                     collapsedNodes={collapsedNodes}
@@ -311,6 +371,6 @@ export function ProductionResultsPanel({
       ) : (
         <p className="text-sm text-space-300">{t("noRecipeSelected")}</p>
       )}
-    </div>
+    </section>
   );
 }

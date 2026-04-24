@@ -50,13 +50,13 @@ export function LanguageMenu() {
           data-testid="language-menu-trigger"
           disabled={isLoading}
           className={cn(
-            "px-4 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan disabled:bg-dark-600 disabled:border-neon-cyan/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect flex items-center gap-2",
+            "px-3 py-2 bg-dark-700/80 border border-space-600/70 text-space-100 rounded-md hover:bg-dark-600 hover:border-space-500 disabled:bg-dark-700/50 disabled:border-space-700 disabled:text-space-500 disabled:cursor-not-allowed transition-colors flex items-center gap-2",
             HOVER_CARD_GLOW.cyan
           )}
           title={t("changeLanguage")}
           aria-label={t("changeLanguage")}
         >
-          <span>🌐</span>
+          <span aria-hidden="true">Lang</span>
           <span>{currentLanguage.flag}</span>
           <span>{currentLanguage.label}</span>
           {isLoading && (
@@ -73,7 +73,7 @@ export function LanguageMenu() {
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           className={cn(
-            "min-w-[200px] bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg animate-fadeInScale z-50",
+            "min-w-[200px] bg-dark-700/95 backdrop-blur-md border border-space-600/70 rounded-md animate-fadeInScale z-50",
             MODAL_GLOW.blue
           )}
           align="end"
@@ -84,8 +84,8 @@ export function LanguageMenu() {
               key={code}
               data-testid={`language-menu-item-${code}`}
               onClick={() => setLocale(code)}
-              className={`px-4 py-2 text-white cursor-pointer outline-none hover:bg-dark-600/50 transition-all ${
-                locale === code ? "bg-neon-cyan/20" : ""
+              className={`px-4 py-2 text-space-100 cursor-pointer outline-none hover:bg-dark-600/70 transition-colors ${
+                locale === code ? "bg-space-700/80" : ""
               }`}
             >
               <div className="flex items-center gap-2">

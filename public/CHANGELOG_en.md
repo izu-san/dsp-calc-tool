@@ -1,3 +1,10 @@
+## [0.1.0] - 2026-04-24
+
+### Changed
+
+- Refreshed the space-themed UI colors, spacing, and selection states
+- Improved readability and interaction polish for production results, recipe selection, and settings panels
+
 ## [0.0.6] - 2026-04-22
 
 ### Added
