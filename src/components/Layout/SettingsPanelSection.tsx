@@ -25,13 +25,18 @@ export function SettingsPanelSection({
 
   return (
     <div className="xl:col-span-1">
-      <div className="hologram-panel rounded-lg shadow-panel p-4 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto border border-neon-blue/20">
-        <h2 className="text-lg font-semibold text-neon-cyan mb-4">{t("settings")}</h2>
+      <div className="hologram-panel rounded-md p-4 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <h2 className="text-lg font-semibold text-space-50 mb-4">{t("settings")}</h2>
 
         {/* Target Quantity Input */}
         {selectedRecipe && (
           <div className="mb-6">
-            <label className="block text-sm font-medium text-space-100 mb-2">{t("target")}</label>
+            <label
+              htmlFor="target-quantity-input"
+              className="block text-sm font-medium text-space-100 mb-2"
+            >
+              {t("target")}
+            </label>
             <div className="flex items-center gap-3 mb-2">
               <ItemIcon
                 itemId={(() => {
@@ -55,12 +60,13 @@ export function SettingsPanelSection({
             </div>
             <input
               type="number"
+              id="target-quantity-input"
               data-testid="target-quantity-input"
               min="0.1"
               step="0.1"
               value={targetQuantity}
               onChange={e => setTargetQuantity(parseFloat(e.target.value) || 0.1)}
-              className="w-full px-3 py-2 border border-neon-blue/30 bg-dark-700/50 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-neon-blue focus:border-neon-blue transition-all"
+              className="w-full px-3 py-2 border border-space-600/70 bg-dark-800/70 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-colors"
             />
             <p className="text-xs text-space-200 mt-1">{t("itemsPerSecond")}</p>
           </div>

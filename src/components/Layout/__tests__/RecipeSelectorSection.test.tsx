@@ -132,7 +132,7 @@ describe("RecipeSelectorSection", () => {
       />
     );
 
-    const panel = container.querySelector(".rounded-lg.shadow-panel.p-6");
+    const panel = container.querySelector(".rounded-md.p-6");
     expect(panel).toBeInTheDocument();
   });
 

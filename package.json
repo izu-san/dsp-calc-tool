@@ -1,6 +1,6 @@
 {
   "name": "DSP Recipe Calculator",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "type": "module",
   "license": "MIT",
   "packageManager": "pnpm@9.15.0",

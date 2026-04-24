@@ -19,13 +19,13 @@ export default {
           900: "#002899",
         },
         neon: {
-          cyan: "#00d9ff", // Electric cyan
-          blue: "#0088ff", // Energy blue
-          purple: "#a855f7", // Warp purple
-          magenta: "#e935ff", // Plasma magenta
-          orange: "#ff6b35", // Energy orange
-          yellow: "#ffd700", // Power yellow
-          green: "#00ff88", // Matrix green
+          cyan: "#7db7d8",
+          blue: "#5d93c4",
+          purple: "#8f82b8",
+          magenta: "#b07aa3",
+          orange: "#c08457",
+          yellow: "#c8ad63",
+          green: "#7fb58c",
         },
         space: {
           50: "#e8ecf1",
@@ -61,18 +61,17 @@ export default {
           "radial-gradient(ellipse at top, rgba(168, 85, 247, 0.15), transparent 50%), radial-gradient(ellipse at bottom, rgba(0, 136, 255, 0.15), transparent 50%)",
       },
       boxShadow: {
-        "neon-blue": "0 0 10px rgba(0, 136, 255, 0.5), 0 0 20px rgba(0, 136, 255, 0.3)",
-        "neon-cyan": "0 0 10px rgba(0, 217, 255, 0.5), 0 0 20px rgba(0, 217, 255, 0.3)",
-        "neon-purple": "0 0 10px rgba(168, 85, 247, 0.5), 0 0 20px rgba(168, 85, 247, 0.3)",
-        "neon-magenta": "0 0 10px rgba(233, 53, 255, 0.5), 0 0 20px rgba(233, 53, 255, 0.3)",
-        energy:
-          "0 0 15px rgba(0, 136, 255, 0.4), 0 0 30px rgba(0, 136, 255, 0.2), inset 0 0 10px rgba(0, 136, 255, 0.1)",
-        panel: "0 4px 20px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 136, 255, 0.1)",
+        "neon-blue": "none",
+        "neon-cyan": "none",
+        "neon-purple": "none",
+        "neon-magenta": "none",
+        energy: "0 12px 32px rgba(0, 0, 0, 0.28)",
+        panel: "0 12px 36px rgba(0, 0, 0, 0.28)",
       },
       borderColor: {
-        "neon-blue": "rgba(0, 136, 255, 0.5)",
-        "neon-cyan": "rgba(0, 217, 255, 0.5)",
-        "neon-purple": "rgba(168, 85, 247, 0.5)",
+        "neon-blue": "rgba(125, 151, 178, 0.42)",
+        "neon-cyan": "rgba(125, 183, 216, 0.42)",
+        "neon-purple": "rgba(143, 130, 184, 0.42)",
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
@@ -83,11 +82,10 @@ export default {
       keyframes: {
         glow: {
           "0%": {
-            boxShadow: "0 0 5px rgba(0, 136, 255, 0.5), 0 0 10px rgba(0, 136, 255, 0.3)",
+            boxShadow: "none",
           },
           "100%": {
-            boxShadow:
-              "0 0 10px rgba(0, 136, 255, 0.8), 0 0 20px rgba(0, 136, 255, 0.5), 0 0 30px rgba(0, 136, 255, 0.3)",
+            boxShadow: "none",
           },
         },
         scan: {

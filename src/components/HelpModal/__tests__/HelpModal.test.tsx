@@ -258,7 +258,7 @@ describe("HelpModal", () => {
       expect(screen.getByText("help")).toBeInTheDocument();
     });
 
-    expect(screen.getByText("0.0.6")).toBeInTheDocument();
+    expect(screen.getByText("0.1.0")).toBeInTheDocument();
     expect(screen.queryByText("9.9.9")).not.toBeInTheDocument();
   });
 

@@ -55,7 +55,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
     >
       <div
         className={cn(
-          "bg-dark-700/95 backdrop-blur-md border-2 border-neon-purple/40 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale",
+          "bg-dark-700/95 backdrop-blur-md border border-space-600/70 rounded-md max-w-6xl w-full max-h-[90vh] overflow-hidden flex flex-col relative animate-fadeInScale",
           MODAL_GLOW.purple
         )}
         style={{ zIndex: 100000 }}
@@ -63,20 +63,22 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
         data-testid="help-modal"
       >
         {/* Header */}
-        <div className="p-6 border-b border-neon-purple/30 flex items-center justify-between bg-dark-800/50">
+        <div className="p-6 border-b border-space-700/80 flex items-center justify-between bg-dark-800/50">
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                "p-2 bg-neon-purple/20 border border-neon-purple/50 rounded-lg",
+                "p-2 bg-dark-700 border border-space-600/70 rounded-md",
                 CARD_GLOW.purple
               )}
             >
-              <span className="text-2xl">📖</span>
+              <span className="text-lg" aria-hidden="true">
+                ?
+              </span>
             </div>
             <div>
               <h2
                 id="help-modal-title"
-                className={cn("text-2xl font-bold text-white", TEXT_GLOW.purple)}
+                className={cn("text-2xl font-semibold text-white", TEXT_GLOW.purple)}
               >
                 {t("help")}
               </h2>
@@ -84,7 +86,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="text-space-300 hover:text-neon-purple transition-all hover:scale-110 ripple-effect p-2 rounded-lg hover:bg-neon-purple/10"
+            className="text-space-300 hover:text-white transition-colors p-2 rounded-md hover:bg-dark-600"
             aria-label={t("close")}
             data-testid="help-modal-close"
           >
@@ -107,7 +109,7 @@ export function HelpModal({ isOpen, onClose }: HelpModalProps) {
           className="flex-1 flex flex-col overflow-hidden"
         >
           <Tabs.List
-            className="flex px-6 pt-4 gap-1 bg-gradient-to-b from-dark-800/50 to-dark-700/30 border-b-2 border-neon-purple/30"
+            className="flex px-6 pt-4 gap-1 bg-dark-800/40 border-b border-space-700/80 overflow-x-auto"
             onClick={e => e.stopPropagation()}
           >
             <Tabs.Trigger

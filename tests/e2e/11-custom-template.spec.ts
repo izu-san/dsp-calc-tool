@@ -661,9 +661,9 @@ test.describe("カスタムテンプレート機能", () => {
       await appPage.getByRole("button", { name: "適用" }).click();
 
       // 4. 設定が変更されることを確認（増産剤が「なし」になっている）
-      await expect(appPage.getByTestId("proliferator-type-button-none")).toHaveClass(
-        /bg-neon-magenta/
-      );
+      const noneButton = appPage.getByTestId("proliferator-type-button-none");
+      await expect(noneButton).toHaveAttribute("aria-pressed", "true");
+      await expect(noneButton).toContainText("✓");
 
       // 5. 設定パネルで増産剤を「増産剤 Mk.III」に変更
       await appPage.getByTestId("proliferator-type-button-mk3").click();
@@ -681,9 +681,9 @@ test.describe("カスタムテンプレート機能", () => {
       await appPage.getByRole("button", { name: "適用" }).click();
 
       // 8. 設定が最新の内容に変更されることを確認（増産剤: 増産剤 Mk.III）
-      await expect(appPage.getByTestId("proliferator-type-button-mk3")).toHaveClass(
-        /bg-neon-magenta/
-      );
+      const mk3Button = appPage.getByTestId("proliferator-type-button-mk3");
+      await expect(mk3Button).toHaveAttribute("aria-pressed", "true");
+      await expect(mk3Button).toContainText("✓");
 
       // 9. ページをリロード
       await appPage.reload();

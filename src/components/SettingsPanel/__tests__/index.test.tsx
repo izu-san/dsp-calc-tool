@@ -81,15 +81,15 @@ describe("SettingsPanel", () => {
       expect(screen.getByText(/conveyorBelt/)).toBeInTheDocument();
     });
 
-    it("各セクションに絵文字アイコンが含まれる", () => {
+    it("各セクションのタイトルに装飾絵文字を含めない", () => {
       const { container } = render(<SettingsPanel />);
 
       const headings = container.querySelectorAll("h4");
       const headingTexts = Array.from(headings).map(h => h.textContent);
 
-      expect(headingTexts.some(text => text?.includes("💊"))).toBe(true); // Proliferator
-      expect(headingTexts.some(text => text?.includes("🏭"))).toBe(true); // Machine Rank
-      expect(headingTexts.some(text => text?.includes("🛤️"))).toBe(true); // Conveyor Belt
+      expect(headingTexts.some(text => text?.includes("💊"))).toBe(false);
+      expect(headingTexts.some(text => text?.includes("🏭"))).toBe(false);
+      expect(headingTexts.some(text => text?.includes("🛤️"))).toBe(false);
     });
   });
 
@@ -171,7 +171,7 @@ describe("SettingsPanel", () => {
     it("各セクションが適切なクラス名を持つ", () => {
       const { container } = render(<SettingsPanel />);
 
-      const sections = container.querySelectorAll(".bg-dark-700\\/30");
+      const sections = container.querySelectorAll(".bg-dark-800\\/45");
       expect(sections.length).toBeGreaterThanOrEqual(3); // At least 3 base sections
     });
 
@@ -185,15 +185,14 @@ describe("SettingsPanel", () => {
     it("各セクションに境界線が設定されている", () => {
       render(<SettingsPanel />);
 
-      // Check for border classes
       const proliferatorSection = screen.getByText(/proliferator/).closest("div");
-      expect(proliferatorSection?.className).toContain("border-neon-magenta");
+      expect(proliferatorSection?.className).toContain("border-space-700");
 
       const machineRankSection = screen.getByText(/machineRank/).closest("div");
-      expect(machineRankSection?.className).toContain("border-neon-blue");
+      expect(machineRankSection?.className).toContain("border-space-700");
 
       const conveyorBeltSection = screen.getByText(/conveyorBelt/).closest("div");
-      expect(conveyorBeltSection?.className).toContain("border-neon-cyan");
+      expect(conveyorBeltSection?.className).toContain("border-space-700");
     });
   });
 

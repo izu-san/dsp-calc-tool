@@ -120,13 +120,13 @@ export function HistoryToolbar() {
           onClick={handleUndo}
           disabled={!canUndo()}
           className={cn(
-            "px-4 py-2 bg-neon-blue/30 border border-neon-blue/50 text-white rounded-lg hover:bg-neon-blue/40 hover:border-neon-blue disabled:bg-dark-600 disabled:border-neon-blue/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
+            "px-3 py-2 bg-dark-700/80 border border-space-600/70 text-space-100 rounded-md hover:bg-dark-600 hover:border-space-500 disabled:bg-dark-700/50 disabled:border-space-700 disabled:text-space-500 disabled:cursor-not-allowed transition-colors",
             HOVER_CARD_GLOW.blue
           )}
           title={canUndo() ? t("undo") : t("cannotUndo")}
           aria-label={canUndo() ? t("undo") : t("cannotUndo")}
         >
-          ↶ {t("undo")}
+          <span aria-hidden="true">↶</span> {t("undo")}
         </button>
 
         <button
@@ -134,26 +134,26 @@ export function HistoryToolbar() {
           onClick={handleRedo}
           disabled={!canRedo()}
           className={cn(
-            "px-4 py-2 bg-neon-purple/30 border border-neon-purple/50 text-white rounded-lg hover:bg-neon-purple/40 hover:border-neon-purple disabled:bg-dark-600 disabled:border-neon-purple/20 disabled:text-space-400 disabled:cursor-not-allowed transition-all ripple-effect",
+            "px-3 py-2 bg-dark-700/80 border border-space-600/70 text-space-100 rounded-md hover:bg-dark-600 hover:border-space-500 disabled:bg-dark-700/50 disabled:border-space-700 disabled:text-space-500 disabled:cursor-not-allowed transition-colors",
             HOVER_CARD_GLOW.purple
           )}
           title={canRedo() ? t("redo") : t("cannotRedo")}
           aria-label={canRedo() ? t("redo") : t("cannotRedo")}
         >
-          ↷ {t("redo")}
+          <span aria-hidden="true">↷</span> {t("redo")}
         </button>
 
         <button
           data-testid="history-dialog-button"
           onClick={() => setIsHistoryDialogOpen(true)}
           className={cn(
-            "px-4 py-2 bg-dark-600/50 border border-neon-blue/30 text-white rounded-lg hover:bg-dark-600/70 hover:border-neon-blue/50 transition-all ripple-effect",
+            "px-3 py-2 bg-dark-700/80 border border-space-600/70 text-space-100 rounded-md hover:bg-dark-600 hover:border-space-500 transition-colors",
             HOVER_CARD_GLOW.blue
           )}
           title={t("showHistory")}
           aria-label={t("showHistory")}
         >
-          📜 {t("history")}
+          {t("history")}
         </button>
       </div>
 

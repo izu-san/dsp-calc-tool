@@ -131,22 +131,27 @@ export function WelcomeModal() {
     <div
       className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[10000] p-4 animate-fadeIn"
       data-testid="welcome-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="welcome-modal-title"
     >
       <div
-        className={`bg-dark-700/95 backdrop-blur-md border-2 border-neon-blue/40 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInScale ${MODAL_GLOW.blue}`}
+        className={`bg-dark-700/95 backdrop-blur-md border border-space-600/70 rounded-md max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fadeInScale ${MODAL_GLOW.blue}`}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-dark-700/95 backdrop-blur-md border-b border-neon-blue/40 p-6 pb-4">
+        <div className="sticky top-0 bg-dark-700/95 backdrop-blur-md border-b border-space-700/80 p-6 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-white mb-2">{steps[currentStep].title}</h2>
+              <h2 id="welcome-modal-title" className="text-2xl font-semibold text-white mb-2">
+                {steps[currentStep].title}
+              </h2>
               <div className="flex gap-1">
                 {steps.map((_, index) => (
                   <div
                     key={index}
                     data-testid={`welcome-step-indicator-${index + 1}`}
                     className={`h-1 flex-1 rounded-full transition-colors ${
-                      index <= currentStep ? "bg-neon-blue/40" : "bg-dark-600"
+                      index <= currentStep ? "bg-primary-400/70" : "bg-dark-600"
                     }`}
                   />
                 ))}
@@ -156,7 +161,7 @@ export function WelcomeModal() {
             <button
               onClick={handleLanguageSwitch}
               className={cn(
-                "px-3 py-2 bg-neon-cyan/30 border border-neon-cyan/40 text-white rounded-lg hover:bg-neon-cyan/40 hover:border-neon-cyan transition-all ripple-effect flex items-center gap-2 ml-4",
+                "px-3 py-2 bg-dark-800/70 border border-space-600/70 text-white rounded-md hover:bg-dark-600 hover:border-space-500 transition-colors flex items-center gap-2 ml-4",
                 HOVER_CARD_GLOW.cyan
               )}
               aria-label={t("changeLanguage")}
@@ -173,7 +178,7 @@ export function WelcomeModal() {
         <div className="p-6">{steps[currentStep].content}</div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-dark-700/95 backdrop-blur-md border-t border-neon-blue/40 p-6 pt-4">
+        <div className="sticky bottom-0 bg-dark-700/95 backdrop-blur-md border-t border-space-700/80 p-6 pt-4">
           <div className="flex justify-between items-center">
             <div data-testid="welcome-step-progress" className="text-sm text-space-300">
               {t("stepProgress", { current: currentStep + 1, total: steps.length })}

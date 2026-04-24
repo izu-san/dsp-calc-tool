@@ -102,8 +102,9 @@ test.describe("What-If分析", () => {
   });
 
   test("08-07: アップグレードの個別適用 (増産剤Mk.III)", async ({ page }) => {
-    await page.getByTestId("recipe-search-input").fill("エネルギーマトリックス");
-    await page.getByTestId("recipe-button-1802").click();
+    const energyMatrixButton = page.getByTestId("recipe-button-1802");
+    await energyMatrixButton.scrollIntoViewIfNeeded();
+    await energyMatrixButton.click();
     await page.getByTestId("target-quantity-input").fill("100");
 
     await expect(page.getByTestId("machine-count-1802")).toHaveText("マトリクス研究所 × 75");

@@ -1,7 +1,7 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BORDER_COLOR, NEON_GLOW } from "../../constants/theme";
+import { BORDER_COLOR } from "../../constants/theme";
 import { useDebounce } from "../../hooks/useDebounce";
 import { useFavoritesStore } from "../../stores/favoritesStore";
 import type { Recipe } from "../../types";
@@ -139,7 +139,11 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
     <div data-testid="recipe-list" className="space-y-4">
       {/* Search Box with Autocomplete */}
       <div className="relative">
+        <label htmlFor="recipe-search-input" className="sr-only">
+          {t("searchRecipesItemsMaterials")}
+        </label>
         <input
+          id="recipe-search-input"
           data-testid="recipe-search-input"
           type="text"
           placeholder={t("searchRecipesItemsMaterials")}
@@ -147,7 +151,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           onChange={e => setSearchQuery(e.target.value)}
           onFocus={() => setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-          className="w-full px-4 py-2 pl-10 border border-neon-blue/30 bg-dark-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-blue focus:border-neon-blue transition-all placeholder-space-400"
+          className="w-full px-4 py-2 pl-10 border border-space-600/70 bg-dark-800/70 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-colors placeholder-space-400"
         />
         <svg
           className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"
@@ -166,7 +170,8 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
           <button
             data-testid="clear-search-button"
             onClick={() => setSearchQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-space-400 hover:text-space-100"
+            aria-label={t("clear")}
           >
             ✕
           </button>
@@ -176,15 +181,13 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         {showSuggestions && searchSuggestions.length > 0 && (
           <div
             className={cn(
-              "absolute z-10 w-full mt-1 border-2 rounded-lg max-h-60 overflow-y-auto",
-              BORDER_COLOR.cyan,
-              NEON_GLOW.cyan
+              "absolute z-10 w-full mt-1 border rounded-md max-h-60 overflow-y-auto bg-dark-700/95",
+              BORDER_COLOR.cyan
             )}
-            style={{ backgroundColor: "#0F172A" }}
           >
             <div className="p-2">
               <div className="text-xs text-neon-cyan font-semibold mb-2 px-2 flex items-center gap-1">
-                <span>💡</span>
+                <span aria-hidden="true">Hint</span>
                 {t("suggestions")}
               </div>
               {searchSuggestions.map((suggestion, index) => (
@@ -195,9 +198,7 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                     setShowSuggestions(false);
                   }}
                   className={cn(
-                    "w-full text-left px-3 py-2 rounded-md text-sm text-space-200 hover:text-white transition-all hover:bg-neon-cyan/30 border-2 border-transparent hover:scale-[1.02] ripple-effect",
-                    "hover:border-neon-cyan/50",
-                    "hover:shadow-[0_0_10px_rgba(0,217,255,0.3)]"
+                    "w-full text-left px-3 py-2 rounded-md text-sm text-space-200 hover:text-white transition-colors hover:bg-dark-600 border border-transparent hover:border-space-500"
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -259,23 +260,19 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
       )}
 
       {/* Category Filter */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" aria-label={t("categoryAll")}>
         {/* Favorites Toggle */}
         <button
           data-testid="favorites-toggle-button"
           onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-          className={cn(
-            "px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 ripple-effect",
-            {
-              "bg-neon-yellow/40 border-neon-yellow text-white scale-110 font-bold":
-                showOnlyFavorites,
-              "bg-dark-700/50 border-neon-yellow/20 text-space-300 hover:border-neon-yellow/40 hover:bg-neon-yellow/10 hover:text-neon-yellow hover:scale-105":
-                !showOnlyFavorites,
-            },
-            showOnlyFavorites && "shadow-[0_0_20px_rgba(255,215,0,0.6)]"
-          )}
+          aria-pressed={showOnlyFavorites}
+          className={cn("px-4 py-2 rounded-md text-sm font-medium transition-colors border", {
+            "bg-space-600/80 border-space-400 text-white font-semibold": showOnlyFavorites,
+            "bg-dark-700/60 border-space-700 text-space-300 hover:border-space-500 hover:bg-dark-600 hover:text-space-100":
+              !showOnlyFavorites,
+          })}
         >
-          ⭐ {t("favorites")}{" "}
+          <span aria-hidden="true">★</span> {t("favorites")}{" "}
           {favoriteRecipes.size > 0 && (
             <span data-testid="favorites-count">({favoriteRecipes.size})</span>
           )}
@@ -295,15 +292,15 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
                   setShowOnlyFavorites(false);
                 }
               }}
+              aria-pressed={selectedCategory === category}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all border-2 flex items-center gap-2 ripple-effect",
+                "px-4 py-2 rounded-md text-sm font-medium transition-colors border flex items-center gap-2",
                 {
-                  "bg-neon-blue/40 border-neon-blue text-white scale-110 font-bold":
+                  "bg-primary-900/45 border-primary-400/70 text-white font-semibold":
                     selectedCategory === category,
-                  "bg-dark-700/50 border-neon-blue/20 text-space-300 hover:border-neon-blue/40 hover:bg-neon-blue/10 hover:text-neon-blue hover:scale-105":
+                  "bg-dark-700/60 border-space-700 text-space-300 hover:border-space-500 hover:bg-dark-600 hover:text-space-100":
                     selectedCategory !== category,
-                },
-                selectedCategory === category && NEON_GLOW.blueStrong
+                }
               )}
             >
               {categoryInfo.iconId && (
@@ -335,15 +332,14 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
         value={activeTab}
         onValueChange={value => setActiveTab(value as RecipeSelectorTab)}
       >
-        <Tabs.List className="flex gap-1 border-b border-neon-blue/20 mb-4">
+        <Tabs.List className="flex gap-1 border-b border-space-700/80 mb-4">
           <Tabs.Trigger
             value={RecipeSelectorTab.RecipeList}
             data-testid="items-tab"
             className={cn(
-              "px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect",
-              "data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan",
-              "data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]",
-              "data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
+              "px-6 py-3 font-medium text-space-300 border-b-2 transition-colors",
+              "data-[state=active]:border-primary-300 data-[state=active]:text-primary-100",
+              "data-[state=inactive]:border-transparent hover:text-space-100 hover:border-space-500"
             )}
           >
             Items
@@ -352,10 +348,9 @@ export function RecipeSelector({ recipes, onRecipeSelect, selectedRecipeId }: Re
             value={RecipeSelectorTab.Favorites}
             data-testid="buildings-tab"
             className={cn(
-              "px-6 py-3 font-medium text-space-200 border-b-2 transition-all ripple-effect",
-              "data-[state=active]:border-neon-cyan data-[state=active]:text-neon-cyan",
-              "data-[state=active]:shadow-[0_0_10px_rgba(0,217,255,0.3)]",
-              "data-[state=inactive]:border-transparent hover:text-neon-cyan hover:border-neon-cyan/50"
+              "px-6 py-3 font-medium text-space-300 border-b-2 transition-colors",
+              "data-[state=active]:border-primary-300 data-[state=active]:text-primary-100",
+              "data-[state=inactive]:border-transparent hover:text-space-100 hover:border-space-500"
             )}
           >
             Buildings
