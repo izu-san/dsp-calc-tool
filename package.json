@@ -89,7 +89,7 @@
     "prettier": "^3.8.3",
     "sharp": "^0.34.5",
     "spritesmith": "^3.5.1",
-    "tailwindcss": "^4.2.2",
+    "tailwindcss": "^4.2.4",
     "tsx": "^4.21.0",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.58.2",
