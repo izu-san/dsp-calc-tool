@@ -48,9 +48,6 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
   const miningSettingsChanges: Record<string, unknown> = {};
   let hasMiningSettingsChanges = false;
 
-  // Store completeSettings outside try block for use after finally
-  let completeSettings: GlobalSettings | null = null;
-
   try {
     // Process each change
     for (const [path, value] of Object.entries(changesToApply)) {
@@ -259,7 +256,7 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
 
       // Build complete settings object - always create new object with new references
       // This ensures React detects the change and re-runs useProductionCalculation
-      completeSettings = {
+      const completeSettings: GlobalSettings = {
         ...currentSettings,
         ...newSettings,
         // Always create new objects for nested properties to ensure reference changes
@@ -301,13 +298,11 @@ export function restoreStateFromHistory(entry: HistoryEntry, isUndo: boolean = f
       // Directly update settings using setState to ensure React re-render
       // This bypasses updateSettings which might not properly update the reference
       // No setTimeout needed - React will detect the settings change and recalculate
-      if (completeSettings !== null) {
-        useSettingsStore.setState({ settings: completeSettings });
+      useSettingsStore.setState({ settings: completeSettings });
 
-        // No need to call setCalculationResult(null) again
-        // The useProductionCalculation hook will detect the settings change
-        // and automatically recalculate when settings reference changes
-      }
+      // No need to call setCalculationResult(null) again
+      // The useProductionCalculation hook will detect the settings change
+      // and automatically recalculate when settings reference changes
     }
 
     // Apply mining settings changes
