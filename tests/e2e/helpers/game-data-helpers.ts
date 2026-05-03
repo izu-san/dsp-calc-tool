@@ -18,7 +18,8 @@ export async function ensureRecipeSidsGenerated(mdPath: string): Promise<void> {
     });
   } catch (error) {
     throw new Error(
-      `Failed to generate RECIPE_SIDS.md: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to generate RECIPE_SIDS.md: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error }
     );
   }
 
