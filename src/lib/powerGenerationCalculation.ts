@@ -52,16 +52,11 @@ export function calculatePowerGeneration(
   }
 
   // 発電設備の選択: 手動選択があればそれを優先、なければ自動選択
-  let bestGenerator: PowerGeneratorInfo | null = null;
-  if (manualGenerator) {
-    // 手動選択された発電設備を使用
-    bestGenerator = POWER_GENERATORS[manualGenerator];
-  } else {
-    // テンプレートで使用可能な発電設備から自動選択
-    const availableGeneratorTypes =
-      TEMPLATE_POWER_GENERATORS[template] || TEMPLATE_POWER_GENERATORS.endGame;
-    bestGenerator = selectBestGenerator(availableGeneratorTypes);
-  }
+  const bestGenerator = manualGenerator
+    ? // 手動選択された発電設備を使用
+      POWER_GENERATORS[manualGenerator]
+    : // テンプレートで使用可能な発電設備から自動選択
+      selectBestGenerator(TEMPLATE_POWER_GENERATORS[template] || TEMPLATE_POWER_GENERATORS.endGame);
 
   if (!bestGenerator) {
     // 発電設備が見つからない場合（通常はありえない）

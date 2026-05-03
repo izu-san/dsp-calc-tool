@@ -21,7 +21,8 @@ export function parseExportDataFromJSON(jsonContent: string): ExportData {
     return data as ExportData;
   } catch (error) {
     throw new Error(
-      `Failed to parse JSON: ${error instanceof Error ? error.message : "Unknown error"}`
+      `Failed to parse JSON: ${error instanceof Error ? error.message : "Unknown error"}`,
+      { cause: error }
     );
   }
 }
