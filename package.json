@@ -90,7 +90,7 @@
     "sharp": "^0.34.5",
     "spritesmith": "^3.5.1",
     "tailwindcss": "^4.3.0",
-    "tsx": "^4.22.3",
+    "tsx": "^4.22.4",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.16",
