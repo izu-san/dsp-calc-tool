@@ -87,7 +87,7 @@
     "lint-staged": "^17.0.7",
     "postcss": "^8.5.15",
     "prettier": "^3.8.4",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.1",
     "spritesmith": "^3.5.1",
     "tailwindcss": "^4.3.0",
     "tsx": "^4.22.4",
