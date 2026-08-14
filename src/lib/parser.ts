@@ -229,12 +229,7 @@ function parseGameDataFromXml(
         name: machine.name,
         count: machine.count ? Number(machine.count) : 0,
         Type: machine.Type as
-          | "Smelt"
-          | "Assemble"
-          | "Chemical"
-          | "Research"
-          | "Refine"
-          | "Particle",
+          "Smelt" | "Assemble" | "Chemical" | "Research" | "Refine" | "Particle",
         miningFrom: machine.miningFrom,
         produceFrom: machine.produceFrom,
         isRaw: machine.isRaw === "true" || machine.isRaw === true,
