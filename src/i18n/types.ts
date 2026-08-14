@@ -154,13 +154,7 @@ export type I18nKey =
       | "finalProducts"
       | "item"}`
   | `production.rawMaterials.${
-      | "title"
-      | "noRequired"
-      | "externalSupply"
-      | "breakdown"
-      | "mining"
-      | "external"
-      | "noInputs"}`
+      "title" | "noRequired" | "externalSupply" | "breakdown" | "mining" | "external" | "noInputs"}`
   | `production.bottlenecks.${
       | "title"
       | "detected"
@@ -173,11 +167,7 @@ export type I18nKey =
   | "production.multiOutput.title"
   // settings
   | `settings.global.${
-      | "current"
-      | "withCurrent"
-      | "overwriteWithCurrent"
-      | "applySettings"
-      | "resetToGlobal"}`
+      "current" | "withCurrent" | "overwriteWithCurrent" | "applySettings" | "resetToGlobal"}`
   | `settings.proliferator.${
       | "label"
       | "type"
@@ -250,12 +240,7 @@ export type I18nKey =
   | `settings.stacks.${"count" | "stacks"}`
   | "settings.logistics.label"
   | `settings.node.${
-      | "title"
-      | "overrides"
-      | "useCustom"
-      | "overrideGlobal"
-      | "usingGlobal"
-      | "enableCustom"}`
+      "title" | "overrides" | "useCustom" | "overrideGlobal" | "usingGlobal" | "enableCustom"}`
   | `settings.templates.${
       | "earlyGame"
       | "midGame"
